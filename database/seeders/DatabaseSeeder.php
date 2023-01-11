@@ -27,7 +27,6 @@ use Database\Seeders\Data\EndUserSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
-use Database\Seeders\Data\MembershipTypeSeeder;
 use Database\Seeders\Data\NicknameSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
@@ -112,8 +111,8 @@ class DatabaseSeeder extends Seeder
         $this->call(LeadTypeSeeder::class);
 
 //        // Default Membership Types for each client are seeded here.
-        VarDumper::dump('Running Membership Type Seeder');
-        $this->call(MembershipTypeSeeder::class);
+//        VarDumper::dump('Running Membership Type Seeder');
+//        $this->call(MembershipTypeSeeder::class);
 //
 //        // Default Trial Membership Types for each client are seeded here.
 //        VarDumper::dump('Trial Membership Type Seeder');

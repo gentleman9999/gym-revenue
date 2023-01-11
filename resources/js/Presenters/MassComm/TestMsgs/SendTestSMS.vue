@@ -58,7 +58,7 @@ function handleCloseTextModal() {
 function handleSendingText() {
     loading.value = true;
     axios
-        .post(route("mass-comms.sms-templates.test-msg"), {
+        .post("/comms/sms-templates/test", {
             templateId: props.templateId,
         })
         .then(({ data }) => {

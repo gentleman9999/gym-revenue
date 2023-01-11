@@ -6,10 +6,6 @@ use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
 //use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\LeadTypes\LeadType;
-use App\Domain\Users\Models\Lead;
-use App\Domain\Users\Models\Member;
-use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
@@ -36,7 +32,7 @@ class CreateAudience
     {
         return [
             'name' => ['required', 'string'],
-            //'entity' => ['sometimes', 'string'],
+            'entity' => ['required', 'string'],
             'filters' => ['required', 'array', 'min:1'],
             'client_id' => ['string', 'required'],
         ];
@@ -66,27 +62,6 @@ class CreateAudience
     public function asController(ActionRequest $request): Audience
     {
         $data = $request->validated();
-        $lead_type_ids = [];
-        $member_type_ids = [];
-        foreach ($data['filters']['type_id'] as $type_id) {
-            try {
-                LeadType::findOrFail($type_id);
-                $lead_type_ids[] = $type_id;
-            } catch (\Exception $e) {
-                $member_type_ids[] = $type_id;
-            }
-        }
-//        $data['entity'] = "";
-//        if (count($lead_type_ids) > 0) {
-//            $data['entity'] .= Lead::class;
-//        }
-//        if (count($member_type_ids) > 0) {
-//            $data['entity'] .= Member::class;
-//        }
-        $data['filters']['lead_type_id'] = $lead_type_ids;
-        $data['filters']['member_type_id'] = $member_type_ids;
-        $data['entity'] = User::class;
-        unset($data['filters']['type_id']);
 
         return $this->handle(
             $data

@@ -14,7 +14,7 @@ class CreateMembershipTypesTable extends Migration
     public function up()
     {
         Schema::create('membership_types', function (Blueprint $table) {
-            $table->uuid('id')->primary()->unique();
+            $table->id();
             $table->uuid('client_id')->nullable()->index();
             $table->string('name');
             $table->index(['client_id', 'name']);
