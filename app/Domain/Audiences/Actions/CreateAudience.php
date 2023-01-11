@@ -2,20 +2,17 @@
 
 namespace App\Domain\Audiences\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
 //use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Clients\Projections\Client;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 
-class CreateAudience
+class CreateAudience extends GymRevAction
 {
-    use AsAction;
-
     public string $commandSignature = 'audience:create';
     public string $commandDescription = 'Creates a Audience with the given name.';
 
@@ -38,6 +35,11 @@ class CreateAudience
         ];
     }
 
+    public function mapArgsToHandle($args): array
+    {
+        return [$args['input']];
+    }
+
     public function prepareForValidation(ActionRequest $request): void
     {
         $request->merge(['entity' => User::class]);
@@ -52,11 +54,6 @@ class CreateAudience
         ]);
 
         $command->info('Created Audience ' . $audience->name);
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     public function asController(ActionRequest $request): Audience

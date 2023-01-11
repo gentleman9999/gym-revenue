@@ -70,14 +70,14 @@
                 <label class="text-2xl mb-4 text-secondary" for="audience-name">
                     Audience Title
                 </label>
-                <input v-model="titleVal" id="audience-name" type="text" />
+                <input v-model="form.title" id="audience-name" type="text" />
             </div>
         </div>
         <div class="flex justify-between max-w-sm w-full mt-6">
             <button @click="$emit('close')" :disabled="loading">Back</button>
             <button
                 @click="handleSave"
-                :disabled="!titleVal"
+                :disabled="form.name === '' || loading"
                 class="px-2 py-1 border-secondry border rounded-md hover:bg-secondary transition-all disabled:opacity-20 disabled:cursor-not-allowed"
             >
                 Save
@@ -120,13 +120,11 @@ const props = defineProps({
 
 const currentTab = ref("leads");
 
-const audienceCopy = _.cloneDeep(props.audience);
-
 const { mutate: createAudience } = useMutation(mutations.audience.create);
 const { mutate: updateAudience } = useMutation(mutations.audience.update);
 
 const form = useGymRevForm({
-    ...audienceCopy,
+    ...props.audience,
 });
 
 const operFn = computed(() => {
@@ -134,12 +132,20 @@ const operFn = computed(() => {
 });
 
 const handleSave = async () => {
+    loading.value = true;
     await operFn.value({
-        ...form,
+        id: form?.id,
+        name: form.title,
+        filters: {
+            lead_type_id: currentTab.value === "leads" ? idsLead.value : [],
+            membership_type_id:
+                currentTab.value === "leads" ? [] : idsMember.value,
+        },
+        entity: "App\\Domain\\EndUsers\\Leads\\Projections\\Lead",
     });
+    loading.value = false;
 };
 
-const titleVal = ref(props?.audience?.title ?? "");
 const loading = ref(false);
 const leadTypes = ref(props.leadTypes);
 const membershipTypes = ref(props.membershipTypes);
@@ -167,6 +173,26 @@ const selectedIds = computed(() => selectedSources.value.map((s) => s.id));
 //         return src;
 //     });
 // };
+
+const idsLead = computed(() => {
+    let ids = [];
+    leadTypes.value.forEach((obj) => {
+        if (obj.selected) {
+            ids.push(obj.id);
+        }
+    });
+    return ids;
+});
+
+const idsMember = computed(() => {
+    let ids = [];
+    membershipTypes.value.forEach((obj) => {
+        if (obj.selected) {
+            ids.push(obj.id);
+        }
+    });
+    return ids;
+});
 
 onMounted(() => {
     let filters = props.audience?.filters;

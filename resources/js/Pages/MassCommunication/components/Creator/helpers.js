@@ -31,7 +31,7 @@ export const ITemplate = {
  */
 export const audienceItemTemplate = (audience = { ...Iaudience }) => {
     return {
-        id: audience?.id || genId(), // only for client side collision prevention - generate id's on back end
+        id: audience?.id || "", // only for client side collision prevention - generate id's on back end
         title: audience?.name || null,
         filters: audience?.filters || [],
         entity:

@@ -41,8 +41,8 @@ export const AUDIENCE_EDIT = gql`
 
 export const audience = {
     create: gql`
-        mutation createAudience($audience: CreateAudienceInput) {
-            audience: createAudience(audience: $audience) {
+        mutation createAudience($input: CreateAudienceInput) {
+            createAudience(input: $input) {
                 id
                 name
                 filters {
@@ -53,8 +53,8 @@ export const audience = {
         }
     `,
     update: gql`
-        mutation updateAudience($audience: UpdateAudienceInput) {
-            updateAudience(audience: $audience) {
+        mutation updateAudience($input: UpdateAudienceInput) {
+            updateAudience(input: $input) {
                 id
                 name
                 filters {
