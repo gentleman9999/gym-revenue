@@ -8,7 +8,7 @@ use App\Domain\Clients\Projections\Client;
 
 abstract class AbstractInstanceCache
 {
-    private static self $instances;
+    private static array $instances = [];
 
     public static function get(Client $client): static
     {

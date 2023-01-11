@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Reactors;
 
-use App\Actions\Sms\Twilio\FireTwilioMsg;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Events\EndUserFileUploaded;
 use App\Domain\Users\Events\EndUserWasEmailedByRep;
-use App\Domain\Users\Events\EndUserWasTextMessagedByRep;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Mail\EndUser\EmailFromRep;
 use App\Models\Utility\AppState;
 
-use function env;
 
 use Illuminate\Support\Facades\Mail;
 
@@ -28,19 +25,6 @@ class EndUserActivityReactor extends BaseEndUserReactor
         $end_user = ($this->getModel())::find($event->aggregateRootUuid());
         if (! AppState::isSimuationMode() && ! $end_user->unsubscribe_comms) {
             Mail::to($end_user->email)->send(new EmailFromRep($event->payload, $event->aggregateRootUuid(), $event->payload['user']));
-        }
-    }
-
-    public function onEndUserWasTextMessagedByRep(EndUserWasTextMessagedByRep $event): void
-    {
-        if (($this->getModel())::class !== $event->getEntity()) {
-            return;
-        }
-        $end_user = ($this->getModel())::find($event->aggregateRootUuid());
-        $msg = $event->payload['message'];
-
-        if (! AppState::isSimuationMode() && ! $end_user->unsubscribe_comms) {
-            FireTwilioMsg::dispatch($end_user->phone, $msg)->onQueue('grp-' . env('APP_ENV') . '-jobs');
         }
     }
 
