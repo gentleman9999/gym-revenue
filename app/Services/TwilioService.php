@@ -36,7 +36,6 @@ class TwilioService extends AbstractInstanceCache
     public readonly ?string      $api_secret;
     public readonly ?string      $conversation_service_sid;
     public readonly ?string      $messenger_id;
-    private static array         $instances = [];
 
     /**
      * Creates Twilio client instance from gateway config.
@@ -49,10 +48,17 @@ class TwilioService extends AbstractInstanceCache
     {
         $settings = $client->getNamedGatewaySettings();
         // Required Fields
-        isset($settings['twilioSID']) || throw new InvalidArgumentException('"twilioSID" is required');
-        isset($settings['twilioToken']) || throw new InvalidArgumentException('"twilioToken" is required');
-        isset($settings['twilioNumber']) || throw new InvalidArgumentException('"twilioNumber" is required');
-
+        if (count($settings) > 0) {
+            isset($settings['twilioSID']) || throw new InvalidArgumentException('"twilioSID" is required');
+            isset($settings['twilioToken']) || throw new InvalidArgumentException('"twilioToken" is required');
+            isset($settings['twilioNumber']) || throw new InvalidArgumentException('"twilioNumber" is required');
+        } else {
+            $settings['twilioSID'] = env('TWILIO_SID');
+            $settings['twilioToken'] = env('TWILIO_TOKEN');
+            $settings['twilioNumber'] = env('TWILIO_NO');
+            $settings['twilioApiKey'] = env('TWILIO_API_KEY');
+            $settings['twilioApiSecret'] = env('TWILIO_API_SECRET');
+        }
         $this->client = $client;
         $this->twilio = new TwilioClient($this->sid = $settings['twilioSID'], $this->token = $settings['twilioToken']);
         $this->number = $settings[ClientGatewaySetting::NAME_TWILIO_NUMBER];

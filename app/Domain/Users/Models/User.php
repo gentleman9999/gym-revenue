@@ -8,12 +8,14 @@ use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
+use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
 use App\Interfaces\PhoneInterface;
 use App\Models\File;
+use App\Models\Position;
 use App\Models\Traits\Sortable;
 use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
@@ -329,7 +331,7 @@ class User extends Authenticatable implements PhoneInterface
 
     public function securityGroup(): ?SecurityGroupEnum
     {
-        $role = $this->role;
+        $role = $this->role();
         if (! $role) {
             return null;
         }

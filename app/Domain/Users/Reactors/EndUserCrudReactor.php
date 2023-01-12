@@ -75,12 +75,9 @@ class EndUserCrudReactor extends BaseEndUserReactor
 
     public function onEndUserWasTextMessagedByRep(EndUserWasTextMessagedByRep $event): void
     {
-        if (($this->getModel())::class !== $event->getEntity()) {
-            return;
-        }
         $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid());
         $misc = $event->payload;
-        FireTwilioMsg::run($end_user->phone, $misc['message']);
+        FireTwilioMsg::run($end_user, $misc['message']);
     }
 
     public function onEndUserWasEmailedByRep(EndUserWasEmailedByRep $event): void
