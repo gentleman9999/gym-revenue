@@ -56,42 +56,4 @@ class AgreementProjector extends Projector
     {
         Agreement::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->fill($event->payload)->save();
     }
-
-    public function onAgreementSigned(AgreementSigned $event): void
-    {
-        $agreement = Agreement::findOrFail($event->aggregateRootUuid());
-        $agreement->signed_at = $event->createdAt();
-
-        //This will only run when user signs the agreement from frontend and not while seeding.
-        if (isset($event->payload['signatureFile'])) {
-            $signature_file_extension = (explode('/', mime_content_type($event->payload['signatureFile']))[1]);
-            $file_path = $agreement->client_id.'/Agreement/'.$agreement->client->name.'-'.$agreement->template->agreement_name.'-'.$agreement->id.'Signature'.$signature_file_extension;
-            Storage::disk('s3')->put($file_path, base64_decode($event->payload['signatureFile']));
-            $agreement->signed_contract = $file_path;
-        }
-        $agreement->writeable()->save();
-
-        /** Find Current EndUser information */
-        $user = User::find($event->payload['user_id']);
-
-        /** Fetching all agreement with category of end user */
-        $agreements = Agreement::with('categoryById')->whereUserId($event->payload['user_id'])->get();
-
-        /** Checking if any agreement is of membership category */
-        $is_membership_agreement = false;
-        foreach ($agreements as $agreement) {
-            if ($agreement->categoryById && $agreement->categoryById['name'] === AgreementCategory::NAME_MEMBERSHIP) {
-                $is_membership_agreement = true;
-            }
-        }
-
-        $active = $event->payload['active'];
-
-        /** Convert user type to customer/member */
-        if ($active) {
-            UpdateUser::run($user, [
-                'user_type' => $is_membership_agreement ? UserTypesEnum::MEMBER : UserTypesEnum::CUSTOMER,
-                ]);
-        }
-    }
 }
