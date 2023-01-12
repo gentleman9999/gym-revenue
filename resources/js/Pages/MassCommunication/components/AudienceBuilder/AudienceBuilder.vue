@@ -74,7 +74,7 @@
             </div>
         </div>
         <div class="flex justify-between max-w-sm w-full mt-6">
-            <button @click="$emit('close')" :disabled="loading">Back</button>
+            <button @click="$emit('cancel')" :disabled="loading">Back</button>
             <button
                 @click="handleSave"
                 :disabled="form.name === '' || loading"
@@ -95,6 +95,8 @@ import { ref, computed, onMounted } from "vue";
 import { useGymRevForm } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { toastInfo, toastError } from "@/utils/createToast";
+
+const emit = defineEmits(["cancel", "update"]);
 
 const props = defineProps({
     audience: {
@@ -127,13 +129,18 @@ const form = useGymRevForm({
     ...props.audience,
 });
 
+const operation = computed(() => {
+    return props.audience.id === "" ? "createAudience" : "updateAudience";
+});
+
 const operFn = computed(() => {
     return props.audience.id === "" ? createAudience : updateAudience;
 });
 
 const handleSave = async () => {
     loading.value = true;
-    await operFn.value({
+
+    let input = {
         id: form?.id,
         name: form.title,
         filters: {
@@ -142,8 +149,26 @@ const handleSave = async () => {
                 currentTab.value === "leads" ? [] : idsMember.value,
         },
         entity: "App\\Domain\\EndUsers\\Leads\\Projections\\Lead",
-    });
+    };
+
+    if (props.audience.id === "") {
+        delete input["id"];
+    }
+
+    try {
+        const { data } = await operFn.value({ input });
+        let result = { ...data[operation.value] };
+        loading.value = false;
+        toastInfo("Audience Saved");
+        emit("update", result);
+    } catch (error) {
+        toastError("Error saving audience");
+        console.log("error:", error);
+        loading.value = false;
+    }
+
     loading.value = false;
+    toastInfo;
 };
 
 const loading = ref(false);

@@ -99,7 +99,6 @@
         :existingId="precampaign?.id"
         :campaignType="campaignType"
         :templates="form.templates"
-        :topol-api-key="topolApiKey"
         :email_templates="emailTemplates"
         :sms_templates="smsTemplates"
         :call_templates="callTemplates"
@@ -123,9 +122,8 @@
         :audience="tempAudience"
         :membership-types="membershipTypes"
         :lead-types="leadTypes"
-        @canceled="cancelEditor"
-        @save="updateAudiences"
-        @updated=""
+        @cancel="cancelEditor"
+        @update="updateAudiences"
     />
 </template>
 
@@ -136,9 +134,6 @@
 </style>
 
 <script setup>
-import * as _ from "lodash";
-import mutations from "@/gql/mutations";
-import { useMutation } from "@vue/apollo-composable";
 import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { toastError } from "@/utils/createToast";
@@ -158,17 +153,12 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    topolApiKey: {
-        type: String,
-        required: true,
-    },
+
     precampaign: {
         type: [Object, null],
         default: null,
     },
 });
-
-const currentAudience = ref();
 
 const emit = defineEmits(["done"]);
 
@@ -268,6 +258,7 @@ const handleAdvancementCheck = () => {
  * replace the existing audience or add it new if it doesn't exist.
  */
 const updateAudiences = (newAudience) => {
+    console.log("got to update", newAudience);
     let fmtAudience = audienceItemTemplate(newAudience);
 
     Inertia.reload({ only: ["audiences"] });
