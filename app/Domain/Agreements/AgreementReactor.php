@@ -15,6 +15,7 @@ use App\Services\Contract\ClientData;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class AgreementReactor extends Reactor implements ShouldQueue
@@ -69,6 +70,19 @@ class AgreementReactor extends Reactor implements ShouldQueue
     protected function updateUserStatus(AgreementSigned|AgreementUpdated $event): void
     {
         $user_type = User::determineUserType($event->payload['user_id']);
+
+        $agreement = Agreement::findOrFail($event->aggregateRootUuid());
+        $agreement->signed_at = $event->createdAt();
+
+        //This will only run when user signs the agreement from frontend and not while seeding.
+        if (isset($event->payload['signatureFile'])) {
+            $signature_file_extension = (explode('/', mime_content_type($event->payload['signatureFile']))[1]);
+            $file_path = $agreement->client_id.'/Agreement/'.$agreement->client->name.'-'.$agreement->template->agreement_name.'-'.$agreement->id.'Signature'.$signature_file_extension;
+            //TODO: FIRE OFF FILE ACTION ANYWHERE WE UPLOAD TO s3
+            Storage::disk('s3')->put($file_path, base64_decode($event->payload['signatureFile']));
+            $agreement->signed_contract = $file_path;
+        }
+        $agreement->writeable()->save();
 
 
         UpdateUser::run(
