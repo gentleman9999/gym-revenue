@@ -4,21 +4,10 @@ namespace App\Domain\Audiences\Actions;
 
 use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
-use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 
-class UpdateAudience
+class UpdateAudience extends GymRevAction
 {
-    use AsAction;
-
-    public function handle(Audience $audience, array $payload): Audience
-    {
-        AudienceAggregate::retrieve($audience->id)->update($payload)->persist();
-
-        return $audience->refresh();
-    }
-
     public function rules(): array
     {
         return [
@@ -27,9 +16,18 @@ class UpdateAudience
         ];
     }
 
-    public function getControllerMiddleware(): array
+    public function handle(Audience $audience, array $data): Audience
     {
-        return [InjectClientId::class];
+        AudienceAggregate::retrieve($audience->id)->update($data)->persist();
+
+        return $audience->refresh();
+    }
+
+    public function mapArgsToHandle($args): array
+    {
+        $audience = $args['input'];
+
+        return [Audience::find($audience['id']), $audience];
     }
 
     public function asController(ActionRequest $request, Audience $audience): Audience

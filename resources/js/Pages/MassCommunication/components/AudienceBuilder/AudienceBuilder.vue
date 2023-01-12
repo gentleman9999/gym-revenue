@@ -168,7 +168,6 @@ const handleSave = async () => {
     }
 
     loading.value = false;
-    toastInfo;
 };
 
 const loading = ref(false);
