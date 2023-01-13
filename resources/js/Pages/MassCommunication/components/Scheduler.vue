@@ -210,6 +210,11 @@ const props = defineProps({
 
 const emit = defineEmits(["back", "update", "done"]);
 
+const operFns = computed(() => {
+    if (props.campaignType === "drip") {
+    }
+});
+
 const currentDayIndex = ref(0);
 const currentEditor = ref("default");
 const loading = ref(false);

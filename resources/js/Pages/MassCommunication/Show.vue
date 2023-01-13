@@ -67,16 +67,14 @@
         v-if="dripV || selectedCampaignType === 'DripCampaign'"
         campaignType="drip"
         @close="handleDone"
-        :topol-api-key="topolApiKey"
-        :precampaign="selectedCampaign"
+        :campaign="selectedCampaign"
         @done="handleDone"
     />
     <CampaignBuilder
         v-if="scheduleV || selectedCampaignType === 'ScheduledCampaign'"
         campaignType="scheduled"
         @close="handleDone"
-        :topol-api-key="topolApiKey"
-        :precampaign="selectedCampaign"
+        :campaign="selectedCampaign"
         @done="handleDone"
     />
 </template>
@@ -97,10 +95,6 @@ import {
 } from "@/Pages/MassCommunication/components/Creator/helpers";
 
 const props = defineProps({
-    topolApiKey: {
-        type: String,
-        required: true,
-    },
     campaigns: {
         type: Array,
         required: true,

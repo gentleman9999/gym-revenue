@@ -6,13 +6,6 @@ export const AUDIENCES = gql`
             data {
                 id
                 name
-                filters {
-                    lead_type_id
-                    membership_type_id
-                }
-                editable
-                created_at
-                updated_at
             }
             paginatorInfo {
                 currentPage
@@ -31,7 +24,10 @@ export const AUDIENCE_EDIT = gql`
         audience(id: $id) {
             id
             name
-            filters
+            filters {
+                lead_type_id
+                membership_type_id
+            }
             created_at
             updated_at
             editable

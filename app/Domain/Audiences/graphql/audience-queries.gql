@@ -2,7 +2,7 @@ extend type Query {
     audiences(
         filter: Filter @scope
         orderBy: [OrderByClause!] @orderBy
-    ): [Audience!]! @paginate(defaultCount: 10)
+    ): [Audience!]! @paginate(defaultCount: 50)
 }
 
 extend type Query {

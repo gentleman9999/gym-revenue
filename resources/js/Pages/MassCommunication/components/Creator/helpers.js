@@ -32,7 +32,7 @@ export const ITemplate = {
 export const audienceItemTemplate = (audience = { ...Iaudience }) => {
     return {
         id: audience?.id || "", // only for client side collision prevention - generate id's on back end
-        title: audience?.name || null,
+        title: audience?.name || "",
         filters: audience?.filters || [],
         entity:
             audience?.entity ||

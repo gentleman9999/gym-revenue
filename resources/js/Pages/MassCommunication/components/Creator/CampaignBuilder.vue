@@ -33,13 +33,7 @@
                     id="journey-name"
                 />
 
-                <div class="flex justify-between py-2 mt-4">
-                    <label class="text-black font-bold" for="journey-audience">
-                        Audience
-                    </label>
-                    <span class="text-black opacity-50">Required</span>
-                </div>
-                <select
+                <!-- <select
                     v-model="form.audience"
                     id="journey-audience"
                     class="bg-base-content text-black p-2 rounded-none border border-black w-full mb-4"
@@ -55,8 +49,23 @@
                     >
                         {{ audience.title }}
                     </option>
-                </select>
-
+                </select> -->
+                <AudienceSelect
+                    v-model="form.audience"
+                    @update:modelValue="audienceForProp"
+                >
+                    <template #label>
+                        <div class="flex justify-between py-2 mt-4">
+                            <label
+                                class="text-black font-bold"
+                                for="journey-audience"
+                            >
+                                Audience
+                            </label>
+                            <span class="text-black opacity-50">Required</span>
+                        </div>
+                    </template>
+                </AudienceSelect>
                 <button
                     @click="createAudience"
                     class="border border-secondary bg-secondary px-2 py-1 rounded-md hover:bg-base-content hover:text-secondary transition-all"
@@ -93,11 +102,11 @@
 
     <Scheduler
         v-if="currentStep === 'scheduler'"
-        :isNew="precampaign === null"
+        :isNew="campaign === null"
         :form="form"
         :name="form.name"
-        :existingId="precampaign?.id"
-        :campaignType="campaignType"
+        :existingId="campaign?.id"
+        :campaignType="type"
         :templates="form.templates"
         :email_templates="emailTemplates"
         :sms_templates="smsTemplates"
@@ -116,15 +125,16 @@
         @done="handleDone"
     />
 
-    <AudienceBuilder
-        v-if="currentStep === 'audience-builder'"
-        :endpoint="routeEndpoint"
-        :audience="tempAudience"
-        :membership-types="membershipTypes"
-        :lead-types="leadTypes"
-        @cancel="cancelEditor"
-        @update="updateAudiences"
-    />
+    <template v-if="currentStep === 'audience-builder'">
+        <AudienceBuilder
+            :audience="tempAudience"
+            :audience_id="form.audience"
+            :membership-types="membershipTypes"
+            :lead-types="leadTypes"
+            @cancel="cancelEditor"
+            @update="updateAudiences"
+        />
+    </template>
 </template>
 
 <style scoped>
@@ -146,15 +156,15 @@ import {
 } from "./helpers";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import AudienceBuilder from "../AudienceBuilder/AudienceBuilder.vue";
+import AudienceSelect from "../AudienceBuilder/AudienceSelect.vue";
 import Scheduler from "../Scheduler.vue";
 
 const props = defineProps({
-    campaignType: {
+    type: {
         type: String,
-        required: true,
+        default: "scheduled",
     },
-
-    precampaign: {
+    campaign: {
         type: [Object, null],
         default: null,
     },
@@ -182,17 +192,19 @@ const defaultTemplatesScheduled = [
     },
 ];
 
+const audienceForProp = (val) => {
+    console.log("audience selection changed", val);
+};
+
 const form = ref({
-    name: props?.precampaign?.name ? props.precampaign.name : null,
-    audience: props?.precampaign?.audience_id
-        ? props.precampaign.audience_id
-        : null,
+    name: props?.campaign?.name ? props.campaign.name : null,
+    audience: props?.campaign?.audience_id ? props.campaign.audience_id : null,
     templates:
-        props.campaignType === "drip"
-            ? props?.precampaign?.days?.map((d) => transformDayTemplate(d)) ||
+        props.type === "drip"
+            ? props?.campaign?.days?.map((d) => transformDayTemplate(d)) ||
               defaultTemplatesDrip
-            : props?.precampaign
-            ? [transformDayTemplate(props.precampaign)]
+            : props?.campaign
+            ? [transformDayTemplate(props.campaign)]
             : defaultTemplatesScheduled,
 });
 
@@ -230,14 +242,6 @@ const advancementDisabled = computed(() => {
     return false;
 });
 
-/** audience endpoints to update an existing or create a new one if necessary */
-const routeEndpoint = computed(() => {
-    return propAudiences.value.filter((a) => a?.id === tempAudience.value.id)
-        .length > 0
-        ? "mass-comms.audiences.update"
-        : "mass-comms.audiences.create";
-});
-
 const selectedAudience = computed(() => {
     return propAudiences.value.filter((v) => v?.id === form.value.audience)[0];
 });
@@ -273,11 +277,13 @@ const updateAudiences = (newAudience) => {
  * if it isn't saved we can simply destroy it or add it to the existing audiences if it is.
  */
 const createAudience = () => {
-    tempAudience.value = audienceItemTemplate({
-        title: "New Audience",
+    tempAudience.value = {
+        id: "",
+        title: "",
         filters: [],
-    });
+    };
 
+    form.value.audience = "";
     currentStep.value = "audience-builder";
 };
 
