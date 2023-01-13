@@ -498,7 +498,6 @@
             <daisy-modal
                 ref="fileManagerModal"
                 class="lg:max-w-5xl bg-base-300"
-                @close="resetFileManager"
             >
                 <file-manager
                     ref="fileManager"
