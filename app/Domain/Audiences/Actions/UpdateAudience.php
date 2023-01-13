@@ -2,6 +2,7 @@
 
 namespace App\Domain\Audiences\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
 use Lorisleiva\Actions\ActionRequest;

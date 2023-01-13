@@ -1,12 +1,14 @@
 input CreateAudienceInput {
     name: String
     filters: AudienceFiltersInput
+    entity: String
 }
 
 input UpdateAudienceInput {
     id: ID
     name: String
     filters: AudienceFiltersInput
+    entity: String
 }
 
 input AudienceFiltersInput {
