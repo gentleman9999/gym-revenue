@@ -91,7 +91,6 @@
         :email_templates="emailTemplates"
         :sms_templates="smsTemplates"
         :call_templates="callTemplates"
-        :temp_audiences="propAudiences"
         @back="
             () => {
                 currentStep = 'audience-picker';
@@ -128,7 +127,6 @@ import { usePage } from "@inertiajs/inertia-vue3";
 import { toastError } from "@/utils/createToast";
 import { Inertia } from "@inertiajs/inertia";
 import {
-    audienceItemTemplate,
     transformAudience,
     transformDayTemplate,
     transformSource,
@@ -146,6 +144,10 @@ const props = defineProps({
     campaign: {
         type: [Object, null],
         default: null,
+    },
+    campaign_id: {
+        type: String,
+        default: "",
     },
 });
 
@@ -181,7 +183,7 @@ const form = ref({
     templates:
         props.type === "drip"
             ? props?.campaign?.days?.map((d) => transformDayTemplate(d)) ||
-              defaultTemplatesDrip
+              defaultTemplatesScheduled
             : props?.campaign
             ? [transformDayTemplate(props.campaign)]
             : defaultTemplatesScheduled,

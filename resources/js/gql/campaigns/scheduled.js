@@ -9,7 +9,9 @@ export const SCHEDULEDCAMPAIGNS = gql`
                 audience_id
                 send_at
                 completed_at
-                status
+                status {
+                    value
+                }
             }
             paginatorInfo {
                 currentPage

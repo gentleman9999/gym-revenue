@@ -136,6 +136,7 @@
                     :options="validStateSelections"
                     :classes="getDefaultMultiselectTWClasses()"
                 />
+
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
             <div class="col-span-3 md:col-span-2">

@@ -202,10 +202,6 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    temp_audiences: {
-        type: Array,
-        default: [],
-    },
 });
 
 const emit = defineEmits(["back", "update", "done"]);

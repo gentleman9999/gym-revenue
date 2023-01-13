@@ -13,24 +13,30 @@
             <h1 class="text-2xl">Mass Comms Dashboard</h1>
             <div class="flex gap-2">
                 <button
-                    @click="
-                        Inertia.get(route('mass-comms.dashboard', 'scheduled'))
-                    "
+                    @click="handleClickTabSchedule"
                     class="btn btn-outline btn-secondary border-secondary btn-sm !text-base-content !normal-case"
-                    :class="{ '!btn-active': type === 'ScheduledCampaign' }"
+                    :class="{ '!btn-active': selectedTab === 'scheduled' }"
                 >
                     Scheduled Campaigns
                 </button>
                 <button
-                    @click="Inertia.get(route('mass-comms.dashboard', 'drip'))"
+                    @click="handleClickTabDrip"
                     class="btn btn-outline btn-secondary btn-sm !text-base-content !normal-case"
-                    :class="{ '!btn-active': type === 'DripCampaign' }"
+                    :class="{ '!btn-active': selectedTab === 'drip' }"
                 >
                     Drip Campaigns
                 </button>
             </div>
         </div>
-        <div class="flex flex-col">
+
+        <CampaignListDisplay
+            v-if="selectedTab === 'scheduled'"
+            type="scheduled"
+        />
+
+        <CampaignListDisplay v-if="selectedTab === 'drip'" type="drip" />
+
+        <!-- <div class="flex flex-col">
             <div class="campaign-wrapper">
                 <div class="campaign-title">Future Campaigns</div>
                 <div class="campaign-body flex-col">
@@ -61,102 +67,98 @@
             <div class="text-secondary text-lg pt-6 pl-6 cursor-pointer">
                 Load all activity
             </div>
-        </div>
+        </div> -->
     </jet-bar-container>
+
     <CampaignBuilder
-        v-if="dripV || selectedCampaignType === 'DripCampaign'"
+        v-if="isEditingDrip"
         type="drip"
-        @close="handleDone"
-        :campaign="selectedCampaign"
+        @close="resetEditors"
+        :campaign_id="selectedCampaignId"
     />
     <CampaignBuilder
-        v-if="scheduleV || selectedCampaignType === 'ScheduledCampaign'"
+        v-if="isEditingScheduled"
         type="scheduled"
-        @close="handleDone"
-        :campaign="selectedCampaign"
+        @close="resetEditors"
+        :campaign_id="selectedCampaignId"
     />
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
+
 import ToolBar from "./components/ToolBar.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import CampaignList from "./components/CampaignList/CampaignList.vue";
-import RecentCampaign from "./components/RecentCampaign/RecentCampaign.vue";
 import CampaignBuilder from "./components/Creator/CampaignBuilder.vue";
-import {
-    CURRENT_CAMPAIGNS,
-    FUTURE_CAMPAIGNS,
-    ALL_CAMPAIGNS,
-} from "@/Pages/MassCommunication/components/Creator/helpers";
+import CampaignListDisplay from "./Partials/CampaignListDisplay.vue";
 
 const props = defineProps({
-    campaigns: {
-        type: Array,
-        required: true,
-    },
     type: {
         type: String,
-        required: true,
+        default: "scheduled",
     },
 });
 
+/**
+ * Campaign type display & handling
+ */
+// const selectedTab = ref(props.type); // @TODO figure out how to tie the URL to this
 const selectedTab = ref("scheduled");
 
-const dripV = ref(false);
-const scheduleV = ref(false);
-
-const toggleDripBuilder = () => (dripV.value = !dripV.value);
-const toggleScheduleBuilder = () => (scheduleV.value = !scheduleV.value);
-
-const selectedCampaign = ref(null);
-const selectedCampaignType = ref(null);
-const openCampaign = async ({ type, campaign }) => {
-    console.log({ type, campaign });
-    if (type === "ScheduledCampaign") {
-        const response = await axios.get(
-            route("mass-comms.scheduled-campaigns.get", campaign.id)
-        );
-        selectedCampaign.value = response.data;
-    }
-    if (type === "DripCampaign") {
-        const response = await axios.get(
-            route("mass-comms.drip-campaigns.get", campaign.id)
-        );
-        selectedCampaign.value = response.data;
-    }
-    selectedCampaignType.value = type;
+const handleClickTabSchedule = () => {
+    if (selectedTab.value === "scheduled") return;
+    selectedTab.value = "scheduled";
 };
-const handleDone = () => {
-    selectedCampaign.value = null;
-    selectedCampaignType.value = null;
-    dripV.value = false;
-    scheduleV.value = false;
-    Inertia.reload();
+
+const handleClickTabDrip = () => {
+    if (selectedTab.value === "drip") return;
+    selectedTab.value = "drip";
 };
+
+/**
+ * Campaign creation/updating handling
+ */
+const isEditingDrip = ref(false);
+const isEditingScheduled = ref(false);
+
+const toggleDripBuilder = () => (isEditingDrip.value = !isEditingDrip.value);
+const toggleScheduleBuilder = () =>
+    (isEditingScheduled.value = !isEditingScheduled.value);
+
+const selectedCampaignId = ref("");
+
+const resetEditors = () => {
+    isEditingDrip.value = false;
+    isEditingScheduled.value = false;
+    selectedCampaignId.value = "";
+};
+
+/**
+ * We pass the id to the campaign builder and it queries more detailed info about the campaign
+ * the toolbar can open whichever one it wants and will always be a new campaign
+ */
+const handleOpenCampaignEditor = (id) => {
+    selectedCampaignId.value = id;
+    if (selectedTab.value === "drip") return toggleDripBuilder();
+    return toggleScheduleBuilder();
+};
+
+// const openCampaign = async ({ type, campaign }) => {
+// console.log({ type, campaign });
+// if (type === "ScheduledCampaign") {
+//     const response = await axios.get(
+//         route("mass-comms.scheduled-campaigns.get", campaign.id)
+//     );
+//     selectedCampaign.value = response.data;
+// }
+// if (type === "DripCampaign") {
+//     const response = await axios.get(
+//         route("mass-comms.drip-campaigns.get", campaign.id)
+//     );
+//     selectedCampaign.value = response.data;
+// }
+// selectedCampaignType.value = type;
+// };
 </script>
-
-<style scoped>
-.campaign-wrapper {
-    @apply flex flex-col pt-12;
-}
-.campaign-title {
-    @apply pb-4 text-xl font-bold text-base-content;
-}
-
-.campaign-body {
-    @apply flex border border-secondary rounded p-4 bg-neutral;
-}
-
-main {
-    @apply !p-0;
-}
-</style>
-
-<style>
-.absolutely-hide {
-    @apply !hidden;
-}
-</style>

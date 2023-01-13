@@ -7,13 +7,8 @@ export const DRIPCAMPAIGNS = gql`
                 id
                 name
                 audience_id
-                days {
-                    id
-                    drip_campaign_id
-                    day_of_campaign
-                    email_template_id
-                    sms_template_id
-                    call_template_id
+                status {
+                    value
                 }
             }
             paginatorInfo {
@@ -37,7 +32,9 @@ export const DRIPCAMPAIGN_EDIT = gql`
             start_at
             end_at
             completed_at
-            status
+            status {
+                value
+            }
             created_at
             updated_at
             deleted_at
@@ -50,7 +47,7 @@ export const DRIPCAMPAIGN_EDIT = gql`
                 call_template_id
             }
         }
-        audiences: audiences(first: 100) {
+        audiences(first: 100) {
             data {
                 id
                 name
@@ -61,7 +58,7 @@ export const DRIPCAMPAIGN_EDIT = gql`
 
 export const DRIPCAMPAIGN_CREATE = gql`
     query DripCampaign {
-        audiences: audiences(first: 100) {
+        audiences(first: 100) {
             data {
                 id
                 name
