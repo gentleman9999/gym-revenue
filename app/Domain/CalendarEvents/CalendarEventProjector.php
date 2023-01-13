@@ -10,7 +10,9 @@ use App\Domain\CalendarEvents\Events\CalendarEventRestored;
 use App\Domain\CalendarEvents\Events\CalendarEventTrashed;
 use App\Domain\CalendarEvents\Events\CalendarEventUpdated;
 use App\Domain\CalendarEventTypes\CalendarEventType;
+use App\Domain\Notifications\Actions\CreateNotification;
 use App\Domain\Reminders\Reminder;
+use App\Domain\Users\Models\User;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class CalendarEventProjector extends Projector
@@ -57,6 +59,18 @@ class CalendarEventProjector extends Projector
 
     public function onCalendarEventNotified(CalendarEventNotified $event): void
     {
+        CreateNotification::run([
+            'user_id' => $event->payload['owner_id'],
+            'state' => 'warning',
+            'text' => "Task ".$event->payload['title']." Overdue!",
+            'entity_type' => CalendarEvent::class,
+            'entity_id' => $event->payload['id'],
+            'entity' => ['start' => $event->payload['start'], 'title' => 'Task '.$event->payload['title'].' Overdue', 'type' => 'TASK_OVERDUE'],
+            'type' => 'TASK_OVERDUE',
+            'misc' => [
+                'remind_time' => 1,
+            ],
+        ], User::find($event->payload['owner_id']));
         CalendarEvent::findOrFail($event->aggregateRootUuid())->writeable()->updateOrFail([
             'overdue_reminder_sent' => true,
         ]);

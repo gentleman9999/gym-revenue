@@ -6,11 +6,11 @@ namespace App\Domain\Agreements\Actions;
 
 use App\Domain\Agreements\AgreementAggregate;
 use App\Domain\Agreements\Projections\Agreement;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
+use App\Models\File;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Prologue\Alerts\Facades\Alert;
 
 class SignAgreement
 {
@@ -19,26 +19,39 @@ class SignAgreement
     public function rules(): array
     {
         return [
-            'id' => ['required','string'],
+            'pdfUrl' => ['string','sometimes'],
+            'signatureFile' => ['string','sometimes'],
+            'fileName' => ['string','sometimes'],
+            'active' => ['bool','sometimes'],
+            'user_id' => ['integer','sometimes'],
         ];
     }
 
-    public function handle(array $agreement): Agreement
+    public function handle(array $params, string $agreement_id): string
     {
-        AgreementAggregate::retrieve($agreement['id'])->sign($agreement)->persist();
+        $url = '';
+        AgreementAggregate::retrieve($agreement_id)->sign($params)->persist();
 
-        return Agreement::findOrFail($agreement['id']);
+        $file = File::whereFileableId($agreement_id)->whereType('signed')->first();
+        if ($file) {
+            $url = Storage::disk('s3')->temporaryUrl($file->key, now()->addMinutes(10));
+        }
+
+        return $url;
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request, string $agreement_id): string
     {
-        $this->handle($request->validated());
+        $params = $request->validated();
+        $agreement = Agreement::find($agreement_id);
+        $params['user_id'] = $agreement->user->id;
+        $params['active'] = $agreement->active;
+
+        return $this->handle($params, $agreement_id);
     }
 
-    public function htmlResponse(): RedirectResponse
+    public function jsonResponse(String $url): jsonResponse
     {
-        Alert::success("Agreement is signed successfully")->flash();
-
-        return Redirect::back();
+        return new JsonResponse(['url' => $url]);
     }
 }

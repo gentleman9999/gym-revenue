@@ -43,7 +43,7 @@ use Silber\Bouncer\Database\Role;
 /**
  * @property string $phone
  * @property string $client_id
- * @property int $id
+ * @property string $id
  * @property string $last_name
  * @property string $first_name
  * @property string $name       Full name
