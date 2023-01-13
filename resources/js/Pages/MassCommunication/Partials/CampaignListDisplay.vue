@@ -1,5 +1,5 @@
 <template>
-    <template v-if="isLoading">
+    <template v-if="(isLoading || modelLoading) && !result">
         <daisy-modal :closable="false" :open="true" :showCloseButton="false">
             <Spinner />
         </daisy-modal>
@@ -8,22 +8,22 @@
     <template v-else-if="!isLoading && !!resources">
         <div class="flex flex-col">
             <div class="campaign-wrapper">
-                <div class="campaign-title">Future Campaigns</div>
+                <div class="campaign-title">{{ currentFilters.listOne }}</div>
                 <div class="campaign-body flex-col">
                     <campaign-list
                         :campaigns="formatForStatus(resources.data)"
                         :type="type"
-                        :filter="FUTURE_CAMPAIGNS"
+                        :filter="currentFilters.listOne"
                         @open-campaign="openCampaign"
                     />
                 </div>
             </div>
             <div class="campaign-wrapper">
-                <div class="campaign-title">Current Campaigns</div>
+                <div class="campaign-title">{{ currentFilters.listTwo }}</div>
                 <div class="campaign-body flex-col">
                     <campaign-list
                         :campaigns="formatForStatus(resources.data)"
-                        :filter="CURRENT_CAMPAIGNS"
+                        :filter="currentFilters.listTwo"
                         :type="type"
                     />
                 </div>
@@ -49,11 +49,9 @@ import CampaignList from "../components/CampaignList/CampaignList.vue";
 import RecentCampaign from "../components/RecentCampaign/RecentCampaign.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import Spinner from "@/Components/Spinner.vue";
-import {
-    CURRENT_CAMPAIGNS,
-    FUTURE_CAMPAIGNS,
-    ALL_CAMPAIGNS,
-} from "@/Pages/MassCommunication/components/Creator/helpers";
+import { FILTER } from "@/Pages/MassCommunication/components/Creator/helpers";
+
+const emit = defineEmits(["edit", "reload"]);
 
 const props = defineProps({
     type: {
@@ -93,8 +91,11 @@ const formatForStatus = (data) => {
     }));
 };
 
-// loading
 const isLoading = ref(true);
+const currentFilters = ref({
+    listOne: FILTER["CURRENT"],
+    listTwo: FILTER["DRAFT"],
+});
 
 watch(modelLoading, (nv, ov) => {
     console.log("resources:", resources);
@@ -109,7 +110,7 @@ watch(modelLoading, (nv, ov) => {
     @apply flex flex-col pt-12;
 }
 .campaign-title {
-    @apply pb-4 text-xl font-bold text-base-content;
+    @apply pb-4 text-xl font-bold text-base-content capitalize;
 }
 
 .campaign-body {

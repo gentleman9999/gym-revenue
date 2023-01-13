@@ -171,6 +171,14 @@ export const ALL_CAMPAIGNS = "all campaigns";
 export const FUTURE_CAMPAIGNS = "future campaigns";
 export const COMPLETED_CAMPAIGNS = "completed campaigns";
 
+export const FILTER = {
+    CURRENT: CURRENT_CAMPAIGNS,
+    DRAFT: DRAFT_CAMPAIGNS,
+    ALL: ALL_CAMPAIGNS,
+    FUTURE: FUTURE_CAMPAIGNS,
+    COMPLETE: COMPLETED_CAMPAIGNS,
+};
+
 export const CAMPAIGN_FILTERS = [
     ALL_CAMPAIGNS,
     COMPLETED_CAMPAIGNS,
