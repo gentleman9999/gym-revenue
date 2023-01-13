@@ -65,17 +65,15 @@
     </jet-bar-container>
     <CampaignBuilder
         v-if="dripV || selectedCampaignType === 'DripCampaign'"
-        campaignType="drip"
+        type="drip"
         @close="handleDone"
         :campaign="selectedCampaign"
-        @done="handleDone"
     />
     <CampaignBuilder
         v-if="scheduleV || selectedCampaignType === 'ScheduledCampaign'"
-        campaignType="scheduled"
+        type="scheduled"
         @close="handleDone"
         :campaign="selectedCampaign"
-        @done="handleDone"
     />
 </template>
 

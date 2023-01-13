@@ -33,17 +33,15 @@
 
         <CampaignBuilder
             v-if="dripV || selectedCampaignType === 'DripCampaign'"
-            campaignType="drip"
+            type="drip"
             @close="handleDone"
             :campaign="selectedCampaign"
-            @done="handleDone"
         />
         <CampaignBuilder
             v-if="scheduleV || selectedCampaignType === 'ScheduledCampaign'"
-            campaignType="scheduled"
+            type="scheduled"
             @close="handleDone"
             :campaign="selectedCampaign"
-            @done="handleDone"
         />
         <div
             class="grid grid-rows-1 grid-cols-1 md:grid-rows-2 lg:grid-rows-1 lg:grid-cols-3 md:grid-flow-col gap-8 py-8"

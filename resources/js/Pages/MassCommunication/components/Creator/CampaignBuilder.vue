@@ -33,27 +33,7 @@
                     id="journey-name"
                 />
 
-                <!-- <select
-                    v-model="form.audience"
-                    id="journey-audience"
-                    class="bg-base-content text-black p-2 rounded-none border border-black w-full mb-4"
-                >
-                    <option :disabled="true" :value="null" :selected="true">
-                        Select an Audience
-                    </option>
-                    <option
-                        v-for="audience in propAudiences"
-                        :disabled="audience.title === 'Select an Audience'"
-                        :value="audience.id"
-                        :selected="audience.id === form.audience"
-                    >
-                        {{ audience.title }}
-                    </option>
-                </select> -->
-                <AudienceSelect
-                    v-model="form.audience"
-                    @update:modelValue="audienceForProp"
-                >
+                <AudienceSelect v-model="form.audience">
                     <template #label>
                         <div class="flex justify-between py-2 mt-4">
                             <label
@@ -127,7 +107,6 @@
 
     <template v-if="currentStep === 'audience-builder'">
         <AudienceBuilder
-            :audience="tempAudience"
             :audience_id="form.audience"
             :membership-types="membershipTypes"
             :lead-types="leadTypes"
@@ -170,7 +149,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["done"]);
+const emit = defineEmits(["close"]);
 
 const defaultTemplatesDrip = [
     {
@@ -262,12 +241,7 @@ const handleAdvancementCheck = () => {
  * replace the existing audience or add it new if it doesn't exist.
  */
 const updateAudiences = (newAudience) => {
-    console.log("got to update", newAudience);
-    let fmtAudience = audienceItemTemplate(newAudience);
-
-    Inertia.reload({ only: ["audiences"] });
-
-    form.value.audience = fmtAudience?.id;
+    form.value.audience = newAudience?.id;
     tempAudience.value = null;
     currentStep.value = "audience-picker";
 };
@@ -302,6 +276,6 @@ const cancelEditor = () => {
 };
 
 const handleDone = () => {
-    emit("done");
+    emit("close");
 };
 </script>

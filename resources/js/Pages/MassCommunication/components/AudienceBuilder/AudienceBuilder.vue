@@ -101,7 +101,7 @@
                 </button>
                 <button
                     @click="handleSave"
-                    :disabled="form.name === '' || loading"
+                    :disabled="titleField === ''"
                     class="px-2 py-1 border-secondry border rounded-md hover:bg-secondary transition-all disabled:opacity-20 disabled:cursor-not-allowed"
                 >
                     Save
@@ -118,7 +118,6 @@ import * as _ from "lodash";
 import { ref, computed, onMounted, watch } from "vue";
 import mutations from "@/gql/mutations";
 import { useMutation, useQuery } from "@vue/apollo-composable";
-import { useGymRevForm } from "@/utils";
 import { toastInfo, toastError } from "@/utils/createToast";
 import queries from "@/gql/queries";
 
@@ -128,25 +127,10 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 const emit = defineEmits(["cancel", "update"]);
 
 const props = defineProps({
-    audience: {
-        type: Object,
-        default: {
-            id: "",
-            name: "",
-            filters: {
-                membership_type_id: [],
-                lead_type_id: [],
-            },
-        },
-    },
     audience_id: {
         type: String,
         default: "",
     },
-    // id: {
-    //     type: String,
-    //     default: ""
-    // },
     membershipTypes: {
         type: Array,
         required: true,
@@ -167,33 +151,17 @@ const {
 });
 
 watch(modelLoading, (nv, ov) => {
-    console.log("isLoadingNow updated from", ov, "to", nv);
-    if (!modelLoading) {
-        form.name = audienceData.name;
-        form.id = audienceData.id;
-        form.filters = audienceData.filters;
-    }
-    let leadLen = audienceData?.value?.filters?.lead_type_id;
-    let memLen = audienceData?.value?.filters?.membership_type_id;
-
-    console.log("lead", leadLen);
-    console.log("mem", memLen);
-
-    if (!leadLen && !!memLen) {
-        currentTab.value = "members";
-    }
-
-    if (memLen?.length > leadLen?.length) {
+    if (!!audienceData?.value?.filters?.membership_type_id?.length > 0) {
         currentTab.value = "members";
     }
 
     setupTypes();
-    titleField.value = audienceData?.value?.name;
     loading.value = false;
 });
 
 const loading = ref(true);
 const currentTab = ref("leads");
+const titleField = ref("");
 
 const audienceData = computed(() => {
     return result.value?.audience;
@@ -202,19 +170,12 @@ const audienceData = computed(() => {
 const { mutate: createAudience } = useMutation(mutations.audience.create);
 const { mutate: updateAudience } = useMutation(mutations.audience.update);
 
-// const { result, loading, error, refetch } = useQuery()
-const titleField = ref("");
-
-const form = useGymRevForm({
-    ...audienceData.value,
-});
-
 const operation = computed(() => {
-    return props.audience.id === "" ? "createAudience" : "updateAudience";
+    return props.audience_id === "" ? "createAudience" : "updateAudience";
 });
 
 const operFn = computed(() => {
-    return props.audience.id === "" ? createAudience : updateAudience;
+    return props.audience_id === "" ? createAudience : updateAudience;
 });
 
 const handleSave = async () => {
@@ -231,7 +192,7 @@ const handleSave = async () => {
         entity: "App\\Domain\\EndUsers\\Leads\\Projections\\Lead",
     };
 
-    if (props.audience.id === "") {
+    if (props.audience_id === "") {
         delete input["id"];
     }
 
@@ -260,17 +221,7 @@ const selectedSources = computed(() =>
     allSources.value.filter((s) => s.selected)
 );
 const selectedIds = computed(() => selectedSources.value.map((s) => s.id));
-/**
- * check for invalid data and return an informative message
- * to the user to fix it before saving
- */
-// const saveDisabled = computed(() => {
-//     if (titleVal.value === "New Audience" || titleVal.value.trim() === "")
-//         return "You must name your audience.";
-//     if (selectedIds.value.length === 0)
-//         return "You must select at least one filter.";
-//     return false;
-// });
+
 const clearSelected = () => {
     return allSources.value.forEach((src) => {
         src.selected = false;
@@ -316,26 +267,17 @@ const setupTypes = () => {
 
     if (filters?.lead_type_id instanceof Array) {
         leadTypes.value = leadTypes.value.map((s) => {
+            s.id = `${s.id}`;
             return filters?.lead_type_id?.includes(s.id)
                 ? { ...s, selected: true }
                 : s;
         });
     }
+
+    titleField.value = audienceData?.value?.name;
 };
 
 onMounted(() => {
     refetch();
-    // let filters = props.audience?.filters;
-    // if (!filters) return;
-    // membershipTypes.value = membershipTypes.value.map((s) => {
-    //     return filters?.membership_type_id?.includes(s.id)
-    //         ? { ...s, selected: true }
-    //         : s;
-    // });
-    // leadTypes.value = leadTypes.value.map((s) => {
-    //     return filters?.lead_type_id?.includes(s.id)
-    //         ? { ...s, selected: true }
-    //         : s;
-    // });
 });
 </script>
