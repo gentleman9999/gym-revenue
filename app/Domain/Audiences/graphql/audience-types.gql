@@ -1,6 +1,5 @@
 type Audience {
     id: ID
-    client_id: ID
     entity: String
     name: String
     filters: AudienceTargets
@@ -17,7 +16,6 @@ type AudienceTargets {
 
 type Target {
     id: ID
-    client_id: ID
     name: String
     created_at: DateTime
     deleted_at: DateTime

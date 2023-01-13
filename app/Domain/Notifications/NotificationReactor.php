@@ -15,7 +15,7 @@ class NotificationReactor extends Reactor implements ShouldQueue
     public function onNotificationCreated(NotificationCreated $event): void
     {
         /** @var User $user */
-        $user = User::with('contact_preference')->findOrFail($event->aggregateRootUuid());
+        $user = User::findOrFail($event->aggregateRootUuid());
         $user->notify(new GymRevNotification($user->id, $event->payload));
     }
 }

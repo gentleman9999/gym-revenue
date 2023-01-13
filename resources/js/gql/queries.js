@@ -24,6 +24,7 @@ const USER_PREVIEW = gql`
             id
             first_name
             last_name
+            gender
             name
             email
             phone
@@ -43,11 +44,10 @@ const USER_EDIT = gql`
         isClientUser(id: $id)
         user(id: $id) {
             id
+            email
             first_name
             last_name
-            contact_preference {
-                value
-            }
+            contact_preference
             alternate_email
             address1
             address2
@@ -1175,10 +1175,7 @@ const PROFILE_QUERY = gql`
                 city
                 state
                 zip
-                contact_preference {
-                    id
-                    value
-                }
+                contact_preference
             }
         }
     }

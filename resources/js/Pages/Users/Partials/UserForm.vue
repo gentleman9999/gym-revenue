@@ -128,8 +128,8 @@
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
-                    :options="optionStates"
-                    :classes="multiselectClasses"
+                    :options="optionsStates"
+                    :classes="getDefaultMultiselectTWClasses()"
                 />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
@@ -459,7 +459,7 @@
                 :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
@@ -482,8 +482,8 @@
                                     :href="file.url"
                                     :download="file.filename"
                                     target="_blank"
-                                    >{{ file.filename }}</a
-                                >
+                                    >
+                                    {{ file.filename }}</a>
                             </div>
                             <button
                                 type="button"
@@ -607,13 +607,12 @@ if (user) {
         user.role_id = user["role_id"];
     }
     user.gender = user["gender"];
-    user.contact_preference = user["contact_preference"]?.value;
+    user.contact_preference = user?.contact_preference?.value;
     user.team_id = team_id;
     user.notes = { title: "", note: "" };
-    user.ec_first_name = user["emergency_contact"]["ec_first_name"];
-    user.ec_last_name;
-    user["emergency_contact"]["ec_last_name"];
-    user.ec_phone = user["emergency_contact"]["ec_phone"];
+    user.ec_first_name = user?.emergency_contact?.ec_first_name;
+    user.ec_last_name = user?.emergency_contact?.ec_last_name;
+    user.ec_phone = user?.emergency_contact?.ec_phone;
 } else {
     user = {
         first_name: "",

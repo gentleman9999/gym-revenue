@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
+use App\Enums\UserGenderEnum;
 use App\Enums\UserTypesEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -46,6 +46,7 @@ class UserFactory extends Factory
             'email' => "{$first_name}.{$last_name}@{$this->faker->freeEmailDomain}",
             'phone' => $phone,
             'user_type' => UserTypesEnum::EMPLOYEE,
+            'gender' => $this->faker->randomElement((collect(UserGenderEnum::cases()))->map(fn ($e) => $e->name)),
         ];
     }
 

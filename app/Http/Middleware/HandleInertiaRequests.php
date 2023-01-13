@@ -79,6 +79,7 @@ class HandleInertiaRequests extends Middleware
                 'user.has_api_token' => (! is_null($user->access_token)),
                 'app_state.is_simulation_mode' => AppState::isSimuationMode(),
                 'client_services' => $client->services ?? null,
+//                TODO: Query this from the CRUD when it is being initialized
                 'user.column_config' => $user->column_config->mapWithKeys(function ($item, $key) {
                     return [$item->value => $item->misc];
                 }),

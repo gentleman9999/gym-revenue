@@ -7,12 +7,10 @@ use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
-use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\Member;
-use App\Domain\Users\Models\UserDetails;
 use App\Support\CurrentInfoRetriever;
 use DateTime;
 use Illuminate\Http\Request;
@@ -155,11 +153,13 @@ class TaskController extends Controller
                         $lead_attendees[]['id'] = $attendee->entity_id;
 
                         try {
-                            $call_outcome = UserDetails::whereField('call_outcome')
-                                ->whereUserId($attendee->entity_id)
-                                ->where('misc->entity_id', $event->id)
-                                ->orderBy('created_at', 'desc')
-                                ->first();
+                            //TODO: Create Projection Table for User Communication History
+//
+//                            $call_outcome = UserDetails::whereField('call_outcome')
+//                                ->whereUserId($attendee->entity_id)
+//                                ->where('misc->entity_id', $event->id)
+//                                ->orderBy('created_at', 'desc')
+//                                ->first();
                         } catch (\Exception $e) {
                         }
                     }
@@ -167,12 +167,13 @@ class TaskController extends Controller
                         $member_attendees[]['id'] = $attendee->entity_id;
 
                         try {
-                            $call_outcome = UserDetails::whereField('call_outcome')
-                                ->whereUserId($attendee->entity_id)
-                                ->where('misc->entity_id', $event->id)
-                                ->orderBy('created_at', 'desc')
-                                ->first()
-                            ;
+                            //TODO: Create Projection Table for User Communication History
+//                            $call_outcome = UserDetails::whereField('call_outcome')
+//                                ->whereUserId($attendee->entity_id)
+//                                ->where('misc->entity_id', $event->id)
+//                                ->orderBy('created_at', 'desc')
+//                                ->first()
+//                            ;
                         } catch (\Exception $e) {
                         }
                     }

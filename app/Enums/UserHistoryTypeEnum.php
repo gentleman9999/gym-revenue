@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum UserDetailsFieldEnum: string
+enum UserHistoryTypeEnum: string
 {
     case SMS_TRANSMISSION = 'sms-transmission';
     case EMAIL_TRANSMISSION = 'email-transmission';

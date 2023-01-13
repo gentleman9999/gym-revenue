@@ -15,7 +15,6 @@ input UserInput @validator {
     end_date: String
     termination_date: String
     notes: NoteInput
-    client_id: ID
     team_id: ID
     role_id: ID
     home_location_id: ID

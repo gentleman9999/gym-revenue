@@ -11,7 +11,6 @@ use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserTerminated;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
 use App\Models\Note;
@@ -23,10 +22,11 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 class UserCrudProjector extends Projector
 {
     /**
-     * Array used to identify what values we want to store in UserDetails
+     * Array used to identify what values we want to store in the detail JSON field
      * for different user_types. The key is the field value and the value
      * is the default value for the specified key
      */
+//    TODO: Why are we setting contact_preference to SMS here?  It should be NULL or UNSET, and default to the CLIENT SETTING
     private $user_details_storable = [
         'employee' => [
             'contact_preference' => 'sms',
@@ -63,7 +63,6 @@ class UserCrudProjector extends Projector
     public function onStartingEventReplay()
     {
         User::truncate();
-        UserDetails::truncate();
     }
 
     public function onUserCreated(UserCreated $event): void
@@ -95,25 +94,7 @@ class UserCrudProjector extends Projector
             }
 
             $this->setUserDetails($user, $data);
-            $details = [
-                'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
-            ];
 
-            // Go through the details and create them in the user_details via the
-            // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
-            foreach ($details as $detail => $value) {
-                UserDetails::createOrUpdateRecord((string)$user->id, $detail, $value);
-            }
-            $misc_details = [
-                'emergency_contact' => $data['emergency_contact'] ?? ['ec_first_name' => '', 'ec_last_name' => '', 'ec_phone' => ''],
-            ];
-            foreach ($misc_details as $misc_detail => $misc) {
-                UserDetails::createOrUpdateRecord((string)$user->id, $misc_detail, '', $misc);
-            }
-
-//            $client_id = $data['client_id'] ?? null;
-
-            //TODO: use an action that trigger ES specific to note
             $notes = $data['notes'] ?? false;
             if ($notes) {
                 $this->createUserNotes($event, $user, $notes);
@@ -272,14 +253,9 @@ class UserCrudProjector extends Projector
                 $details[$field_value] = $value;
             }
         }
-
-        foreach ($details as $detail => $value) {
-            if (! is_array($value)) {
-                UserDetails::createOrUpdateRecord($user->id, $detail, $value);
-            } else {
-                UserDetails::createOrUpdateRecord($user->id, $detail, '', $value);
-            }
-        }
+//        TODO: we can just store this at the same time as the rest of the user data, no need for 2 updates
+        $user->details = $details;
+        $user->save();
     }
 
     protected function createUserNotes($event, User $user, array $notes): void

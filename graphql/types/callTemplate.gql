@@ -4,7 +4,6 @@ type CallScriptTemplate {
     script: String!
     thumbnail: String! # update to thumbnail type when fixed
     active: Boolean
-    client_id: String!
     team_id: ID
     created_by_user_id: ID
     creator: [User] @belongsTo

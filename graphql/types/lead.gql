@@ -22,7 +22,6 @@ type Lead {
     home_location: Location! @belongsTo
     locations: [Location] @belongsToMany
     opportunity: String
-    client: Client @hasOne
     agreement_number: String
     misc: String
     external_id: String

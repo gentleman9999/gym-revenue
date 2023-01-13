@@ -4,5 +4,4 @@ type Department {
     created_at: DateTime!
     updated_at: DateTime!
     positions: [Position]! @belongsToMany
-    client_id: ID
 }

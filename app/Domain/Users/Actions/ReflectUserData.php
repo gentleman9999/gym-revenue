@@ -13,6 +13,7 @@ use App\Enums\UserTypesEnum;
 use Illuminate\Support\Facades\Schema;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+//TODO: WTF  is this? ALL DATA MUTATIONS NEED TO BE IN PROJECTORS, AND ONLY IN PROJECTORS
 class ReflectUserData
 {
     use AsAction;

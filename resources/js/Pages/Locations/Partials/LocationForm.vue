@@ -405,7 +405,7 @@ export default {
             form,
             buttonText: operation,
             handleSubmit,
-            optionStates: optionsStates,
+            optionStates,
             isFormValid,
             LocationTypesSelect,
         };

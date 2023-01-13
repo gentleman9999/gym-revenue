@@ -18,7 +18,6 @@ type EndUser {
     preview_note: [String]! @method(name: "getPreviewNote")
     club_location: Location @method(name: "getClubLocation")
     opportunity: String
-    client: Client @hasOne
     agreement_number: String
     misc: String
     external_id: String

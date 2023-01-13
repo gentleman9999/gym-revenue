@@ -34,7 +34,7 @@ class LocationSeeder extends Seeder
                     'city' => 'Shreveport',
                     'zip' => '71101',
                     'location_no' => '001',
-                    'location_type' => LocationTypeEnum::HQ,
+                    'location_type' => LocationType::HQ,
                     //'gymrevenue_id' => 'TK12'
                 ],
             ];
