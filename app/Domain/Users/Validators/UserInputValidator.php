@@ -4,6 +4,7 @@ namespace App\Domain\Users\Validators;
 
 use Nuwave\Lighthouse\Validation\Validator;
 
+//TODO: WE NEED TO EITHER HAVE 2 VALIDATORS/INPUTS, OR DETECT CREATE/UPDATE AND ADJUST ACCORDINGLY
 final class UserInputValidator extends Validator
 {
     /**

@@ -7,7 +7,6 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
 use App\Enums\UserTypesEnum;
 use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
@@ -54,7 +53,7 @@ class UsersController extends Controller
                 // else - get the members of that team
                 $user_ids = TeamUser::whereTeamId($current_team->id)->get()->pluck('user_id')->toArray();
                 $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
-                    ->with('teams', 'home_location', 'defaultTeam', 'defaultTeamDetail')
+                    ->with('teams', 'home_location', 'defaultTeam')
                     ->filter($request->only($filterKeys))
                     ->sort()
                     ->paginate(10)
@@ -65,8 +64,7 @@ class UsersController extends Controller
                 if ($user->getRole()) {
                     $users[$idx]->role = $user->getRole();
                 }
-                $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
-                $users[$idx]->home_team = $user->getDefaultTeam()->name;
+                $users[$idx]->home_team = $user->defaultTeam->name;
             }
         } else {
             //cb team selected
@@ -78,9 +76,8 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $default_team = $user->getDefaultTeam();
+                $default_team = $user->defaultTeam;
                 $users[$idx]->home_team = $default_team->name;
-                $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
             }
         }
 
@@ -234,7 +231,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->getDefaultTeam()->name;
+                $users[$idx]->home_team = $user->defaultTeam->name;
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
@@ -251,7 +248,7 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $users[$idx]->home_team = $user->getDefaultTeam()->name;
+                $users[$idx]->home_team = $user->defaultTeam->name;
             }
         }
 

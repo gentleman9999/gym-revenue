@@ -1,6 +1,5 @@
 type ScheduledCampaign {
     id: ID
-    client_id: ID
     name: String
     audience_id: String
     send_at: DateTime

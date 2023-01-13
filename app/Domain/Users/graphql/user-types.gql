@@ -23,10 +23,11 @@ type User {
     state: String
     home_location: Location @belongsTo
     teams: [Team] @belongsToMany
-    contact_preference: ContactPreference @hasOne
+    contact_preference: String
     emergency_contact: EmergencyContact
     departments: [Department] @belongsToMany
     positions: [Position] @belongsToMany
+    gender: String
     isClientUser: Boolean @method(name: "isClientUser")
 }
 

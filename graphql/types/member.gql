@@ -18,5 +18,4 @@ type Member {
     external_id: String
     misc: String
     notes: [Note] @hasMany
-    client: Client @hasOne
 }

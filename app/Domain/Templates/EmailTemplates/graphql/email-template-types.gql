@@ -6,7 +6,6 @@ type EmailTemplate {
     json: String! @rename(attribute: "jsonString") # needs to be transformed into a string, then parsed back into json on client
     thumbnail: Thumbnail
     active: Boolean
-    client_id: String!
     team_id: ID
     team: Team @belongsTo
     created_by_user_id: ID

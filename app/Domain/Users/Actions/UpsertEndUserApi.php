@@ -6,7 +6,7 @@ namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
-use App\Enums\GenderEnum;
+use App\Enums\UserGenderEnum;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Enum;
@@ -32,7 +32,7 @@ abstract class UpsertEndUserApi extends BaseEndUserAction
             'home_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'],
             'client_id' => ['sometimes'],
             'profile_photo_path' => ['sometimes'],
-            'gender' => ['sometimes', new Enum(GenderEnum::class)],
+            'gender' => ['sometimes', new Enum(UserGenderEnum::class)],
             'date_of_birth' => ['sometimes'],
             'opportunity' => ['sometimes'],
             'owner' => ['sometimes', 'exists:users,id'],

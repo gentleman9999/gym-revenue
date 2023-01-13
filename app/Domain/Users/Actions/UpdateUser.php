@@ -7,7 +7,6 @@ namespace App\Domain\Users\Actions;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\ValidationRules;
 use App\Enums\UserTypesEnum;
@@ -36,16 +35,6 @@ class UpdateUser implements UpdatesUserProfileInformation
         $previous_type = $this->getPreviousUserType((string)$user->id);
         if (array_key_exists('password', $payload)) {
             $payload['password'] = bcrypt($payload['password']);
-        }
-        $misc = (new UserDetails())->whereUserId($user->id)->whereField('emergency_contact')->first()?->misc ?: [];
-        $new_ec = [
-            'ec_first_name' => $payload['ec_first_name'] ?? ($misc['ec_first_name'] ?? null),
-            'ec_last_name' => $payload['ec_last_name'] ?? ($misc['ec_last_name'] ?? null),
-            'ec_phone' => $payload['ec_phone'] ?? ($misc['ec_phone'] ?? null),
-        ];
-
-        if (! empty(array_filter($new_ec))) {
-            UserDetails::createOrUpdateRecord((string)$user->id, 'emergency_contact', '', $new_ec, true);
         }
 
         UserAggregate::retrieve((string)$user->id)->update($payload)->persist();
