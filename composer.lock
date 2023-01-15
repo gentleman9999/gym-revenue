@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94cfddf4ba13ad05a68732f204e6e24b",
+    "content-hash": "daf7b422f07ebbacbf844757e3210213",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3771,24 +3771,24 @@
         },
         {
             "name": "laravel/vapor-cli",
-            "version": "v1.50.0",
+            "version": "v1.52.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/vapor-cli.git",
-                "reference": "5a28bc8ebcfdd2f12c2cc79e1061e7bb665e2af1"
+                "reference": "be5b730774978e99a8c8a219de96f8f6c60ba974"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/vapor-cli/zipball/5a28bc8ebcfdd2f12c2cc79e1061e7bb665e2af1",
-                "reference": "5a28bc8ebcfdd2f12c2cc79e1061e7bb665e2af1",
+                "url": "https://api.github.com/repos/laravel/vapor-cli/zipball/be5b730774978e99a8c8a219de96f8f6c60ba974",
+                "reference": "be5b730774978e99a8c8a219de96f8f6c60ba974",
                 "shasum": ""
             },
             "require": {
                 "ext-zip": "*",
                 "guzzlehttp/guzzle": "^6.3|^7.0",
-                "illuminate/container": "^6.0|^7.0|^8.0|^9.0",
-                "illuminate/filesystem": "^6.0|^7.0|^8.0|^9.0",
-                "illuminate/support": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/container": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/filesystem": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0",
                 "league/flysystem": "^1.0|^3.0",
                 "league/flysystem-aws-s3-v3": "^1.0|^3.0",
                 "php": "^7.2|^8.0",
@@ -3833,33 +3833,33 @@
                 "vapor"
             ],
             "support": {
-                "source": "https://github.com/laravel/vapor-cli/tree/v1.50.0"
+                "source": "https://github.com/laravel/vapor-cli/tree/v1.52.0"
             },
-            "time": "2022-11-28T14:42:27+00:00"
+            "time": "2023-01-13T16:34:30+00:00"
         },
         {
             "name": "laravel/vapor-core",
-            "version": "v2.26.1",
+            "version": "v2.27.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/vapor-core.git",
-                "reference": "323cd74b7c37132203d86303859a4cb46e3156d2"
+                "reference": "170a1f409b50c479ca9e36ece07bd7130d0ea634"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/vapor-core/zipball/323cd74b7c37132203d86303859a4cb46e3156d2",
-                "reference": "323cd74b7c37132203d86303859a4cb46e3156d2",
+                "url": "https://api.github.com/repos/laravel/vapor-core/zipball/170a1f409b50c479ca9e36ece07bd7130d0ea634",
+                "reference": "170a1f409b50c479ca9e36ece07bd7130d0ea634",
                 "shasum": ""
             },
             "require": {
                 "aws/aws-sdk-php": "^3.80",
                 "guzzlehttp/guzzle": "^6.3|^7.0",
                 "hollodotme/fast-cgi-client": "^3.0",
-                "illuminate/container": "^6.0|^7.0|^8.0|^9.0",
-                "illuminate/http": "^6.0|^7.0|^8.0|^9.0",
-                "illuminate/queue": "^6.0|^7.0|^8.0|^9.0",
-                "illuminate/support": "^6.0|^7.0|^8.0|^9.0",
-                "monolog/monolog": "^1.12|^2.0",
+                "illuminate/container": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/http": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/queue": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "monolog/monolog": "^1.12|^2.0|^3.2",
                 "nyholm/psr7": "^1.0",
                 "php": "^7.2|^8.0",
                 "riverline/multipart-parser": "^2.0.9",
@@ -3868,7 +3868,7 @@
             },
             "require-dev": {
                 "mockery/mockery": "^1.2",
-                "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0",
+                "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0|^8.0",
                 "phpunit/phpunit": "^8.0|^9.0"
             },
             "type": "library",
@@ -3904,9 +3904,9 @@
                 "vapor"
             ],
             "support": {
-                "source": "https://github.com/laravel/vapor-core/tree/v2.26.1"
+                "source": "https://github.com/laravel/vapor-core/tree/v2.27.0"
             },
-            "time": "2023-01-04T20:04:33+00:00"
+            "time": "2023-01-10T16:09:39+00:00"
         },
         {
             "name": "lcobucci/clock",
