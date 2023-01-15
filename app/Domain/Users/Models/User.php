@@ -364,8 +364,9 @@ class User extends Authenticatable implements PhoneInterface
 
     public function getDefaultTeamIdAttribute(): ?string
     {
-        if ($this->defaultTeamDetail) {
-            return $this->defaultTeamDetail->value;
+        $detail = $this->defaultTeamDetail()->first();
+        if ($detail) {
+            return $detail->value;
         }
 
         return null;

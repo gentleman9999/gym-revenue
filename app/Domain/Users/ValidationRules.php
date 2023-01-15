@@ -5,7 +5,10 @@ namespace App\Domain\Users;
 use App\Enums\StatesEnum;
 use App\Enums\UserGenderEnum;
 use App\Enums\UserTypesEnum;
-use App\Rules\Zip;
+use App\Rules\AddressCity;
+use App\Rules\AddressLine;
+use App\Rules\AddressState;
+use App\Rules\AddressZip;
 use Illuminate\Validation\Rules\Enum;
 
 class ValidationRules
@@ -38,19 +41,22 @@ class ValidationRules
         return [
             'client_id' => ['required', 'exists:clients,id'],
             'email' => [$validation_req, 'email:rfc,dns'],
-            'first_name' => [$validation_req, 'max:50'],
+            'first_name' => [$validation_req, 'min:1', 'max:50'],
             'middle_name' => [],
-            'last_name' => [$validation_req, 'max:30'],
+            'last_name' => [$validation_req, 'min:1', 'max:30'],
             'phone' => [$validation_req, 'min:10'],
             'user_type' => [$validation_req, new Enum(UserTypesEnum::class)],
             'gender' => [$validation_req, new Enum(UserGenderEnum::class)],
             'unsubscribed_email' => ['sometimes', 'boolean'],
             'unsubscribed_sms' => ['sometimes', 'boolean'],
-            'home_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'],
+            'home_location_id' => [$validation_req, 'exists:locations,gymrevenue_id'],
             'address2' => [],
             'alternate_phone' => ['nullable', 'string', 'min:10'],
             'notes' => [],
             'role_id' => [],
+            'ec_first_name' => [],
+            'ec_last_name' => [],
+            'ec_phone' => [],
         ];
     }
 
@@ -65,12 +71,14 @@ class ValidationRules
     {
         $rules = self::getbaseValidationRules($validation_req);
         $rules['gender'] = [$validation_req, new Enum(UserGenderEnum::class)];
-        $rules['address1'] = [$validation_req];
-        $rules['zip'] = [$validation_req, 'size:5', new Zip()];
-        $rules['city'] = [$validation_req, 'max:30'];
-        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class)];
+        $rules['address1'] = [$validation_req, 'min:5', new AddressLine()];
+        $rules['zip'] = [$validation_req, 'size:5', new AddressZip()];
+        $rules['city'] = [$validation_req, 'min:3', 'max:30', new AddressCity()];
+        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
         $rules['team_id'] = [];
         $rules['team_ids'] = [];
+        $rules['departments'] = [];
+        $rules['positions'] = [];
 
         return $rules;
     }
@@ -86,10 +94,10 @@ class ValidationRules
     {
         $rules = self::getbaseValidationRules($validation_req);
         $rules['date_of_birth'] = [$validation_req, 'date_format:Y-m-d H:i:s'];
-        $rules['address1'] = [$validation_req];
-        $rules['zip'] = [$validation_req, 'size:5', new Zip()];
-        $rules['city'] = [$validation_req, 'max:30'];
-        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class)];
+        $rules['address1'] = [$validation_req, 'min:5', new AddressLine()];
+        $rules['zip'] = [$validation_req, 'size:5', new AddressZip()];
+        $rules['city'] = [$validation_req, 'min:3', 'max:30', new AddressCity()];
+        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
 
         return $rules;
     }
@@ -105,10 +113,10 @@ class ValidationRules
     {
         $rules = self::getbaseValidationRules($validation_req);
         $rules['date_of_birth'] = [$validation_req, 'date_format:Y-m-d H:i:s'];
-        $rules['address1'] = [$validation_req];
-        $rules['zip'] = [$validation_req, 'size:5', new Zip()];
-        $rules['city'] = [$validation_req, 'max:30'];
-        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class)];
+        $rules['address1'] = [$validation_req, 'min:5', new AddressLine()];
+        $rules['zip'] = [$validation_req, 'size:5', new AddressZip()];
+        $rules['city'] = [$validation_req, 'min:3', 'max:30', new AddressCity()];
+        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
 
         return $rules;
     }

@@ -36,7 +36,7 @@ class CurrentInfoRetriever
 
     public static function getCurrentLocation(): ?Location
     {
-        $session_location_id = sefl::getCurrentLocationID();
+        $session_location_id = self::getCurrentLocationID();
 
         return $session_location_id ?
             Location::findOrFail($session_location_id) : null;

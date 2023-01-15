@@ -43,7 +43,7 @@ class UsersController extends Controller
             $is_default_team = $client->default_team_id == $current_team->id;
 
             $locations = Location::all();
-            $teams = Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'));
+            $teams = Team::findMany(Client::with('teams')->find($client_id)->teams()->get()->pluck('id'));
             $clientName = $client->name;
 
             // If the active team is a client's-default team get all members
@@ -110,20 +110,17 @@ class UsersController extends Controller
 
     public function create(Request $request)
     {
-        // Get the logged-in user making the request
-        $user = request()->user();
+        // dd(session()->all(), session()->get('errors'), $request);
         // Get the user's currently accessed team for scoping
         $current_team = CurrentInfoRetriever::getCurrentTeam();
         // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
         // CnB Client-based data is not present in the DB and thus the details could be empty.
-        $client = $current_team->client;
+        $client = $current_team->client()->first();
         // IF we got details, we got the client name, otherwise its Cape & Bay
         $client_name = (! is_null($client)) ? $client->name : 'Cape & Bay';
 
-        $client_id = request()->user()->client_id;
-
         // The logged in user needs the ability to create users scoped to the current team to continue
-        if ($user->cannot('users.create', User::class)) {
+        if (request()->user()->cannot('users.create', User::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -134,7 +131,7 @@ class UsersController extends Controller
             $locations = Location::get(['name', 'gymrevenue_id']);
         }
 
-        $roles = Role::whereScope($client_id)->get();
+        $roles = Role::whereScope(request()->user()->client_id)->get();
 
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
@@ -181,7 +178,7 @@ class UsersController extends Controller
                 $userData['all_notes'][$key]['read'] = false;
             }
         }
-//        dd($userData);
+
         $userData['role_id'] = $user->role() ? $user->role()->id : null;
 
         return Inertia::render('Users/Edit', [
