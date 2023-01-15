@@ -133,7 +133,7 @@ class LocationsController extends Controller
         return Redirect::route('calendar');
     }
 
-    private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
+    private function setUpLocationsObject(bool $is_client_user, string $client_id = null): Location
     {
         $results = [];
         /**
@@ -173,7 +173,7 @@ class LocationsController extends Controller
                         $in_query[] = $team_location->value;
                     }
 
-                    $results = Location::whereIn('gymrevenue_id', $in_query);
+                    $results = new Location();
                 }
             }
         } else {
