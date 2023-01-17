@@ -209,7 +209,7 @@ class MembersController extends Controller
             $team_locations = [];
 
             if ($current_team->id != $client->home_team_id) {
-                $team_locations = $current_team->details['team-locations'];
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
                     $results = Member::whereIn('home_location_id', $team_locations);
@@ -316,7 +316,7 @@ class MembersController extends Controller
                 $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = $current_team->details['team-locations'];
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
                     $results = Location::whereIn('gymrevenue_id', $team_locations);

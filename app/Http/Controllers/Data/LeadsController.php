@@ -250,7 +250,7 @@ class LeadsController extends Controller
             $team_locations = [];
 
             if ($current_team->id != $client->home_team_id) {
-                $team_locations = $current_team->details['team-locations'];
+                $team_locations = $current_team->locations();
                 // @todo - we will probably need to do some user-level scoping
                 // example - if there is scoping and this club is not there, don't include it
 
@@ -281,7 +281,7 @@ class LeadsController extends Controller
             $team_locations = [];
 
             if ($current_team->name != $client->home_team_id) {
-                $team_locations = $current_team->details['team-locations'];
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
                     $results = Lead::whereIn('home_location_id', $team_locations)->whereHas('claimed');
@@ -401,7 +401,7 @@ class LeadsController extends Controller
                 $results = Location::whereClientId($client_id);
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = $current_team->details['team-locations'];
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
                     $results = Location::whereIn('gymrevenue_id', $team_locations);

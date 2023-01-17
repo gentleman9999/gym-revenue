@@ -28,7 +28,7 @@ class GetDashboardWidgets
                 $num_locs = Location::whereActive(1)->count();
             } else {
                 // get the locations the active team has access to
-                $num_locs = sizeof($team->details['team-locations']);
+                $num_locs = sizeof($team->locations());
             }
 
             /** @todo - find the context

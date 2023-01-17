@@ -138,7 +138,7 @@ class LocationsController extends Controller
                 $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = $current_team->details['team-locations'];
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
                     $results = Location::whereIn('gymrevenue_id', $team_locations);

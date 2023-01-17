@@ -22,7 +22,7 @@ class Helper
             $team_locations = [];
 
             if ($current_team_id != $client->home_team_id) {
-                $team_locations = Team::find($current_team_id)->details['team-locations'];
+                $team_locations = Team::find($current_team_id)->locations();
 
                 if (count($team_locations) > 0) {
                     $results = Customer::whereIn('home_location_id', $team_locations);
@@ -62,7 +62,7 @@ class Helper
                 $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = Team::find($current_team_id)->details['team-locations'];
+                $team_locations = Team::find($current_team_id)->locations();
 
                 if (count($team_locations) > 0) {
                     $results = Location::whereIn('gymrevenue_id', $team_locations);

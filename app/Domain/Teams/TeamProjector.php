@@ -52,7 +52,8 @@ class TeamProjector extends Projector
         $team = Team::findOrFail($event->aggregateRootUuid())->updateOrFail($team_fillable_data);
 
         if (array_key_exists('locations', $event->payload)) {
-            $team->details = ['team-locations' => $event->payload['locations'] ?? []];
+            $team->details = ['team-locations' => $event->payload['locations']];
+            $team->save();
         }
     }
 
