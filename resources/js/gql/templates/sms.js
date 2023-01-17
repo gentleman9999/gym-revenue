@@ -37,3 +37,15 @@ export const SMS_TEMPLATE_EDIT = gql`
         }
     }
 `;
+
+export const SMS_TEMPLATE_CREATE = gql`
+    query smsTemplates {
+        data {
+            team_id
+        }
+        paginatorInfo {
+            currentPage
+            lastPage
+        }
+    }
+`;

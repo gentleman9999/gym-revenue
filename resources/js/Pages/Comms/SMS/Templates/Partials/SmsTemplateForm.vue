@@ -61,14 +61,17 @@
 import { computed } from "vue";
 
 import JetFormSection from "@/Jetstream/FormSection.vue";
-
+import Spinner from "@/Components/Spinner.vue";
 import { useGymRevForm } from "@/utils";
 import SmsFormControl from "@/Components/SmsFormControl.vue";
 import Button from "@/Components/Button.vue";
+import queries from "@/gql/queries";
 import JetInputError from "@/Jetstream/InputError.vue";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
 const props = defineProps({
-    smsTemplate: {
+    template: {
         type: Object,
         default: {
             markup: null,
@@ -76,19 +79,26 @@ const props = defineProps({
             active: false,
         },
     },
-    canActivate: {
-        type: Boolean,
-        required: true,
+    editParam: {
+        type: [String, Object],
+        default: null,
+    },
+    createParam: {
+        type: [String, Object],
+        default: null,
     },
 });
 
-const emit = defineEmits(["done", "error"]);
+const { mutate: createSmsTemplate } = useMutation(mutations.smsTemplate.create);
+const { mutate: updateSmsTemplate } = useMutation(mutations.smsTemplate.update);
+
+const emit = defineEmits(["cancel", "close"]);
 
 let operation = computed(() => {
-    return typeof props.smsTemplate.name === "string" ? "Update" : "Create";
+    return typeof props.template.name === "string" ? "Update" : "Create";
 });
 
-const form = useGymRevForm(props.smsTemplate);
+const form = useGymRevForm(props.template);
 
 let handleSubmit = () => {
     let endpoint = operation.value === "Update" ? "update" : "store";

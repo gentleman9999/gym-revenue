@@ -109,6 +109,8 @@
     >
         <email-template-form
             :template="editingTemplate"
+            :editParam="emailEditParam"
+            :createParam="emailCreateParam"
             @done="actionDone"
             @cancel="handleCancel"
         />
@@ -119,8 +121,8 @@
         class="bg-neutral"
     >
         <sms-template-form
-            :can-activate="false"
-            :use-inertia="false"
+            :editParam="smsEditParam"
+            :createParam="smsCreateParam"
             :template="editingTemplate"
             @done="actionDone"
             @cancel="handleCancel"
@@ -133,9 +135,6 @@
         @done="actionDone"
         @cancel="handleCancel"
     />
-
-    <!-- <h2 class="text-2xl text-center">Email Template Form</h2> -->
-    <!-- <p class="text-lg font-bold text-center">should be open here</p> -->
 </template>
 
 <style scoped>
@@ -185,6 +184,18 @@ const props = defineProps({
 const param = ref({
     page: 1,
 });
+
+/**
+ * Params for forms to determine their operations
+ */
+const emailEditParam = ref(null);
+const emailCreateParam = ref(null);
+
+const smsEditParam = ref(null);
+const smsCreateParam = ref(null);
+
+const callEditParam = ref(null);
+const callCreateParam = ref(null);
 
 const isLoading = ref(true);
 

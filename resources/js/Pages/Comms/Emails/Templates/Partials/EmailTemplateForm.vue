@@ -35,7 +35,7 @@
                 <Button
                     class="btn-secondary"
                     :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing || !form.isDirty || isProcessing"
+                    :disabled="form.processing || isProcessing"
                     :loading="form.processing || isProcessing"
                     @click="handleOperation"
                 >
@@ -139,7 +139,10 @@ const getInputData = () => {
     return inputFields;
 };
 
-const transformJson = (data) => JSON.parse(data);
+const transformJson = (data) => {
+    if (!data) return {};
+    return JSON.parse(data);
+};
 
 /** initiates call to the current operation with the right fields and input data in the right format */
 const handleOperation = async () => {
@@ -173,11 +176,4 @@ const handleOnSave = ({ html, json }) => {
 const handleOnClose = (template) => {
     emit("cancel", template);
 };
-
-onMounted(() => {
-    operation.value =
-        typeof props.emailTemplate.name === "string"
-            ? updateEmailTemplate
-            : createEmailTemplate;
-});
 </script>
