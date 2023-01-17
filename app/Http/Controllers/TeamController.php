@@ -90,7 +90,7 @@ class TeamController extends Controller
             'users' => $users,
             'availablePermissions' => Jetstream::$permissions,
             'defaultPermissions' => Jetstream::$defaultPermissions,
-            'locations' => $team->locations()->get('value'),
+            'locations' => $team->locations(),
             'permissions' => [
                 'canAddTeamMembers' => Gate::check('addTeamMember', $team),
                 'canDeleteTeam' => Gate::check('delete', $team),

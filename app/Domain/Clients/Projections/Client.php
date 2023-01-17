@@ -27,6 +27,7 @@ use App\Models\GymRevProjection;
 use App\Services\MailgunService;
 use App\Services\TwilioService;
 use Database\Factories\ClientFactory;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,10 +54,12 @@ class Client extends GymRevProjection
     protected $fillable = [
         'name',
         'active',
+        'details',
     ];
 
     protected $casts = [
         'services' => 'array',
+        'details' => AsCollection::class,
     ];
 
     /**
@@ -72,11 +75,6 @@ class Client extends GymRevProjection
     public function locations(): HasMany
     {
         return $this->hasMany(Location::class);
-    }
-
-    public function details(): HasMany
-    {
-        return $this->hasMany(ClientDetail::class);
     }
 
     public function lead_types(): HasMany
@@ -97,11 +95,6 @@ class Client extends GymRevProjection
     public function trial_membership_types(): HasMany
     {
         return $this->hasMany(TrialMembershipType::class);
-    }
-
-    public function detail(): HasOne
-    {
-        return $this->hasOne(ClientDetail::class);
     }
 
     public function home_team(): HasOne

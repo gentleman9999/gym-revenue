@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Teams\Models\TeamDetail;
 use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -139,18 +138,10 @@ class LocationsController extends Controller
                 $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('field', '=', 'team-location')
-                    ->get();
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
-                    $in_query = [];
-                    // so get the teams listed in team_details
-                    foreach ($team_locations as $team_location) {
-                        $in_query[] = $team_location->value;
-                    }
-
-                    $results = new Location();
+                    $results = Location::whereIn('gymrevenue_id', $team_locations);
                 }
             }
         } else {

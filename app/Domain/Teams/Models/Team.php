@@ -3,7 +3,6 @@
 namespace App\Domain\Teams\Models;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\Clients\Projections\ClientDetail;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Database\Factories\TeamFactory;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -95,26 +93,16 @@ class Team extends JetstreamTeam
         return TeamFactory::new();
     }
 
-    public function details(): HasMany
+    public function locations(): array
     {
-        return $this->hasMany('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
+        return $this->details['team-locations'];
     }
 
-    public function detail(): HasOne
+    public function default_team_details(): Collection
     {
-        return $this->hasOne('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
-    }
+        $details = Client::where('details->field', 'default-team')->get();
 
-    public function locations(): HasMany
-    {
-        return $this->details()->whereField('team-location');
-    }
-
-    public function default_team_details(): HasOne
-    {
-        return $this->hasOne(ClientDetail::class, 'value', 'id')
-            ->where('detail', '=', 'default-team')
-            ->with('client');
+        return new Collection($details);
     }
 
     public static function fetchTeamIDFromName(string $name)
