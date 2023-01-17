@@ -3,7 +3,7 @@
 namespace App\Actions\Sms;
 
 use App\Aggregates\Users\UserAggregate;
-use App\Domain\Clients\Projections\ClientDetail;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Support\CurrentInfoRetriever;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -44,9 +44,10 @@ class SendATestText
 
                 $client_id = null;
                 if (! is_null($current_team_id)) {
-                    $client_team_detail = ClientDetail::whereDetail('team')
-                        ->whereValue($current_team_id)->first();
-                    $client_id = $client_team_detail->client_id ?? null;
+                    $client = Client::where('details->field', 'team')
+                        ->where('value', $current_team_id)->first();
+
+                    $client_id = $client->id ?? null;
                 }
 
                 // Verify the sms going with the client of the active team is the same or its a gymrevenue template

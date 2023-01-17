@@ -3,7 +3,6 @@
 namespace App\Domain\Teams\Models;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\Clients\Projections\ClientDetail;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Database\Factories\TeamFactory;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -100,11 +98,11 @@ class Team extends JetstreamTeam
         return $this->details['team-locations'];
     }
 
-    public function default_team_details(): HasOne
+    public function default_team_details(): Collection
     {
-        return $this->hasOne(ClientDetail::class, 'value', 'id')
-            ->where('detail', '=', 'default-team')
-            ->with('client');
+        $details = Client::where('details->field', 'default-team')->get();
+
+        return new Collection($details);
     }
 
     public static function fetchTeamIDFromName(string $name)
