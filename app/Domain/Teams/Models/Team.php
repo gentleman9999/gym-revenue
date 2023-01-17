@@ -99,13 +99,6 @@ class Team extends JetstreamTeam
         return $this->details['team-locations'];
     }
 
-    public function default_team_details(): Collection
-    {
-        $details = Client::where('details->field', 'default-team')->get();
-
-        return new Collection($details);
-    }
-
     public static function fetchTeamIDFromName(string $name)
     {
         $model = new self();
@@ -128,7 +121,7 @@ class Team extends JetstreamTeam
 
     public function isClientsDefaultTeam(): bool
     {
-        $proof = $this->default_team_details()->first();
+        $proof = Client::where('details->default-team', $this->id)->first();
 
         return (! is_null($proof));
     }

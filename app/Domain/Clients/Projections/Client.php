@@ -27,7 +27,6 @@ use App\Models\GymRevProjection;
 use App\Services\MailgunService;
 use App\Services\TwilioService;
 use Database\Factories\ClientFactory;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -59,7 +58,7 @@ class Client extends GymRevProjection
 
     protected $casts = [
         'services' => 'array',
-        'details' => AsCollection::class,
+        'details' => 'array',
     ];
 
     /**

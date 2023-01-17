@@ -2,7 +2,6 @@
 
 namespace App\Actions\Sms;
 
-use App\Aggregates\Users\UserAggregate;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Support\CurrentInfoRetriever;
@@ -44,8 +43,7 @@ class SendATestText
 
                 $client_id = null;
                 if (! is_null($current_team_id)) {
-                    $client = Client::where('details->field', 'team')
-                        ->where('value', $current_team_id)->first();
+                    $client = Client::whereJsonContains('details->teams', $current_team_id)->first();
 
                     $client_id = $client->id ?? null;
                 }
