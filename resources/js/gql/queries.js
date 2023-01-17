@@ -554,9 +554,6 @@ const CUSTOMER_EDIT = gql`
             agreement_number
             external_id
             misc
-            client {
-                id
-            }
             home_location {
                 id
             }
@@ -590,9 +587,6 @@ const CUSTOMER_CREATE = gql`
             zip
             city
             state
-            client {
-                id
-            }
             home_location {
                 id
             }
@@ -643,9 +637,6 @@ const TEAM_PREVIEW = gql`
                 email
                 role
             }
-            client {
-                name
-            }
         }
         clubs: locations(first: 100) {
             data {
@@ -662,9 +653,6 @@ const TEAM_EDIT = gql`
         team(id: $id) {
             id
             name
-            client {
-                name
-            }
             users {
                 id
                 name
