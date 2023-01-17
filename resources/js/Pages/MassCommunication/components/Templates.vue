@@ -20,22 +20,32 @@
         <div class="w-full grid grid-cols-[0.75fr,0.25fr] gap-4">
             <!-- slectable -->
             <div
-                class="bg-black border-secondary border w-full px-4 rounded-md flex justify-start items-center overflow-x-scroll overflow-y-hidden scroll-smooth"
+                :class="{
+                    'justify-center': isLoading,
+                    'justify-start': !isLoading && !modelLoading && !!resources,
+                }"
+                class="bg-black border-secondary border w-full px-4 rounded-md flex items-center overflow-x-scroll overflow-y-hidden scroll-smooth"
                 ref="templateScrollContainer"
             >
-                <TemplatePreview
-                    v-for="t in templates"
-                    :title="t.name"
-                    :temp_id="t.id"
-                    :selected="t.id === selectedTemplate"
-                    :thumbsrc="t.thumbnail?.url"
-                    :template_type="template_type"
-                    :template_item="t"
-                    :permissions="permissions"
-                    @submit="updateSelected"
-                    @edit="handleEditTemplate"
-                    @trash="handleConfirmTrash"
-                />
+                <template v-if="(isLoading || modelLoading) && !result">
+                    <Spinner />
+                </template>
+
+                <template v-else-if="!isLoading && !!resources">
+                    <TemplatePreview
+                        v-for="t in resources.data"
+                        :title="t.name"
+                        :temp_id="t.id"
+                        :selected="t.id === selectedTemplate"
+                        :thumbsrc="t.thumbnail?.url"
+                        :template_type="template_type"
+                        :template_item="t"
+                        :permissions="permissions"
+                        @submit="updateSelected"
+                        @edit="handleEditTemplate"
+                        @trash="handleConfirmTrash"
+                    />
+                </template>
             </div>
 
             <!-- create new -->
@@ -98,9 +108,6 @@
         class="scale-90 bg-neutral border-primary border-2 rounded-md p-4"
     >
         <email-template-form
-            :can-activate="false"
-            :topol-api-key="topolApiKey"
-            :use-inertia="false"
             :template="editingTemplate"
             @done="actionDone"
             @cancel="handleCancel"
@@ -139,7 +146,9 @@
 
 <script setup>
 import axios from "axios";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
+import queries from "@/gql/queries";
+import { useQuery } from "@vue/apollo-composable";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { resolveTemplateType } from "@/Pages/Templates/components/helpers";
@@ -147,6 +156,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { toastSuccess, toastError, toastInfo } from "@/utils/createToast";
 
+import Spinner from "@/Components/Spinner.vue";
 import TemplatePreview from "./Templates/TemplatePreview.vue";
 import EmailTemplateForm from "@/Pages/Comms/Emails/Templates/Partials/EmailTemplateForm.vue";
 import SmsTemplateForm from "@/Pages/Comms/SMS/Templates/Partials/SmsTemplateForm.vue";
@@ -162,20 +172,47 @@ const props = defineProps({
         type: [Number, String, null],
         default: null,
     },
-    topolApiKey: {
-        type: String,
-        required: true,
-    },
     templates: {
         type: Array,
         default: [],
     },
     template_type: {
-        type: [String, undefined],
-        default: undefined,
+        type: String,
+        required: true,
     },
 });
 
+const param = ref({
+    page: 1,
+});
+
+const isLoading = ref(true);
+
+const {
+    result,
+    loading: modelLoading,
+    error,
+    refetch,
+} = useQuery(
+    queries[`${props.template_type}Templates`],
+    props.param ? props.param : param,
+    { throttle: 500 }
+);
+
+const resources = computed(() => {
+    if (result.value && result.value[`${props.template_type}Templates`]) {
+        return _.cloneDeep(result.value[`${props.template_type}Templates`]);
+    } else return null;
+});
+
+watch(modelLoading, (nv, ov) => {
+    console.log("resources:", resources);
+    if (!!resources?.value) {
+        isLoading.value = false;
+    }
+});
+
+const templateType = ref(props.template_type);
 const selectedTemplate = ref(props.selected);
 const editingTemplate = ref(null);
 const confirmingTrash = ref(null);
@@ -226,16 +263,16 @@ const actionDone = (template) => {
         emit("save", selectedTemplate.value);
     }
 
-    Inertia.reload({
-        only: [refreshProp],
-        onFinish: () => {
-            templateBuilderStep.value = false;
-            updateSelected(template.id);
-            document
-                .getElementById(template.id)
-                .scrollIntoView({ block: "center" });
-        },
-    });
+    // Inertia.reload({
+    //     only: [refreshProp],
+    //     onFinish: () => {
+    //         templateBuilderStep.value = false;
+    //         updateSelected(template.id);
+    //         document
+    //             .getElementById(template.id)
+    //             .scrollIntoView({ block: "center" });
+    //     },
+    // });
 };
 
 /**
@@ -247,18 +284,16 @@ const requestTrash = async () => {
     console.log("id", templateId);
 
     try {
-        const ep = "mass-comms." + props.template_type + "-templates.trash";
-        console.log("ep", ep);
-        const res = await axios.delete(route(ep, templateId));
-
-        if (res.status === 200) {
-            toastInfo("Template Trashed");
-            confirmingTrash.value = null;
-
-            Inertia.reload({
-                only: [refreshProp],
-            });
-        }
+        // const ep = "mass-comms." + props.template_type + "-templates.trash";
+        // console.log("ep", ep);
+        // const res = await axios.delete(route(ep, templateId));
+        // if (res.status === 200) {
+        //     toastInfo("Template Trashed");
+        //     confirmingTrash.value = null;
+        //     Inertia.reload({
+        //         only: [refreshProp],
+        //     });
+        // }
     } catch (error) {
         console.log("error", error);
         confirmingTrash.value = null;

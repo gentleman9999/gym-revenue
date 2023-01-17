@@ -35,39 +35,6 @@
         />
 
         <CampaignListDisplay v-if="selectedTab === 'drip'" type="drip" />
-
-        <!-- <div class="flex flex-col">
-            <div class="campaign-wrapper">
-                <div class="campaign-title">Future Campaigns</div>
-                <div class="campaign-body flex-col">
-                    <campaign-list
-                        :campaigns="campaigns"
-                        :type="type"
-                        :filter="FUTURE_CAMPAIGNS"
-                        @open-campaign="openCampaign"
-                    />
-                </div>
-            </div>
-            <div class="campaign-wrapper">
-                <div class="campaign-title">Current Campaigns</div>
-                <div class="campaign-body flex-col">
-                    <campaign-list
-                        :campaigns="campaigns"
-                        :filter="CURRENT_CAMPAIGNS"
-                        :type="type"
-                    />
-                </div>
-            </div>
-            <div class="campaign-wrapper">
-                <div class="campaign-title">Recent campaigns</div>
-                <div class="campaign-body flex-col">
-                    <recent-campaign />
-                </div>
-            </div>
-            <div class="text-secondary text-lg pt-6 pl-6 cursor-pointer">
-                Load all activity
-            </div>
-        </div> -->
     </jet-bar-container>
 
     <CampaignBuilder
@@ -144,6 +111,8 @@ const handleOpenCampaignEditor = (id) => {
     if (selectedTab.value === "drip") return toggleDripBuilder();
     return toggleScheduleBuilder();
 };
+
+// am i supposed to be able to edit a campaign? didn't see it anywhere
 
 // const openCampaign = async ({ type, campaign }) => {
 // console.log({ type, campaign });

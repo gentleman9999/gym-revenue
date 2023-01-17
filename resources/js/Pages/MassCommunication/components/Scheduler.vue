@@ -1,12 +1,5 @@
 <template>
-    <!-- <daisy-modal
-        :open="true"
-        :showCloseButton="false"
-        :closable="false"
-        class="h-full w-full bg-transparent border-none flex flex-col justify-center items-center shadow-none flex-grow"
-    > -->
-
-    <ModalUnopinionated>
+    <Modal>
         <div
             class="flex flex-col h-full w-full justify-center items-center bg-black bg-opacity-80"
         >
@@ -103,8 +96,7 @@
                 @save="(template) => handleSave('call', template)"
                 :selected="days[currentDayIndex].call"
                 :templates="call_templates"
-                :topol-api-key="topolApiKey"
-                :template_type="'call'"
+                template_type="call"
             />
 
             <Templates
@@ -113,8 +105,7 @@
                 @save="(template) => handleSave('email', template)"
                 :selected="days[currentDayIndex].email"
                 :templates="email_templates"
-                :topol-api-key="topolApiKey"
-                :template_type="'email'"
+                template_type="email"
             />
 
             <Templates
@@ -123,12 +114,10 @@
                 @save="(template) => handleSave('sms', template)"
                 :selected="days[currentDayIndex].sms"
                 :templates="sms_templates"
-                :topol-api-key="topolApiKey"
-                :template_type="'sms'"
+                template_type="sms"
             />
-            <!-- </daisy-modal> -->
         </div>
-    </ModalUnopinionated>
+    </Modal>
 </template>
 
 <style scoped>
@@ -146,7 +135,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { transformDate } from "@/utils/transformDate";
 import { toastInfo, toastError } from "@/utils/createToast";
 
-import ModalUnopinionated from "@/Components/ModalUnopinionated.vue";
+import Modal from "@/Components/ModalUnopinionated.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 
 import Day from "./Creator/Day.vue";

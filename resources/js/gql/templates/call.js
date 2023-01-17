@@ -7,17 +7,15 @@ export const CALL_TEMPLATES = gql`
                 id
                 name
                 script
-                thumbnail
                 active
-                client_id
                 team_id
-                created_by_user_id
-                creator {
-                    id
-                }
                 created_at
                 updated_at
                 use_once
+                creator {
+                    id
+                    name
+                }
             }
             paginatorInfo {
                 currentPage
@@ -37,14 +35,8 @@ export const CALL_TEMPLATE_EDIT = gql`
             id
             name
             script
-            thumbnail
             active
-            client_id
             team_id
-            created_by_user_id
-            creator {
-                id
-            }
             created_at
             updated_at
             use_once

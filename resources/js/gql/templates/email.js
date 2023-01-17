@@ -14,7 +14,6 @@ export const EMAIL_TEMPLATES = gql`
                     url
                 }
                 active
-                client_id
                 team_id
                 created_by_user_id
                 created_at
@@ -46,7 +45,7 @@ export const EMAIL_TEMPLATE_EDIT = gql`
                 url
             }
             active
-            client_id
+
             team_id
             created_by_user_id
             creator {

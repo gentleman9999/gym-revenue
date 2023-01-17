@@ -72,7 +72,7 @@ import mutations from "@/gql/mutations";
 const emit = defineEmits(["cancel", "close"]);
 
 const props = defineProps({
-    emailTemplate: {
+    template: {
         type: Object,
         default: {
             markup: null,
@@ -81,14 +81,6 @@ const props = defineProps({
             name: null,
             subject: null,
         },
-    },
-    topolApiKey: {
-        type: String,
-        required: true,
-    },
-    useInertia: {
-        type: Boolean,
-        default: false,
     },
     editParam: {
         type: [String, Object],
