@@ -248,7 +248,6 @@ class UserCrudProjector extends Projector
     protected function setUserDetails(User $user, array $data, bool $is_updating = false): void
     {
         $details = [];
-        $user_type = $this->getUserType($user, $data);
         if ($this->getUserType($user, $data) == UserTypesEnum::EMPLOYEE) {
             $default_team = $this->getDefaultTeamId($user, $data, $is_updating);
             if ($default_team) {
