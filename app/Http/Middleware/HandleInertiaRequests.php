@@ -96,7 +96,7 @@ class HandleInertiaRequests extends Middleware
         }
         $alerts = Alert::getMessages();
 
-        return array_merge([
+        return array_merge(parent::share($request), [
             'jetstream' => function () use ($request) {
                 return [
                     'canCreateTeams' => $request->user() &&

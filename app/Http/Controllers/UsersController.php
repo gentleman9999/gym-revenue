@@ -29,70 +29,17 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles',];
 
         //Populating Role Filter
-        $team_users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams', 'home_location', 'roles'])->get();
         $roles = Role::whereScope($client_id)->get();
-        $client = Client::find($client_id);
 
         if ($client_id) {
-            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
-            $is_default_team = $client->default_team_id == $current_team->id;
-
             $locations = Location::all();
-            $teams = Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'));
+            $teams = Team::findMany(Client::with('teams')->find($client_id)->teams()->get()->pluck('id'));
             $clientName = $client->name;
 
-            // If the active team is a client's-default team get all members
-            if ($is_default_team) {
-                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams', 'home_location'])
-                    ->filter($request->only($filterKeys))->sort()
-                    ->paginate(10)
-                    ->appends(request()->except('page'));
-            } else {
-                // else - get the members of that team
-                $user_ids = TeamUser::whereTeamId($current_team->id)->get()->pluck('user_id')->toArray();
-                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
-                    ->with('teams', 'home_location', 'defaultTeam')
-                    ->filter($request->only($filterKeys))
-                    ->sort()
-                    ->paginate(10)
-                    ->appends(request()->except('page'));
-            }
-
-            foreach ($users as $idx => $user) {
-                if ($user->getRole()) {
-                    $users[$idx]->role = $user->getRole();
-                }
-                $users[$idx]->home_team = $user->defaultTeam->name;
-            }
-        } else {
-            //cb team selected
-            $team = CurrentInfoRetriever::getCurrentTeam();
-            $users = User::with('defaultTeam')->whereUserType(UserTypesEnum::EMPLOYEE)->with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
-                return $query->where('teams.id', '=', $team->id);
-            })->filter($request->only($filterKeys))->sort()
-                ->paginate(10)->appends(request()->except('page'));
-
-            foreach ($users as $idx => $user) {
-                $users[$idx]->role = $user->getRole();
-                $default_team = $user->defaultTeam;
-                $users[$idx]->home_team = $default_team->name;
-            }
         }
-
-        //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
-        //MUST FIX BY DEMO 6/15/22
-        //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
-        if ($request->get('sort') != '') {
-            if ($request->get('dir') == 'DESC') {
-                $sortedResult = $users->getCollection()->sortByDesc($request->get('sort'))->values();
-            } else {
-                $sortedResult = $users->getCollection()->sortBy($request->get('sort'))->values();
-            }
-            $users->setCollection($sortedResult);
-        }
-
+//TODO: we should not need to pass anything back but filters maybe?
         return Inertia::render('Users/Show', [
             'filters' => $request->all($filterKeys),
             'clubs' => $locations,
@@ -104,20 +51,17 @@ class UsersController extends Controller
 
     public function create(Request $request)
     {
-        // Get the logged-in user making the request
-        $user = request()->user();
+        // dd(session()->all(), session()->get('errors'), $request);
         // Get the user's currently accessed team for scoping
         $current_team = CurrentInfoRetriever::getCurrentTeam();
         // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
         // CnB Client-based data is not present in the DB and thus the details could be empty.
-        $client = $current_team->client;
+        $client = $current_team->client()->first();
         // IF we got details, we got the client name, otherwise its Cape & Bay
         $client_name = (! is_null($client)) ? $client->name : 'Cape & Bay';
 
-        $client_id = request()->user()->client_id;
-
         // The logged in user needs the ability to create users scoped to the current team to continue
-        if ($user->cannot('users.create', User::class)) {
+        if (request()->user()->cannot('users.create', User::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -128,7 +72,7 @@ class UsersController extends Controller
             $locations = Location::get(['name', 'gymrevenue_id']);
         }
 
-        $roles = Role::whereScope($client_id)->get();
+        $roles = Role::whereScope(request()->user()->client_id)->get();
 
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
@@ -150,7 +94,9 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        if ($me->id === $user->id) {
+        $user->load('details', 'notes', 'files', 'contact_preference', 'emergencyContact');//TODO:get rid of loading all details here.
+
+        if ($me->id == $user->id) {
             return Redirect::route('profile.show');
         }
 

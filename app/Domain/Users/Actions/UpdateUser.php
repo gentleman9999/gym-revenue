@@ -18,6 +18,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -79,6 +80,21 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function rules(): array
     {
         return ValidationRules::getValidationRules(request()->user_type, false);
+    }
+
+    /**
+     * Validate the address provided using USPS API after main rules
+     * Which also sends back correct address1, city and state
+     *
+     * @return void
+     */
+    public function afterValidator(Validator $validator, ActionRequest $request): void
+    {
+        /**
+         * @TODO: Send the suggestion data back to UI, and display to the User.
+         * They can make a choice (confirm/cancel), and have it update if confirmed
+         */
+        session()->forget('address_validation');
     }
 
     public function getControllerMiddleware(): array
@@ -148,10 +164,17 @@ class UpdateUser implements UpdatesUserProfileInformation
     {
         $type = $user->user_type == UserTypesEnum::EMPLOYEE ? 'User' : ucwords($user->user_type->value);
         Alert::success("{$type} '{$user->name}' was updated.")->flash();
+        $route = 'data.customers';
 
-        return $user->user_type == UserTypesEnum::EMPLOYEE ?
-            Redirect::route('users.edit', $user->id) :
-            Redirect::back();
+        if ($user->user_type == UserTypesEnum::EMPLOYEE) {
+            $route = 'users';
+        } elseif ($user->user_type == UserTypesEnum::LEAD) {
+            $route = 'data.leads';
+        } elseif ($user->user_type == UserTypesEnum::MEMBER) {
+            $route = 'data.members';
+        }
+
+        return Redirect::route($route);
     }
 
     /**
@@ -191,5 +214,12 @@ class UpdateUser implements UpdatesUserProfileInformation
         }
 
         return $user->user_type;
+    }
+
+    public function getValidationAttributes(): array
+    {
+        return [
+            'addres1' => 'address line 1',
+        ];
     }
 }

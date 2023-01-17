@@ -25,7 +25,7 @@ environments:
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate --pre-warm'
-          - 'php artisan migrate:fresh --seed --force'
+#          - 'php artisan migrate:fresh --seed --force'
     staging:
         domain: stage.gymrevenue.com
         memory: 2048
@@ -49,7 +49,7 @@ environments:
             - 'npm ci && npm run build:staging && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate --pre-warm'
-          - 'php artisan migrate:fresh --seed'
+#          - 'php artisan migrate:fresh --seed'
     develop:
         domain: dev.gymrevenue.com
         memory: 2048
@@ -73,4 +73,4 @@ environments:
             - 'npm ci && npm run build:dev && rm -rf node_modules'
         deploy:
             - 'php artisan sidecar:activate --pre-warm'
-            - 'php artisan migrate:fresh --seed'
+#            - 'php artisan migrate:fresh --seed'

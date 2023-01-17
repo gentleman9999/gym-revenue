@@ -42,10 +42,9 @@ function randomBirthday(int $age)
 
 function signedAgreement($data)
 {
-    $sign_agreement_data['id'] = $data['id'];
     $sign_agreement_data['user_id'] = $data['end_user_id'];
     $sign_agreement_data['active'] = true;
-    SignAgreement::run($sign_agreement_data);
+    SignAgreement::run($sign_agreement_data, $data['id']);
 }
 
 function agreementTemplate(Client $client, Location $location)
