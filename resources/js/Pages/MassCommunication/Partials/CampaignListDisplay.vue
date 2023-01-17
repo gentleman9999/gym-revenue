@@ -87,7 +87,7 @@ const formatForStatus = (data) => {
     if (!data instanceof Array) return [];
     return data.map((p) => ({
         ...p,
-        status: p["status"].value,
+        status: p["status"]?.value,
     }));
 };
 
