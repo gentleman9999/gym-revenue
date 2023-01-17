@@ -95,19 +95,9 @@ class Team extends JetstreamTeam
         return TeamFactory::new();
     }
 
-    public function details(): HasMany
+    public function locations(): array
     {
-        return $this->hasMany('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
-    }
-
-    public function detail(): HasOne
-    {
-        return $this->hasOne('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
-    }
-
-    public function locations(): HasMany
-    {
-        return $this->details()->whereField('team-location');
+        return $this->details['team-locations'];
     }
 
     public function default_team_details(): HasOne

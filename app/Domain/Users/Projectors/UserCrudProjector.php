@@ -6,8 +6,8 @@ namespace App\Domain\Users\Projectors;
 
 use App\Domain\LocationEmployees\Actions\CreateLocationEmployee;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Events\UserCreated;
+use App\Domain\Users\Events\UserReinstated;
 use App\Domain\Users\Events\UserTerminated;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Models\User;
@@ -189,7 +189,7 @@ class UserCrudProjector extends Projector
 
     public function onEndUserReinstated(UserReinstated $event): void
     {
-        User::withTrashed()->findOrFail($event->id)->reinstate();
+        User::withTrashed()->findOrFail($event->aggregateRootUuid())->reinstate();
     }
 
     public function onUserTerminated(UserTerminated $event): void
@@ -287,11 +287,12 @@ class UserCrudProjector extends Projector
         $default_team = array_key_exists('team_ids', $data) ? $data['team_ids'][0] : $data['team_id'] ?? null;
 
         if (! $is_updating && $default_team == null && ! $user->is_cape_and_bay_user) {
-            $team_ids = TeamDetail::where('field', 'team-location')
-                ->where('value', $user->home_location_id)->get()->pluck('team_id')->toArray();
+            $team_ids = Team::whereJsonContains(
+                'details->team-locations',
+                $user->home_location_id
+            )->get()->pluck('id')->toArray();
             if (sizeof($team_ids) > 0) {
-                $teams = Team::whereIn('id', $team_ids)->get()->pluck('id')->toArray();
-                $default_team = $teams[array_rand($teams)];
+                $default_team = $team_ids[array_rand($team_ids)];
             }
         }
 

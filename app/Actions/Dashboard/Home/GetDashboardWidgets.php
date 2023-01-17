@@ -7,7 +7,6 @@ use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Teams\Models\TeamDetail;
 use App\Support\CurrentInfoRetriever;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -29,9 +28,7 @@ class GetDashboardWidgets
                 $num_locs = Location::whereActive(1)->count();
             } else {
                 // get the locations the active team has access to
-                $num_locs = TeamDetail::whereTeamId($team->id)
-                    ->where('field', '=', 'team-location')
-                    ->count();
+                $num_locs = sizeof($team->details['team-locations']);
             }
 
             /** @todo - find the context

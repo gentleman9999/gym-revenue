@@ -9,7 +9,6 @@ use App\Domain\Teams\Events\TeamMemberInvited;
 use App\Domain\Teams\Events\TeamMemberRemoved;
 use App\Domain\Teams\Events\TeamUpdated;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Teams\Models\TeamInvitation;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
@@ -21,7 +20,6 @@ class TeamProjector extends Projector
     public function onStartingEventReplay()
     {
         Team::truncate();
-        TeamDetail::truncate();
         TeamInvitation::truncate();
         TeamUser::truncate();
     }
@@ -36,11 +34,9 @@ class TeamProjector extends Projector
         $team->fill($team_fillable_data);
         $team->id = $event->aggregateRootUuid();
         $team->client_id = $event->payload['client_id'] ?? null;
-        $team->save();
         //TODO:just use a team_location pivot table
-        foreach ($event->payload['locations'] ?? [] as $location_gymrevenue_id) {
-            TeamDetail::createOrUpdateRecord($event->aggregateRootUuid(), 'team-location',  $location_gymrevenue_id);
-        }
+        $team->details = ['team-locations' => $event->payload['locations'] ?? []];
+        $team->save();
     }
 
     public function onTeamDeleted(TeamDeleted $event): void
@@ -53,12 +49,10 @@ class TeamProjector extends Projector
         $team_fillable_data = array_filter($event->payload, function ($key) {
             return in_array($key, (new Team())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
-        Team::findOrFail($event->aggregateRootUuid())->updateOrFail($team_fillable_data);
-        TeamDetail::whereTeamId($event->aggregateRootUuid())->whereField('team-location')->delete();
+        $team = Team::findOrFail($event->aggregateRootUuid())->updateOrFail($team_fillable_data);
+
         if (array_key_exists('locations', $event->payload)) {
-            foreach ($event->payload['locations'] as $location_gymrevenue_id) {
-                TeamDetail::createOrUpdateRecord($event->aggregateRootUuid(), 'team-location', $location_gymrevenue_id);
-            }
+            $team->details = ['team-locations' => $event->payload['locations'] ?? []];
         }
     }
 
