@@ -45,6 +45,7 @@ class Team extends JetstreamTeam
      */
     protected $casts = [
         'home_team' => 'boolean',
+        'details' => 'array',
     ];
 
     /**

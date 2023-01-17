@@ -49,12 +49,16 @@ class TeamProjector extends Projector
         $team_fillable_data = array_filter($event->payload, function ($key) {
             return in_array($key, (new Team())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
-        $team = Team::findOrFail($event->aggregateRootUuid())->updateOrFail($team_fillable_data);
+        $team = Team::findOrFail($event->aggregateRootUuid());
+        $team->fill($team_fillable_data);
 
         if (array_key_exists('locations', $event->payload)) {
-            $team->details = ['team-locations' => $event->payload['locations']];
-            $team->save();
+            $details = $team->details;
+            $details['team-locations'] = $event->payload['locations'];
+            $team->details = $details;
         }
+
+        $team->save();
     }
 
     public function onTeamMemberInvited(TeamMemberInvited $event): void
