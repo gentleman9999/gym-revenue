@@ -10,7 +10,9 @@ use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserReinstated;
 use App\Domain\Users\Events\UserTerminated;
 use App\Domain\Users\Events\UserUpdated;
+use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Services\Helpers\UserDataReflector;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
 use App\Models\Note;
@@ -118,7 +120,6 @@ class UserCrudProjector extends Projector
                     //set role to admin for capeandbay
                     $role = Role::whereGroup(SecurityGroupEnum::ADMIN)->firstOrFail();
                     $user->is_cape_and_bay_user = true;
-                    $user->save();
                 }
             }
 
@@ -128,6 +129,9 @@ class UserCrudProjector extends Projector
             }
 
             $this->setUserDetails($user, $data);
+            $user->save();
+
+            UserDataReflector::reflectData($user);
         });
     }
 
@@ -146,13 +150,13 @@ class UserCrudProjector extends Projector
                 $user_query = User::withoutGlobalScopes();
             }
             $user = $user_query->findOrFail($event->aggregateRootUuid());
+            $previous_type = $user->user_type;
             foreach ($this->non_fillable_fields as $key => $field) {
                 if (array_key_exists($field, $data)) {
                     $user[$field] = $data[$field];
                 }
             }
 
-            $user->save();
             $user->updateOrFail($data);
 
             if (array_key_exists('departments', $data)) {
@@ -160,6 +164,8 @@ class UserCrudProjector extends Projector
             }
 
             $this->setUserDetails($user, $data, true);
+            $user->save();
+            UserDataReflector::reflectData($user, $previous_type);
 
             $notes = $data['notes'] ?? false;
             if ($notes) {
@@ -187,24 +193,31 @@ class UserCrudProjector extends Projector
         });
     }
 
-    public function onEndUserReinstated(UserReinstated $event): void
+    public function onUserReinstated(UserReinstated $event): void
     {
-        User::withTrashed()->findOrFail($event->aggregateRootUuid())->reinstate();
+        DB::transaction(function () use ($event) {
+            $user = User::withTrashed()->findOrFail($event->aggregateRootUuid());
+            $user->reinstate();
+            UserDataReflector::reflectData($user);
+        });
     }
 
     public function onUserTerminated(UserTerminated $event): void
     {
-        // Get the uer we're gonna delete
-        $user = User::findOrFail($event->aggregateRootUuid());
-        // @todo - add offboading logic here
+        DB::transaction(function () use ($event) {
+            // Get the uer we're gonna delete
+            $user = User::findOrFail($event->aggregateRootUuid());
+            // @todo - add offboading logic here
 
-        // starting with unassigning users from teams.
-        $teams = $user->teams()->get();
-        foreach ($teams as $team) {
-            $team->removeUser($user);
-        }
+            // starting with unassigning users from teams.
+            $teams = $user->teams()->get();
+            foreach ($teams as $team) {
+                $team->removeUser($user);
+            }
 
-        $user->terminate();
+            $user->terminate();
+            UserDataReflector::reflectData($user);
+        });
     }
 
     protected function syncLocationEmployees(User $user, array $data): void
@@ -253,9 +266,8 @@ class UserCrudProjector extends Projector
                 $details[$field_value] = $value;
             }
         }
-//        TODO: we can just store this at the same time as the rest of the user data, no need for 2 updates
+
         $user->details = $details;
-        $user->save();
     }
 
     protected function createUserNotes($event, User $user, array $notes): void

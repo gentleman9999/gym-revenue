@@ -46,8 +46,6 @@ class UpdateUser implements UpdatesUserProfileInformation
             $user = User::findOrFail($user->id);
         }
 
-        ReflectUserData::run($user, $previous_type);
-
         return $user;
     }
 

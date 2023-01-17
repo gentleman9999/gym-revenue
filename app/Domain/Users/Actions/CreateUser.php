@@ -83,8 +83,6 @@ class CreateUser implements CreatesNewUsers
             UserAggregate::retrieve($created_user->id)->sendWelcomeEmail()->persist();
         }
 
-        ReflectUserData::run($created_user);
-
         return $created_user;
     }
 
