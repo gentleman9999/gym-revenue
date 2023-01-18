@@ -148,7 +148,9 @@
         >
             <template v-slot="{ result: { data, loading, error }, isLoading }">
                 <template v-if="isLoading">
-                    <Spinner />
+                    <div class="shadow border border-secondary rounded-lg p-6">
+                        <Spinner />
+                    </div>
                 </template>
 
                 <sms-template-form
