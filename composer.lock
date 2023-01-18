@@ -383,16 +383,16 @@
         },
         {
             "name": "cape-and-bay/versionable",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GymRevenue/versionable.git",
-                "reference": "c56fb8b21e3dc808237762c3f5a08ef6d7315abe"
+                "reference": "715d7aac8a3445eefc51c62d57ae92e9cfc22e82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GymRevenue/versionable/zipball/c56fb8b21e3dc808237762c3f5a08ef6d7315abe",
-                "reference": "c56fb8b21e3dc808237762c3f5a08ef6d7315abe",
+                "url": "https://api.github.com/repos/GymRevenue/versionable/zipball/715d7aac8a3445eefc51c62d57ae92e9cfc22e82",
+                "reference": "715d7aac8a3445eefc51c62d57ae92e9cfc22e82",
                 "shasum": ""
             },
             "require": {
@@ -434,9 +434,9 @@
             ],
             "support": {
                 "issues": "https://github.com/GymRevenue/versionable/issues",
-                "source": "https://github.com/GymRevenue/versionable/tree/v1.0.0"
+                "source": "https://github.com/GymRevenue/versionable/tree/v1.0.1"
             },
-            "time": "2023-01-18T10:30:07+00:00"
+            "time": "2023-01-18T17:10:42+00:00"
         },
         {
             "name": "clue/stream-filter",

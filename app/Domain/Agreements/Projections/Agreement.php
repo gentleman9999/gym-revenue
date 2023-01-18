@@ -12,6 +12,7 @@ use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
 use CapeAndBay\Versionable\Versionable;
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -23,6 +24,7 @@ class Agreement extends GymRevProjection
     use SoftDeletes;
     /** @see https://github.com/GymRevenue/versionable */
     use Versionable;
+    use Uuid;
 
 
     protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id', 'user_id', 'agreement_template_id', 'active', 'contract_file_id'];

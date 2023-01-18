@@ -8,6 +8,7 @@ use App\Domain\Clients\Projections\Client;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
 use CapeAndBay\Versionable\Versionable;
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,6 +19,7 @@ class Contract extends GymRevProjection
     use SoftDeletes;
     /** @see https://github.com/GymRevenue/versionable */
     use Versionable;
+    use Uuid;
 
 
     protected $fillable = ['client_id', 'name'];
