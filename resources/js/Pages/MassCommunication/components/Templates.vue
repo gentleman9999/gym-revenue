@@ -21,17 +21,18 @@
             <!-- slectable -->
             <div
                 :class="{
-                    'justify-center': isLoading,
-                    'justify-start': !isLoading && !modelLoading && !!resources,
+                    'justify-center': isLoadingList,
+                    'justify-start':
+                        !isLoadingList && !modelLoading && !!resources,
                 }"
                 class="bg-black border-secondary border w-full px-4 rounded-md flex items-center overflow-x-scroll overflow-y-hidden scroll-smooth"
                 ref="templateScrollContainer"
             >
-                <template v-if="(isLoading || modelLoading) && !result">
+                <template v-if="(isLoadingList || modelLoading) && !result">
                     <Spinner />
                 </template>
 
-                <template v-else-if="!isLoading && !!resources">
+                <template v-else-if="!isLoadingList && !!resources">
                     <TemplatePreview
                         v-for="t in resources.data"
                         :title="t.name"
@@ -111,29 +112,61 @@
             :template="editingTemplate"
             :editParam="emailEditParam"
             :createParam="emailCreateParam"
-            @done="actionDone"
-            @cancel="handleCancel"
+            @done="handleBuilderDone"
+            @cancel="handleCancelBuilder"
         />
     </div>
 
+    <!-- SMS Create -->
     <div
-        v-if="templateBuilderStep && template_type === 'sms'"
+        v-if="
+            templateBuilderStep &&
+            template_type === 'sms' &&
+            builderOperation === 'create'
+        "
         class="bg-neutral"
     >
         <sms-template-form
-            :editParam="smsEditParam"
-            :createParam="smsCreateParam"
-            :template="editingTemplate"
-            @done="actionDone"
-            @cancel="handleCancel"
+            :editParam="null"
+            @done="handleBuilderDone"
+            @cancel="handleCancelBuilder"
         />
+    </div>
+
+    <!-- SMS Edit -->
+    <div
+        v-if="
+            templateBuilderStep &&
+            template_type === 'sms' &&
+            builderOperation === 'edit'
+        "
+        class="bg-neutral"
+    >
+        <ApolloQuery
+            :query="(gql) => queries.smsTemplate[builderOperation]"
+            :variables="editParam"
+        >
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <template v-if="isLoading">
+                    <Spinner />
+                </template>
+
+                <sms-template-form
+                    v-if="!isLoading && !!data"
+                    :editParam="editParam"
+                    :template="data['smsTemplate']"
+                    @done="handleBuilderDone"
+                    @cancel="handleCancelBuilder"
+                />
+            </template>
+        </ApolloQuery>
     </div>
 
     <call-script
         v-if="templateBuilderStep && template_type === 'call'"
         :template_item="editingTemplate"
-        @done="actionDone"
-        @cancel="handleCancel"
+        @done="handleBuilderDone"
+        @cancel="handleCancelBuilder"
     />
 </template>
 
@@ -168,12 +201,8 @@ const templateBuilderStep = ref(false);
 
 const props = defineProps({
     selected: {
-        type: [Number, String, null],
+        type: [Number, String, Boolean, null],
         default: null,
-    },
-    templates: {
-        type: Array,
-        default: [],
     },
     template_type: {
         type: String,
@@ -184,6 +213,9 @@ const props = defineProps({
 const param = ref({
     page: 1,
 });
+
+const editParam = ref(null);
+const builderOperation = ref(null);
 
 /**
  * Params for forms to determine their operations
@@ -197,7 +229,7 @@ const smsCreateParam = ref(null);
 const callEditParam = ref(null);
 const callCreateParam = ref(null);
 
-const isLoading = ref(true);
+const isLoadingList = ref(true);
 
 const {
     result,
@@ -219,7 +251,7 @@ const resources = computed(() => {
 watch(modelLoading, (nv, ov) => {
     console.log("resources:", resources);
     if (!!resources?.value) {
-        isLoading.value = false;
+        isLoadingList.value = false;
     }
 });
 
@@ -233,17 +265,24 @@ const updateSelected = (t) => {
 };
 
 const handleNewTemplate = () => {
+    builderOperation.value = "create";
     templateBuilderStep.value = true;
 };
 
 const handleEditTemplate = (templateId) => {
-    let t = props.templates.filter((o) => o.id === templateId)[0];
-    editingTemplate.value = t;
+    // let t = props.templates.filter((o) => o.id === templateId)[0];
+    // editingTemplate.value = t;
+    builderOperation.value = "edit";
+    editParam.value = {
+        id: templateId,
+    };
     templateBuilderStep.value = true;
 };
 
-const handleCancel = () => {
-    editingTemplate.value = null;
+// when cancel is called from the editor
+const handleCancelBuilder = () => {
+    builderOperation.value = null;
+    editParam.value = null;
     templateBuilderStep.value = false;
 };
 
@@ -255,36 +294,54 @@ const handleCancelConfirmTrash = () => {
     confirmingTrash.value = null;
 };
 
+// when create/edit operation is successful from the builder
+const handleBuilderDone = async (id) => {
+    console.log("builderDone called", id);
+
+    if (typeof id === "object") {
+        updateSelected(id?.id);
+    } else {
+        updateSelected(id);
+    }
+
+    templateBuilderStep.value = false;
+    builderOperation.value = null;
+
+    editingTemplate.value = null;
+    isLoadingList.value = true;
+    await refetch();
+};
+
 /**
  * Called when finished editing or creating a new template
  * closes the template builder, shows template selector again
  * and scrolls to the newly created / edited template
  * @param {object} template - new template data received from server
  */
-const actionDone = (template) => {
-    let templateType = resolveTemplateType(template);
-    let refreshProp = templateType?.toLocaleLowerCase() + "_templates";
+// const actionDone = (template) => {
+//     let templateType = resolveTemplateType(template);
+//     let refreshProp = templateType?.toLocaleLowerCase() + "_templates";
 
-    /** email builder takes care of it's own notifications */
-    if (templateType !== "email") {
-        toastSuccess(templateType + " Template Saved!");
-    }
+//     /** email builder takes care of it's own notifications */
+//     if (templateType !== "email") {
+//         toastSuccess(templateType + " Template Saved!");
+//     }
 
-    if (template.reuse) {
-        emit("save", selectedTemplate.value);
-    }
+//     if (template.reuse) {
+//         emit("save", selectedTemplate.value);
+//     }
 
-    // Inertia.reload({
-    //     only: [refreshProp],
-    //     onFinish: () => {
-    //         templateBuilderStep.value = false;
-    //         updateSelected(template.id);
-    //         document
-    //             .getElementById(template.id)
-    //             .scrollIntoView({ block: "center" });
-    //     },
-    // });
-};
+//     // Inertia.reload({
+//     //     only: [refreshProp],
+//     //     onFinish: () => {
+//     //         templateBuilderStep.value = false;
+//     //         updateSelected(template.id);
+//     //         document
+//     //             .getElementById(template.id)
+//     //             .scrollIntoView({ block: "center" });
+//     //     },
+//     // });
+// };
 
 /**
  * Sends a request to trash the template with the passed id to the back end

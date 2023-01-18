@@ -113,7 +113,6 @@
                 @cancel="handleCancelScript"
                 @save="(template) => handleSave('sms', template)"
                 :selected="days[currentDayIndex].sms"
-                :templates="sms_templates"
                 template_type="sms"
             />
         </div>
@@ -186,10 +185,6 @@ const props = defineProps({
     form: {
         type: Object,
         default: {},
-    },
-    topolApiKey: {
-        type: String,
-        required: true,
     },
 });
 

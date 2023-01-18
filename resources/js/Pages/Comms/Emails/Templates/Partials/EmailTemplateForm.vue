@@ -157,7 +157,7 @@ const handleOperation = async () => {
         data["createEmailTemplate"] ?? data["updateEmailTemplate"];
 
     isProcessing.value = false;
-    emit("close", savedTemplate);
+    emit("done", savedTemplate);
 };
 
 const handleOnSave = ({ html, json }) => {

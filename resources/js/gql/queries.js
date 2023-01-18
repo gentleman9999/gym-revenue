@@ -4,7 +4,11 @@ import {
     EMAIL_TEMPLATE_EDIT,
     EMAIL_TEMPLATE_CREATE,
 } from "./templates/email";
-import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
+import {
+    SMS_TEMPLATES,
+    SMS_TEMPLATE_EDIT,
+    SMS_TEMPLATE_CREATE,
+} from "./templates/sms";
 import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
 import { AUDIENCES, AUDIENCE_EDIT } from "./campaigns/audiences";
 import {
@@ -1240,6 +1244,7 @@ export default {
         create: EMAIL_TEMPLATE_CREATE,
     },
     smsTemplate: {
+        create: SMS_TEMPLATE_CREATE,
         edit: SMS_TEMPLATE_EDIT,
     },
     callTemplate: {

@@ -63,3 +63,5 @@ export const EMAIL_TEMPLATE_CREATE = gql`
         topolApiKey
     }
 `;
+
+/** Mutations */

@@ -1,5 +1,5 @@
 <template>
-    <jet-form-section @submitted="handleSubmit">
+    <jet-form-section @submitted="handleOperation">
         <template #form>
             <div class="form-control col-span-6">
                 <label for="name" class="label">Name</label>
@@ -34,37 +34,37 @@
 
         <template #actions>
             <Button
-                v-if="useInertia"
                 type="button"
-                @click="handleCancel"
-                :class="{ 'opacity-25': form.processing }"
+                @click="$emit('cancel')"
+                :class="{ 'opacity-25': isProcessing }"
                 error
                 outline
-                :disabled="form.processing"
+                :disabled="isProcessing"
             >
                 Cancel
             </Button>
             <div class="flex-grow" />
             <Button
                 class="btn-secondary"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.isDirty"
-                :loading="form.processing"
+                :class="{ 'opacity-25': isProcessing }"
+                :disabled="isProcessing"
+                :loading="isProcessing"
             >
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import Spinner from "@/Components/Spinner.vue";
 import { useGymRevForm } from "@/utils";
 import SmsFormControl from "@/Components/SmsFormControl.vue";
 import Button from "@/Components/Button.vue";
+
 import queries from "@/gql/queries";
 import JetInputError from "@/Jetstream/InputError.vue";
 import { useMutation } from "@vue/apollo-composable";
@@ -74,47 +74,71 @@ const props = defineProps({
     template: {
         type: Object,
         default: {
-            markup: null,
-            name: null,
-            active: false,
+            name: "",
+            markup: "",
+            active: true,
         },
     },
     editParam: {
         type: [String, Object],
         default: null,
     },
-    createParam: {
-        type: [String, Object],
-        default: null,
-    },
 });
+
+// TODO: need to get this from gql somehow
+const canActivate = ref(false);
+const isProcessing = ref(false);
 
 const { mutate: createSmsTemplate } = useMutation(mutations.smsTemplate.create);
 const { mutate: updateSmsTemplate } = useMutation(mutations.smsTemplate.update);
 
-const emit = defineEmits(["cancel", "close"]);
+const emit = defineEmits(["cancel", "done"]);
 
 let operation = computed(() => {
-    return typeof props.template.name === "string" ? "Update" : "Create";
+    return props.editParam !== null ? "Update" : "Create";
+});
+
+let operFn = computed(() => {
+    return operation.value === "Update" ? updateSmsTemplate : createSmsTemplate;
 });
 
 const form = useGymRevForm(props.template);
 
-let handleSubmit = () => {
-    let endpoint = operation.value === "Update" ? "update" : "store";
-    let crudOper = operation.value === "Update" ? "put" : "post";
-    let axiosFn = axios[crudOper];
+const handleOperation = async () => {
+    isProcessing.value = true;
+    let rawData = {
+        id: form.id,
+        name: form.name,
+        markup: form.markup,
+        active: form.active,
+    };
+    if (props.editParam === null) delete rawData.id;
 
-    axiosFn(route("mass-comms.sms-templates." + endpoint), form.data())
-        .then(({ data }) => {
-            emit("done", data);
-        })
-        .catch((err) => {
-            emit("error", err);
-        });
+    const { data } = await operFn.value({
+        input: rawData,
+    });
+
+    let savedTemplate = data["createSmsTemplate"] ?? data["updateSmsTemplate"];
+
+    isProcessing.value = false;
+    emit("done", savedTemplate);
 };
 
-const handleCancel = () => {
-    Inertia.visit(route("mass-comms.sms-templates"));
-};
+// let handleSubmit = () => {
+//     let endpoint = operation.value === "Update" ? "update" : "store";
+//     let crudOper = operation.value === "Update" ? "put" : "post";
+//     let axiosFn = axios[crudOper];
+
+//     axiosFn(route("mass-comms.sms-templates." + endpoint), form.data())
+//         .then(({ data }) => {
+//             emit("done", data);
+//         })
+//         .catch((err) => {
+//             emit("error", err);
+//         });
+// };
+
+// const handleCancel = () => {
+//     Inertia.visit(route("mass-comms.sms-templates"));
+// };
 </script>
