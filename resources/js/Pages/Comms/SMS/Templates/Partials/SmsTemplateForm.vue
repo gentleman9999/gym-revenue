@@ -56,6 +56,15 @@
             </Button>
             <div class="flex-grow" />
             <Button
+                class="btn-primary"
+                @click="handleDuplicate"
+                :class="{ 'opacity-25': form.processing }"
+                :loading="form.processing"
+            >
+                Duplicate
+            </Button>
+            <div class="flex-grow" />
+            <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing || !form.isDirty"
@@ -167,7 +176,23 @@ export default {
             }
             Inertia.visit(route("mass-comms.sms-templates"));
         };
-        return { form, buttonText: operation, handleSubmit, handleCancel };
+        const handleDuplicate = () => {
+            form.post(route("mass-comms.sms-templates.duplicate"), form.data())
+                .then(({ data }) => {
+                    console.log("closeAfterSave", data);
+                    emit("done", data);
+                })
+                .catch((err) => {
+                    emit("error", err);
+                });
+        };
+        return {
+            form,
+            buttonText: operation,
+            handleSubmit,
+            handleCancel,
+            handleDuplicate,
+        };
     },
 };
 </script>

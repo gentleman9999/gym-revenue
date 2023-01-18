@@ -6,8 +6,10 @@ namespace App\Domain\Templates\SmsTemplates\Projections;
 
 use App\Domain\Templates\Services\Interfaces\TemplateParserInterface;
 use App\Domain\Templates\Services\Traits\TemplateParserTrait;
+use App\Domain\Templates\SmsTemplates\SmsTemplateAggregate;
 use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
+use App\Models\Traits\Duplicateable;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
@@ -20,6 +22,7 @@ class SmsTemplate extends GymRevProjection implements TemplateParserInterface
     use SoftDeletes;
     use Sortable;
     use TemplateParserTrait;
+    use Duplicateable;
 
     protected $fillable = [
         'name', 'markup', 'active', 'details',
@@ -66,5 +69,10 @@ class SmsTemplate extends GymRevProjection implements TemplateParserInterface
     public function gateway(): Collection
     {
         return new Collection($this->details->where('field', 'sms_gateway')->where('active', 1));
+    }
+
+    public static function getAggregate(): SmsTemplateAggregate
+    {
+        return new SmsTemplateAggregate();
     }
 }
