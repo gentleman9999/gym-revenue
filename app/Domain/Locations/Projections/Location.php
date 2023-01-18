@@ -12,7 +12,6 @@ use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -46,7 +45,7 @@ class Location extends GymRevProjection
 
     protected $casts = [
         'location_type' => LocationType::class,
-        'details' => AsCollection::class,
+        'details' => 'array',
     ];
 
     protected const DELETED_AT = 'closed_at';
@@ -66,29 +65,29 @@ class Location extends GymRevProjection
         return $this->belongsTo(Client::class);
     }
 
-    public function poc_phone_detail(): HasOne
+    public function poc_phone_detail(): string
     {
-        return $this->detail->whereField('poc_phone');
+        return $this->detail['poc_phone'];
     }
 
-    public function pocFirstDetail(): HasOne
+    public function pocFirstDetail(): string
     {
-        return $this->detail->whereField('poc_first');
+        return $this->detail['poc_first'];
     }
 
-    public function pocLastDetail(): HasOne
+    public function pocLastDetail(): string
     {
-        return $this->detail->whereField('poc_last');
+        return $this->detail['poc_last'];
     }
 
     public function getPocLastAttribute(): string | null
     {
-        return $this->pocLastDetail->value ?? null;
+        return $this->pocLastDetail() ?? null;
     }
 
     public function getPocFirstAttribute(): string | null
     {
-        return $this->pocFirstDetail->value ?? null;
+        return $this->pocFirstDetail() ?? null;
     }
 
     public function getPocPhoneAttribute(): string | null
