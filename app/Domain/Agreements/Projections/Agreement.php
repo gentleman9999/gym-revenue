@@ -11,18 +11,19 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
+use CapeAndBay\Versionable\Versionable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Overtrue\LaravelVersionable\Versionable;
 
 class Agreement extends GymRevProjection
 {
     use HasFactory;
     use SoftDeletes;
-    /** @see https://github.com/overtrue/laravel-versionable */
+    /** @see https://github.com/GymRevenue/versionable */
     use Versionable;
+
 
     protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id', 'user_id', 'agreement_template_id', 'active', 'contract_file_id'];
 
