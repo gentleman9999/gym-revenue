@@ -37,9 +37,8 @@ class UsersController extends Controller
             $locations = Location::all();
             $teams = Team::findMany(Client::with('teams')->find($client_id)->teams()->get()->pluck('id'));
             $clientName = $client->name;
-
         }
-//TODO: we should not need to pass anything back but filters maybe?
+        //TODO: we should not need to pass anything back but filters maybe?
         return Inertia::render('Users/Show', [
             'filters' => $request->all($filterKeys),
             'clubs' => $locations,
@@ -94,7 +93,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files', 'contact_preference', 'emergencyContact');//TODO:get rid of loading all details here.
+        $user->load('notes', 'files', 'contact_preference', 'emergencyContact');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
@@ -123,7 +122,7 @@ class UsersController extends Controller
 
             return Redirect::back();
         }
-        $user->load('details', 'teams', 'files');//TODO: get rid of loading all details here.
+        $user->load('teams', 'files');//TODO: get rid of loading all details here.
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
         $data['role'] = $user->getRole();

@@ -10,8 +10,6 @@ class Member extends EndUser
 {
     protected $table = 'members';
 
-    protected $appends = ['details_desc'];
-
     protected static function booted(): void
     {
         parent::booted();

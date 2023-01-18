@@ -8,7 +8,7 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class FileCreated extends ShouldBeStored
 {
-    public function __construct(public ?string $user = null, public array $data = [], public object $model)
+    public function __construct(public object $model, public ?string $user = null, public array $data = [])
     {
     }
 }

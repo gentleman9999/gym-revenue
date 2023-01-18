@@ -63,7 +63,10 @@ class UserActivityProjector extends Projector
         $user = User::findOrFail($event->aggregateRootUuid());
 
         if ($user->user_type == UserTypesEnum::EMPLOYEE) {
-            $user->details[UserHistoryTypeEnum::COLUMN_CONFIG->value] = [$event->table => $event->fields] ;
+            $details = $user->details;
+            $details[UserHistoryTypeEnum::COLUMN_CONFIG->value] = [$event->table => $event->fields] ;
+            $user->details;
+            $user->save();
         }
     }
 
