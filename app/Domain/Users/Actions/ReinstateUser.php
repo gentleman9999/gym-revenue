@@ -19,7 +19,6 @@ class ReinstateUser
     public function handle(User $user): User
     {
         UserAggregate::retrieve($user->id)->reinstate()->persist();
-        ReflectUserData::run($user);
 
         return $user;
     }

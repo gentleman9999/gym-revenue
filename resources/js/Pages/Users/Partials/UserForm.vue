@@ -79,11 +79,12 @@
                     v-model="form.gender"
                     required
                 >
+                    <option value="" disabled>Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
                 </select>
-                <jet-input-error :message="form.errors.phone" class="mt-2" />
+                <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
 
             <!-- Address 1 -->
@@ -217,39 +218,39 @@
             <!-- Start Date -->
 
             <div class="form-control col-span-6 md:col-span-2">
-                <jet-label for="start_date" value="Date / Start of Work" />
+                <jet-label for="started_at" value="Date / Start of Work" />
                 <DatePicker
-                    v-model="form['start_date']"
+                    v-model="form['started_at']"
                     :enableTimePicker="false"
                     dark
                 />
                 <jet-input-error
-                    :message="form.errors.start_date"
+                    :message="form.errors.started_at"
                     class="mt-2"
                 />
             </div>
 
             <!-- End Date -->
             <div class="form-control col-span-6 md:col-span-2">
-                <jet-label for="end_date" value="Date / End of Work" />
+                <jet-label for="ended_at" value="Date / End of Work" />
                 <DatePicker
-                    v-model="form['end_date']"
+                    v-model="form['ended_at']"
                     :enableTimePicker="false"
                     dark
                 />
-                <jet-input-error :message="form.errors.end_date" class="mt-2" />
+                <jet-input-error :message="form.errors.ended_at" class="mt-2" />
             </div>
 
             <!-- Termination Date -->
             <div class="form-control col-span-6 md:col-span-2">
-                <jet-label for="termination_date" value="Date of Termination" />
+                <jet-label for="terminated_at" value="Date of Termination" />
                 <DatePicker
-                    v-model="form['termination_date']"
+                    v-model="form['terminated_at']"
                     :enableTimePicker="false"
                     dark
                 />
                 <jet-input-error
-                    :message="form.errors.termination_date"
+                    :message="form.errors.terminated_at"
                     class="mt-2"
                 />
             </div>
@@ -627,9 +628,9 @@ if (user) {
         city: "",
         team_id,
         notes: { title: "", note: "" },
-        start_date: "",
-        end_date: "",
-        termination_date: "",
+        started_at: "",
+        ended_at: "",
+        terminated_at: "",
         state: "",
         zip: "",
         job_title: "",
@@ -643,9 +644,9 @@ if (user) {
     if (isClientUser) {
         user.home_location_id = null;
         user.notes = { title: "", note: "" };
-        user.start_date = null;
-        user.end_date = null;
-        user.termination_date = null;
+        user.started_at = null;
+        user.ended_at = null;
+        user.terminated_at = null;
         user.role_id = null;
         // user.departments = {
         //
@@ -723,10 +724,10 @@ const transformFormSubmission = (data) => {
     if (!data.notes?.title) {
         delete data.notes;
     }
-    if (data?.start_date) {
-        data.start_date = transformDate(data.start_date);
-        data.end_date = transformDate(data.end_date);
-        data.termination_date = transformDate(data.termination_date);
+    if (data?.started_at) {
+        data.started_at = transformDate(data.started_at);
+        data.ended_at = transformDate(data.ended_at);
+        data.terminated_at = transformDate(data.terminated_at);
     }
     return data;
 };
@@ -735,31 +736,31 @@ const { mutate: createUser } = useMutation(mutations.user.create);
 const { mutate: updateUser } = useMutation(mutations.user.update);
 
 let handleSubmit = async () => {
-    await updateUser({
-        input: {
-            id: user.id,
-            first_name: form.first_name,
-            last_name: form.last_name,
-            email: form.email,
-            alternate_email: form.alternate_email,
-            address1: form.address1,
-            address2: form.address2,
-            phone: form.phone,
-            city: form.city,
-            state: form.state,
-            zip: form.zip + "",
-            contact_preference: form.contact_preference,
-            start_date: form.start_date,
-            end_date: form.end_date,
-            termination_date: form.termination_date,
-            notes: form.notes,
-            client_id: null,
-            team_id: form.team_id,
-            role_id: form.role_id,
-            home_location_id: null,
-            manager: null,
-        },
-    });
+    console.log('form post', JSON.stringify( form.dirtyData) )
+    // await updateUser({
+    //     input: {
+    //         id: user.id,
+    //         first_name: form.first_name,
+    //         last_name: form.last_name,
+    //         email: form.email,
+    //         alternate_email: form.alternate_email,
+    //         address1: form.address1,
+    //         address2: form.address2,
+    //         phone: form.phone,
+    //         city: form.city,
+    //         state: form.state,
+    //         zip: form.zip + "",
+    //         contact_preference: form.contact_preference,
+    //         started_at: form.started_at,
+    //         ended_at: form.ended_at,
+    //         terminated_at: form.terminated_at,
+    //         notes: form.notes,
+    //         team_id: form.team_id,
+    //         role_id: form.role_id,
+    //         home_location_id: null,
+    //         manager: null,
+    //     },
+    // });
     handleClickCancel();
 };
 
@@ -779,11 +780,10 @@ if (operation === "Create") {
                 state: form.state,
                 zip: form.zip + "",
                 contact_preference: form.contact_preference,
-                start_date: form.start_date,
-                end_date: form.end_date,
-                termination_date: form.termination_date,
+                started_at: form.started_at,
+                ended_at: form.ended_at,
+                terminated_at: form.terminated_at,
                 notes: form.notes,
-                client_id: null,
                 team_id: form.team_id,
                 role_id: form.role_id,
                 home_location_id: null,

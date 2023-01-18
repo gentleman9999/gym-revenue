@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Users\Actions;
+namespace App\Domain\Users\Services\Helpers;
 
 use App\Domain\Users\Models\DataReflectors\CustomerReflection as Customer;
 use App\Domain\Users\Models\DataReflectors\EmployeeReflection as Employee;
@@ -11,17 +11,13 @@ use App\Domain\Users\Models\DataReflectors\MemberReflection as Member;
 use App\Domain\Users\Models\User;
 use App\Enums\UserTypesEnum;
 use Illuminate\Support\Facades\Schema;
-use Lorisleiva\Actions\Concerns\AsAction;
 
-//TODO: WTF  is this? ALL DATA MUTATIONS NEED TO BE IN PROJECTORS, AND ONLY IN PROJECTORS
-class ReflectUserData
+class UserDataReflector
 {
-    use AsAction;
-
-    public function handle(User $user, ?UserTypesEnum $previous_type = null): void
+    public static function reflectData(User $user, ?UserTypesEnum $previous_type = null): void
     {
-        $this->deleteRedundantReflection($user, $previous_type);
-        $reflection_model = $this->getReflectionModel($user->user_type, $user->id);
+        self::deleteRedundantReflection($user, $previous_type);
+        $reflection_model = self::getReflectionModel($user->user_type, $user->id);
         $cols = Schema::getColumnListing($user->getTable());
 
         foreach ($cols as $col) {
@@ -33,18 +29,18 @@ class ReflectUserData
         $reflection_model->save();
     }
 
-    protected function getReflectionModel(UserTypesEnum $user_type, string $id): Customer|Employee|Lead|Member
+    protected static function getReflectionModel(UserTypesEnum $user_type, string $id): Customer|Employee|Lead|Member
     {
-        $reflection_model = $this->fetchReflectionModel($user_type, $id);
+        $reflection_model = self::fetchReflectionModel($user_type, $id);
 
         if ($reflection_model == null) {
-            $reflection_model = $this->createReflectionModel($user_type, $id);
+            $reflection_model = self::createReflectionModel($user_type, $id);
         }
 
         return $reflection_model;
     }
 
-    protected function fetchReflectionModel(UserTypesEnum $user_type, string $id): Customer|Employee|Lead|Member|null
+    protected static function fetchReflectionModel(UserTypesEnum $user_type, string $id): Customer|Employee|Lead|Member|null
     {
         switch ($user_type) {
             case UserTypesEnum::CUSTOMER:
@@ -58,7 +54,7 @@ class ReflectUserData
         }
     }
 
-    protected function createReflectionModel(UserTypesEnum $user_type, string $id): Customer|Employee|Lead|Member
+    protected static function createReflectionModel(UserTypesEnum $user_type, string $id): Customer|Employee|Lead|Member
     {
         switch ($user_type) {
             case UserTypesEnum::CUSTOMER:
@@ -72,10 +68,10 @@ class ReflectUserData
         }
     }
 
-    protected function deleteRedundantReflection(User $user, ?UserTypesEnum $previous_type): void
+    protected static function deleteRedundantReflection(User $user, ?UserTypesEnum $previous_type): void
     {
         if ($previous_type != null && $user->user_type != $previous_type) {
-            $reflection_model = $this->fetchReflectionModel($previous_type, $user->id);
+            $reflection_model = self::fetchReflectionModel($previous_type, $user->id);
 
             if ($reflection_model) {
                 $reflection_model->delete();

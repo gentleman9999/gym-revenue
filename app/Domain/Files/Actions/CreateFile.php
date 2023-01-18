@@ -38,7 +38,7 @@ class CreateFile extends GymRevAction
 
     public function handle($data, $model, ?User $user = null): File
     {
-        FileAggregate::retrieve($data['id'])->create((string) $user?->id, $data, $model)->persist();
+        FileAggregate::retrieve($data['id'])->create($model, (string) $user?->id, $data)->persist();
 
         return File::findOrFail($data['id']);
     }

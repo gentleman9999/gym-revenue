@@ -501,7 +501,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('structured-documents')-
 
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('agreement')->group(function () {
-    Route::post('/pdf/sign', \App\Domain\Agreements\Actions\SignAgreement::class)->name('agreement.pdf.sign');
+    Route::post('/pdf/sign/{agreement_id}', \App\Domain\Agreements\Actions\SignAgreement::class)->name('agreement.pdf.sign');
     Route::get('/pdf/{agreement_id}', \App\Http\Controllers\AgreementController::class . '@viewAgreementPDF')->name('agreement.pdf');
 });
 

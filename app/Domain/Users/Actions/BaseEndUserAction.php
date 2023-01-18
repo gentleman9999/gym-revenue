@@ -2,7 +2,7 @@
 
 namespace App\Domain\Users\Actions;
 
-use App\Domain\EndUsers\Projections\EndUser;
+use App\Domain\Users\Models\EndUser;
 use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\Concerns\AsAction;
 

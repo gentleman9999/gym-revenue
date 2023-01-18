@@ -53,10 +53,12 @@ class Client extends GymRevProjection
     protected $fillable = [
         'name',
         'active',
+        'details',
     ];
 
     protected $casts = [
         'services' => 'array',
+        'details' => 'array',
     ];
 
     /**
@@ -72,11 +74,6 @@ class Client extends GymRevProjection
     public function locations(): HasMany
     {
         return $this->hasMany(Location::class);
-    }
-
-    public function details(): HasMany
-    {
-        return $this->hasMany(ClientDetail::class);
     }
 
     public function lead_types(): HasMany
@@ -97,11 +94,6 @@ class Client extends GymRevProjection
     public function trial_membership_types(): HasMany
     {
         return $this->hasMany(TrialMembershipType::class);
-    }
-
-    public function detail(): HasOne
-    {
-        return $this->hasOne(ClientDetail::class);
     }
 
     public function home_team(): HasOne
@@ -260,5 +252,10 @@ class Client extends GymRevProjection
     public function files(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable');
+    }
+
+    public function getDetailsAttribute(): array
+    {
+        return $this->details ?? [];
     }
 }

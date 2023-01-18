@@ -11,9 +11,9 @@ use App\Domain\Users\Events\EndUserWasTextMessagedByRep;
 use App\Domain\Users\Events\UserReceivedEmail;
 use App\Domain\Users\Events\UserReceivedTextMsg;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
-use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Services\Helpers\UserDataReflector;
 use App\Enums\UserHistoryTypeEnum;
 use App\Enums\UserTypesEnum;
 use App\Models\Note;
@@ -63,7 +63,10 @@ class UserActivityProjector extends Projector
         $user = User::findOrFail($event->aggregateRootUuid());
 
         if ($user->user_type == UserTypesEnum::EMPLOYEE) {
-            $user->details[UserHistoryTypeEnum::COLUMN_CONFIG->value] = [$event->table => $event->fields] ;
+            $details = $user->details;
+            $details[UserHistoryTypeEnum::COLUMN_CONFIG->value] = [$event->table => $event->fields] ;
+            $user->details;
+            $user->save();
         }
     }
 
@@ -165,7 +168,8 @@ class UserActivityProjector extends Projector
 
     public function onEndUserUpdatedCommunicationPreferences(EndUserUpdatedCommunicationPreferences $event): void
     {
-        $end_user = $this->getModel()::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
+        $end_user = User::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
         $end_user->forceFill(['unsubscribed_email' => $event->email, 'unsubscribed_sms' => $event->sms])->save();
+        UserDataReflector::reflectData($end_user);
     }
 }

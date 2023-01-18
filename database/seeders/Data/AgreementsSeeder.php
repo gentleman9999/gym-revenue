@@ -61,10 +61,9 @@ class AgreementsSeeder extends Seeder
                                 $agreement = CreateAgreement::run($agreement_data);
 
                                 VarDumper::dump('Signing Agreements for ' . $client->name . '!');
-                                $sign_agreement_data['id'] = $agreement->id;
                                 $sign_agreement_data['user_id'] = $enduser_id;
                                 $sign_agreement_data['active'] = true;
-                                SignAgreement::run($sign_agreement_data);
+                                SignAgreement::run($sign_agreement_data, $agreement->id);
                             }
                         }
                     }

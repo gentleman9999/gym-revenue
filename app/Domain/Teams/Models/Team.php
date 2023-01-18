@@ -3,7 +3,6 @@
 namespace App\Domain\Teams\Models;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\Clients\Projections\ClientDetail;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Database\Factories\TeamFactory;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -47,6 +45,7 @@ class Team extends JetstreamTeam
      */
     protected $casts = [
         'home_team' => 'boolean',
+        'details' => 'array',
     ];
 
     /**
@@ -95,26 +94,9 @@ class Team extends JetstreamTeam
         return TeamFactory::new();
     }
 
-    public function details(): HasMany
+    public function locations(): array
     {
-        return $this->hasMany('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
-    }
-
-    public function detail(): HasOne
-    {
-        return $this->hasOne('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
-    }
-
-    public function locations(): HasMany
-    {
-        return $this->details()->whereField('team-location');
-    }
-
-    public function default_team_details(): HasOne
-    {
-        return $this->hasOne(ClientDetail::class, 'value', 'id')
-            ->where('detail', '=', 'default-team')
-            ->with('client');
+        return $this->details['team-locations'];
     }
 
     public static function fetchTeamIDFromName(string $name)
@@ -139,7 +121,7 @@ class Team extends JetstreamTeam
 
     public function isClientsDefaultTeam(): bool
     {
-        $proof = $this->default_team_details()->first();
+        $proof = Client::where('details->default-team', $this->id)->first();
 
         return (! is_null($proof));
     }

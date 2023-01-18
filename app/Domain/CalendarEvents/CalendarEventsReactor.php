@@ -4,8 +4,6 @@ namespace App\Domain\CalendarEvents;
 
 use App\Domain\CalendarEvents\Events\CalendarEventCreated;
 use App\Domain\CalendarEvents\Events\CalendarEventFileUploaded;
-use App\Domain\CalendarEvents\Events\CalendarEventNotified;
-use App\Domain\Notifications\Actions\CreateNotification;
 use App\Domain\Reminders\Actions\CreateReminder;
 use App\Domain\Users\Models\User;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
@@ -33,21 +31,5 @@ class CalendarEventsReactor extends Reactor
         $model = CalendarEvent::find($data['entity_id']);
 
         \App\Actions\Clients\Files\CreateFile::run($data, $model, User::find($event->userId()));
-    }
-
-    public function onCalendarEventNotified(CalendarEventNotified $event): void
-    {
-        CreateNotification::run([
-            'user_id' => $event->payload['owner_id'],
-            'state' => 'warning',
-            'text' => "Task ".$event->payload['title']." Overdue!",
-            'entity_type' => CalendarEvent::class,
-            'entity_id' => $event->payload['id'],
-            'entity' => ['start' => $event->payload['start'], 'title' => 'Task '.$event->payload['title'].' Overdue', 'type' => 'TASK_OVERDUE'],
-            'type' => 'TASK_OVERDUE',
-            'misc' => [
-                'remind_time' => 1,
-            ],
-        ], User::find($event->payload['owner_id']));
     }
 }

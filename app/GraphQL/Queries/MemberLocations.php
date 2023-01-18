@@ -5,7 +5,6 @@ namespace App\GraphQL\Queries;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Teams\Models\TeamDetail;
 
 final class MemberLocations
 {
@@ -40,18 +39,10 @@ final class MemberLocations
                 $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('field', '=', 'team-location')
-                    ->get();
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
-                    $in_query = [];
-                    // so get the teams listed in team_details
-                    foreach ($team_locations as $team_location) {
-                        $in_query[] = $team_location->value;
-                    }
-
-                    $results = Location::whereIn('gymrevenue_id', $in_query);
+                    $results = Location::whereIn('gymrevenue_id', $team_locations);
                 }
             }
         } else {

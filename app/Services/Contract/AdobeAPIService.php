@@ -212,7 +212,7 @@ class AdobeAPIService
                 $file_table_data['fileable_type'] = Contract::class;
                 $file_table_data['fileable_id'] = $this->client_data['entity_id'];
                 $file_table_data['is_hidden'] = false;
-                $file_table_data['type'] = 'pdf';
+                $file_table_data['type'] = 'unsigned';
 
                 $file = File::create($file_table_data);
                 $file->save();

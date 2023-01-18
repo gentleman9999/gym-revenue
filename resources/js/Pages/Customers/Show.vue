@@ -11,7 +11,7 @@
             :opportunity="customer.opportunity"
             :email="customer.email"
             :phone="customer.primary_phone"
-            :details="customer.details_desc"
+            :details="customer.details"
             ref="customerInteractionRef"
             :selectedLeadDetailIndex="selectedLeadDetailIndex"
             :trial-dates="trialDates"

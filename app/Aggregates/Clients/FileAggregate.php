@@ -17,9 +17,9 @@ class FileAggregate extends AggregateRoot
 
     protected static bool $allowConcurrency = true;
 
-    public function create(?string $userId = null, array $data = [], object $model)
+    public function create(object $model, ?string $userId = null, array $data = [])
     {
-        $this->recordThat(new FileCreated($userId, $data, $model));
+        $this->recordThat(new FileCreated($model, $userId, $data));
 
         return $this;
     }

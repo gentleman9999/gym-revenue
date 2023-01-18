@@ -22,7 +22,6 @@ class DeleteUser implements DeletesUsers
     public function handle(User $user): bool
     {
         UserAggregate::retrieve($user->id)->delete()->persist();
-        ReflectUserData::run($user);
 
         return true;
     }

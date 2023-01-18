@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -82,8 +83,6 @@ class CreateUser implements CreatesNewUsers
             UserAggregate::retrieve($created_user->id)->sendWelcomeEmail()->persist();
         }
 
-        ReflectUserData::run($created_user);
-
         return $created_user;
     }
 
@@ -115,19 +114,22 @@ class CreateUser implements CreatesNewUsers
      */
     public function rules(): array
     {
-        $current_route = Route::currentRouteName();
+        return ValidationRules::getValidationRules(request()->user_type, true);
+    }
 
-        if ($current_route == 'users.store') {
-            $user_type = UserTypesEnum::EMPLOYEE;
-        } elseif ($current_route == 'data.leads.store') {
-            $user_type = UserTypesEnum::LEAD;
-        } elseif ($current_route == 'data.members.store') {
-            $user_type = UserTypesEnum::MEMBER;
-        } else {
-            $user_type = UserTypesEnum::CUSTOMER;
-        }
-
-        return ValidationRules::getValidationRules($user_type, true);
+    /**
+     * Validate the address provided using USPS API after main rules
+     * Which also sends back correct address1, city and state
+     *
+     * @return void
+     */
+    public function afterValidator(Validator $validator, ActionRequest $request): void
+    {
+        /**
+         * @TODO: Send the suggestion data back to UI, and display to the User.
+         * They can make a choice (confirm/cancel), and have it update if confirmed
+         */
+        session()->forget('address_validation');
     }
 
     public function getControllerMiddleware(): array
@@ -149,12 +151,6 @@ class CreateUser implements CreatesNewUsers
             /** @TODO: Need to update with what entry_source data should be */
             $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
         }
-
-        $request->mergeIfMissing([
-            'started_at' => $request->start_date,
-            'ended_at' => $request->end_date,
-            'terminated_at' => $request->termination_date,
-        ]);
     }
 
     /**
@@ -194,7 +190,7 @@ class CreateUser implements CreatesNewUsers
     public function asController(ActionRequest $request): User
     {
         return $this->handle(
-            $request->validated(),
+            $request->validated()
         );
     }
 
@@ -202,10 +198,17 @@ class CreateUser implements CreatesNewUsers
     {
         $type = $user->user_type == UserTypesEnum::EMPLOYEE->value ? 'User' : ucwords($user->user_type->value);
         Alert::success("{$type} '{$user->name}' was created")->flash();
+        $route = 'data.customers';
 
-        return $user->user_type == UserTypesEnum::EMPLOYEE ?
-            Redirect::route('users.edit', $user->id) :
-            Redirect::back();
+        if ($user->user_type == UserTypesEnum::EMPLOYEE) {
+            $route = 'users';
+        } elseif ($user->user_type == UserTypesEnum::LEAD) {
+            $route = 'data.leads';
+        } elseif ($user->user_type == UserTypesEnum::MEMBER) {
+            $route = 'data.members';
+        }
+
+        return Redirect::route($route);
     }
 
     public function asCommand(Command $command): void
@@ -410,5 +413,12 @@ class CreateUser implements CreatesNewUsers
 
         return in_array($user_type, UserTypesEnum::cases()) ?
             $user_type : UserTypesEnum::LEAD;
+    }
+
+    public function getValidationAttributes(): array
+    {
+        return [
+            'addres1' => 'address line 1',
+        ];
     }
 }

@@ -12,7 +12,6 @@ use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Clients\Projections\ClientActivity;
-use App\Domain\Clients\Projections\ClientDetail;
 use App\Models\ClientCommunicationPreference;
 use App\Models\ClientEmailLog;
 use App\Models\Clients\ClientBillableActivity;
@@ -27,7 +26,6 @@ class ClientCrudProjector extends Projector
         Client::truncate();
         ClientActivity::truncate();
         ClientBillableActivity::truncate();
-        ClientDetail::truncate();
         ClientEmailLog::truncate();
         ClientGatewayIntegration::truncate();
         ClientGatewaySetting::truncate();

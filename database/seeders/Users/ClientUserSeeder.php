@@ -68,11 +68,17 @@ class ClientUserSeeder extends Seeder
 
                     foreach ($users as $user) {
                         $client = Client::whereName($user['client'])->first();
-                        $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
+                        $teams = Team::whereIn('name', $user['team_names'])->get();
                         $team_ids = $teams->pluck('id');
-                        $possible_home_locations = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
-                        if ($possible_home_locations->count() > 0) {
-                            $home_location_id = $possible_home_locations[random_int(0, $possible_home_locations->count() - 1)];
+                        // $possible_home_locations = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
+                        $possible_home_locations = [];
+
+                        foreach ($teams as $team) {
+                            $possible_home_locations = array_merge($possible_home_locations, $team->locations());
+                        }
+
+                        if (sizeof($possible_home_locations) > 0) {
+                            $home_location_id = $possible_home_locations[array_rand($possible_home_locations)];
                         } else {
                             $home_location_id = null;
                         }

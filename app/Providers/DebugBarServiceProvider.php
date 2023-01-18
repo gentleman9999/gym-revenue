@@ -12,8 +12,11 @@ class DebugBarServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        (env('APP_ENV') <> 'local' ? Debugbar::disable() : Debugbar::enable());
+        $isPackageInstalled = $this->app->environment(['development', 'local']);
+        if($isPackageInstalled){
+            (env('APP_ENV') <> 'local' ? Debugbar::disable() : Debugbar::enable());
+        }
     }
 }

@@ -9,7 +9,6 @@ use App\Domain\Templates\EmailTemplates\Events\EmailTemplateThumbnailUpdated;
 use App\Domain\Templates\EmailTemplates\Events\EmailTemplateTrashed;
 use App\Domain\Templates\EmailTemplates\Events\EmailTemplateUpdated;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
-use App\Domain\Templates\EmailTemplates\Projections\EmailTemplateDetails;
 use App\Domain\Users\Models\User;
 use Illuminate\Support\Facades\DB;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -65,7 +64,6 @@ class EmailTemplateProjector extends Projector
     {
         DB::transaction(function () use ($event) {
             EmailTemplate::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->delete();
-            EmailTemplateDetails::withTrashed()->whereEmailTemplateId($event->aggregateRootUuid())->delete();
         });
     }
 
@@ -73,7 +71,6 @@ class EmailTemplateProjector extends Projector
     {
         DB::transaction(function () use ($data, $event) {
             EmailTemplate::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->restore();
-            EmailTemplateDetails::withTrashed()->whereEmailTemplateId($event->aggregateRootUuid())->restore();
         });
     }
 
@@ -81,7 +78,6 @@ class EmailTemplateProjector extends Projector
     {
         DB::transaction(function () use ($event) {
             EmailTemplate::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->forceDelete();
-            EmailTemplateDetails::withTrashed()->whereEmailTemplateId($event->aggregateRootUuid())->forceDelete();
         });
     }
 
