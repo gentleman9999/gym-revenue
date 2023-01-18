@@ -64,7 +64,7 @@ class HandleInertiaRequests extends Middleware
                 return $r;
             })->pluck('name');
 
-            $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($user->client_id);
+            $client = Client::with(['trial_membership_types', 'locations'])->find($user->client_id);
             $shared = [
                 'user.id' => $user->id,
                 'user.contact_preference' => $user->contact_preference,

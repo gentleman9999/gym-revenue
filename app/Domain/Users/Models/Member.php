@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Users\Models;
 
 use App\Scopes\ClientScope;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Member extends EndUser
 {
@@ -17,10 +16,5 @@ class Member extends EndUser
     {
         parent::booted();
         static::addGlobalScope(new ClientScope());
-    }
-
-    public function getDetailsDescAttribute(): HasMany
-    {
-        return $this->detailsDesc();
     }
 }

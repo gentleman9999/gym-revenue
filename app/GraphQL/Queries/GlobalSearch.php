@@ -3,9 +3,9 @@
 namespace App\GraphQL\Queries;
 
 use App\Domain\CalendarEvents\CalendarEvent;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Reminders\Reminder;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Models\File;
 use App\Models\Note;

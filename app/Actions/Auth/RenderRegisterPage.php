@@ -75,8 +75,12 @@ class RenderRegisterPage
 
                             if (! is_null($client)) {
                                 // Get the AuthCardLogo svg markup from Client Details or fail scenario
-                                $logo_record = array_key_exists('registration-logo', $client->details) ?
-                                    $client->details['registration-logo'] : null;
+                                $logo_record = null;
+
+                                if (! is_null($client->details)) {
+                                    $logo_record = array_key_exists('registration-logo', $client->details) ?
+                                        $client->details['registration-logo'] : null;
+                                }
 
                                 $passing_props['extra-img'] = $logo_record->value;
                                 if (! is_null($logo_record)) {

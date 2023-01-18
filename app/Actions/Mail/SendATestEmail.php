@@ -44,8 +44,7 @@ class SendATestEmail
 
                 $client_id = null;
                 if (! is_null($current_team_id)) {
-                    $client = Client::where('details->field', 'team')
-                        ->where('value', $current_team_id)->first();
+                    $client = Client::whereJsonContains('details->teams', $current_team_id)->first();
 
                     $client_id = $client->id ?? null;
                 }

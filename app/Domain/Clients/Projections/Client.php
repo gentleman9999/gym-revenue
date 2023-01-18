@@ -253,4 +253,9 @@ class Client extends GymRevProjection
     {
         return $this->morphMany(File::class, 'fileable');
     }
+
+    public function getDetailsAttribute(): array
+    {
+        return $this->details ?? [];
+    }
 }

@@ -12,9 +12,9 @@ use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Enums\ClientServiceEnum;
 use App\Enums\SecurityGroupEnum;
-use Bouncer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Database\Role;
 use Tests\TestCase;
 
