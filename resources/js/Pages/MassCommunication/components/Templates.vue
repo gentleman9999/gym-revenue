@@ -110,7 +110,7 @@
     >
         <email-template-form
             :template="editingTemplate"
-            :editParam="emailEditParam"
+            :editParam="editParam"
             :createParam="emailCreateParam"
             @done="handleBuilderDone"
             @cancel="handleCancelBuilder"
@@ -127,7 +127,6 @@
         class="bg-neutral"
     >
         <sms-template-form
-            :editParam="null"
             @done="handleBuilderDone"
             @cancel="handleCancelBuilder"
         />
@@ -164,12 +163,47 @@
         </ApolloQuery>
     </div>
 
+    <!-- Call script Create -->
     <call-script
-        v-if="templateBuilderStep && template_type === 'call'"
-        :template_item="editingTemplate"
+        v-if="
+            templateBuilderStep &&
+            template_type === 'call' &&
+            builderOperation === 'create'
+        "
         @done="handleBuilderDone"
         @cancel="handleCancelBuilder"
     />
+
+    <!-- Call script Edit -->
+
+    <template
+        v-if="
+            templateBuilderStep &&
+            template_type === 'call' &&
+            builderOperation === 'edit'
+        "
+    >
+        <ApolloQuery
+            :query="(gql) => queries.callTemplate[builderOperation]"
+            :variables="editParam"
+        >
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <template v-if="isLoading">
+                    <div class="shadow border border-secondary rounded-lg p-6">
+                        <Spinner />
+                    </div>
+                </template>
+
+                <call-script
+                    v-if="!isLoading && !!data"
+                    :editParam="editParam"
+                    :template="data['callTemplate']"
+                    @done="handleBuilderDone"
+                    @cancel="handleCancelBuilder"
+                />
+            </template>
+        </ApolloQuery>
+    </template>
 </template>
 
 <style scoped>
@@ -216,20 +250,13 @@ const param = ref({
     page: 1,
 });
 
+const hasInitialized = ref(false);
 const editParam = ref(null);
 const builderOperation = ref(null);
 
 /**
  * Params for forms to determine their operations
  */
-const emailEditParam = ref(null);
-const emailCreateParam = ref(null);
-
-const smsEditParam = ref(null);
-const smsCreateParam = ref(null);
-
-const callEditParam = ref(null);
-const callCreateParam = ref(null);
 
 const isLoadingList = ref(true);
 
@@ -272,8 +299,6 @@ const handleNewTemplate = () => {
 };
 
 const handleEditTemplate = (templateId) => {
-    // let t = props.templates.filter((o) => o.id === templateId)[0];
-    // editingTemplate.value = t;
     builderOperation.value = "edit";
     editParam.value = {
         id: templateId,

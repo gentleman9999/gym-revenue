@@ -15,7 +15,8 @@
                 <label for="callscriptname" class="mt-4">Name</label>
                 <input
                     id="callscriptname"
-                    v-model="scriptName"
+                    :disabled="isProcessing"
+                    v-model="form.name"
                     placeholder="Call Script Name"
                     type="text"
                     class="border-secondary bg-primary-content mt-1"
@@ -24,7 +25,8 @@
                 <label for="callscriptscript" class="mt-4">Script</label>
                 <textarea
                     id="callscriptscript"
-                    v-model="scriptMessage"
+                    :disabled="isProcessing"
+                    v-model="form.script"
                     rows="5"
                     class="border-secondary bg-primary-content resize-none mt-1"
                 ></textarea>
@@ -32,23 +34,23 @@
 
             <div class="flex justify-between">
                 <button
-                    :disabled="loading"
+                    :disabled="isProcessing"
                     @click="$emit('cancel')"
                     class="disabled:cursor-not-allowed disabled:opacity-25"
                 >
                     Cancel
                 </button>
                 <button
-                    @click="handleSubmit"
+                    @click="handleOperation"
                     class="px-2 py-1 border-secondary border rounded-md mt-4 bg-secondary transition-all text-base-content hover:bg-base-content hover:text-secondary disabled:opacity-25 disabled:cursor-not-allowed"
-                    :disabled="loading"
+                    :disabled="isProcessing"
                 >
                     Save
                 </button>
                 <button
                     @click="handleSubmit(true)"
                     class="px-2 py-1 border-secondary border rounded-md mt-4 bg-secondary transition-all text-base-content hover:bg-base-content hover:text-secondary disabled:opacity-25 disabled:cursor-not-allowed"
-                    :disabled="loading"
+                    :disabled="isProcessing"
                 >
                     One time use
                 </button>
@@ -60,72 +62,65 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { toastInfo, toastError } from "@/utils/createToast";
-import axios from "axios";
+import { useGymRevForm } from "@/utils";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
+const emit = defineEmits(["done", "cancel"]);
 const props = defineProps({
-    script: {
-        type: String,
-        default: "",
+    template: {
+        type: [Object, null],
+        default: {
+            name: "",
+            script: "",
+            active: true,
+        },
     },
-    name: {
-        type: String,
-        default: "",
-    },
-    template_item: {
+    editParam: {
         type: [Object, null],
         default: null,
     },
 });
 
-const emit = defineEmits(["done", "cancel"]);
+const isProcessing = ref(false);
 
-const scriptName = ref(props?.template_item?.name ?? "");
-const scriptMessage = ref(props?.template_item?.script ?? "");
-const loading = ref(false);
+const { mutate: createCallTemplate } = useMutation(
+    mutations.callTemplate.create
+);
+const { mutate: updateCallTemplate } = useMutation(
+    mutations.callTemplate.update
+);
 
-const checkInvalid = computed(() => {
-    if (scriptName.value?.trim() === "")
-        return "You must give your call script a name";
-    if (scriptMessage.value?.trim() === "")
-        return "You must provide a script for the phone call";
-    return false;
+const form = useGymRevForm(props.template);
+
+let operation = computed(() => {
+    return props.editParam !== null ? "Update" : "Create";
 });
 
-const handleSubmit = async (once = false) => {
-    if (loading.value) return;
-    if (typeof checkInvalid.value === "string")
-        return toastError(checkInvalid.value);
-    loading.value = true;
+let operFn = computed(() => {
+    return operation.value === "Update"
+        ? updateCallTemplate
+        : createCallTemplate;
+});
 
-    try {
-        const data = {
-            script: scriptMessage.value,
-            name: scriptName.value,
-            use_once: once,
-        };
+const handleOperation = async () => {
+    isProcessing.value = true;
+    let rawData = {
+        id: form?.id,
+        name: form?.name,
+        script: form?.script,
+        use_once: typeof form?.use_once === "boolean" ? form.use_once : false,
+        active: typeof form?.active === "boolean" ? form.active : false,
+    };
+    if (props.editParam === null) delete rawData.id;
 
-        const res =
-            typeof props?.template_item?.id === "undefined"
-                ? await axios.post(route("mass-comms.call-templates.store"), {
-                      ...data,
-                  })
-                : await axios.put(
-                      route(
-                          "mass-comms.call-templates.update",
-                          props.template_item.id
-                      ),
-                      { ...data }
-                  );
+    const { data } = await operFn.value({
+        input: rawData,
+    });
 
-        if (res.status === "OK" || res.status === 200 || res.status === 201) {
-            emit("done", { ...res.data, use_once: once });
-        }
-
-        loading.value = false;
-    } catch (err) {
-        console.log("error saving call template", err);
-        toastError("There was a problem creating your call script.");
-        loading.value = false;
-    }
+    let savedTemplate =
+        data["createCallScriptTemplate"] ?? data["updateCallScriptTemplate"];
+    toastInfo("Call Template " + operation.value + "d!");
+    emit("done", savedTemplate);
 };
 </script>

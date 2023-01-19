@@ -9,7 +9,11 @@ import {
     SMS_TEMPLATE_EDIT,
     SMS_TEMPLATE_CREATE,
 } from "./templates/sms";
-import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
+import {
+    CALL_TEMPLATES,
+    CALL_TEMPLATE_EDIT,
+    CALL_TEMPLATE_CREATE,
+} from "./templates/call";
 import { AUDIENCES, AUDIENCE_EDIT } from "./campaigns/audiences";
 import {
     DRIPCAMPAIGNS,
@@ -1248,6 +1252,7 @@ export default {
         edit: SMS_TEMPLATE_EDIT,
     },
     callTemplate: {
+        create: CALL_TEMPLATE_CREATE,
         edit: CALL_TEMPLATE_EDIT,
     },
     task: {

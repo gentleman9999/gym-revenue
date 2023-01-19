@@ -3,12 +3,19 @@
         <template #form>
             <div class="form-control col-span-6">
                 <label for="name" class="label">Name</label>
-                <input type="text" v-model="form.name" autofocus id="name" />
+                <input
+                    type="text"
+                    :disabled="isProcessing"
+                    v-model="form.name"
+                    autofocus
+                    id="name"
+                />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
             <div class="col-span-6">
                 <sms-form-control
                     v-model="form.markup"
+                    :disabled="isProcessing"
                     id="markup"
                     label="Template"
                 />
@@ -70,6 +77,8 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
 
+import { toastInfo, toastError } from "@/utils/createToast";
+
 const props = defineProps({
     template: {
         type: Object,
@@ -80,7 +89,7 @@ const props = defineProps({
         },
     },
     editParam: {
-        type: [String, Object],
+        type: [Object, null],
         default: null,
     },
 });
@@ -120,25 +129,8 @@ const handleOperation = async () => {
 
     let savedTemplate = data["createSmsTemplate"] ?? data["updateSmsTemplate"];
 
+    toastInfo("SMS Template " + operation.value + "d!");
     isProcessing.value = false;
     emit("done", savedTemplate);
 };
-
-// let handleSubmit = () => {
-//     let endpoint = operation.value === "Update" ? "update" : "store";
-//     let crudOper = operation.value === "Update" ? "put" : "post";
-//     let axiosFn = axios[crudOper];
-
-//     axiosFn(route("mass-comms.sms-templates." + endpoint), form.data())
-//         .then(({ data }) => {
-//             emit("done", data);
-//         })
-//         .catch((err) => {
-//             emit("error", err);
-//         });
-// };
-
-// const handleCancel = () => {
-//     Inertia.visit(route("mass-comms.sms-templates"));
-// };
 </script>
