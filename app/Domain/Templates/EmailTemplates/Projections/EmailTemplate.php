@@ -8,10 +8,8 @@ use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -29,7 +27,7 @@ class EmailTemplate extends GymRevProjection implements TemplateParserInterface
     ];
 
     protected $casts = [
-        'details' => AsCollection::class,
+        'details' => 'array',
         'json' => 'array',
         'thumbnail' => 'array',
     ];
@@ -79,9 +77,9 @@ class EmailTemplate extends GymRevProjection implements TemplateParserInterface
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
 
-    public function gateway(): Collection
+    public function gateway(): array
     {
-        return new Collection($this->details->where('field', 'email_gateway')->where('active', 1));
+        return $this->details['email_gateway'];
     }
 
     /**

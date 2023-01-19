@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Support\Collection;
 use Spatie\EventSourcing\Projections\Projection;
 
 /**
@@ -24,33 +23,5 @@ abstract class GymRevProjection extends Projection
     public function getRouteKeyName()
     {
         return 'id';
-    }
-
-    public function addOrUpdateDetails(string $field, ?string $value, $misc = null, $active = 1): void
-    {
-        $detail = [
-            'field' => $field,
-            'value' => $value,
-            'misc' => $misc,
-            'active' => $active,
-        ];
-
-        $details = $this->details ?: new Collection();
-
-        if ($details->where('field', $field)->count() > 0) {
-            $details = $details->transform(
-                function ($item, $key) use ($field, $detail) {
-                    if ($item['field'] === $field) {
-                        return $detail;
-                    }
-
-                    return $item;
-                }
-            );
-        } else {
-            $details->push($detail);
-        }
-
-        $this->details = $details;
     }
 }

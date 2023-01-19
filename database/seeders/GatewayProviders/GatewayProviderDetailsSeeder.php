@@ -4,7 +4,6 @@ namespace Database\Seeders\GatewayProviders;
 
 use App\Models\GatewayProviders\GatewayProvider;
 use Illuminate\Database\Seeder;
-use Symfony\Component\VarDumper\VarDumper;
 
 class GatewayProviderDetailsSeeder extends Seeder
 {
@@ -81,12 +80,11 @@ class GatewayProviderDetailsSeeder extends Seeder
         ];
 
         foreach ($details as $slug => $detail_set) {
-            VarDumper::dump("($slug)");
             foreach ($detail_set as $idx => $detail) {
-                VarDumper::dump("[{$idx}] ($slug) - {$detail['value']}");
-
                 $gateway = GatewayProvider::find($detail['gateway_id']);
-                $gateway->addOrUpdateDetails($detail['detail'], $detail['value'], $detail['misc'], $detail['active']);
+                $details = $gateway->details ?? [];
+                $details[$detail['value']] = $detail['misc'];
+                $gateway->details = $details;
                 $gateway->save();
             }
         }

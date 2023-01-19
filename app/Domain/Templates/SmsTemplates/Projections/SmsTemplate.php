@@ -10,10 +10,8 @@ use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Collection;
 
 class SmsTemplate extends GymRevProjection implements TemplateParserInterface
 {
@@ -27,7 +25,7 @@ class SmsTemplate extends GymRevProjection implements TemplateParserInterface
     ];
 
     protected $casts = [
-        'details' => AsCollection::class,
+        'details' => 'array',
     ];
 
     protected static function booted(): void
@@ -63,8 +61,8 @@ class SmsTemplate extends GymRevProjection implements TemplateParserInterface
     }
 
     //TODO: SMS Templates should not know about gateways. Move logic to campaigns.
-    public function gateway(): Collection
+    public function gateway(): array
     {
-        return new Collection($this->details->where('field', 'sms_gateway')->where('active', 1));
+        return $this->details['sms_gateway'];
     }
 }
