@@ -56,6 +56,8 @@
             </Button>
             <div class="flex-grow" />
             <Button
+                v-if="useInertia"
+                type="button"
                 class="btn-primary"
                 @click="handleDuplicate"
                 :class="{ 'opacity-25': form.processing }"

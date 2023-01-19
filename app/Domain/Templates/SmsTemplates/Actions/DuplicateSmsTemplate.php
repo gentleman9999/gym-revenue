@@ -3,9 +3,7 @@
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
-use App\Domain\Templates\SmsTemplates\SmsTemplateAggregate;
 use App\Http\Middleware\InjectClientId;
-use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,13 +30,7 @@ class DuplicateSmsTemplate
 
     public function handle(array $data): SmsTemplate
     {
-        $id = Uuid::new();
-
-        SmsTemplateAggregate::retrieve($id)
-            ->create($data)
-            ->persist();
-
-        return SmsTemplate::findOrFail($id);
+        return (new SmsTemplate())->scopeDuplicate(new SmsTemplate($data));
     }
 
     public function getControllerMiddleware(): array
@@ -57,7 +49,6 @@ class DuplicateSmsTemplate
     {
         return $this->handle(
             $request->validated(),
-            $request->user()
         );
     }
 

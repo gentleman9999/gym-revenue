@@ -3,6 +3,8 @@
 namespace App\Domain\Templates\SmsTemplates;
 
 use App\Domain\Templates\SmsTemplates\Events\SmsTemplateCreated;
+use App\Domain\Templates\SmsTemplates\Events\SmsTemplateDeleted;
+use App\Domain\Templates\SmsTemplates\Events\SmsTemplateRestored;
 use App\Domain\Templates\SmsTemplates\Events\SmsTemplateTrashed;
 use App\Domain\Templates\SmsTemplates\Events\SmsTemplateUpdated;
 
@@ -34,6 +36,13 @@ class SmsTemplateAggregate extends AggregateRoot
     public function restore(): static
     {
         $this->recordThat(new SmsTemplateRestored());
+
+        return $this;
+    }
+
+    public function delete(): static
+    {
+        $this->recordThat(new SmsTemplateDeleted());
 
         return $this;
     }

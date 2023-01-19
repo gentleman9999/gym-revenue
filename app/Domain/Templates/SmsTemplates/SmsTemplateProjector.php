@@ -51,6 +51,9 @@ class SmsTemplateProjector extends Projector
         DB::transaction(function () use ($event) {
             $template = SmsTemplate::findOrFail($event->aggregateRootUuid());
             $user = User::find($event->userId());
+            if (is_null($user)) {
+                $user = User::find($event->payload['created_by_user_id']);
+            }
             $msg = 'Template was updated by ' . $user->name . ' on ' . $event->createdAt()->format('Y-m-d');
             $template->addOrUpdateDetails('updated', $event->modifiedBy(), ['msg' => $msg]);
             $template->writeable()->updateOrFail($event->payload);
