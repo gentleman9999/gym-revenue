@@ -1,6 +1,4 @@
 <template>
-    <!-- <ApolloQuery :query="(gql) => queries['audience'].edit" :variables="param"> -->
-
     <daisy-modal
         :open="true"
         :showCloseButton="false"
@@ -110,7 +108,6 @@
             </div>
         </template>
     </daisy-modal>
-    <!-- </ApolloQuery> -->
 </template>
 
 <script setup>

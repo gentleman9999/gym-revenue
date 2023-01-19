@@ -175,7 +175,6 @@
     />
 
     <!-- Call script Edit -->
-
     <template
         v-if="
             templateBuilderStep &&
@@ -250,7 +249,6 @@ const param = ref({
     page: 1,
 });
 
-const hasInitialized = ref(false);
 const editParam = ref(null);
 const builderOperation = ref(null);
 
@@ -325,11 +323,8 @@ const handleCancelConfirmTrash = () => {
 const handleBuilderDone = async (id) => {
     console.log("builderDone called", id);
 
-    if (typeof id === "object") {
-        updateSelected(id?.id);
-    } else {
-        updateSelected(id);
-    }
+    if (typeof id === "object") updateSelected(id?.id);
+    else updateSelected(id);
 
     templateBuilderStep.value = false;
     builderOperation.value = null;

@@ -33,39 +33,30 @@ export const SCHEDULEDCAMPAIGN_EDIT = gql`
             audience_id
             send_at
             completed_at
-            status
+            status {
+                value
+            }
             email_template_id
             sms_template_id
             call_template_id
-            filters
+
             created_at
             updated_at
-            editable
-        }
-        audiences: audiences(first: 100) {
-            data {
-                id
-                name
-                client_id
-                filters {
-                    lead_type_id
-                    membership_type_id
-                }
-            }
         }
     }
 `;
 
 export const SCHEDULEDCAMPAIGN_CREATE = gql`
-    query ScheduledCampaign {
-        audiences: audiences(first: 100) {
+    query scheduledCampaigns {
+        scheduledCampaign {
             data {
                 id
                 name
-                client_id
-                filters {
-                    lead_type_id
-                    membership_type_id
+                audience_id
+                send_at
+                completed_at
+                status {
+                    value
                 }
             }
         }
@@ -84,14 +75,15 @@ export const scheduledCampaign = {
                 audience_id
                 send_at
                 completed_at
-                status
+                status {
+                    value
+                }
                 email_template_id
                 sms_template_id
                 call_template_id
-                filters
+
                 created_at
                 updated_at
-                editable
             }
         }
     `,
@@ -105,14 +97,14 @@ export const scheduledCampaign = {
                 audience_id
                 send_at
                 completed_at
-                status
+                status {
+                    value
+                }
                 email_template_id
                 sms_template_id
                 call_template_id
-                filters
                 created_at
                 updated_at
-                editable
             }
         }
     `,

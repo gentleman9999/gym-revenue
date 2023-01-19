@@ -95,7 +95,6 @@
                 @cancel="handleCancelScript"
                 @save="(template) => handleSave('call', template)"
                 :selected="days[currentDayIndex].call"
-                :templates="call_templates"
                 template_type="call"
             />
 
@@ -104,7 +103,6 @@
                 @cancel="handleCancelScript"
                 @save="(template) => handleSave('email', template)"
                 :selected="days[currentDayIndex].email"
-                :templates="email_templates"
                 template_type="email"
             />
 
@@ -136,16 +134,12 @@ import { toastInfo, toastError } from "@/utils/createToast";
 
 import Modal from "@/Components/ModalUnopinionated.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
-
 import Day from "./Creator/Day.vue";
 import Templates from "./Templates.vue";
+
 library.add(faPlus);
 
 const props = defineProps({
-    name: {
-        type: String,
-        default: "Test Name",
-    },
     isNew: {
         type: Boolean,
         default: true,
@@ -157,18 +151,6 @@ const props = defineProps({
     campaignType: {
         type: String,
         required: true,
-    },
-    email_templates: {
-        type: Array,
-        default: [],
-    },
-    sms_templates: {
-        type: Array,
-        default: [],
-    },
-    call_templates: {
-        type: Array,
-        default: [],
     },
     templates: {
         type: Array,
@@ -256,90 +238,90 @@ const updateDayIx = (ix, v) => {
     days.value[ix].day_in_campaign = v;
 };
 
-const saveCampaign = async () => {
-    if (invalidDays.value) {
-        return toastError(
-            "Each day must contain at least one method of communication"
-        );
-    }
+// const saveCampaign = async () => {
+//     if (invalidDays.value) {
+//         return toastError(
+//             "Each day must contain at least one method of communication"
+//         );
+//     }
 
-    if (
-        props?.campaignType === "scheduled" &&
-        days?.value?.length &&
-        !days?.value[0]?.date
-    ) {
-        return toastError("You must select a date to launch this campaign at.");
-    }
+//     if (
+//         props?.campaignType === "scheduled" &&
+//         days?.value?.length &&
+//         !days?.value[0]?.date
+//     ) {
+//         return toastError("You must select a date to launch this campaign at.");
+//     }
 
-    let fmtCampaign = {
-        name: props.name,
-        campaignType: props.campaignType,
-        audience_id: props.form.audience,
-        days: [
-            ...days.value.map((d) => {
-                return {
-                    ...d,
-                    call:
-                        typeof d?.call?.message === "string"
-                            ? d.call.message
-                            : typeof d?.call === "string"
-                            ? d.call
-                            : null,
-                    email: typeof d?.email === "string" ? d.email : null,
-                    sms: typeof d?.sms === "string" ? d.sms : null,
-                    date:
-                        typeof d?.date !== undefined
-                            ? transformDate(d.date)
-                            : null,
-                };
-            }),
-        ],
-    };
-    if (props.campaignType === "scheduled") {
-        fmtCampaign.send_at = fmtCampaign.days[0].date;
-        if (fmtCampaign.days[0]?.email) {
-            fmtCampaign.email_template_id = fmtCampaign.days[0].email;
-        }
-        if (fmtCampaign.days[0]?.sms) {
-            fmtCampaign.sms_template_id = fmtCampaign.days[0].sms;
-        }
-        if (fmtCampaign.days[0]?.call) {
-            fmtCampaign.call_template_id = fmtCampaign.days[0].call;
-        }
-        delete fmtCampaign.days;
-    }
-    console.log({ fmtCampaign, days: days.value });
+//     let fmtCampaign = {
+//         name: props.name,
+//         campaignType: props.campaignType,
+//         audience_id: props.form.audience,
+//         days: [
+//             ...days.value.map((d) => {
+//                 return {
+//                     ...d,
+//                     call:
+//                         typeof d?.call?.message === "string"
+//                             ? d.call.message
+//                             : typeof d?.call === "string"
+//                             ? d.call
+//                             : null,
+//                     email: typeof d?.email === "string" ? d.email : null,
+//                     sms: typeof d?.sms === "string" ? d.sms : null,
+//                     date:
+//                         typeof d?.date !== undefined
+//                             ? transformDate(d.date)
+//                             : null,
+//                 };
+//             }),
+//         ],
+//     };
+//     if (props.campaignType === "scheduled") {
+//         fmtCampaign.send_at = fmtCampaign.days[0].date;
+//         if (fmtCampaign.days[0]?.email) {
+//             fmtCampaign.email_template_id = fmtCampaign.days[0].email;
+//         }
+//         if (fmtCampaign.days[0]?.sms) {
+//             fmtCampaign.sms_template_id = fmtCampaign.days[0].sms;
+//         }
+//         if (fmtCampaign.days[0]?.call) {
+//             fmtCampaign.call_template_id = fmtCampaign.days[0].call;
+//         }
+//         delete fmtCampaign.days;
+//     }
+//     console.log({ fmtCampaign, days: days.value });
 
-    try {
-        loading.value = true;
-        console.log("sending campaign", fmtCampaign);
+//     try {
+//         loading.value = true;
+//         console.log("sending campaign", fmtCampaign);
 
-        /** route helpers */
+//         /** route helpers */
 
-        let action = props.isNew ? "store" : "update";
-        let campType = props.campaignType === "drip" ? "drip" : "scheduled";
-        let endp = `mass-comms.${campType}-campaigns.${action}`;
+//         let action = props.isNew ? "store" : "update";
+//         let campType = props.campaignType === "drip" ? "drip" : "scheduled";
+//         let endp = `mass-comms.${campType}-campaigns.${action}`;
 
-        console.log("sending to endpoint", endp);
+//         console.log("sending to endpoint", endp);
 
-        const res = props.isNew
-            ? await axios.post(route(endp), {
-                  ...fmtCampaign,
-              })
-            : await axios.put(route(endp, props.existingId), {
-                  ...fmtCampaign,
-              });
+//         const res = props.isNew
+//             ? await axios.post(route(endp), {
+//                   ...fmtCampaign,
+//               })
+//             : await axios.put(route(endp, props.existingId), {
+//                   ...fmtCampaign,
+//               });
 
-        if (res.status === 200) {
-            toastInfo("Campaign Saved!");
-            loading.value = false;
-            emit("done");
-        }
-        console.log("data received back from server:", res.data);
-    } catch (err) {
-        loading.value = false;
-        toastError("Problem Saving Campaign");
-        console.log("problem saving campaign", err);
-    }
-};
+//         if (res.status === 200) {
+//             toastInfo("Campaign Saved!");
+//             loading.value = false;
+//             emit("done");
+//         }
+//         console.log("data received back from server:", res.data);
+//     } catch (err) {
+//         loading.value = false;
+//         toastError("Problem Saving Campaign");
+//         console.log("problem saving campaign", err);
+//     }
+// };
 </script>

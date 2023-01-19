@@ -10,6 +10,14 @@ export const DRIPCAMPAIGNS = gql`
                 status {
                     value
                 }
+                days {
+                    id
+                    drip_campaign_id
+                    day_of_campaign
+                    email_template_id
+                    sms_template_id
+                    call_template_id
+                }
             }
             paginatorInfo {
                 currentPage
@@ -45,12 +53,6 @@ export const DRIPCAMPAIGN_EDIT = gql`
                 email_template_id
                 sms_template_id
                 call_template_id
-            }
-        }
-        audiences(first: 100) {
-            data {
-                id
-                name
             }
         }
     }

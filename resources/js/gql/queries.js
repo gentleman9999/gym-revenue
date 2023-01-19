@@ -14,7 +14,11 @@ import {
     CALL_TEMPLATE_EDIT,
     CALL_TEMPLATE_CREATE,
 } from "./templates/call";
-import { AUDIENCES, AUDIENCE_EDIT } from "./campaigns/audiences";
+import {
+    AUDIENCES,
+    AUDIENCE_EDIT,
+    AUDIENCE_PERMISSIONS,
+} from "./campaigns/audiences";
 import {
     DRIPCAMPAIGNS,
     DRIPCAMPAIGN_EDIT,
@@ -1271,6 +1275,7 @@ export default {
     dripCampaigns: DRIPCAMPAIGNS,
     TOPOL_API_KEY,
     audiences: AUDIENCES,
+    audiencePermissions: AUDIENCE_PERMISSIONS,
     emailTemplates: EMAIL_TEMPLATES,
     smsTemplates: SMS_TEMPLATES,
     callTemplates: CALL_TEMPLATES,

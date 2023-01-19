@@ -10,7 +10,10 @@
         >
             <td
                 v-for="(column, col_ndx) in columns"
-                :key="column.field + (item?.id || col_ndx)"
+                :key="
+                    (column?.field ?? column?.name ?? 'unknown') +
+                    (item?.id || col_ndx)
+                "
                 class="border-b"
                 :class="{
                     'border-secondary': border === 'secondary',
@@ -21,7 +24,7 @@
                 }"
             >
                 <div
-                    class="flex items-center justify-center h-full"
+                    class="flex items-center justify-center h-full customcell"
                     :class="{
                         'border-r':
                             !collapsed &&

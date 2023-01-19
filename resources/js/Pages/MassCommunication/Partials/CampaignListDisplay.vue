@@ -14,7 +14,10 @@
                         :campaigns="formatForStatus(resources.data)"
                         :type="type"
                         :filter="currentFilters.listOne"
-                        @open-campaign="openCampaign"
+                        @open-campaign="
+                            ({ type, campaign }) =>
+                                $emit('edit', type, campaign?.id)
+                        "
                     />
                 </div>
             </div>
@@ -24,6 +27,10 @@
                     <campaign-list
                         :campaigns="formatForStatus(resources.data)"
                         :filter="currentFilters.listTwo"
+                        @open-campaign="
+                            ({ type, campaign }) =>
+                                $emit('edit', type, campaign?.id)
+                        "
                         :type="type"
                     />
                 </div>
