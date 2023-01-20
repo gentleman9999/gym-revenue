@@ -104,20 +104,51 @@
         </div>
     </template>
 
+    <!-- EMAIL - CREATE -->
     <div
-        v-if="templateBuilderStep && template_type === 'email'"
+        v-if="
+            templateBuilderStep &&
+            template_type === 'email' &&
+            builderOperation === 'create'
+        "
         class="scale-90 bg-neutral border-primary border-2 rounded-md p-4"
     >
         <email-template-form
-            :template="editingTemplate"
-            :editParam="editParam"
-            :createParam="emailCreateParam"
             @done="handleBuilderDone"
             @cancel="handleCancelBuilder"
         />
     </div>
 
-    <!-- SMS Create -->
+    <!-- EMAIL - EDIT -->
+    <div
+        v-if="
+            templateBuilderStep &&
+            template_type === 'email' &&
+            builderOperation === 'edit'
+        "
+        class="scale-90 bg-neutral border-primary border-2 rounded-md p-4"
+    >
+        <ApolloQuery
+            :query="(gql) => queries.emailTemplate[builderOperation]"
+            :variables="editParam"
+        >
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <template v-if="isLoading">
+                    <Spinner />
+                </template>
+
+                <email-template-form
+                    v-if="!isLoading && !!data"
+                    :editParam="editParam"
+                    :template="data['emailTemplate']"
+                    @done="handleBuilderDone"
+                    @cancel="handleCancelBuilder"
+                />
+            </template>
+        </ApolloQuery>
+    </div>
+
+    <!-- SMS - CREATE -->
     <div
         v-if="
             templateBuilderStep &&
@@ -132,7 +163,7 @@
         />
     </div>
 
-    <!-- SMS Edit -->
+    <!-- SMS - EDIT -->
     <div
         v-if="
             templateBuilderStep &&
@@ -163,7 +194,7 @@
         </ApolloQuery>
     </div>
 
-    <!-- Call script Create -->
+    <!-- CALL SCRIPT - CREATE -->
     <call-script
         v-if="
             templateBuilderStep &&
@@ -174,7 +205,7 @@
         @cancel="handleCancelBuilder"
     />
 
-    <!-- Call script Edit -->
+    <!-- CALL SCRIPT - EDIT -->
     <template
         v-if="
             templateBuilderStep &&

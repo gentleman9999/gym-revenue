@@ -3,12 +3,7 @@
         <h2 class="font-semibold text-xl leading-tight">Edit Email Template</h2>
     </LayoutHeader>
 
-    <email-template-form
-        :client-id="$page.props.user.client_id"
-        :template="template"
-        :can-activate="true"
-        :topol-api-key="topolApiKey"
-    />
+    <email-template-form :editParam="editParam" />
 </template>
 
 <script setup>
@@ -16,17 +11,13 @@ import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import EmailTemplateForm from "./Partials/EmailTemplateForm.vue";
 
 const props = defineProps({
-    template: {
-        required: true,
-        type: Object,
-    },
-    topolApiKey: {
+    id: {
         type: String,
         required: true,
     },
-    plansUrl: {
-        type: String,
-        required: true,
-    },
+});
+
+const editParam = ref({
+    id: props.id,
 });
 </script>
