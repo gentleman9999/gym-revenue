@@ -114,23 +114,30 @@ let operFn = computed(() => {
 const form = useGymRevForm(props.template);
 
 const handleOperation = async () => {
-    isProcessing.value = true;
-    let rawData = {
-        id: form.id,
-        name: form.name,
-        markup: form.markup,
-        active: form.active,
-    };
-    if (props.editParam === null) delete rawData.id;
+    try {
+        isProcessing.value = true;
+        let rawData = {
+            id: form.id,
+            name: form.name,
+            markup: form.markup,
+            active: form.active,
+        };
+        if (props.editParam === null) delete rawData.id;
 
-    const { data } = await operFn.value({
-        input: rawData,
-    });
+        const { data } = await operFn.value({
+            input: rawData,
+        });
 
-    let savedTemplate = data["createSmsTemplate"] ?? data["updateSmsTemplate"];
+        let savedTemplate =
+            data["createSmsTemplate"] ?? data["updateSmsTemplate"];
 
-    toastInfo("SMS Template " + operation.value + "d!");
-    isProcessing.value = false;
-    emit("done", savedTemplate);
+        toastInfo("SMS Template " + operation.value + "d!");
+        isProcessing.value = false;
+        emit("done", savedTemplate);
+    } catch (error) {
+        toastError("There was a problem updating the data - try again..");
+        isProcessing.value = false;
+        console.log("template operation error:", error);
+    }
 };
 </script>

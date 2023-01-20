@@ -19,7 +19,7 @@
                     v-model="form.name"
                     placeholder="Call Script Name"
                     type="text"
-                    class="border-secondary bg-primary-content mt-1"
+                    class="border border-secondary bg-primary-content mt-1"
                 />
 
                 <label for="callscriptscript" class="mt-4">Script</label>
@@ -28,11 +28,11 @@
                     :disabled="isProcessing"
                     v-model="form.script"
                     rows="5"
-                    class="border-secondary bg-primary-content resize-none mt-1"
+                    class="border border-secondary bg-primary-content resize-none mt-1"
                 ></textarea>
             </div>
 
-            <div class="flex justify-between">
+            <div class="flex justify-between mt-4">
                 <button
                     :disabled="isProcessing"
                     @click="$emit('cancel')"
@@ -42,14 +42,15 @@
                 </button>
                 <button
                     @click="handleOperation"
-                    class="px-2 py-1 border-secondary border rounded-md mt-4 bg-secondary transition-all text-base-content hover:bg-base-content hover:text-secondary disabled:opacity-25 disabled:cursor-not-allowed"
+                    class="px-2 py-1 border-secondary border rounded-md bg-secondary transition-all text-base-content hover:bg-base-content hover:text-secondary disabled:opacity-25 disabled:cursor-not-allowed"
                     :disabled="isProcessing"
+                    :loading="isProcessing"
                 >
                     Save
                 </button>
                 <button
-                    @click="handleSubmit(true)"
-                    class="px-2 py-1 border-secondary border rounded-md mt-4 bg-secondary transition-all text-base-content hover:bg-base-content hover:text-secondary disabled:opacity-25 disabled:cursor-not-allowed"
+                    @click="handleOperation"
+                    class="px-2 py-1 border-secondary border rounded-md bg-secondary transition-all text-base-content hover:bg-base-content hover:text-secondary disabled:opacity-25 disabled:cursor-not-allowed"
                     :disabled="isProcessing"
                 >
                     One time use
@@ -58,6 +59,13 @@
         </div>
     </div>
 </template>
+
+<style scoped>
+input:disabled,
+textarea:disabled {
+    @apply bg-neutral bg-opacity-20 border border-secondary italic text-base-100 text-opacity-50;
+}
+</style>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
@@ -104,23 +112,31 @@ let operFn = computed(() => {
 });
 
 const handleOperation = async () => {
-    isProcessing.value = true;
-    let rawData = {
-        id: form?.id,
-        name: form?.name,
-        script: form?.script,
-        use_once: typeof form?.use_once === "boolean" ? form.use_once : false,
-        active: typeof form?.active === "boolean" ? form.active : false,
-    };
-    if (props.editParam === null) delete rawData.id;
+    try {
+        isProcessing.value = true;
+        let rawData = {
+            id: form?.id,
+            name: form?.name,
+            script: form?.script,
+            use_once:
+                typeof form?.use_once === "boolean" ? form.use_once : false,
+            active: typeof form?.active === "boolean" ? form.active : false,
+        };
+        if (props.editParam === null) delete rawData.id;
 
-    const { data } = await operFn.value({
-        input: rawData,
-    });
+        const { data } = await operFn.value({
+            input: rawData,
+        });
 
-    let savedTemplate =
-        data["createCallScriptTemplate"] ?? data["updateCallScriptTemplate"];
-    toastInfo("Call Template " + operation.value + "d!");
-    emit("done", savedTemplate);
+        let savedTemplate =
+            data["createCallScriptTemplate"] ??
+            data["updateCallScriptTemplate"];
+        toastInfo("Call Template " + operation.value + "d!");
+        emit("done", savedTemplate);
+    } catch (error) {
+        toastError("There was a problem updating the data - try again..");
+        isProcessing.value = false;
+        console.log("template operation error:", error);
+    }
 };
 </script>
