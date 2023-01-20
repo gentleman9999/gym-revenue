@@ -33,7 +33,10 @@
                     id="journey-name"
                 />
 
-                <AudienceSelect v-model="form.audience_id">
+                <AudienceSelect
+                    v-model="form.audience_id"
+                    @update:modelValue="handleUpdateSelectState"
+                >
                     <template #label>
                         <div class="flex justify-between py-2 mt-4">
                             <label
@@ -208,6 +211,11 @@ const advancementDisabled = computed(() => {
     return false;
 });
 
+watch(form.audience_id, (nv, ov) => {
+    console.log("form.audience_id updated to: ", nv);
+    console.log("from: ", ov);
+});
+
 /**
  * check if data is sufficient for advancement
  * if not, inform them of what needs to be changed or advance if sufficient
@@ -218,14 +226,6 @@ const handleAdvancementCheck = () => {
 
     toastError(advancementDisabled.value);
 };
-
-/**
- * handles the 'save' emit from the AudienceBuilder.
- * replace the existing audience or add it new if it doesn't exist.
- */
-// const updateAudiences = (newAudience) => {
-//     currentStep.value = "audience-picker";
-// };
 
 const handleUpdateTemplates = (templates) => {
     form.value.templates = templates;
@@ -246,6 +246,10 @@ const createAudience = () => {
 const handleAudienceUpdate = (audience) => {
     currentStep.value = "audience-picker";
     form.value.audience_id = audience?.id ?? "";
+};
+
+const handleUpdateSelectState = (id) => {
+    form.value.audience_id = id;
 };
 
 const cancelEditor = () => {

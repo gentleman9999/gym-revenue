@@ -79,6 +79,8 @@ import mutations from "@/gql/mutations";
 
 import { toastInfo, toastError } from "@/utils/createToast";
 
+const emit = defineEmits(["cancel", "done"]);
+
 const props = defineProps({
     template: {
         type: Object,
@@ -100,8 +102,6 @@ const isProcessing = ref(false);
 
 const { mutate: createSmsTemplate } = useMutation(mutations.smsTemplate.create);
 const { mutate: updateSmsTemplate } = useMutation(mutations.smsTemplate.update);
-
-const emit = defineEmits(["cancel", "done"]);
 
 let operation = computed(() => {
     return props.editParam !== null ? "Update" : "Create";

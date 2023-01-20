@@ -1,9 +1,4 @@
 <template>
-    <!-- <ApolloQuery :query="(gql) => queries['audiences']"> -->
-    <!-- <template
-            v-slot="{ result: { loading, error, data, update }, isLoading }"
-        > -->
-
     <div v-if="audiencesLoading">
         <span class="text-black block py-4">Loading...</span>
     </div>
@@ -21,13 +16,7 @@
             id="audience"
             :required="required"
         >
-            <option
-                disabled="true"
-                value=""
-                :selected="modelValue === '' || modelValue === null"
-            >
-                Select Audience
-            </option>
+            <option disabled="true" value="" selected>Select Audience</option>
             <option
                 v-for="audience in resources.data"
                 :disabled="audience.title === 'Select an Audience'"
@@ -39,8 +28,6 @@
             </option>
         </select>
     </div>
-    <!-- </template> -->
-    <!-- </ApolloQuery> -->
 </template>
 
 <script setup>
@@ -61,6 +48,7 @@ const props = defineProps({
     },
 });
 
+const mountingFinished = ref(false);
 const audiencesLoading = ref(true);
 
 const param = ref({
@@ -80,7 +68,7 @@ const resources = computed(() => {
 });
 
 watch(loading, (nv, ov) => {
-    console.log("audience resource", resources);
+    if (!mountingFinished.value) return;
     if (!!resources?.value) {
         audiencesLoading.value = false;
     }
@@ -94,7 +82,9 @@ watch(localValue, async (nv, ov) => {
     emit("update:modelValue", nv);
 });
 
-onMounted(() => {
-    refetch();
+onMounted(async () => {
+    await refetch();
+    mountingFinished.value = true;
+    audiencesLoading.value = false;
 });
 </script>
