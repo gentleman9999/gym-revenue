@@ -33,10 +33,7 @@
                     id="journey-name"
                 />
 
-                <AudienceSelect
-                    v-model="form.audience_id"
-                    @update:modelValue="updateAudiences"
-                >
+                <AudienceSelect v-model="form.audience_id">
                     <template #label>
                         <div class="flex justify-between py-2 mt-4">
                             <label
@@ -57,8 +54,8 @@
                 </button>
 
                 <button
-                    @click="editAudience"
-                    :disabled="audiencePermissions[form.audience_id]"
+                    @click="() => (currentStep = 'audience-builder')"
+                    :disabled="audiencePermissions[form.audience_id] === 0"
                     class="border border-secondary bg-secondary px-2 py-1 rounded-md hover:bg-base-content ml-4 hover:text-secondary transition-all disabled:opacity-20 disabled:hover:bg-secondary disabled:hover:text-base-content disabled:cursor-not-allowed"
                 >
                     Edit
@@ -102,7 +99,7 @@
             :membership-types="membershipTypes"
             :lead-types="leadTypes"
             @cancel="cancelEditor"
-            @update="updateAudiences"
+            @update="handleAudienceUpdate"
         />
     </template>
 </template>
@@ -146,11 +143,17 @@ const editParam = ref(
     props.campaign === null ? null : { id: props.campaign?.id }
 );
 
+const form = ref({ ...props.campaign });
+
+const currentStep = ref("audience-picker");
 const audiencePermissions = ref({});
 
-const { result, loading, error, refetch } = useQuery(
-    queries["audiencePermissions"]
-);
+const {
+    result,
+    loading: apermLoading,
+    error,
+    refetch,
+} = useQuery(queries["audiencePermissions"]);
 
 watch(result, (data) => {
     console.log("audience permissions", data);
@@ -183,80 +186,27 @@ const emit = defineEmits(["close"]);
 //     },
 // ];
 
-const audienceForProp = (val) => {
-    console.log("audience selection changed", val);
-};
-
-const form = ref({ ...props.campaign });
-
-onMounted(() => {
-    if (props.campaign !== null) {
-    }
-});
-
-// watch(props.campaign, (nv, ov) => {
-//     if (nv !== null) {
-//         form.value = {
-//             id: nv.id,
-//             name: nv.name,
-//             audience_id: nv.audience_id
-//         }
-//     }
-// })
-
-// const form = ref({
-//     name: props?.campaign?.name ? props.campaign.name : null,
-//     audience: props?.campaign?.audience_id ? props.campaign.audience_id : null,
-//     templates:
-//         props.type === "drip"
-//             ? props?.campaign?.days?.map((d) => transformDayTemplate(d)) ||
-//               defaultTemplatesScheduled
-//             : props?.campaign
-//             ? [transformDayTemplate(props.campaign)]
-//             : defaultTemplatesScheduled,
-// });
-
+/** @TODO gotta get rid of these... need a way to get member/lead types from gql */
+/************************************************************/
 const membershipTypes = computed(() =>
     transformSource(usePage().props.value.member_types)
 );
 const leadTypes = computed(() =>
     transformSource(usePage().props.value.lead_types)
 );
-// const propAudiences = computed(() =>
-//     transformAudience(usePage().props.value.audiences)
-// );
-// const emailTemplates = computed(() => {
-//     return usePage().props.value.email_templates;
-// });
-// const smsTemplates = computed(() => {
-//     return usePage().props.value.sms_templates;
-// });
-// const callTemplates = computed(() => {
-//     return usePage().props.value.call_templates;
-// });
-
-const currentStep = ref("audience-picker");
-// const tempAudience = ref(null);
+/************************************************************/
 
 /**
  * check for invalid entries and return an informative message
  * to the user to fix it before submission
  */
 const advancementDisabled = computed(() => {
-    if (typeof form.value.audience !== "string")
+    if (typeof form.value.audience_id !== "string")
         return "You must choose an audience.";
     if (!form.value.name || form.value.name.trim() === "")
         return "You must name your campaign.";
     return false;
 });
-
-const selectedAudience = ref({
-    editable: 0,
-});
-
-// const selectedAudience = computed(() => {
-//     return propAudiences.value.filter((v) => v?.id === form.value.audience)[0];
-// });
 
 /**
  * check if data is sufficient for advancement
@@ -273,44 +223,32 @@ const handleAdvancementCheck = () => {
  * handles the 'save' emit from the AudienceBuilder.
  * replace the existing audience or add it new if it doesn't exist.
  */
-const updateAudiences = (newAudience) => {
-    console.log("CampaignBuilder: new audience =", newAudience);
-    selectedAudience.value = { ...newAudience };
-    // form.value.audience = newAudience?.id;
-    // tempAudience.value = null;
-    currentStep.value = "audience-picker";
-};
+// const updateAudiences = (newAudience) => {
+//     currentStep.value = "audience-picker";
+// };
 
 const handleUpdateTemplates = (templates) => {
     form.value.templates = templates;
 };
 
-/**
- * temporarily creates a new audience with default values that can be freely modified,
- * if it isn't saved we can simply destroy it or add it to the existing audiences if it is.
- */
+/** New audience creation */
 const createAudience = () => {
-    // tempAudience.value = {
-    //     id: "",
-    //     title: "",
-    //     filters: [],
-    // };
-
-    // form.value.audience_id = "";
+    form.value.audience_id = "";
     currentStep.value = "audience-builder";
 };
 
-/**
- * places a copy of the existing audience into a temporary one that can be freely modified.
- * we only need to update back end if the audience is actually saved
- */
-const editAudience = (id) => {
-    // tempAudience.value = propAudiences.value.filter((a) => a.id === id)[0];
-    currentStep.value = "audience-builder";
+// /** Modify existing audiences */
+// const editAudience = (id) => {
+//     form.value.audience_id = id;
+//     currentStep.value = "audience-builder";
+// };
+
+const handleAudienceUpdate = (audience) => {
+    currentStep.value = "audience-picker";
+    form.value.audience_id = audience?.id ?? "";
 };
 
 const cancelEditor = () => {
-    // tempAudience.value = null;
     currentStep.value = "audience-picker";
 };
 
