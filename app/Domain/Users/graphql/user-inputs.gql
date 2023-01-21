@@ -1,4 +1,4 @@
-input UserInput @validator {
+input UserInput {
     id: ID
     first_name: String
     last_name: String
@@ -10,6 +10,7 @@ input UserInput @validator {
     city: String
     state: String
     zip: String
+    gender: String
     contact_preference: String
     start_date: String
     end_date: String
@@ -18,26 +19,14 @@ input UserInput @validator {
     team_id: ID
     role_id: ID
     home_location_id: ID
+    date_of_birth: DateTime
+    agreement_number: Int
     manager: String
+    user_type: String
     departments: [ID]
     positions: [ID]
 }
 input NoteInput @validator {
     note: String
     title: String
-}
-
-input CustomerInput {
-    id: ID
-    email: String
-    first_name: String
-    last_name: String
-    phone: String
-    user_type: String
-    gender: String
-    date_of_birth: DateTime
-    address1: String
-    zip: String
-    city: String
-    state: String
 }

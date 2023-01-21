@@ -33,7 +33,7 @@
                 :disabled="form.processing || !form.isDirty"
                 primary
             >
-                Save
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
@@ -87,6 +87,8 @@ const form = useGymRevForm({
 
 const { mutate: createTeam } = useMutation(mutations.team.create);
 const { mutate: updateTeam } = useMutation(mutations.team.update);
+
+const operation = computed(() => (props.team.id === "" ? "Create" : "Update"));
 
 const operFn = computed(() => {
     return props.team.id === "" ? createTeam : updateTeam;

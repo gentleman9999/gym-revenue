@@ -4,30 +4,27 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\ValidationRules;
 use App\Enums\UserTypesEnum;
-use App\Http\Middleware\InjectClientId;
 
 use function bcrypt;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateUser implements UpdatesUserProfileInformation
+class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
 {
     use PasswordValidationRules;
-    use AsAction;
 
     private bool $updatingSelf = false;
 
@@ -49,25 +46,11 @@ class UpdateUser implements UpdatesUserProfileInformation
         return $user;
     }
 
-    public function __invoke($_, array $args): User
+    public function mapArgsToHandle(array $args): array
     {
-        if ($args['input']['start_date']) {
-            $args['input']['start_date'] = CarbonImmutable::create($args['input']['start_date']);
-        } else {
-            $args['input']['start_date'] = null;
-        }
-        if ($args['input']['end_date']) {
-            $args['input']['end_date'] = CarbonImmutable::create($args['input']['end_date']);
-        } else {
-            $args['input']['end_date'] = null;
-        }
-        if ($args['input']['termination_date']) {
-            $args['input']['termination_date'] = CarbonImmutable::create($args['input']['termination_date']);
-        } else {
-            $args['input']['termination_date'] = null;
-        }
+        $user = $args['input'];
 
-        return $this->handle($args['input']['id'], $args['input']);
+        return [User::find($user['id']), $user];
     }
 
     /**
@@ -93,11 +76,6 @@ class UpdateUser implements UpdatesUserProfileInformation
          * They can make a choice (confirm/cancel), and have it update if confirmed
          */
         session()->forget('address_validation');
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     /**

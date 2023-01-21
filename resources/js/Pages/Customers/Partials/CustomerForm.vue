@@ -310,10 +310,10 @@
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
-                :disabled="form.processing || !form.isDirty"
+                :disabled="form.processing"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                Update
             </Button>
         </template>
     </jet-form-section>
@@ -355,6 +355,7 @@ const props = defineProps({
     customer: {
         type: Object,
         default: {
+            id: "",
             user_type: "customer",
             first_name: "",
             last_name: "",
@@ -378,27 +379,45 @@ const props = defineProps({
 
 const validStateSelections = ref(preformattedForSelect);
 
-// const { mutate: createCustomer } = useMutation(mutations.customer.create);
-const { mutate: updateCustomer } = useMutation(mutations.customer.update);
+const { mutate: updateCustomer } = useMutation(mutations.user.update);
 const { mutate: updateNote } = useMutation(mutations.note.update);
 
 let customer = _.cloneDeep(props.customer);
 const form = useGymRevForm(customer);
 const fileForm = useGymRevForm({ file: null });
 
-const operFn = computed(() => {
-    // return props.customer?.id ? updateCustomer : createCustomer;
-    return updateCustomer;
-});
-
 /** Form submission */
 const handleSubmit = async () => {
-    await operFn.value({
-        ...form,
-        date_of_birth: transformDate(form.date_of_birth),
-    });
+    try {
+        let inputData = {
+            id: form?.id,
+            email: form?.email,
+            first_name: form?.first_name,
+            last_name: form?.last_name,
+            phone: form?.phone,
+            user_type: "customer",
+            gender: form?.gender,
+            address1: form?.address1,
+            zip: form?.zip,
+            city: form?.city,
+            date_of_birth: transformDate(form?.date_of_birth),
+        };
 
-    emit("close");
+        if (form?.dirtyData?.state) {
+            inputData["state"] = preformattedForSelect.filter(
+                (obj) => obj?.value === form?.state?.dirtyData
+            )[0]?.label;
+        }
+
+        await updateCustomer({
+            input: {
+                ...inputData,
+            },
+        });
+        emit("close");
+    } catch (error) {
+        console.error("error", error);
+    }
 };
 
 /** Update a note to "seen" */

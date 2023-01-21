@@ -73,22 +73,19 @@ final class UserInputValidator extends Validator
                 'string',
             ],
             'start_date' => [
-                'required_if:end_date,1',
+                'sometimes',
                 'nullable',
                 'date',
-                'before:end_date',
             ],
             'end_date' => [
                 'sometimes',
                 'nullable',
                 'date',
-                'after:start_date',
             ],
             'termination_date' => [
                 'sometimes',
                 'nullable',
                 'date',
-                'after:start_date',
             ],
             'client_id' => [
                 'sometimes',
@@ -96,6 +93,7 @@ final class UserInputValidator extends Validator
             ],
             'team_id' => [
                 'sometimes',
+                'nullable',
                 'string',
             ],
             'role_id' => [
