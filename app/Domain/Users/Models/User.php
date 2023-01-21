@@ -138,7 +138,7 @@ class User extends Authenticatable implements PhoneInterface
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'name', 'role',
+        'profile_photo_url', 'name',
     ];
 
     /**
@@ -334,12 +334,6 @@ class User extends Authenticatable implements PhoneInterface
     public function getNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
-    }
-
-    public function getRoleAttribute()
-    {
-        return "Admin";
-//        return  $this->roles[0]->name ?? "";
     }
 
     public function getIsManagerAttribute()

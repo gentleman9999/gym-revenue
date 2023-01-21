@@ -40,7 +40,10 @@ const USER_PREVIEW = gql`
             name
             email
             phone
-            role
+            roles{
+                id
+                name
+            }
             city
             zip
             manager
@@ -159,7 +162,10 @@ const USERS = gql`
                 name
                 email
                 manager
-                role
+                roles{
+                    id
+                    name
+                }
                 home_team: defaultTeam {
                     name
                 }
@@ -647,7 +653,10 @@ const TEAM_PREVIEW = gql`
                 id
                 name
                 email
-                role
+                roles{
+                    id
+                    name
+                }
             }
         }
         clubs: locations(first: 100) {
@@ -669,7 +678,10 @@ const TEAM_EDIT = gql`
                 id
                 name
                 email
-                role
+                roles{
+                    id
+                    name
+                }
             }
             locations {
                 id

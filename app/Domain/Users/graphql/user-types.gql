@@ -17,7 +17,7 @@ type User {
     manager: String
     zip: String
     defaultTeam: Team @hasOne
-    role: String
+    roles: [Role] @morphToMany
     phone: String
     city: String
     state: String
