@@ -41,7 +41,7 @@ class GetUsersToImpersonate
             $data = $request->validated();
 
             $user = auth()->user();
-            $user_role = $user->getRole();
+            $user_role = User::find($user->id)->role();
 
             // Get the User's currently active team
             $team = CurrentInfoRetriever::getCurrentTeam();

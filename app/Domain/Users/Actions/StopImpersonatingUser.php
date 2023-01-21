@@ -39,7 +39,7 @@ class StopImpersonatingUser
             $liberated = auth()->user();
 
             if ($coward->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
-                $team = $coward->defaultTeam;
+                $team = Team::withoutGlobalScopes()->findOrFail($coward->default_team_id);
             }
             session()->put('current_team_id', $team->id);
             session()->put(
