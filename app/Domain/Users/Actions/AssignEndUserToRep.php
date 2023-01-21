@@ -14,8 +14,11 @@ use Prologue\Alerts\Facades\Alert;
 
 class AssignEndUserToRep extends BaseEndUserAction
 {
-    public function handle(EndUser $end_user, User $user): EndUser
+    public function handle(array $data): EndUser
     {
+        //GraphQL Sends the endUser and user data as an array from the mutation, so we have to break it down here.
+        $end_user = EndUser::find($data['endUser']);
+        $user = User::find($data['user']);
         if ($end_user->isEndUser()) {
             UserAggregate::retrieve($end_user->id)->claim($user->id)->persist();
 
@@ -25,11 +28,10 @@ class AssignEndUserToRep extends BaseEndUserAction
         return $end_user;
     }
 
-    public function asController(ActionRequest $request, EndUser $end_user): EndUser
+    public function asController(ActionRequest $request, array $data): EndUser
     {
         return $this->handle(
-            $end_user,
-            $request->user(),
+            $data,
         );
     }
 
