@@ -19,6 +19,7 @@ class CreateNotesTable extends Migration
             $table->string('entity_type')->nullable();
             $table->mediumText('title');
             $table->mediumText('note')->nullable();
+            $table->string('category')->nullable();
             $table->foreignUuid('created_by_user_id')->index();
             $table->boolean('active')->default(true);
             $table->timestamps();

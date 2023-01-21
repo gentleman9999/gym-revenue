@@ -2,6 +2,7 @@
 
 namespace App\Domain\Users\Projectors;
 
+use App\Domain\Notes\Model\Note;
 use App\Domain\Users\Events\AccessTokenGranted;
 use App\Domain\Users\Events\EndUserClaimedByRep;
 use App\Domain\Users\Events\EndUserUpdatedCommunicationPreferences;
@@ -17,7 +18,6 @@ use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
 use App\Enums\UserDetailsFieldEnum;
 use App\Enums\UserTypesEnum;
-use App\Models\Note;
 use Illuminate\Support\Facades\DB;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 

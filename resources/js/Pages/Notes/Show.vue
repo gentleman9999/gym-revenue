@@ -52,7 +52,7 @@ export default defineComponent({
         };
 
         const handleConfirmDelete = () => {
-            Inertia.delete(route("notes.delete", confirmDelete.value));
+            Inertia.delete(route("notes.delete", confirmDelete.value.id));
             confirmDelete.value = null;
         };
 

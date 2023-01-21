@@ -2,7 +2,7 @@
 
 namespace App\Projectors\Clients;
 
-use App\Models\Note;
+use App\Domain\Notes\Model\Note;
 use App\Models\ReadReceipt;
 use App\StorableEvents\Clients\Note\ReadReceiptCreated;
 use App\StorableEvents\Clients\Notes\NoteCreated;

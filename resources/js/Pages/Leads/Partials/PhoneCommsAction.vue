@@ -69,7 +69,7 @@ export default defineComponent({
     setup(props, { emit }) {
         const phoneCallOptions = {
             "": "Select an Outcome",
-            contacted: "Spoke with Lead.",
+            contacted: "Spoke with Lead",
             voicemail: "Left a Voicemail",
             "hung-up": "Lead Hung Up",
             "wrong-number": "Wrong Number",

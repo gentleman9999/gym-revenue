@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Actions\Clients\Notes;
+declare(strict_types=1);
 
-use App\Aggregates\Clients\ClientAggregate;
+namespace App\Domain\Notes\Actions;
+
+use App\Domain\Notes\Aggregates\NoteAggregate;
 use App\Domain\Notes\Model\Note;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -19,18 +21,16 @@ class DeleteNote
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             //no rules since we only accept an id route param, which is validated in the route definition
         ];
     }
 
-    public function handle($current_user, $id)
+    public function handle(Note $note): Note
     {
-        $note = Note::findOrFail($id);
-        $client_id = $current_user->client_id;
-        ClientAggregate::retrieve($client_id)->deleteNote($current_user->id, $id)->persist();
+        NoteAggregate::retrieve($note->id)->delete()->persist();
 
         return $note;
     }
@@ -42,15 +42,17 @@ class DeleteNote
         return $current_user->can('notes.delete', Note::class);
     }
 
-    public function asController(Request $request, $id)
+    public function asController(Note $note): Note
     {
-        $note = $this->handle(
-            $request->user(),
-            $id
+        return $this->handle(
+            $note
         );
+    }
 
-        Alert::success("Note '{$note->getOriginal()['title']}' was deleted")->flash();
+    public function htmlResponse(Note $note): RedirectResponse
+    {
+        Alert::success("Note '{$note->title}' was deleted")->flash();
 
-        return Redirect::route('notes');
+        return Redirect::back();
     }
 }

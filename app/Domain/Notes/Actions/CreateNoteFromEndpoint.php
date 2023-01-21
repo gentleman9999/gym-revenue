@@ -1,16 +1,20 @@
 <?php
 
-namespace App\Actions\Clients\Notes;
+declare(strict_types=1);
 
-use App\Aggregates\Clients\ClientAggregate;
+namespace App\Domain\Notes\Actions;
+
+use App\Domain\Notes\Aggregates\NoteAggregate;
 use App\Domain\Notes\Model\Note;
+use App\Domain\Users\Models\User;
 use App\Support\Uuid;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateNote
+class CreateNoteFromEndpoint
 {
     use AsAction;
 
@@ -19,31 +23,23 @@ class CreateNote
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'title' => ['string', 'required'],
             'id' => ['integer', 'sometimes', 'nullable'],
-            'entity_id' => ['string', 'sometimes', 'nullable'],
-            'entity_type' => ['string', 'sometimes', 'nullable'],
             'note' => ['string', 'sometimes', 'nullable'],
-            'created_by_user_id' => ['string', 'sometimes', 'nullable'],
+            'title' => ['string', 'sometimes', 'nullable'],
             'active' => ['boolean', 'sometimes', 'nullable'],
-            'created_at' => ['timestamp', 'sometimes', 'nullable'],
-            'updated_at' => ['timestamp', 'sometimes', 'nullable'],
-            'deleted_at' => ['timestamp', 'sometimes', 'nullable'],
-
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle(array $data, User $current_user): Note
     {
         $id = Uuid::new();
         $client_id = $current_user->client_id;
         $data['created_by_user_id'] = $client_id;
         $data['id'] = $id;
-
-        ClientAggregate::retrieve($client_id)->createNote($current_user->id ?? "Auto Generated", $data)->persist();
+        NoteAggregate::retrieve($client_id)->create($data)->persist();
 
         return Note::findOrFail($id);
     }
@@ -55,15 +51,18 @@ class CreateNote
         return $current_user->can('notes.create', Note::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): Note
     {
-        $note = $this->handle(
+        return $this->handle(
             $request->validated(),
             $request->user(),
         );
+    }
 
-        Alert::success("Note '.$note->title.' was created")->flash();
+    public function htmlResponse(Note $note): RedirectResponse
+    {
+        Alert::success("Note '{$note->title}' was created")->flash();
 
-        return Redirect::route('notes.edit', $note->id);
+        return Redirect::back();
     }
 }
