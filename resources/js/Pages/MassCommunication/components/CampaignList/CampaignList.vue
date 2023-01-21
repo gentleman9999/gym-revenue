@@ -55,11 +55,11 @@ const dripColumns = [
                             ({
                                 email_template_id,
                                 sms_template_id,
-                                client_call_script,
+                                call_template_id,
                             }) => ({
                                 email: !!email_template_id,
                                 sms: !!sms_template_id,
-                                call: !!client_call_script,
+                                call: !!call_template_id,
                             })
                         )
                         .reduce((acc, obj) => ({
@@ -97,7 +97,7 @@ const dripColumns = [
                     onClick: () =>
                         emit("open-campaign", {
                             campaign: value,
-                            type: "DripCampaign",
+                            type: "drip",
                         }),
                 },
                 "View"
@@ -113,16 +113,12 @@ const scheduledColumns = [
     {
         label: "Actions",
         //sorry about this line. if it breaks just ask philip to fix it lol.
-        renderer: ({
-            email_template_id,
-            sms_template_id,
-            client_call_script,
-        }) =>
+        renderer: ({ email_template_id, sms_template_id, call_template_id }) =>
             h(CampaignActions, {
                 actions: Object.entries({
                     email: !!email_template_id,
                     sms: !!sms_template_id,
-                    call: !!client_call_script,
+                    call: !!call_template_id,
                 })
                     .filter(([key, val]) => !!val)
                     .map(([key]) => key),
@@ -148,7 +144,7 @@ const scheduledColumns = [
                     onClick: () =>
                         emit("open-campaign", {
                             campaign: value,
-                            type: "ScheduledCampaign",
+                            type: "scheduled",
                         }),
                 },
                 "View"
@@ -160,21 +156,18 @@ const scheduledColumns = [
     },
 ];
 
-const columns = computed(() =>
-    props.type === "DripCampaign" ? dripColumns : scheduledColumns
-);
+// const columns = computed(() =>
+//     props.type === "drip" ? dripColumns : scheduledColumns
+// );
+
+const columns = computed(() => {
+    if (props.type === "drip" || props.type === "DripCampaign")
+        return dripColumns;
+    else if (props.type === "scheduled") return scheduledColumns;
+    else return [];
+});
 
 const filteredCampaigns = computed(() =>
     filterCampaigns(props.campaigns, props.filter)
 );
-
-const data = [
-    {
-        id: 1,
-        action: "sms",
-        subject: "Welcome Mail",
-        deployment_days: 2,
-        status: "In Progress",
-    },
-];
 </script>

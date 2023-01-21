@@ -2,19 +2,16 @@
 
 namespace App\Domain\Templates\CallScriptTemplates\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Templates\CallScriptTemplates\CallScriptTemplateAggregate;
 use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
-use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateCallScriptTemplate
+class UpdateCallScriptTemplate extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -30,6 +27,13 @@ class UpdateCallScriptTemplate
         ];
     }
 
+    public function mapArgsToHandle($args): array
+    {
+        $callscriptTemplate = $args['input'];
+
+        return [CallScriptTemplate::find($callscriptTemplate['id']), $callscriptTemplate];
+    }
+
     public function handle(CallScriptTemplate $template, array $data): CallScriptTemplate
     {
         CallScriptTemplateAggregate::retrieve($template->id)
@@ -37,11 +41,6 @@ class UpdateCallScriptTemplate
             ->persist();
 
         return $template->refresh();
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

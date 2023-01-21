@@ -1,0 +1,10 @@
+extend type Mutation {
+    "Creates a CallTemplate"
+    createCallScriptTemplate(
+        input: CreateCallScriptTemplateInput
+    ): CallScriptTemplate! @inject(context: "user.client_id", name: "client_id")
+    "Updates a CallTemplate"
+    updateCallScriptTemplate(
+        input: UpdateCallScriptTemplateInput
+    ): CallScriptTemplate! @inject(context: "user.client_id", name: "client_id")
+}

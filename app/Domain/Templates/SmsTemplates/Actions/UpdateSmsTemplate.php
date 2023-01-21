@@ -2,19 +2,16 @@
 
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Templates\SmsTemplates\SmsTemplateAggregate;
-use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateSmsTemplate
+class UpdateSmsTemplate extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -35,9 +32,11 @@ class UpdateSmsTemplate
         return $template->refresh();
     }
 
-    public function getControllerMiddleware(): array
+    public function mapArgsToHandle($args): array
     {
-        return [InjectClientId::class];
+        $smsTemplate = $args['input'];
+
+        return [SmsTemplate::find($smsTemplate['id']), $smsTemplate];
     }
 
     public function authorize(ActionRequest $request): bool

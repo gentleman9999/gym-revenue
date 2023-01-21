@@ -1,14 +1,16 @@
 <template>
-    <!-- <ApolloQuery :query="(gql) => queries['audience'].edit" :variables="param"> -->
-
     <daisy-modal
         :open="true"
         :showCloseButton="false"
         :closable="false"
         class="h-full w-full bg-transparent border-none flex flex-col justify-center items-center shadow-none"
     >
-        <template v-if="loading">
-            <Spinner />
+        <template v-if="!!isProcessing && !!loading">
+            <div
+                class="shadow border border-secondary rounded-lg p-6 bg-neutral"
+            >
+                <Spinner />
+            </div>
         </template>
 
         <template v-else>
@@ -95,13 +97,13 @@
                             $emit('cancel');
                         }
                     "
-                    :disabled="loading"
+                    :disabled="isProcessing"
                 >
                     Back
                 </button>
                 <button
                     @click="handleSave"
-                    :disabled="titleField === ''"
+                    :disabled="isProcessing"
                     class="px-2 py-1 border-secondry border rounded-md hover:bg-secondary transition-all disabled:opacity-20 disabled:cursor-not-allowed"
                 >
                     Save
@@ -110,7 +112,6 @@
             </div>
         </template>
     </daisy-modal>
-    <!-- </ApolloQuery> -->
 </template>
 
 <script setup>
@@ -141,30 +142,28 @@ const props = defineProps({
     },
 });
 
-const {
-    result,
-    loading: modelLoading,
-    error,
-    refetch,
-} = useQuery(queries["audience"].edit, {
+const isProcessing = ref(true);
+
+const { result, loading, error, refetch } = useQuery(queries["audience"].edit, {
     id: props.audience_id,
 });
 
-watch(modelLoading, (nv, ov) => {
-    if (!!audienceData?.value?.filters?.membership_type_id?.length > 0) {
+watch(loading, (nv, ov) => {
+    if (!!resource?.value?.filters?.membership_type_id?.length > 0) {
         currentTab.value = "members";
     }
 
     setupTypes();
-    loading.value = false;
+    isProcessing.value = false;
 });
 
-const loading = ref(true);
 const currentTab = ref("leads");
 const titleField = ref("");
 
-const audienceData = computed(() => {
-    return result.value?.audience;
+const resource = computed(() => {
+    if (result.value && result.value["audience"]) {
+        return _.cloneDeep(result.value["audience"]);
+    } else return null;
 });
 
 const { mutate: createAudience } = useMutation(mutations.audience.create);
@@ -179,10 +178,10 @@ const operFn = computed(() => {
 });
 
 const handleSave = async () => {
-    loading.value = true;
+    isProcessing.value = true;
 
     let input = {
-        id: audienceData.value?.id,
+        id: resource?.value?.id,
         name: titleField.value,
         filters: {
             lead_type_id: currentTab.value === "leads" ? idsLead.value : [],
@@ -199,17 +198,15 @@ const handleSave = async () => {
     try {
         const { data } = await operFn.value({ input });
         let result = { ...data[operation.value] };
-        loading.value = false;
         toastInfo("Audience Saved");
         emit("update", result);
         clearSelected();
+        isProcessing.value = false;
     } catch (error) {
         toastError("Error saving audience");
         console.log("error:", error);
-        loading.value = false;
+        isProcessing.value = false;
     }
-
-    loading.value = false;
 };
 
 const leadTypes = ref(props.leadTypes);
@@ -250,7 +247,7 @@ const idsMember = computed(() => {
 });
 
 const setupTypes = () => {
-    let filters = audienceData?.value?.filters;
+    let filters = resource?.value?.filters;
     if (!filters) return;
 
     let leadSources = filters?.lead_type_id;
@@ -274,7 +271,7 @@ const setupTypes = () => {
         });
     }
 
-    titleField.value = audienceData?.value?.name;
+    titleField.value = resource?.value?.name;
 };
 
 onMounted(() => {

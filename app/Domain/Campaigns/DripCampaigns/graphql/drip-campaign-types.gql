@@ -6,7 +6,7 @@ type DripCampaign {
     start_at: DateTime
     end_at: DateTime
     completed_at: DateTime
-    status: String
+    status: Enum
     created_at: DateTime
     updated_at: DateTime
     deleted_at: DateTime

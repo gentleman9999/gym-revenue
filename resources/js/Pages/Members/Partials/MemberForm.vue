@@ -75,8 +75,8 @@
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
             <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="primary_phone" value="Primary Phone" />
-                <phone-input id="primary_phone" v-model="form['phone']" />
+                <jet-label for="phone" value="Primary Phone" />
+                <phone-input id="phone" v-model="form.phone" />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
             <div class="form-control md:col-span-2 col-span-6">
@@ -136,6 +136,7 @@
                     :options="validStateSelections"
                     :classes="getDefaultMultiselectTWClasses()"
                 />
+
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
             <div class="col-span-3 md:col-span-2">
@@ -246,22 +247,7 @@
 
             <div class="form-divider" />
             <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="club_id" value="Club" />
-                <select
-                    class=""
-                    v-model="form['home_location_id']"
-                    required
-                    id="club_id"
-                >
-                    <option value="">Select a Club</option>
-                    <option
-                        v-for="location in locations"
-                        :value="location.id"
-                        :key="location.id"
-                    >
-                        {{ location.name }}
-                    </option>
-                </select>
+                <ClubSelect v-model="form['home_location_id']" required />
                 <jet-input-error
                     :message="form.errors['home_location_id']"
                     class="mt-2"
@@ -324,7 +310,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="goBack"
+                @click="$emit('close')"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -338,7 +324,7 @@
                 :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                {{ member.id === "" ? "Create" : "Update" }}
             </Button>
         </template>
     </jet-form-section>
@@ -354,6 +340,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import { transformDate } from "@/utils/transformDate";
 import { useGoBack } from "@/utils";
+import { removeTypename } from "@/utils/formatters/removeTypename.js";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import { resolveBorderColorLevel } from "@/utils/resolvers/warningLevelToStyle";
 import { preformattedForSelect } from "@/utils/formatters/states";
@@ -366,6 +353,7 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import PhoneInput from "@/Components/PhoneInput.vue";
+import ClubSelect from "@/Pages/Locations/Partials/ClubSelect.vue";
 
 import Multiselect from "@vueform/multiselect";
 
@@ -419,7 +407,7 @@ const handleNoteExpansion = async (note) => {
         note: note,
     });
 
-    emit("close");
+    // emit("close");
 };
 
 /** File Input event handler */
@@ -449,12 +437,31 @@ const handleFileChange = async () => {
 
 /** Form submission */
 const handleSubmit = async () => {
+    let formData = form.data();
+    removeTypename(formData);
+
+    // formData["home_location_id"] = formData["home_location"].id;
+    // delete formData["home_location"];
+
+    // formData["team_id"] = formData["external_id"];
+    // delete formData["external_id"];
+
+    // delete formData["middle_name"];
+    // delete formData["alternate_phone"];
+    // delete formData["primary_phone"];
+    // delete formData["gender"];
+    // delete formData["date_of_birth"];
+    // delete formData["agreement_number"];
+    // delete formData["misc"];
+    // delete formData["client"];
+
     await operFn.value({
-        ...form,
-        date_of_birth: transformDate(form.date_of_birth),
+        input: formData,
     });
 
     form.notes = { title: "", note: "" };
+
+    emit("close");
 };
 
 // const goBack = useGoBack(route("data.members"));

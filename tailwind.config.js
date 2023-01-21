@@ -4,7 +4,6 @@ const plugin = require("tailwindcss/plugin");
 const twColors = require("tailwindcss/colors");
 const svgToDataUri = require("mini-svg-data-uri");
 
-
 const colors = {
     ...twColors,
     primary: {
@@ -52,8 +51,8 @@ const colors = {
         450: "#868686",
         500: "#6A6A6A",
         800: "#242424",
-        900: "#1C1C1C"
-    }
+        900: "#1C1C1C",
+    },
 };
 
 /** @type {import('tailwindcss').Config} */
@@ -96,8 +95,8 @@ module.exports = {
                 )}")`,
             }),
             zIndex: {
-                '1': '1',
-            }
+                1: "1",
+            },
         },
     },
 
@@ -132,29 +131,30 @@ module.exports = {
     ],
     daisyui: {
         themes: [
-        {
-            dark: {
-                primary: "#073A76",
-                "primary-focus": "#0A56B0",
-                "primary-content": "#ffffff",
-                secondary: "#0074C8",
-                "secondary-focus": "#00599A",
-                "secondary-content": "#ffffff",
-                accent: "#82D300",
-                "accent-focus": "#6CAF00",
-                "accent-content": "#ffffff",
-                neutral: "#1c1c1c",
-                "neutral-focus": "#000A10",
-                "neutral-content": "#9E9E9E",
-                "base-100": "#242424",
-                "base-200": "#202020",
-                "base-300": "#1c1c1c",
-                "base-content": "#ffffff",
-                info: "#2094f3",
-                success: "#01B481",
-                warning: "#ff9d00",
-                error: "#ff0000",
+            {
+                dark: {
+                    primary: "#073A76",
+                    "primary-focus": "#0A56B0",
+                    "primary-content": "#ffffff",
+                    secondary: "#0074C8",
+                    "secondary-focus": "#00599A",
+                    "secondary-content": "#ffffff",
+                    accent: "#82D300",
+                    "accent-focus": "#6CAF00",
+                    "accent-content": "#ffffff",
+                    neutral: "#1c1c1c",
+                    "neutral-focus": "#000A10",
+                    "neutral-content": "#9E9E9E",
+                    "base-100": "#242424",
+                    "base-200": "#202020",
+                    "base-300": "#1c1c1c",
+                    "base-content": "#ffffff",
+                    info: "#2094f3",
+                    success: "#01B481",
+                    warning: "#ff9d00",
+                    error: "#ff0000",
+                },
             },
-        }],
+        ],
     },
 };

@@ -3,6 +3,8 @@ import gql from "graphql-tag";
 import { audience } from "./campaigns/audiences";
 import { scheduledCampaign } from "./campaigns/scheduled";
 import { dripCampaign } from "./campaigns/drip";
+import { smsTemplate } from "./templates/sms";
+import { callTemplate } from "./templates/call";
 
 const department = {
     create: gql`
@@ -403,6 +405,8 @@ export default {
     audience,
     scheduledCampaign,
     dripCampaign,
+    smsTemplate,
+    callTemplate,
     department,
     position,
     role,

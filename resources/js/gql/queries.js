@@ -4,9 +4,21 @@ import {
     EMAIL_TEMPLATE_EDIT,
     EMAIL_TEMPLATE_CREATE,
 } from "./templates/email";
-import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
-import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
-import { AUDIENCES, AUDIENCE_EDIT } from "./campaigns/audiences";
+import {
+    SMS_TEMPLATES,
+    SMS_TEMPLATE_EDIT,
+    SMS_TEMPLATE_CREATE,
+} from "./templates/sms";
+import {
+    CALL_TEMPLATES,
+    CALL_TEMPLATE_EDIT,
+    CALL_TEMPLATE_CREATE,
+} from "./templates/call";
+import {
+    AUDIENCES,
+    AUDIENCE_EDIT,
+    AUDIENCE_PERMISSIONS,
+} from "./campaigns/audiences";
 import {
     DRIPCAMPAIGNS,
     DRIPCAMPAIGN_EDIT,
@@ -554,9 +566,6 @@ const CUSTOMER_EDIT = gql`
             agreement_number
             external_id
             misc
-            client {
-                id
-            }
             home_location {
                 id
             }
@@ -590,9 +599,6 @@ const CUSTOMER_CREATE = gql`
             zip
             city
             state
-            client {
-                id
-            }
             home_location {
                 id
             }
@@ -643,9 +649,6 @@ const TEAM_PREVIEW = gql`
                 email
                 role
             }
-            client {
-                name
-            }
         }
         clubs: locations(first: 100) {
             data {
@@ -662,9 +665,6 @@ const TEAM_EDIT = gql`
         team(id: $id) {
             id
             name
-            client {
-                name
-            }
             users {
                 id
                 name
@@ -1252,9 +1252,11 @@ export default {
         create: EMAIL_TEMPLATE_CREATE,
     },
     smsTemplate: {
+        create: SMS_TEMPLATE_CREATE,
         edit: SMS_TEMPLATE_EDIT,
     },
     callTemplate: {
+        create: CALL_TEMPLATE_CREATE,
         edit: CALL_TEMPLATE_EDIT,
     },
     task: {
@@ -1273,6 +1275,7 @@ export default {
     dripCampaigns: DRIPCAMPAIGNS,
     TOPOL_API_KEY,
     audiences: AUDIENCES,
+    audiencePermissions: AUDIENCE_PERMISSIONS,
     emailTemplates: EMAIL_TEMPLATES,
     smsTemplates: SMS_TEMPLATES,
     callTemplates: CALL_TEMPLATES,

@@ -1,0 +1,8 @@
+extend type Mutation {
+    "Creates a SmsTemplate"
+    createSmsTemplate(input: CreateSmsTemplateInput): SmsTemplate!
+        @inject(context: "user.client_id", name: "client_id")
+    "Updates a SmsTemplate"
+    updateSmsTemplate(input: UpdateSmsTemplateInput): SmsTemplate!
+        @inject(context: "user.client_id", name: "client_id")
+}

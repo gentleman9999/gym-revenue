@@ -6,6 +6,7 @@ export const AUDIENCES = gql`
             data {
                 id
                 name
+                editable
             }
             paginatorInfo {
                 currentPage
@@ -14,6 +15,17 @@ export const AUDIENCES = gql`
                 lastItem
                 perPage
                 total
+            }
+        }
+    }
+`;
+
+export const AUDIENCE_PERMISSIONS = gql`
+    query Audiences {
+        audiences {
+            data {
+                id
+                editable
             }
         }
     }
@@ -45,6 +57,7 @@ export const audience = {
                     lead_type_id
                     membership_type_id
                 }
+                editable
             }
         }
     `,
@@ -57,6 +70,7 @@ export const audience = {
                     lead_type_id
                     membership_type_id
                 }
+                editable
             }
         }
     `,

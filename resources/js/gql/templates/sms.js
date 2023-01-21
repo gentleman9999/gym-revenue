@@ -9,12 +9,8 @@ export const SMS_TEMPLATES = gql`
                 markup
                 active
                 team_id
-                created_by_user_id
                 updated_at
                 created_at
-                details {
-                    sms_template_id
-                }
             }
             paginatorInfo {
                 currentPage
@@ -28,6 +24,17 @@ export const SMS_TEMPLATES = gql`
     }
 `;
 
+export const SMS_TEMPLATE_CREATE = gql`
+    query SmsTemplates {
+        smsTemplates {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
+
 export const SMS_TEMPLATE_EDIT = gql`
     query SmsTemplate($id: ID) {
         smsTemplate(id: $id) {
@@ -36,12 +43,31 @@ export const SMS_TEMPLATE_EDIT = gql`
             markup
             active
             team_id
-            created_by_user_id
             updated_at
             created_at
-            details {
-                sms_template_id
-            }
         }
     }
 `;
+
+export const smsTemplate = {
+    create: gql`
+        mutation createSmsTemplate($input: CreateSmsTemplateInput) {
+            createSmsTemplate(input: $input) {
+                id
+                name
+                markup
+                active
+            }
+        }
+    `,
+    update: gql`
+        mutation updateSmsTemplate($input: UpdateSmsTemplateInput) {
+            updateSmsTemplate(input: $input) {
+                id
+                name
+                markup
+                active
+            }
+        }
+    `,
+};

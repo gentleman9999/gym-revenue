@@ -1,58 +1,52 @@
 <template>
-    <template v-if="shouldMount">
-        <ApolloQuery :query="(gql) => queries.TOPOL_API_KEY">
-            <template v-slot="{ result: { data } }">
-                <email-builder
-                    @onSave="handleOnSave"
-                    @onSaveAndClose="handleOnSave"
-                    @OnClose="handleOnClose"
-                    :json="transformJson(emailTemplate?.json) || {}"
-                    :title="emailTemplate?.name || 'New Email Template'"
-                    :api-key="data.topolApiKey"
-                />
-            </template>
-        </ApolloQuery>
-        <daisy-modal ref="nameModal">
-            <div class="form-control">
-                <label for="name" class="label">Name</label>
-                <input type="text" v-model="form.name" autofocus id="name" />
-                <jet-input-error :message="form.errors.name" class="mt-2" />
-            </div>
-
-            <div class="form-control">
-                <label for="subject" class="label">Subject Line</label>
-                <input
-                    type="text"
-                    v-model="form.subject"
-                    id="subject"
-                    class="form-control w-full"
-                />
-                <jet-input-error :message="form.errors.subject" class="mt-2" />
-            </div>
-
-            <template #actions>
-                <div class="flex-grow" />
-                <Button
-                    class="btn-secondary"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing || !form.isDirty || isProcessing"
-                    :loading="form.processing || isProcessing"
-                    @click="handleOperation"
-                >
-                    Save
-                </Button>
-            </template>
-        </daisy-modal>
-
-        <template v-if="isProcessing">
-            <daisy-modal
-                :closable="false"
-                :open="true"
-                :showCloseButton="false"
-            >
-                <Spinner />
-            </daisy-modal>
+    <ApolloQuery :query="(gql) => queries.TOPOL_API_KEY">
+        <template v-slot="{ result: { data } }">
+            <email-builder
+                @onSave="handleOnSave"
+                @onSaveAndClose="handleOnSave"
+                @OnClose="handleOnClose"
+                :json="transformJson(template?.json) || {}"
+                :title="template?.name || 'New Email Template'"
+                :api-key="data.topolApiKey"
+            />
         </template>
+    </ApolloQuery>
+    <daisy-modal ref="nameModal">
+        <div class="form-control">
+            <label for="name" class="label">Name</label>
+            <input type="text" v-model="form.name" autofocus id="name" />
+            <jet-input-error :message="form.errors.name" class="mt-2" />
+        </div>
+
+        <div class="form-control">
+            <label for="subject" class="label">Subject Line</label>
+            <input
+                type="text"
+                v-model="form.subject"
+                id="subject"
+                class="form-control w-full"
+            />
+            <jet-input-error :message="form.errors.subject" class="mt-2" />
+        </div>
+
+        <template #actions>
+            <div class="flex-grow" />
+            <Button
+                class="btn-secondary"
+                :class="{ 'opacity-25': isProcessing }"
+                :disabled="isProcessing"
+                :loading="isProcessing"
+                @click="handleOperation"
+            >
+                Save
+            </Button>
+        </template>
+    </daisy-modal>
+
+    <template v-if="isProcessing">
+        <daisy-modal :closable="false" :open="true" :showCloseButton="false">
+            <Spinner />
+        </daisy-modal>
     </template>
 </template>
 
@@ -68,13 +62,15 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 import queries from "@/gql/queries";
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
+import { toastInfo, toastError } from "@/utils/createToast";
 
-const emit = defineEmits(["cancel", "close"]);
+const emit = defineEmits(["cancel", "done"]);
 
 const props = defineProps({
-    emailTemplate: {
+    template: {
         type: Object,
         default: {
+            id: null,
             markup: null,
             json: null,
             thumbnail: null,
@@ -82,29 +78,10 @@ const props = defineProps({
             subject: null,
         },
     },
-    topolApiKey: {
-        type: String,
-        required: true,
-    },
-    useInertia: {
-        type: Boolean,
-        default: false,
-    },
     editParam: {
-        type: [String, Object],
+        type: [Object, null],
         default: null,
     },
-    createParam: {
-        type: [String, Object],
-        default: null,
-    },
-});
-
-/** gives us the mutation type that will be ran as a string */
-const usingCrudAction = computed(() => {
-    if (props.editParam) return "update";
-    if (props.createParam) return "create";
-    return "unknown";
 });
 
 const { mutate: createEmailTemplate } = useMutation(
@@ -114,55 +91,55 @@ const { mutate: updateEmailTemplate } = useMutation(
     mutations.emailTemplate.update
 );
 
-const validInputFields = {
-    create: ["name", "subject", "markup", "json"],
-    update: ["id", "name", "subject", "markup", "json"],
-    unknown: [],
-};
+const operation = computed(() => {
+    return props.editParam !== null ? "Update" : "Create";
+});
 
-const operation = ref(null); // reference to gql query that will be ran on save
+const operFn = computed(() => {
+    return operation.value === "Update"
+        ? updateEmailTemplate
+        : createEmailTemplate;
+});
+
 const nameModal = ref(null); // DOM reference for template name and subject
 const isProcessing = ref(false);
-const form = useGymRevForm({
-    ...props.emailTemplate,
-});
 
-/* since component is resource heavy and requires an api key, only load into memory if necessary */
-const shouldMount = computed(() => {
-    return Boolean(props.editParam || props.createParam);
-});
+const form = useGymRevForm(props.template);
 
-/**
- * looks at which fields are valid inputs for the current operation  and returns an object with that shape & data supplied */
-const getInputData = () => {
-    let unprFormData = form.dirty().data();
-    let fields = validInputFields[usingCrudAction.value];
-
-    let inputFields = {};
-
-    for (let i = 0; i < fields.length; i++) {
-        inputFields[fields[i]] = unprFormData[fields[i]];
-    }
-
-    return inputFields;
+const transformJson = (data) => {
+    if (!data) return {};
+    return JSON.parse(data);
 };
-
-const transformJson = (data) => JSON.parse(data);
 
 /** initiates call to the current operation with the right fields and input data in the right format */
 const handleOperation = async () => {
-    isProcessing.value = true;
-    let rawData = getInputData();
+    try {
+        isProcessing.value = true;
 
-    const { data } = await operation.value({
-        input: { ...rawData, json: JSON.stringify(rawData.json) },
-    });
+        let rawData = {
+            id: form.id,
+            name: form.name,
+            subject: form.subject,
+            markup: form.markup,
+            json: JSON.stringify(form.json),
+        };
+        if (props.editParam === null) delete rawData.id;
 
-    let savedTemplate =
-        data["createEmailTemplate"] ?? data["updateEmailTemplate"];
+        const { data } = await operFn.value({
+            input: rawData,
+        });
 
-    isProcessing.value = false;
-    emit("close", savedTemplate);
+        let savedTemplate =
+            data["createEmailTemplate"] ?? data["updateEmailTemplate"];
+
+        toastInfo("Email Template " + operation.value + "d!");
+        isProcessing.value = false;
+        emit("done", savedTemplate);
+    } catch (error) {
+        toastError("There was a problem updating the data - try again..");
+        isProcessing.value = false;
+        console.log("template operation error:", error);
+    }
 };
 
 const handleOnSave = ({ html, json }) => {
@@ -181,11 +158,4 @@ const handleOnSave = ({ html, json }) => {
 const handleOnClose = (template) => {
     emit("cancel", template);
 };
-
-onMounted(() => {
-    operation.value =
-        typeof props.emailTemplate.name === "string"
-            ? updateEmailTemplate
-            : createEmailTemplate;
-});
 </script>
