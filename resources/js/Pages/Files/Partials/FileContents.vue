@@ -1,4 +1,10 @@
 <template>
+    <div
+        v-if="(!folders || folders.length == 0) && files.data.length === 0"
+        class="border-2 m-5 p-2"
+    >
+        No files/folders were found
+    </div>
     <div class="flex flex-row flex-wrap mt-4" draggable="false">
         <folder-item
             v-for="folder in folders"

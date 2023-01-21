@@ -9,6 +9,7 @@
         "ext-intl": "*",
         "bensampo/laravel-enum": "^6.2",
         "cape-and-bay/draftable": "^1.1",
+        "cape-and-bay/versionable": "^1.0",
         "doctrine/dbal": "^3.2",
         "fakerphp/faker": "^1.20",
         "firebase/php-jwt": "^6.3",
