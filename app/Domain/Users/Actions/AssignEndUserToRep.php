@@ -16,7 +16,7 @@ class AssignEndUserToRep extends BaseEndUserAction
 {
     public function handle(array $data): EndUser
     {
-        //GraphQL Sends the endUser and user data as an array from the mutation so we have to break it down here.
+        //GraphQL Sends the endUser and user data as an array from the mutation, so we have to break it down here.
         $end_user = EndUser::find($data['endUser']);
         $user = User::find($data['user']);
         if ($end_user->isEndUser()) {
