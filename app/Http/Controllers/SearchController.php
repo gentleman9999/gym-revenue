@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Domain\CalendarEvents\CalendarEvent;
-use App\Domain\Notes\Model\Note;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Models\File;
+use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;

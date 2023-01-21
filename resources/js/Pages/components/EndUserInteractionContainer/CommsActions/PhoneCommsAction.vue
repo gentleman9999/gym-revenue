@@ -81,12 +81,12 @@ let callWatchInterval = null;
 
 const phoneCallOptions = {
     "": "Select an Outcome",
-    CONTACTED: "Spoke with Lead",
-    VOICEMAIL: "Left a Voicemail",
-    HUNG_UP: "Lead Hung Up",
-    WRONG_NUMBER: "Wrong Number",
-    APPOINTMENT: "An Appointment Was Scheduled",
-    SALE: "Made the Sale over the Phone!",
+    contacted: "Spoke with Lead.",
+    voicemail: "Left a Voicemail",
+    "hung-up": "Lead Hung Up",
+    "wrong-number": "Wrong Number",
+    appointment: "An Appointment Was Scheduled",
+    sale: "Made the Sale over the Phone!",
 };
 const form = useGymRevForm({
     method: "phone",
@@ -140,5 +140,7 @@ function clearCallPingInterval() {
     }
 }
 
-const isFormValid = computed(() => form.outcome?.length && form.notes?.length);
+const isFormValid = computed(
+    () => form.outcome?.length && form.notes?.length && form.callSid !== null
+);
 </script>

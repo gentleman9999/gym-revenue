@@ -63,7 +63,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.leads.update');
         Route::put('/assign/{end_user}', \App\Domain\Users\Actions\AssignEndUserToRep::class)->name('data.leads.assign');
-        Route::post('/contact/{end_use_id}', \App\Domain\Notes\Actions\CreateNoteFromContactCall::class)->name('data.leads.contact');
+        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
@@ -145,10 +145,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(func
 Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function () {
     Route::get('/', \App\Http\Controllers\NotesController::class . '@index')->name('notes');
     Route::get('/create', \App\Http\Controllers\NotesController::class . '@create')->name('notes.create');
-    Route::post('/', \App\Domain\Notes\Actions\CreateNoteFromEndpoint::class)->name('notes.store');
+    Route::post('/', \App\Actions\Clients\Notes\CreateNote::class)->name('notes.store');
     Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
-    Route::put('/{id}', \App\Domain\Notes\Actions\UpdateNote::class)->name('notes.update');
-    Route::delete('/{note}/force', \App\Domain\Notes\Actions\DeleteNote::class)->name('notes.delete');
+    Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
+    Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
     Route::get('/export', \App\Http\Controllers\NotesController::class . '@export')->name('notes.export');
 });
 

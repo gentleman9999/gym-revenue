@@ -10,7 +10,6 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Notes\Model\Note;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
@@ -240,7 +239,7 @@ class User extends Authenticatable implements PhoneInterface
 
     public function notes(): HasMany
     {
-        return $this->hasMany(Note::class, 'entity_id')->whereEntityType(self::class);
+        return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
     }
 
     public function teams(): BelongsToMany

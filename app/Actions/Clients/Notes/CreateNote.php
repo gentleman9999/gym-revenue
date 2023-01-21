@@ -3,7 +3,7 @@
 namespace App\Actions\Clients\Notes;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Domain\Notes\Model\Note;
+use App\Models\Note;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;

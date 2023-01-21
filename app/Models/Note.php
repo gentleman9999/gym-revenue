@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Domain\Notes\Model;
+namespace App\Models;
 
-use App\Models\GymRevProjection;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Note extends GymRevProjection
+class Note extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -17,7 +17,7 @@ class Note extends GymRevProjection
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'entity_id', 'entity_type', 'title', 'note', 'created_by_user_id', 'active','category'];
+    protected $fillable = ['id', 'entity_id', 'entity_type', 'title', 'note', 'created_by_user_id', 'active'];
 
     public function scopeFilter($query, array $filters)
     {

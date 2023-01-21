@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Actions;
 
-use App\Domain\Notes\Model\Note;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
+use App\Models\Note;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\Concerns\AsAction;

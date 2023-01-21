@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Notes\Model\Note;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\Customer;
 use App\Domain\Users\Models\EndUser;
+use App\Models\Note;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 

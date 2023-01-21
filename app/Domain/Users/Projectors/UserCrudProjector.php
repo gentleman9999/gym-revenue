@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Users\Projectors;
 
 use App\Domain\LocationEmployees\Actions\CreateLocationEmployee;
-use App\Domain\Notes\Model\Note;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Events\UserCreated;
@@ -15,6 +14,7 @@ use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
+use App\Models\Note;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Silber\Bouncer\Database\Role;
@@ -116,7 +116,7 @@ class UserCrudProjector extends Projector
             //TODO: use an action that trigger ES specific to note
             $notes = $data['notes'] ?? false;
             if ($notes) {
-                $this->createUserNotes($event, $notes, $user);
+                $this->createUserNotes($event, $user, $notes);
             }
 
             /**
@@ -182,7 +182,7 @@ class UserCrudProjector extends Projector
 
             $notes = $data['notes'] ?? false;
             if ($notes) {
-                $this->createUserNotes($event, $notes, $user);
+                $this->createUserNotes($event, $user, $notes);
             }
 
             if (array_key_exists('role_id', $data)) {
@@ -282,16 +282,18 @@ class UserCrudProjector extends Projector
         }
     }
 
-    protected function createUserNotes($event, array $notes, User $user): void
+    protected function createUserNotes($event, User $user, array $notes): void
     {
-        if ($notes['title'] != null) {
-            (new Note())->fill([
-                'entity_id' => $user->id,
-                'entity_type' => User::class,
-                'title' => $notes['title'],
-                'note' => $notes['note'],
-                'created_by_user_id' => $user->id,
-            ])->writeable()->save();
+        foreach ($notes as $note) {
+            if ($notes['title'] != null) {
+                Note::create([
+                    'entity_id' => $event->aggregateRootUuid(),
+                    'entity_type' => User::class,
+                    'title' => $notes['title'],
+                    'note' => $notes['note'],
+                    'created_by_user_id' => $event->userId(),
+                ]);
+            }
         }
     }
 

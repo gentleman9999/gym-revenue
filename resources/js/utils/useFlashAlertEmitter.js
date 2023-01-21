@@ -1,9 +1,20 @@
-import { computed, watch } from "vue";
+import { useFlash } from "./useFlash";
+import { ref, watch, watchEffect } from "vue";
+import { useUser } from "@/utils/useUser";
 import { generateToast } from "@/utils/createToast";
-import { usePage } from "@inertiajs/inertia-vue3";
 
 export const useFlashAlertEmitter = () => {
-    const alerts = computed(() => usePage().props.value.flash.alerts);
+    const flash = useFlash();
+
+    const alerts = ref(flash.value.alerts);
+
+    //we compare json here to try and prevent double display of the alert. but it doesn't work.
+    watchEffect(() => {
+        const newAlert = flash.value.alerts;
+        if (JSON.stringify(alerts.value) !== JSON.stringify(newAlert)) {
+            alerts.value = newAlert;
+        }
+    });
 
     watch(
         alerts,
