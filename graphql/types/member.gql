@@ -8,11 +8,11 @@ type Member {
     alternate_phone: String
     gender: String
     date_of_birth: DateTime
-    created_at: DateTime!
-    updated_at: DateTime!
+    created_at: DateTime
+    updated_at: DateTime
     gr_location_id: ID
-    interaction_count: InteractionCount! @method(name: "getInteractionCount")
-    home_location: Location! @belongsTo
+    interaction_count: InteractionCount @method(name: "getInteractionCount")
+    home_location: Location @belongsTo
     locations: [Location] @belongsToMany
     agreement_number: String
     external_id: String

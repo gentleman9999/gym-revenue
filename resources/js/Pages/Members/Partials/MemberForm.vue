@@ -247,7 +247,7 @@
 
             <div class="form-divider" />
             <div class="form-control md:col-span-2 col-span-6">
-                <ClubSelect v-model="form['home_location_id']" required />
+                <ClubSelect v-model="form['home_location'].id" required />
                 <jet-input-error
                     :message="form.errors['home_location_id']"
                     class="mt-2"
@@ -440,19 +440,19 @@ const handleSubmit = async () => {
     let formData = form.data();
     removeTypename(formData);
 
-    // formData["home_location_id"] = formData["home_location"].id;
-    // delete formData["home_location"];
+    formData["home_location_id"] = formData["home_location"].id;
+    delete formData["home_location"];
 
     // formData["team_id"] = formData["external_id"];
     // delete formData["external_id"];
 
     // delete formData["middle_name"];
     // delete formData["alternate_phone"];
-    // delete formData["primary_phone"];
+    delete formData["primary_phone"];
     // delete formData["gender"];
     // delete formData["date_of_birth"];
     // delete formData["agreement_number"];
-    // delete formData["misc"];
+    delete formData["misc"];
     // delete formData["client"];
 
     await operFn.value({

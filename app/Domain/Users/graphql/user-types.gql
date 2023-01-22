@@ -3,6 +3,7 @@ type User {
     id: ID!
     name: String!
     first_name: String
+    middle_name: String
     last_name: String
     email: String!
     alternate_email: String

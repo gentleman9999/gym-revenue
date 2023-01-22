@@ -473,9 +473,6 @@ const MEMBER_EDIT = gql`
             agreement_number
             external_id
             misc
-            client {
-                id
-            }
             home_location {
                 id
             }
@@ -676,10 +673,11 @@ const TEAM_EDIT = gql`
                     name
                 }
             }
-            locations {
-                id
-                name
-            }
+            # back end model does not match - there is no location on this
+            # locations {
+            #     id
+            #     name
+            # }
         }
     }
 `;

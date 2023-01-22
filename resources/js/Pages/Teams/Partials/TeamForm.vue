@@ -20,7 +20,8 @@
             </div>
 
             <div class="grid-col-full">
-                <LocationSelect v-model="form.locations" />
+                locations (turned off)
+                <!-- <LocationSelect v-model="form.locations" /> -->
             </div>
         </template>
 
