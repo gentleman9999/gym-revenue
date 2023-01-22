@@ -20,24 +20,17 @@
             </inertia-link>
         </div>
     </LayoutHeader>
-    <ApolloQuery :query="(gql) => queries['emailTemplates']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                :resource="getEmailTemplates(data)"
-                base-route="emailTemplates"
-                model-name="EmailTemplate"
-                model-key="emailTemplate"
-                :fields="fields"
-                :actions="actions"
-                :top-actions="{ create: { label: 'New Template' } }"
-                :table-component="false"
-                :cardComponent="EmailTemplateCard"
-                :edit-component="EmailTemplateForm"
-                @update="handleCRUDUpdate"
-            />
-        </template>
-    </ApolloQuery>
+    <gym-revenue-crud
+        base-route="emailTemplates"
+        model-name="EmailTemplate"
+        model-key="emailTemplate"
+        :fields="fields"
+        :actions="actions"
+        :top-actions="{ create: { label: 'New Template' } }"
+        :table-component="false"
+        :cardComponent="EmailTemplateCard"
+        :edit-component="EmailTemplateForm"
+    />
 
     <confirm
         title="Really Trash?"
@@ -61,23 +54,21 @@
 }
 </style>
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import Confirm from "@/Components/Confirm.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-    faChevronDoubleLeft,
-    faEllipsisH,
-} from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDoubleLeft, faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
 import { faImage } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail.vue";
 import EmailTemplateCard from "./Partials/EmailTemplateCard.vue";
 import EmailTemplateForm from "./Partials/EmailTemplateForm.vue";
 import queries from "@/gql/queries";
+
 library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 export default defineComponent({
@@ -87,7 +78,7 @@ export default defineComponent({
         LayoutHeader,
         Confirm,
         GymRevenueCrud,
-        ConfirmSendForm,
+        ConfirmSendForm
     },
     props: ["title", "filters", "templates"],
     setup(props) {
@@ -103,37 +94,15 @@ export default defineComponent({
         };
 
         const param = ref({
-            page: 1,
+            page: 1
         });
 
         const confirmSend = ref(null);
         const sendVars = () => {
             return {
                 templateId: "",
-                templateName: "",
+                templateName: ""
             };
-        };
-
-        const getEmailTemplates = (data) => {
-            return _.cloneDeep(data.emailTemplates);
-        };
-
-        const handleCRUDUpdate = (k, v) => {
-            console.log("handle crud update: ", k, v);
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
         };
 
         const handleOpenSendModal = (data) => {
@@ -192,18 +161,18 @@ export default defineComponent({
             "created_by_user_id",
             "creator.id",
             "created_at",
-            "updated_at",
+            "updated_at"
         ];
 
         const actions = computed(() => {
             return {
                 selfSend: {
                     label: "Send You a Test Email",
-                    handler: ({ data }) => handleOpenSendModal(data),
+                    handler: ({ data }) => handleOpenSendModal(data)
                 },
                 trash: {
-                    handler: ({ data }) => handleClickTrash(data.id),
-                },
+                    handler: ({ data }) => handleClickTrash(data.id)
+                }
             };
         });
 
@@ -211,8 +180,6 @@ export default defineComponent({
             fields,
             actions,
             handleClickTrash,
-            getEmailTemplates,
-            handleCRUDUpdate,
             confirmTrash,
             handleConfirmTrash,
             handleOpenSendModal,
@@ -222,8 +189,8 @@ export default defineComponent({
             queries,
             param,
             EmailTemplateCard,
-            EmailTemplateForm,
+            EmailTemplateForm
         };
-    },
+    }
 });
 </script>

@@ -740,7 +740,7 @@ let handleSubmit = async () => {
     console.log("form post", JSON.stringify(form.dirtyData));
     await updateUser({
         input: {
-            id: user.id,
+            id: props.user.id,
             first_name: form.first_name,
             last_name: form.last_name,
             email: form.email,

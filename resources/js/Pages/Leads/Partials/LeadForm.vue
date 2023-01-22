@@ -351,6 +351,8 @@ import PhoneInput from "@/Components/PhoneInput.vue";
 import * as _ from "lodash";
 import { usePage } from "@inertiajs/inertia-vue3";
 import ClubSelect from "@/Pages/Locations/Partials/ClubSelect.vue";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations.js";
 
 library.add(faUserCircle);
 
@@ -451,19 +453,68 @@ const transformFormSubmission = (data) => {
     return data;
 };
 
-let handleSubmit = () => {
-    form.dirty()
-        .transform(transformFormSubmission)
-        .put(`/data/leads/${lead.id}`, {
-            preserveState: false,
-        });
+const { mutate: createUser } = useMutation(mutations.user.create);
+const { mutate: updateUser } = useMutation(mutations.user.update);
+
+
+let handleSubmit = async () => {
+    await updateUser({
+        input: {
+            id: user.id,
+            first_name: form.first_name,
+            last_name: form.last_name,
+            email: form.email,
+            alternate_email: form.alternate_email,
+            address1: form.address1,
+            address2: form.address2,
+            phone: form.phone,
+            city: form.city,
+            state: form.state,
+            zip: form.zip + "",
+            contact_preference: form.contact_preference,
+            started_at: form.started_at,
+            ended_at: form.ended_at,
+            terminated_at: form.terminated_at,
+            notes: form.notes,
+            team_id: form.team_id,
+            role_id: form.role_id,
+            home_location_id: null,
+            manager: null,
+        },
+    });
+    handleClickCancel();
 };
 
+
 if (operation === "Create") {
-    handleSubmit = () =>
-        form.transform(transformFormSubmission).post("/data/leads/create", {
-            onSuccess: () => (form.notes = { title: "", note: "" }),
+    handleSubmit = async () => {
+        await createUser({
+            input: {
+                first_name: form.first_name,
+                last_name: form.last_name,
+                email: form.email,
+                alternate_email: form.alternate_email,
+                address1: form.address1,
+                address2: form.address2,
+                phone: form.phone,
+                city: form.city,
+                state: form.state,
+                zip: form.zip + "",
+                contact_preference: form.contact_preference,
+                started_at: form.started_at,
+                ended_at: form.ended_at,
+                terminated_at: form.terminated_at,
+                notes: form.notes,
+                team_id: form.team_id,
+                role_id: form.role_id,
+                home_location_id: null,
+                manager: null,
+                departments: [],
+                positions: [],
+            },
         });
+        handleClickCancel();
+    }
 }
 
 const goBack = useGoBack(route("data.leads"));
