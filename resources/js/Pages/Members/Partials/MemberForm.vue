@@ -247,7 +247,7 @@
 
             <div class="form-divider" />
             <div class="form-control md:col-span-2 col-span-6">
-                <ClubSelect v-model="form['home_location'].id" required />
+                <ClubSelect v-model="form.home_location_id" required />
                 <jet-input-error
                     :message="form.errors['home_location_id']"
                     class="mt-2"
@@ -391,7 +391,10 @@ const { mutate: updateMember } = useMutation(mutations.user.update);
 // for the form for new note creation
 let member = _.cloneDeep({ ...props.member, notes: { title: "", note: "" } });
 
-const form = useGymRevForm({ ...member });
+const form = useGymRevForm({
+    ...member,
+    home_location_id: member?.home_location?.id,
+});
 const fileForm = useGymRevForm({ file: null });
 const validStateSelections = ref(preformattedForSelect);
 
