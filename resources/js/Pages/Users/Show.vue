@@ -163,8 +163,12 @@ export default defineComponent({
             "name",
             "email",
             {
-                name: "role",
+                // name: "roles[0].title",
+                name: "roles",
                 label: "Security Role",
+                transform: (roles) => {
+                    return roles[0]?.title;
+                },
             },
             {
                 name: "manager",

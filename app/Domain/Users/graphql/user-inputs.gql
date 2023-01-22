@@ -12,9 +12,9 @@ input UserInput {
     zip: String
     gender: String
     contact_preference: String
-    start_date: String
-    end_date: String
-    termination_date: String
+    started_at: String
+    ended_at: String
+    terminated_at: String
     notes: NoteInput
     team_id: ID
     role_id: ID

@@ -58,7 +58,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        // Route::post('/create', \App\Domain\Users\Actions\CreateUser::class)->name('data.leads.store');
+        Route::post('/create', \App\Domain\Users\Actions\CreateUser::class)->name('data.leads.store');
         Route::get('/show/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.leads.update');

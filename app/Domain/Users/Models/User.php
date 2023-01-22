@@ -292,7 +292,7 @@ class User extends Authenticatable implements PhoneInterface
 
     public function getRole(): Role|string|null
     {
-        return $this->role ?? null;
+        return $this->roles[0] ?? null;
 //        return Role::find($this->role->id);
 //        return $this->getRoles()[0] ?? null;
 //        if(!$roles || !count($roles)){

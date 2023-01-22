@@ -88,20 +88,20 @@ class CreateUser implements CreatesNewUsers
 
     public function __invoke($_, array $args): User
     {
-        if ($args['input']['start_date']) {
-            $args['input']['start_date'] = CarbonImmutable::create($args['input']['start_date']);
+        if ($args['input']['started_at']) {
+            $args['input']['started_at'] = CarbonImmutable::create($args['input']['started_at']);
         } else {
-            $args['input']['start_date'] = null;
+            $args['input']['started_at'] = null;
         }
-        if ($args['input']['end_date']) {
-            $args['input']['end_date'] = CarbonImmutable::create($args['input']['end_date']);
+        if ($args['input']['ended_at']) {
+            $args['input']['ended_at'] = CarbonImmutable::create($args['input']['ended_at']);
         } else {
-            $args['input']['end_date'] = null;
+            $args['input']['ended_at'] = null;
         }
-        if ($args['input']['termination_date']) {
-            $args['input']['termination_date'] = CarbonImmutable::create($args['input']['termination_date']);
+        if ($args['input']['terminated_at']) {
+            $args['input']['terminated_at'] = CarbonImmutable::create($args['input']['terminated_at']);
         } else {
-            $args['input']['termination_date'] = null;
+            $args['input']['terminated_at'] = null;
         }
 
         return $this->handle($args['input']);
