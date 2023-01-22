@@ -2,18 +2,16 @@
 
 namespace App\Domain\Positions\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Positions\PositionAggregate;
 use App\Models\Position;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdatePosition
+class UpdatePosition extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -27,19 +25,26 @@ class UpdatePosition
         ];
     }
 
-    public function handle(Position $position, array $payload): Position
+    public function mapArgsToHandle($args): array
     {
-        PositionAggregate::retrieve($position->id)->update($payload)->persist();
+        $position = $args['input'];
+
+        return [Position::find($position['id']), $position];
+    }
+
+    public function handle(Position $position, array $data): Position
+    {
+        PositionAggregate::retrieve($position->id)->update($data)->persist();
 
         return $position->refresh();
     }
 
-    public function __invoke($_, array $args): Position
-    {
-        $position = Position::find($args['id']);
+    // public function __invoke($_, array $args): Position
+    // {
+    //     $position = Position::find($args['id']);
 
-        return $this->handle($position, $args);
-    }
+    //     return $this->handle($position, $args);
+    // }
 
     public function authorize(ActionRequest $request): bool
     {
@@ -48,11 +53,11 @@ class UpdatePosition
         return $current_user->can('positions.update', Position::class);
     }
 
-    public function asController(ActionRequest $request, Position $position)
+    public function asController(ActionRequest $request, Position $position): Position
     {
         return $this->handle(
             $position,
-            $request->validated(),
+            $request->validated()
         );
     }
 

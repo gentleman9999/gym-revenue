@@ -26,16 +26,16 @@ const department = {
 };
 const position = {
     create: gql`
-        mutation createPosition($name: String, $departments: [ID]) {
-            createPosition(name: $name, departments: $departments) {
+        mutation createPosition($input: CreatePositionInput) {
+            createPosition(input: $input) {
                 id
                 name
             }
         }
     `,
     update: gql`
-        mutation updatePosition($id: ID, $name: String, $departments: [ID]) {
-            updatePosition(id: $id, name: $name, departments: $departments) {
+        mutation updatePosition($input: UpdatePositionInput) {
+            updatePosition(input: $input) {
                 id
                 name
             }

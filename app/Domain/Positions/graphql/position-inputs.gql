@@ -4,12 +4,12 @@ input PositionFilter {
     state: String
 }
 
-input CreatePositionInput @validator {
+input CreatePositionInput {
     name: String
     departments: [ID]
 }
 
-input UpdatePositionInput @validator {
+input UpdatePositionInput {
     id: ID
     name: String
     departments: [ID]

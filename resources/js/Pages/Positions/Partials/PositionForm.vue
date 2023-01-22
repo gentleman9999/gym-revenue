@@ -107,15 +107,19 @@ const { mutate: updatePosition } = useMutation(mutations.position.update);
 let handleSubmit = async () => {
     if (operation === "Create") {
         await createPosition({
-            name: form.name,
-            departments: form.departments,
+            input: {
+                name: form.name,
+                departments: form.departments,
+            },
         });
         handleCancel();
     } else {
         await updatePosition({
-            id: position.id,
-            name: form.name,
-            departments: form.departments,
+            input: {
+                id: position.id,
+                name: form.name,
+                departments: form.departments,
+            },
         });
         handleCancel();
     }
