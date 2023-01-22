@@ -40,7 +40,7 @@ const USER_PREVIEW = gql`
             name
             email
             phone
-            roles{
+            roles {
                 id
                 name
             }
@@ -162,7 +162,7 @@ const USERS = gql`
                 name
                 email
                 manager
-                roles{
+                roles {
                     id
                     name
                 }
@@ -653,17 +653,10 @@ const TEAM_PREVIEW = gql`
                 id
                 name
                 email
-                roles{
+                roles {
                     id
                     name
                 }
-            }
-        }
-        clubs: locations(first: 100) {
-            data {
-                id
-                name
-                location_no
             }
         }
     }
@@ -678,7 +671,7 @@ const TEAM_EDIT = gql`
                 id
                 name
                 email
-                roles{
+                roles {
                     id
                     name
                 }
@@ -686,13 +679,6 @@ const TEAM_EDIT = gql`
             locations {
                 id
                 name
-            }
-        }
-        availableLocations: locations(first: 100) {
-            data {
-                id
-                name
-                gymrevenue_id
             }
         }
     }

@@ -26,6 +26,7 @@ input UserInput {
     departments: [ID]
     positions: [ID]
 }
+
 input NoteInput @validator {
     note: String
     title: String

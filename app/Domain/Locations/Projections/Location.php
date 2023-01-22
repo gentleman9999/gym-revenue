@@ -65,19 +65,19 @@ class Location extends GymRevProjection
         return $this->belongsTo(Client::class);
     }
 
-    public function poc_phone_detail(): string
+    public function poc_phone_detail(): string | null
     {
-        return $this->detail['poc_phone'];
+        return $this->detail['poc_phone'] ?? null;
     }
 
-    public function pocFirstDetail(): string
+    public function pocFirstDetail(): string | null
     {
-        return $this->detail['poc_first'];
+        return $this->detail['poc_first'] ?? null;
     }
 
-    public function pocLastDetail(): string
+    public function pocLastDetail(): string | null
     {
-        return $this->detail['poc_last'];
+        return $this->detail['poc_last'] ?? null;
     }
 
     public function getPocLastAttribute(): string | null

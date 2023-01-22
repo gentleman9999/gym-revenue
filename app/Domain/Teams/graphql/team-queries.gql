@@ -1,12 +1,6 @@
 extend type Query {
-    teams(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [Team!]!
-    @paginate(defaultCount: 10)
-        @can(ability: "teams.read", model: "App\\Domain\\Teams\\Models\\Team")
+    teams(filter: Filter @scope, orderBy: [OrderByClause!] @orderBy): [Team!]!
+        @paginate(defaultCount: 10)
 
-    team (
-        id: ID @eq
-    ): Team @find
+    team(id: ID @eq): Team @find
 }

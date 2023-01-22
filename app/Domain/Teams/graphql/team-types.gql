@@ -4,11 +4,7 @@ type Team {
     home_team: Boolean
     created_at: DateTime
     updated_at: DateTime
-    users: [User]! @hasMany
-    user: TeamUser @hasMany
+    users: [User] @hasMany
+    user: [User] @hasMany
     locations: [Location] @hasMany
-}
-
-type TeamUser {
-    user: User @belongsTo
 }
