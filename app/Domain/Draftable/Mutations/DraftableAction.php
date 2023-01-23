@@ -43,7 +43,7 @@ trait DraftableAction
     {
         DraftableAggregate::retrieve(Uuid::get())->create([
             'model' => $model,
-            'owner' => $owner
+            'owner' => $owner,
         ])->persist();
     }
 
@@ -73,7 +73,6 @@ trait DraftableAction
             method_exists($this, 'attributes') ? $this->resolveAndCall('attributes') : [],
         );
     }
-
 
     protected function resolveAndCall(string $method): mixed
     {

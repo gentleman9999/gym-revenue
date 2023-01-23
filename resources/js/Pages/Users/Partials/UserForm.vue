@@ -367,13 +367,21 @@
                 <div
                     class="collapse col-span-6"
                     tabindex="0"
-                    v-for="note in user.all_notes"
+                    v-for="(note, idx) in user.all_notes"
                     :key="note.id"
                 >
                     <div
                         class="collapse-title text-sm font-medium"
                         v-on:click="notesExpanded(note)"
                     >
+                        <hr
+                            v-if="
+                                ndx != 0 &&
+                                user.all_notes[ndx - 1]['lifecycle'] !=
+                                    note['lifecycle']
+                            "
+                            class="pb-5"
+                        />
                         > {{ note.title }}
                         <div
                             v-if="note.read == false"

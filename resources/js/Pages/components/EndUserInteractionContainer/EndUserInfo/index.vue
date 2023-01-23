@@ -6,7 +6,7 @@
         <user-avatar :opportunity="opportunity" />
         <user-info-summary
             :fullName="fullName"
-            :agreementNumber="agreementNumber"
+            :agreementId="agreementId"
             :trialDates="trialDates"
             :trialMemberships="trialMemberships"
         />
@@ -25,7 +25,7 @@ const props = defineProps({
     fullName: {
         type: String,
     },
-    agreementNumber: {
+    agreementId: {
         type: Number,
     },
     trialDates: {

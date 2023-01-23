@@ -66,7 +66,6 @@ class LeadsController extends Controller
                     'nameSearch',
                     'phoneSearch',
                     'emailSearch',
-                    'agreementSearch',
                     'lastupdated'
                 ))
                 ->orderBy('created_at', 'desc')
@@ -132,7 +131,6 @@ class LeadsController extends Controller
                 'nameSearch',
                 'phoneSearch',
                 'emailSearch',
-                'agreementSearch',
                 'lastupdated'
             ),
             'owners' => $available_lead_owners,
@@ -340,17 +338,18 @@ class LeadsController extends Controller
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
         $lead_data = $endUser->toArray();
-        $lead_data['all_notes'] = $endUser->notes->toArray();
+        $lead_data['all_notes'] = UserAggregate::retrieve($endUser->id)->getNoteList('lead');
+
 
         // if ($lead_data['profile_picture_file_id']) {
         //     $lead_data['profile_picture'] = File::whereId($lead_data['profile_picture_file_id'])->first();
         // }
 
-        foreach ($lead_data['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($lead_data['all_notes'][$key]['id'])->first()) {
-                $lead_data['all_notes'][$key]['read'] = true;
+        foreach ($lead_data['all_notes'] as &$value) {
+            if (ReadReceipt::whereNoteId($value['note_id'])->first()) {
+                $value['read'] = true;
             } else {
-                $lead_data['all_notes'][$key]['read'] = false;
+                $value['read'] = false;
             }
         }
 
@@ -365,12 +364,11 @@ class LeadsController extends Controller
     public function show(Lead $endUser): InertiaResponse
     {
         $aggy = UserAggregate::retrieve($endUser->id);
-        $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
 
 
         return Inertia::render('Leads/Show', [
             'lead' => $endUser,
-            'preview_note' => $preview_note,
+            'preview_note' => $aggy->getNoteList('lead'),
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
             'hasTwilioConversation' => $endUser->client->hasTwilioConversationEnabled(),
@@ -519,7 +517,7 @@ class LeadsController extends Controller
             'user_id' => $user->id,
             'club_location' => $locid,
             'interactionCount' => $lead_aggy->getInteractionCount(),
-            'preview_note' => $preview_note,
+            'preview_note' => $lead_aggy->getNoteList('lead'),
         ];
     }
 
@@ -557,7 +555,6 @@ class LeadsController extends Controller
                     'nameSearch',
                     'phoneSearch',
                     'emailSearch',
-                    'agreementSearch',
                     'lastupdated'
                 ))
                 ->orderBy('created_at', 'desc')

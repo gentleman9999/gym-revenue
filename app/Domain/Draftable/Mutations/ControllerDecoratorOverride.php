@@ -48,7 +48,7 @@ class ControllerDecoratorOverride
 
     public function getMiddleware(): array
     {
-        return array_map(fn($middleware): array => ['middleware' => $middleware, 'options' => []], $this->middleware);
+        return array_map(fn ($middleware): array => ['middleware' => $middleware, 'options' => []], $this->middleware);
     }
 
     public function callAction($method, $parameters)
@@ -153,7 +153,6 @@ class ControllerDecoratorOverride
             || $this->hasMethod('afterValidator')
             || $this->hasMethod('getValidator');
     }
-
 
     protected function resolveFromRouteAndCall(string $method): mixed
     {

@@ -39,17 +39,6 @@
         </div>
 
         <div class="form-control">
-            <label for="agreementSearch" class="py-1 text-xs">
-                Agreement Number Search:
-            </label>
-            <input
-                id="agreementSearch"
-                v-model="form.agreementSearch"
-                placeholder="1545804477"
-            />
-        </div>
-
-        <div class="form-control">
             <label for="trashed"> Trashed: </label>
             <select
                 id="trashed"

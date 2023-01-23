@@ -18,6 +18,8 @@ class CreateUsersTable extends Migration
             /** Get all shared fields */
             $this->getSharedFields($table);
 
+            $table->uuid('agreement_id')->nullable();
+
             /** DB constraints */
             $table->unique(['client_id', 'email']);
             $table->index(['client_id', 'home_location_id']);
@@ -31,11 +33,13 @@ class CreateUsersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             /** Get all shared fields */
             $this->getSharedFields($table);
+            $table->uuid('agreement_id')->nullable();
         });
 
         Schema::create('members', function (Blueprint $table) {
             /** Get all shared fields */
             $this->getSharedFields($table);
+            $table->uuid('agreement_id')->nullable();
         });
 
         Schema::create('employees', function (Blueprint $table) {
@@ -100,7 +104,6 @@ class CreateUsersTable extends Migration
         $table->string('manager')->nullable();
         $table->boolean('is_cape_and_bay_user')->default(false);
         $table->unsignedTinyInteger('opportunity')->nullable();
-        $table->uuid('agreement_id')->nullable();
         $table->string('external_id')->nullable();
         $table->jsonb('misc')->nullable();
         $table->jsonb('details')->nullable();

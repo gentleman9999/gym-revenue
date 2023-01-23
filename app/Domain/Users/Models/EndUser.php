@@ -72,13 +72,12 @@ class EndUser extends User
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $searchable_phrase = "%{$search}%";
-            $query->where(function ($query) use ($search) {
+            $query->where(function ($query) use ($searchable_phrase) {
                 $query->where('phone', 'like', $searchable_phrase)
                     ->orWhere('email', 'like', $searchable_phrase)
                     ->orWhere('first_name', 'like', $searchable_phrase)
                     ->orWhere('last_name', 'like', $searchable_phrase)
                     ->orWhere('home_location_id', 'like', $searchable_phrase)
-                    ->orWhere('ip_address', 'like', $searchable_phrase)
                     ->orWhere('agreement_id', 'like', $searchable_phrase)
                     ->orWhereHas('location', function ($query) use ($searchable_phrase) {
                         $query->where('name', 'like', $searchable_phrase);
