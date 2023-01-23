@@ -3,11 +3,7 @@ extend type Query {
         "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
         filter: PositionFilter @scope
         orderBy: [OrderByClause!] @orderBy
-    ): [Position!]!
-    @paginate(defaultCount: 10)
-        @can(ability: "positions.read", model: "App\\Models\\Position")
+    ): [Position!]! @paginate(defaultCount: 10)
 
-    position(
-        id: ID @eq
-    ): Position @find
+    position(id: ID @eq): Position @find
 }
