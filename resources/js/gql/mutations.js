@@ -66,48 +66,33 @@ const profile_photo = {
 
 const role = {
     create: gql`
-        mutation createRole(
-            $name: String
-            $ability_names: [String]
-            $group: Int
-        ) {
-            createRole(
-                name: $name
-                ability_names: $ability_names
-                group: $group
-            ) {
+        mutation createRole($input: CreateRoleInput) {
+            createRole(input: $input) {
                 id
                 name
                 created_at
                 updated_at
+                group
             }
         }
     `,
     update: gql`
-        mutation updateRole(
-            $id: ID
-            $name: String
-            $ability_names: [String]
-            $group: Int
-        ) {
-            updateRole(
-                id: $id
-                name: $name
-                ability_names: $ability_names
-                group: $group
-            ) {
+        mutation updateRole($input: UpdateRoleInput) {
+            updateRole(input: $input) {
                 id
                 name
                 created_at
                 updated_at
+                group
             }
         }
     `,
     delete: gql`
-        mutation deleteRole($id: ID) {
+        mutation deleteRole($id: ID!) {
             deleteRole(id: $id) {
                 id
                 name
+                group
             }
         }
     `,

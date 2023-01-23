@@ -168,9 +168,14 @@ const { mutate: createRole } = useMutation(mutations.role.create);
 const { mutate: updateRole } = useMutation(mutations.role.update);
 
 let handleSubmit = async () => {
-    await updateRole({
-        ...form,
+    let inputData = {
         group: ~~form.group,
+        ability_names: form.ability_names,
+        id: form.id,
+        name: form.name,
+    };
+    await updateRole({
+        input: { ...inputData },
     });
     emit("refresh");
     handleClickCancel();
@@ -178,8 +183,7 @@ let handleSubmit = async () => {
 if (operation.value === "Create") {
     handleSubmit = async () => {
         await createRole({
-            ...form,
-            group: ~~form.group,
+            input: { ...inputData },
         });
         emit("refresh");
         handleClickCancel();
