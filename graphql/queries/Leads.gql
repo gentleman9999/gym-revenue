@@ -1,8 +1,5 @@
 extend type Query {
-    leads(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [Lead!]!
-    @paginate(defaultCount: 10)
-    @can(ability: "leads.read")
+    leads(filter: Filter @scope, orderBy: [OrderByClause!] @orderBy): [Lead!]!
+        @paginate(defaultCount: 10)
+    # @can(ability: "leads.read")
 }

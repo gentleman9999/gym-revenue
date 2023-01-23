@@ -356,6 +356,8 @@ import mutations from "@/gql/mutations.js";
 
 library.add(faUserCircle);
 
+const emit = defineEmits(["done", "cancel"]);
+
 const props = defineProps({
     userId: {
         type: [Object, String],
@@ -456,11 +458,10 @@ const transformFormSubmission = (data) => {
 const { mutate: createUser } = useMutation(mutations.user.create);
 const { mutate: updateUser } = useMutation(mutations.user.update);
 
-
 let handleSubmit = async () => {
     await updateUser({
         input: {
-            id: user.id,
+            id: props.lead.id,
             first_name: form.first_name,
             last_name: form.last_name,
             email: form.email,
@@ -470,7 +471,6 @@ let handleSubmit = async () => {
             phone: form.phone,
             city: form.city,
             state: form.state,
-            zip: form.zip + "",
             contact_preference: form.contact_preference,
             started_at: form.started_at,
             ended_at: form.ended_at,
@@ -482,9 +482,9 @@ let handleSubmit = async () => {
             manager: null,
         },
     });
-    handleClickCancel();
-};
 
+    emit("done");
+};
 
 if (operation === "Create") {
     handleSubmit = async () => {
@@ -499,7 +499,6 @@ if (operation === "Create") {
                 phone: form.phone,
                 city: form.city,
                 state: form.state,
-                zip: form.zip + "",
                 contact_preference: form.contact_preference,
                 started_at: form.started_at,
                 ended_at: form.ended_at,
@@ -513,8 +512,8 @@ if (operation === "Create") {
                 positions: [],
             },
         });
-        handleClickCancel();
-    }
+        emit("done");
+    };
 }
 
 const goBack = useGoBack(route("data.leads"));

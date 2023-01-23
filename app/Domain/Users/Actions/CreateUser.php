@@ -2,6 +2,7 @@
 
 namespace App\Domain\Users\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Roles\Role;
@@ -12,7 +13,6 @@ use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\ValidationRules;
 use App\Enums\UserTypesEnum;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
@@ -22,13 +22,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateUser implements CreatesNewUsers
+class CreateUser extends GymRevAction implements CreatesNewUsers
 {
-    use AsAction;
-
     protected $command;
 
     /**
@@ -86,26 +83,31 @@ class CreateUser implements CreatesNewUsers
         return $created_user;
     }
 
-    public function __invoke($_, array $args): User
+    public function mapArgsToHandle($args): array
     {
-        if ($args['input']['started_at']) {
-            $args['input']['started_at'] = CarbonImmutable::create($args['input']['started_at']);
-        } else {
-            $args['input']['started_at'] = null;
-        }
-        if ($args['input']['ended_at']) {
-            $args['input']['ended_at'] = CarbonImmutable::create($args['input']['ended_at']);
-        } else {
-            $args['input']['ended_at'] = null;
-        }
-        if ($args['input']['terminated_at']) {
-            $args['input']['terminated_at'] = CarbonImmutable::create($args['input']['terminated_at']);
-        } else {
-            $args['input']['terminated_at'] = null;
-        }
-
-        return $this->handle($args['input']);
+        return [$args['input']];
     }
+
+    // public function __invoke($_, array $args): User
+    // {
+    //     if ($args['input']['started_at']) {
+    //         $args['input']['started_at'] = CarbonImmutable::create($args['input']['started_at']);
+    //     } else {
+    //         $args['input']['started_at'] = null;
+    //     }
+    //     if ($args['input']['ended_at']) {
+    //         $args['input']['ended_at'] = CarbonImmutable::create($args['input']['ended_at']);
+    //     } else {
+    //         $args['input']['ended_at'] = null;
+    //     }
+    //     if ($args['input']['terminated_at']) {
+    //         $args['input']['terminated_at'] = CarbonImmutable::create($args['input']['terminated_at']);
+    //     } else {
+    //         $args['input']['terminated_at'] = null;
+    //     }
+
+    //     return $this->handle($args['input']);
+    // }
 
     /**
      * Custom validation based on user_type
@@ -130,11 +132,6 @@ class CreateUser implements CreatesNewUsers
          * They can make a choice (confirm/cancel), and have it update if confirmed
          */
         session()->forget('address_validation');
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     /**

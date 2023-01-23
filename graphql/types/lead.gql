@@ -1,5 +1,5 @@
 "Leads"
-type Lead {
+type Lead @model(class: "Lead") {
     id: ID!
     name: String!
     first_name: String
@@ -8,10 +8,10 @@ type Lead {
     email: String!
     created_at: DateTime!
     updated_at: DateTime!
-#    leadSource: LeadSource @belongsTo
-#    leadType: LeadType @belongsTo
-#    lead_status: LeadStatus
-#    TODO: replace with relationship
+    #    leadSource: LeadSource @belongsTo
+    #    leadType: LeadType @belongsTo
+    #    lead_status: LeadStatus
+    #    TODO: replace with relationship
     lead_owners: [TeamUser] @method(name: "getTeamUsers")
     owner_user_id: String
     primary_phone: String
@@ -19,7 +19,7 @@ type Lead {
     gender: Boolean
     date_of_birth: DateTime
     interaction_count: InteractionCount! @method(name: "getInteractionCount")
-    home_location: Location! @belongsTo
+    home_location: Location @belongsTo
     locations: [Location] @belongsToMany
     opportunity: String
     agreement_number: String
@@ -29,4 +29,5 @@ type Lead {
     owner_user_id: String
     notes: [Note] @hasMany
     gr_location_id: ID
+    user_type: String
 }
