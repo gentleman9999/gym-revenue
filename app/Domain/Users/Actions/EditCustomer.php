@@ -21,15 +21,6 @@ class EditCustomer
 
     public function handle(EndUser $end_user, User $user, Team $current_team): array
     {
-        $locations_records = Helper::setUpLocationsObject($current_team->id, $user->isClientUser(), $user->client_id)->get();
-
-        $locations = [];
-        foreach ($locations_records as $location) {
-            $locations[$location->gymrevenue_id] = $location->name;
-        }
-
-        $team_users = $current_team->team_users()->get();
-
         $end_user->load('notes');
 
         //for some reason inertiajs converts "notes" key to empty string.
@@ -48,7 +39,7 @@ class EditCustomer
         return [
             'customer_data' => $customer_data,
             'user_id' => $user->id,
-            'locations' => $locations,
+            'locations' => Helper::getLocations($current_team->id, $user->isClientUser(), $user->client_id),
         ];
     }
 

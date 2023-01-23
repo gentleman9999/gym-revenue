@@ -13,39 +13,28 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Helper
 {
-    public static function setUpCustomersObject(string $current_team_id, string $client_id = null): Builder
+    public static function setUpCustomersObject(string $current_team_id, string $client_id = null): ?Builder
     {
-        $results = [];
+        $customer_query = null;
 
         if ($client_id !== null) {
             $client = Client::find($client_id);
 
-            $team_locations = [];
-
             if ($current_team_id != $client->home_team_id) {
-                $team_locations_records = TeamDetail::whereTeamId($current_team_id)
-                    ->where('field', '=', 'team-location')->get();
-
-                if (count($team_locations_records) > 0) {
-                    foreach ($team_locations_records as $team_locations_record) {
-                        // @todo - we will probably need to do some user-level scoping
-                        // example - if there is scoping and this club is not there, don't include it
-                        $team_locations[] = $team_locations_record->value;
-                    }
-
-                    $results = Customer::whereIn('home_location_id', $team_locations);
+                $team_locations = self::getTeamLocations($current_team_id);
+                if (count($team_locations) > 0) {
+                    $customer_query = Customer::whereIn('home_location_id', $team_locations);
                 }
             } else {
-                $results = new Customer();
+                $customer_query = new Customer();
             }
         }
 
-        return $results;
+        return $customer_query;
     }
 
-    public static function setUpLocationsObject(string $current_team_id, bool $is_client_user, string $client_id = null): Builder
+    public static function getLocations(string $current_team_id, bool $is_client_user, string $client_id = null): array
     {
-        $results = [];
         /**
          * BUSINESS RULES
          * 1. All Locations
@@ -61,37 +50,32 @@ class Helper
          *      but the user is not a cape & bay user.
          */
 
+        $locations_records = [];
 
         if ($client_id !== null) {
             $client = Client::find($client_id);
-
             // The active_team is the current client's default_team (gets all the client's locations)
             if ($current_team_id == $client->home_team_id) {
-                $results = new Location();
+                $locations_records = Location::all();
             } else {
-                // The active_team is not the current client's default_team
-                $team_locations = TeamDetail::whereTeamId($current_team_id)
-                    ->where('field', '=', 'team-location')
-                    ->get();
-
+                $team_locations = self::getTeamLocations($current_team_id);
                 if (count($team_locations) > 0) {
-                    $in_query = [];
-                    // so get the teams listed in team_details
-                    foreach ($team_locations as $team_location) {
-                        $in_query[] = $team_location->value;
-                    }
-
-                    $results = Location::whereIn('gymrevenue_id', $in_query);
+                    $locations_records = Location::whereIn('gymrevenue_id', $team_locations)->get();
                 }
             }
         } else {
             // Cape & Bay user
             if (! $is_client_user) {
-                $results = new Location();
+                $locations_records = Location::all();
             }
         }
 
-        return $results;
+        $locations = [];
+        foreach ($locations_records as $location) {
+            $locations[$location->gymrevenue_id] = $location->name;
+        }
+
+        return $locations;
     }
 
     public static function getCurrentTeam(string $default_team_id): Team
@@ -110,5 +94,21 @@ class Helper
         }
 
         return Team::find($team_id);
+    }
+
+    public static function getTeamLocations(string $current_team_id): array
+    {
+        // The active_team is not the current client's default_team
+        $team_locations_records = TeamDetail::whereTeamId($current_team_id)
+            ->where('field', '=', 'team-location')
+            ->get();
+
+        if (count($team_locations_records) > 0) {
+            // @todo - we will probably need to do some user-level scoping
+            // example - if there is scoping and this club is not there, don't include it
+            return array_column($team_locations_records->toArray(), 'value');
+        }
+
+        return [];
     }
 }

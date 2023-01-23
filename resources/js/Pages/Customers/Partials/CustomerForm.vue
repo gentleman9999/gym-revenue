@@ -168,15 +168,15 @@
 
             <div
                 class="form-control md:col-span-2 col-span-6"
-                v-if="customer?.agreement_number"
+                v-if="customer?.agreement_id"
             >
-                <jet-label for="agreement_number" value="Agreement Number" />
+                <jet-label for="agreement_id" value="Agreement Number" />
                 <input
                     disabled
                     type="text"
-                    v-model="customer.agreement_number"
+                    v-model="customer.agreement_id"
                     class="opacity-70"
-                    id="agreement_number"
+                    id="agreement_id"
                 />
             </div>
 

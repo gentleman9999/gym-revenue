@@ -21,7 +21,7 @@ class ReflectUserData
     {
         $this->deleteRedundantReflection($user, $previous_type);
         $reflection_model = $this->getReflectionModel($user->user_type, $user->id);
-        $cols = Schema::getColumnListing($user->getTable());
+        $cols = Schema::getColumnListing($reflection_model->getTable());
 
         foreach ($cols as $col) {
             if ($col != 'created_at' && $col != 'updated_at') {

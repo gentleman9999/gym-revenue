@@ -66,7 +66,6 @@ class LeadsController extends Controller
                     'nameSearch',
                     'phoneSearch',
                     'emailSearch',
-                    'agreementSearch',
                     'lastupdated'
                 ))
                 ->orderBy('created_at', 'desc')
@@ -132,7 +131,6 @@ class LeadsController extends Controller
                 'nameSearch',
                 'phoneSearch',
                 'emailSearch',
-                'agreementSearch',
                 'lastupdated'
             ),
             'owners' => $available_lead_owners,
@@ -557,7 +555,6 @@ class LeadsController extends Controller
                     'nameSearch',
                     'phoneSearch',
                     'emailSearch',
-                    'agreementSearch',
                     'lastupdated'
                 ))
                 ->orderBy('created_at', 'desc')

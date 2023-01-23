@@ -115,19 +115,6 @@
                     class="mt-2"
                 />
             </div>
-            <div
-                class="form-control md:col-span-2 col-span-6"
-                v-if="lead?.agreement_number"
-            >
-                <jet-label for="agreement_number" value="Agreement Number" />
-                <input
-                    disabled
-                    type="text"
-                    v-model="lead['agreement_number']"
-                    class="opacity-70"
-                    id="agreement_number"
-                />
-            </div>
 
             <div
                 class="form-control md:col-span-2 col-span-6"
@@ -443,7 +430,6 @@ export default {
                 lead_source_id: lead.lead_source_id,
                 profile_picture: lead.profile_picture,
                 gender: lead.gender,
-                agreement_number: lead.agreement_number,
                 date_of_birth: lead.date_of_birth,
                 opportunity: lead.opportunity,
                 notes: { title: "", note: "" },

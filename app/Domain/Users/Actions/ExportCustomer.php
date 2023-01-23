@@ -16,7 +16,7 @@ class ExportCustomer
 
     public function handle(string $current_team_id, string $client_id): Collection
     {
-        $customers = [];
+        $customers = new Collection();
 
         $customers_model = Helper::setUpCustomersObject($current_team_id, $client_id);
 

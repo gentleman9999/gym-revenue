@@ -39,7 +39,7 @@ class EndUserFactory extends Factory
             'ip_address' => $this->faker->ipv4(),
             'gender' => $gender,
             'date_of_birth' => $this->faker->dateTimeBetween('-80 years', '-18 year')->format('Y-m-d H:i:s'),
-            'agreement_number' => '',
+            'agreement_id' => '',
             'opportunity' => ['Low', 'Medium', 'High'][rand(0, 2)],
         ];
     }

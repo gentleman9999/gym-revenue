@@ -169,53 +169,15 @@
 
             <div
                 class="form-control md:col-span-2 col-span-6"
-                v-if="customer?.agreement_number"
+                v-if="member?.agreement_id"
             >
-                <jet-label for="agreement_number" value="Agreement Number" />
+                <jet-label for="agreement_id" value="Agreement Number" />
                 <input
                     disabled
                     type="text"
-                    v-model="customer.agreement_number"
+                    v-model="member.agreement_id"
                     class="opacity-70"
-                    id="agreement_number"
-                />
-            </div>
-
-            <div
-                class="form-control md:col-span-2 col-span-6"
-                v-if="customer?.external_id"
-            >
-                <jet-label for="external_id" value="External ID" />
-                <input
-                    disabled
-                    type="text"
-                    v-model="customer.external_id"
-                    class="opacity-70"
-                    id="external_id"
-                />
-            </div>
-            <div
-                class="form-control md:col-span-2 col-span-6"
-                v-if="customer?.misc"
-            >
-                <jet-label for="json_viewer" value="Additional Data" />
-                <vue-json-pretty
-                    :data="customer.misc"
-                    id="json_viewer"
-                    class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
-                />
-            </div>
-            <div
-                class="form-control md:col-span-2 col-span-6"
-                v-if="member?.agreement_number"
-            >
-                <jet-label for="agreement_number" value="Agreement Number" />
-                <input
-                    disabled
-                    type="text"
-                    v-model="member.agreement_number"
-                    class="opacity-70"
-                    id="agreement_number"
+                    id="agreement_id"
                 />
             </div>
 
