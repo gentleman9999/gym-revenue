@@ -112,7 +112,8 @@ class TeamController extends Controller
 
         $data['team'] = $team;
 
-        $team_users = $team->team_users()->get();
+        $team_users = $team->team_users()->with('user.roles')->get();
+
         $non_admin_users = [];
         foreach ($team_users as $team_user) {
             if ($team_user->user->securityGroup() !== SecurityGroupEnum::ADMIN && ! $team_user->is_cape_and_bay_user) {
