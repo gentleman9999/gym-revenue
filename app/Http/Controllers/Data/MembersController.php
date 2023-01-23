@@ -261,19 +261,22 @@ class MembersController extends Controller
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
         $member_data = $endUser->toArray();
-        $member_data['all_notes'] = $endUser->notes->toArray();
+        $member_data['all_notes'] = UserAggregate::retrieve($endUser->id)->getNoteList('member');
+
+
 
         // if ($member_data['profile_picture_file_id']) {
         //     $member_data['profile_picture'] = File::whereId($member_data['profile_picture_file_id'])->first();
         // }
 
-        foreach ($member_data['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($member_data['all_notes'][$key]['id'])->first()) {
-                $member_data['all_notes'][$key]['read'] = true;
+        foreach ($member_data as &$value) {
+            if (ReadReceipt::whereNoteId($value['note_id'])->first()) {
+                $value['read'] = true;
             } else {
-                $member_data['all_notes'][$key]['read'] = false;
+                $value['read'] = false;
             }
         }
+
 
         return Inertia::render('Members/Edit', [
             'member' => $member_data,
@@ -290,7 +293,7 @@ class MembersController extends Controller
 
         return Inertia::render('Members/Show', [
             'member' => $endUser,
-            'preview_note' => $preview_note,
+            'preview_note' => $aggy->getNoteList('member'),
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
             'hasTwilioConversation' => $endUser->client->hasTwilioConversationEnabled(),
@@ -418,7 +421,7 @@ class MembersController extends Controller
             'user_id' => $user->id,
             'club_location' => $locid,
             'interactionCount' => $aggy->getInteractionCount(),
-            'preview_note' => $preview_note,
+            'preview_note' => $aggy->getNoteList('member'),
 
         ];
 

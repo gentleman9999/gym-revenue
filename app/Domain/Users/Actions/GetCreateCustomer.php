@@ -19,16 +19,9 @@ class GetCreateCustomer
 
     public function handle(string $current_team_id, User $user): array
     {
-        $locations_records = Helper::setUpLocationsObject($current_team_id, $user->isClientUser(), $user->client_id)->get();
-
-        $locations = [];
-        foreach ($locations_records as $location) {
-            $locations[$location->gymrevenue_id] = $location->name;
-        }
-
         return [
             'user_id' => $user->id,
-            'locations' => $locations,
+            'locations' => Helper::getLocations($current_team_id, $user->isClientUser(), $user->client_id),
         ];
     }
 
