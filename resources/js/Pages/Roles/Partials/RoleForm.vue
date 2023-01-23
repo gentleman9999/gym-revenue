@@ -182,6 +182,11 @@ let handleSubmit = async () => {
 };
 if (operation.value === "Create") {
     handleSubmit = async () => {
+        let inputData = {
+            group: ~~form.group,
+            ability_names: form.ability_names,
+            name: form.name,
+        };
         await createRole({
             input: { ...inputData },
         });

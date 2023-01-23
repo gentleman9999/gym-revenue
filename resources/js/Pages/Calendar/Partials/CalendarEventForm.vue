@@ -97,6 +97,7 @@
         <div class="col-span-6">
             <jet-label for="title" value="Title" />
             <input
+                required
                 id="title"
                 type="text"
                 class="bg-neutral text-base-content"
@@ -602,6 +603,9 @@ export default {
 
         if (operation === "Create") {
             handleSubmit = async () => {
+                if (!form?.title || form.title === "") {
+                    return toastError("Title is requried");
+                }
                 await createTask({
                     input: {
                         title: form.title,
