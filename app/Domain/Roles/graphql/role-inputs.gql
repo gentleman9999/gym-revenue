@@ -1,0 +1,12 @@
+input CreateRoleInput {
+    name: String
+    ability_names: [String]
+    group: Int
+}
+
+input UpdateRoleInput {
+    id: ID
+    name: String
+    ability_names: [String]
+    group: Int
+}

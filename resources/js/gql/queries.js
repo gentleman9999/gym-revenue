@@ -653,6 +653,7 @@ const TEAM_PREVIEW = gql`
                 roles {
                     id
                     name
+                    group
                 }
             }
         }
@@ -671,6 +672,7 @@ const TEAM_EDIT = gql`
                 roles {
                     id
                     name
+                    group
                 }
             }
             # back end model does not match - there is no location on this
@@ -718,6 +720,7 @@ const ROLE_EDIT = gql`
         role(id: $id) {
             id
             name
+            group
             abilities {
                 name
             }

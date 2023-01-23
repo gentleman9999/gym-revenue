@@ -1,14 +1,7 @@
 extend type Mutation {
-    createRole(
-        name: String,
-        ability_names: [String],
-        group: Int
-    ): Role!
-    
-    updateRole(
-        id: ID,
-        name: String,
-        ability_names: [String],
-        group: Int
-    ): Role!
+    createRole(input: CreateRoleInput): Role!
+        @inject(context: "user.client_id", name: "input.client_id")
+
+    updateRole(input: UpdateRoleInput): Role!
+        @inject(context: "user.client_id", name: "input.client_id")
 }

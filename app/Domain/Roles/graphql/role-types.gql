@@ -6,7 +6,7 @@ type Role {
     updated_at: DateTime!
     abilities: [Ability]! @method(name: "abilities")
     availableAbilities: [Ability]! @method(name: "availableAbilities")
-    securityGroups: [SecurityGroups] @method(name: "securityGroups")
+    group: Int
 }
 
 type Ability {
