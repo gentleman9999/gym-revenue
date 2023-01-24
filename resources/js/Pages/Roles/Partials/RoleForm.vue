@@ -13,7 +13,7 @@
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
             <div class="col-span-6">
-                <jet-label for="group" value="Security Group" />
+                <!-- <jet-label for="group" value="Security Group" />
                 <select
                     class="block w-full mt-1"
                     id="group"
@@ -26,7 +26,8 @@
                     >
                         {{ name }}
                     </option>
-                </select>
+                </select> -->
+                <SecurityGroupSelect v-model="form.group" />
                 <jet-input-error :message="form.errors.group" class="mt-2" />
             </div>
 
@@ -118,6 +119,7 @@ import { computed, ref } from "vue";
 import { useMutation } from "@vue/apollo-composable";
 import { useGymRevForm } from "@/utils";
 import { toastSuccess } from "@/utils/createToast";
+import SecurityGroupSelect from "@/Pages/components/SecurityGroupSelect.vue";
 
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";

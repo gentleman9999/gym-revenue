@@ -751,6 +751,15 @@ const ROLE_CREATE = gql`
     }
 `;
 
+const SECURITY_GROUPS = gql`
+    query SecurityGroups {
+        securityGroups {
+            name
+            value
+        }
+    }
+`;
+
 const DEPARTMENTS = gql`
     query Departments($page: Int, $filter: DepartmentFilter) {
         departments(page: $page, filter: $filter) {
@@ -1299,4 +1308,5 @@ export default {
     widgets: WIDGETS,
     dashboardQuery: DASHBOARD_QUERY,
     profileQuery: PROFILE_QUERY,
+    securityGroups: SECURITY_GROUPS,
 };

@@ -78,9 +78,23 @@ const props = defineProps({
             subject: null,
         },
     },
+    emailTemplate: {
+        type: Object,
+        default: {
+            id: null,
+            markup: null,
+            json: null,
+            thumbnail: null,
+            name: null,
+            subject: null,
+        },
+    },
     editParam: {
         type: [Object, null],
         default: null,
+    },
+    data: {
+        type: Object,
     },
 });
 
