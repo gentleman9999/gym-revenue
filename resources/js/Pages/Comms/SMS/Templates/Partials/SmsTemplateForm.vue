@@ -179,9 +179,15 @@ export default {
             Inertia.visit(route("mass-comms.sms-templates"));
         };
         const handleDuplicate = () => {
-            form.post(route("mass-comms.sms-templates.duplicate"), form.data())
+            axios
+                .post(
+                    route("mass-comms.sms-templates.duplicate", form.data()),
+                    form.data()
+                )
                 .then(({ data }) => {
-                    console.log("closeAfterSave", data);
+                    if (inertiaModal?.value?.close) {
+                        inertiaModal.value.close();
+                    }
                     emit("done", data);
                 })
                 .catch((err) => {

@@ -83,6 +83,9 @@ export default defineComponent({
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
         };
+        const handleClickDuplicate = (id) => {
+            Inertia.post(route("mass-comms.sms-templates.duplicate", id));
+        };
         const handleConfirmTrash = () => {
             Inertia.delete(
                 route("mass-comms.sms-templates.trash", confirmTrash.value)
@@ -145,6 +148,10 @@ export default defineComponent({
                 },
                 trash: {
                     handler: ({ data }) => handleClickTrash(data.id),
+                },
+                duplicate: {
+                    label: "Duplicate",
+                    handler: ({ data }) => handleClickDuplicate(data.id),
                 },
             };
         });

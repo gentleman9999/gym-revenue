@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Http\Middleware\InjectClientId;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -23,12 +26,12 @@ class DuplicateSmsTemplate
     {
         return [
             'client_id' => ['required', 'exists:clients,id'],
-            'name' => ['string', 'required'],
-            'markup' => ['string', 'required', 'max:130'],
+            'name' => ['string', 'sometimes'],
+            'markup' => ['string', 'sometimes', 'max:130'],
         ];
     }
 
-    public function handle(array $data): SmsTemplate
+    public function handle(array $data): Model
     {
         return (new SmsTemplate())->scopeDuplicate(new SmsTemplate($data));
     }
@@ -45,10 +48,10 @@ class DuplicateSmsTemplate
         return $current_user->can('sms-templates.create', SmsTemplate::class);
     }
 
-    public function asController(ActionRequest $request): SmsTemplate
+    public function asController(ActionRequest $request, SmsTemplate $smsTemplate): SmsTemplate
     {
         return $this->handle(
-            $request->validated(),
+            $smsTemplate->toArray(),
         );
     }
 
@@ -56,6 +59,6 @@ class DuplicateSmsTemplate
     {
         Alert::success("SMS Template'{$template->name}' was duplicated")->flash();
 
-        return Redirect::route('mass-comms.sms-templates.edit', $template->id);
+        return Redirect::route('mass-comms.sms-templates', $template->id);
     }
 }
