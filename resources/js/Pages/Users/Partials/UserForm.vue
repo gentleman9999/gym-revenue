@@ -174,7 +174,7 @@
                 class="form-control col-span-6 md:col-span-2"
                 v-if="isClientUser"
             >
-                <jet-label for="role_id" value="Security Role" />
+                <!-- <jet-label for="role_id" value="Security Role" />
                 <select
                     id="role_id"
                     class="block w-full mt-1"
@@ -187,7 +187,8 @@
                     >
                         {{ role_id.title }}
                     </option>
-                </select>
+                </select> -->
+                <SecurityRoleSelect v-model="form.role_id" />
                 <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
             <!-- Home Club -->
@@ -556,6 +557,7 @@ import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager.vue";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
+import SecurityRoleSelect from "@/Pages/components/SecurityRoleSelect.vue";
 
 import * as _ from "lodash";
 
