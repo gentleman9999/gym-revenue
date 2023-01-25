@@ -74,6 +74,7 @@ class HandleInertiaRequests extends Middleware
                 'user.is_gr_admin' => $user->inSecurityGroup(SecurityGroupEnum::ADMIN),
                 'user.current_team_id' => session()->get('current_team')['id'] ?? null,
                 'user.current_team_id1' => session()->get('current_team_id'),
+                'user.csrf_token' => csrf_token(),
                 //TODO:should be able to remove client_id from most of client stuff once middleware is in place
                 'user.abilities' => $abilities,
                 'user.has_api_token' => (! is_null($user->access_token)),

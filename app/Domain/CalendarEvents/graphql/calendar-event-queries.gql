@@ -1,9 +1,9 @@
 extend type Query {
     calendarEvents(
-        param: CalendarEventInput
+        param: CalendarEventInput @scope
     ): [CalendarEvent!]!
 
-    calendarEventQuery(
+    calendarEventById(
         id: ID
     ): CalendarEvent
 }

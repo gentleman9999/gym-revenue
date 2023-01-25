@@ -37,7 +37,9 @@
                                     v-if="animate"
                                     class="min-h-full lg:min-h-96 px-4 sm:px-0"
                                 >
-                                    <slot></slot>
+                                    <template v-if="isApolloReady">
+                                        <slot></slot>
+                                    </template>
                                 </div>
                             </transition>
                         </main>
@@ -72,7 +74,7 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 
-import { Link } from "@inertiajs/inertia-vue3";
+import { Link, usePage } from "@inertiajs/inertia-vue3";
 import { Head } from "@inertiajs/inertia-vue3";
 
 import JetBanner from "@/Jetstream/Banner.vue";
@@ -114,6 +116,8 @@ const enter = (el, done) => {
 const afterEnter = (el) => {
     console.log("after entered");
 };
-
+const isApolloReady = ref(true);//TODO: set to false, make computed on csrf
+const csrf = usePage().props.value.user.csrf_token;
+console.log({csrf})
 onMounted(() => (animate.value = true));
 </script>

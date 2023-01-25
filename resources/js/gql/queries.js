@@ -920,7 +920,7 @@ const CALENDAR_EVENTS = gql`
 
 const CALENDAR_EVENT_GET = gql`
     query CalendarEventGetQuery($id: ID) {
-        event: calendarEventQuery(id: $id) {
+        event: calendarEventById(id: $id) {
             id
             title
             start

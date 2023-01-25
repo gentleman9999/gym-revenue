@@ -8,7 +8,10 @@ use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 
-final class CalendarEventQuery
+//TODO: remove this in favor of a standard db query
+//TODO: 1.) stop separating the attendees into different arrays, instead do that clientside by filtering on attendeee type
+//TODO: 2.) remove this class in favor of just using a CalendarEvent @find query
+final class CalendarEventById
 {
     /**
      * @param  null  $_
@@ -34,7 +37,7 @@ final class CalendarEventQuery
                         $event['im_attending'] = true;
                     }
                     $user_attendees[] = [
-                        'id' => (int)$attendee->entity_id,
+                        'id' => $attendee->entity_id,
                         'reminder' => Reminder::whereEntityType(CalendarEvent::class)
                             ->whereEntityId($event['id'])
                             ->whereUserId($attendee->entity_id)

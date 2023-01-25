@@ -8,6 +8,9 @@ use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 
+//TODO: remove this in favor of a standard db query
+//TODO: 1.) stop separating the attendees into different arrays, instead do that clientside by filtering on attendeee type
+//TODO: 2.) remove this class in favor of just using a CalendarEvent @find query
 final class CalendarEvents
 {
     /**
@@ -18,14 +21,18 @@ final class CalendarEvents
     {
         // TODO implement the resolver
         $client_id = request()->user()->client_id;
-        if (! key_exists('start', $args['param'])) {
+        $arg_param_exists = array_key_exists('param', $args);
+
+        if ( $arg_param_exists && ! key_exists('start', $args['param'])) {
             $args['param']['start'] = date('Y-m-d H:i:s', strtotime('-1 week monday 00:00:00'));
             $args['param']['end'] = date('Y-m-d H:i:s', strtotime('sunday 23:59:59'));
         }
 
         $events = CalendarEvent::whereClientId($client_id)
             ->with('type', 'attendees', 'files')
-            ->filter($args['param'])
+            ->when($arg_param_exists,  function($query) use ($args) {
+                $query->filter($args['param']);
+            })
             ->get();
 
         foreach ($events as $key => $event) {
