@@ -98,6 +98,10 @@ const props = defineProps({
     },
 });
 
+const template = computed(() => {
+    return props?.emailTemplate || props.template;
+});
+
 const { mutate: createEmailTemplate } = useMutation(
     mutations.emailTemplate.create
 );
@@ -118,7 +122,7 @@ const operFn = computed(() => {
 const nameModal = ref(null); // DOM reference for template name and subject
 const isProcessing = ref(false);
 
-const form = useGymRevForm(props.template);
+const form = useGymRevForm(template.value);
 
 const transformJson = (data) => {
     if (!data) return {};
@@ -172,4 +176,9 @@ const handleOnSave = ({ html, json }) => {
 const handleOnClose = (template) => {
     emit("cancel", template);
 };
+
+//log the props on mount
+onMounted(() => {
+    console.log("props:", props);
+});
 </script>
