@@ -71,7 +71,7 @@
 </style>
 
 <script setup>
-import { defineComponent, ref, onMounted } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 
 import { Link, usePage } from "@inertiajs/inertia-vue3";
@@ -82,6 +82,7 @@ import TopNav from "@/Components/Navigation/TopNav.vue";
 import SideNav from "@/Components/Navigation/SideNav.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import TwilioUi from "@/Components/TwilioUi/index.vue";
+import { useCsrfToken } from "@/utils/useCsrfToken.js";
 
 const props = defineProps({
     title: {
@@ -116,8 +117,12 @@ const enter = (el, done) => {
 const afterEnter = (el) => {
     console.log("after entered");
 };
-const isApolloReady = ref(true);//TODO: set to false, make computed on csrf
-const csrf = usePage().props.value.user.csrf_token;
-console.log({csrf})
+
+const csrfToken = useCsrfToken();
+
+const isApolloReady = computed(() => {
+    return !!csrfToken.value;
+});
+
 onMounted(() => (animate.value = true));
 </script>

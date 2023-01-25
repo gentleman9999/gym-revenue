@@ -11,6 +11,8 @@ import {
     ApolloClient,
     createHttpLink,
     InMemoryCache,
+    ApolloLink,
+    concat,
 } from "@apollo/client/core";
 import {
     DefaultApolloClient,
@@ -21,21 +23,29 @@ import { createApolloProvider } from "@vue/apollo-option";
 import * as Sentry from "@sentry/browser";
 import { BrowserTracing } from "@sentry/tracing";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useCsrfToken } from "@/utils/useCsrfToken.js";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
 
 const pageStore = usePage();
+const csrfToken = useCsrfToken();
+
+const authMiddleware = new ApolloLink((operation, forward) => {
+    // add the authorization to the headers
+    operation.setContext({
+        headers: {
+            "X-CSRF-TOKEN": csrfToken.value,
+        },
+    });
+    return forward(operation);
+});
 
 // HTTP connection to the API
 const httpLink = createHttpLink({
-    // You should use an absolute URL here
-    // credentials: 'same-origin',
-    credentials: 'include',//for diff origin backend
+    // credentials: 'same-origin',//include cookie
+    // credentials: 'include',//for diff origin backend
     uri: import.meta.env.VITE_GRAPHQL_URI || "/graphql",
-    headers: {
-        "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
-    },
 });
 
 // Cache implementation
@@ -43,7 +53,7 @@ const cache = new InMemoryCache();
 
 // Create the apollo client
 const apolloClient = new ApolloClient({
-    link: httpLink,
+    link: concat(authMiddleware, httpLink),
     cache,
 });
 
