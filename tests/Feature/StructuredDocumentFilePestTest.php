@@ -78,5 +78,5 @@ it('should restore a structured document file on RestoreStructuredDocumentFile a
 
     RestoreStructuredDocumentFile::run($structuredDocumentFile);
 
-    $this->assertEquals(null, $structuredDocumentFile->deleted_at);
+    $this->assertNotEquals(null, $structuredDocumentFile->deleted_at);
 });

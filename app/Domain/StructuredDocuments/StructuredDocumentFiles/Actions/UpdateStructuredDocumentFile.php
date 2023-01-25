@@ -6,9 +6,11 @@ namespace App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions;
 
 use App\Domain\StructuredDocuments\StructuredDocumentFiles\Projections\StructuredDocumentFile;
 use App\Domain\StructuredDocuments\StructuredDocumentFiles\StructuredDocumentFileAggregate;
+use App\Enums\StructuredDocumentEntityTypeEnum;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -27,7 +29,7 @@ class UpdateStructuredDocumentFile
         return [
             'file_id' => ['sometimes', 'string'],
             'entity_id' => ['sometimes', 'string'],
-            'entity_type' => ['sometimes', 'string'],
+            'entity_type' => ['sometimes', 'string', new Enum(StructuredDocumentEntityTypeEnum::class)],
             'structured_document_id' => ['sometimes', 'string', 'exists:structured_documents,id'],
         ];
     }
