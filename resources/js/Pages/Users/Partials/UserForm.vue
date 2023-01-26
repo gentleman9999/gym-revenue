@@ -604,7 +604,6 @@ export default {
 
         let operation = "Update";
         if (user) {
-            console.log("baal", user);
             if (props.isClientUser) {
                 user.role_id = user["role_id"];
             }

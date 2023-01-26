@@ -3,6 +3,8 @@
 namespace App\Domain\Templates\CallScriptTemplates;
 
 use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateCreated;
+use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateDeleted;
+use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateRestored;
 use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateThumbnailUpdated;
 use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateTrashed;
 use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateUpdated;
@@ -33,14 +35,14 @@ class CallScriptTemplateAggregate extends AggregateRoot
 
     public function restore(): static
     {
-        $this->recordThat(new CampaignTemplateRestored());
+        $this->recordThat(new CallScriptTemplateRestored());
 
         return $this;
     }
 
     public function deleted(): static
     {
-        $this->recordThat(new CampaignTemplateDeleted());
+        $this->recordThat(new CallScriptTemplateDeleted());
 
         return $this;
     }
