@@ -26,7 +26,11 @@ class UserDataReflector
 
             if (! is_null($reflection_model)) {
                 foreach ($cols as $col) {
-                    $reflection_model[$col] = $user[$col];
+                    if ($col !== 'id') {
+                        $reflection_model[$col] = $user[$col];
+                    } else {
+                        $reflection_model['user_id'] = $user[$col];
+                    }
                 }
 
                 $reflection_model->save();
@@ -38,13 +42,13 @@ class UserDataReflector
     {
         switch ($user_type) {
             case UserTypesEnum::CUSTOMER:
-                return Customer::withTrashed()->find($id);
+                return Customer::withTrashed()->whereUserId($id)->first();
             case UserTypesEnum::EMPLOYEE:
-                return Employee::withTrashed()->find($id);
+                return Employee::withTrashed()->whereUserId($id)->first();
             case UserTypesEnum::MEMBER:
-                return Member::withTrashed()->find($id);
+                return Member::withTrashed()->whereUserId($id)->first();
             default:
-                return Lead::withTrashed()->find($id);
+                return Lead::withTrashed()->whereUserId($id)->first();
         }
     }
 

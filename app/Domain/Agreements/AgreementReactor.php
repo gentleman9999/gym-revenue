@@ -75,7 +75,6 @@ class AgreementReactor extends Reactor implements ShouldQueue
     protected function updateUserStatus(AgreementSigned|AgreementUpdated $event): void
     {
         $agreement = Agreement::findOrFail($event->aggregateRootUuid());
-        $user_type = UserTypeDeterminer::getUserType($agreement->user()->first());
         $agreement->signed_at = $event->createdAt();
 
         if (isset($event->payload['signatureFile'])) {
@@ -133,6 +132,7 @@ class AgreementReactor extends Reactor implements ShouldQueue
         }
 
         /** Convert user type to customer/member */
+        $user_type = UserTypeDeterminer::getUserType($agreement->user()->first());
         if ($agreement->user()->first()->user_type !== $user_type) {
             UpdateUser::run(
                 User::find($event->payload['user_id']),
