@@ -308,7 +308,7 @@ const saveCampaign = async () => {
 
     try {
         await operFn.value({
-            input: inputData,
+            campaign: inputData,
         });
     } catch (error) {
         toastError("Problem saving campaign");
