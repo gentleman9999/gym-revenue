@@ -86,7 +86,7 @@
     <Scheduler
         v-if="currentStep === 'scheduler'"
         :campaignType="type"
-        :campaign="campaign"
+        :campaign="form"
         @back="currentStep = 'audience-picker'"
         @update="handleUpdateTemplates"
         @done="handleDone"

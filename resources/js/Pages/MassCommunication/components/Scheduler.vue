@@ -186,11 +186,9 @@ const { mutate: updateScheduledCampaign } = useMutation(
 
 const operFn = computed(() => {
     if (props.campaignType === "drip") {
-        return props.campaign === null
-            ? createDripCampaign
-            : updateDripCampaign;
+        return !props.campaign?.id ? createDripCampaign : updateDripCampaign;
     } else if (props.campaignType === "scheduled") {
-        return props.campaign === null
+        return !props.campaign?.id
             ? createScheduledCampaign
             : updateScheduledCampaign;
     }
@@ -212,10 +210,9 @@ const days = ref([
 
 onMounted(() => {
     if (props.campaignType === "drip") {
-        days.value =
-            props.campaign === null
-                ? [{ ...dayShape }]
-                : _.cloneDeep(props.campaign.days);
+        days.value = !props.campaign?.id
+            ? [{ ...dayShape }]
+            : _.cloneDeep(props.campaign.days);
     } else {
         days.value = [
             {
@@ -279,6 +276,43 @@ const handleSave = (method, val) => {
 
 const updateDayIx = (ix, v) => {
     days.value[ix].day_in_campaign = v;
+};
+
+const saveCampaign = async () => {
+    // if (campaignHasInvalidDays.value)
+    //     return toastError(
+    //         "Each day must contain at least one method of communication"
+    //     );
+    // if (props.campaignType === "scheduled" && !days.value[0].date)
+    //     return toastError("You must select a date to launch this campaign at.");
+
+    let inputDataDrip = {
+        name: props.campaign.name,
+        camnpaignType: props.campaignType,
+        audience_id: props.campaign.audience_id,
+        days: days.value,
+    };
+
+    let inputDataScheduled = {
+        name: props.campaign.name,
+        camnpaignType: props.campaignType,
+        audience_id: props.campaign.audience_id,
+        email_template_id: days.value[0].email_template_id,
+        call_template_id: days.value[0].call_template_id,
+        sms_template_id: days.value[0].smsl_template_id,
+        send_at: days.value[0].send_at,
+    };
+
+    let inputData =
+        props.campaignType === "drip" ? inputDataDrip : inputDataScheduled;
+
+    try {
+        await operFn.value({
+            input: inputData,
+        });
+    } catch (error) {
+        toastError("Problem saving campaign");
+    }
 };
 
 // const saveCampaign = async () => {
