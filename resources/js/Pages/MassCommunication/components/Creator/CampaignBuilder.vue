@@ -85,13 +85,9 @@
 
     <Scheduler
         v-if="currentStep === 'scheduler'"
-        :isNew="campaign === null"
-        :form="form"
-        :name="form.name"
-        :existingId="campaign?.id"
         :campaignType="type"
-        :templates="form.templates"
-        @back="cancelEditor"
+        :campaign="campaign"
+        @back="currentStep = 'audience-picker'"
         @update="handleUpdateTemplates"
         @done="handleDone"
     />
@@ -101,7 +97,7 @@
             :audience_id="form.audience_id"
             :membership-types="membershipTypes"
             :lead-types="leadTypes"
-            @cancel="cancelEditor"
+            @cancel="currentStep = 'audience-picker'"
             @update="handleAudienceUpdate"
         />
     </template>
@@ -237,12 +233,6 @@ const createAudience = () => {
     currentStep.value = "audience-builder";
 };
 
-// /** Modify existing audiences */
-// const editAudience = (id) => {
-//     form.value.audience_id = id;
-//     currentStep.value = "audience-builder";
-// };
-
 const handleAudienceUpdate = (audience) => {
     currentStep.value = "audience-picker";
     form.value.audience_id = audience?.id ?? "";
@@ -250,10 +240,6 @@ const handleAudienceUpdate = (audience) => {
 
 const handleUpdateSelectState = (id) => {
     form.value.audience_id = id;
-};
-
-const cancelEditor = () => {
-    currentStep.value = "audience-picker";
 };
 
 const handleDone = () => {
