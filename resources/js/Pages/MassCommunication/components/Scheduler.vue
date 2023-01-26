@@ -99,7 +99,7 @@
             <Templates
                 v-if="currentEditor === 'call'"
                 @cancel="currentEditor = 'default'"
-                @save="(template) => handleSave('call', template)"
+                @save="(template) => handleSave('call_template_id', template)"
                 :selected="days[currentDayIndex].call_template_id"
                 template_type="call"
             />
@@ -107,7 +107,7 @@
             <Templates
                 v-if="currentEditor === 'email'"
                 @cancel="currentEditor = 'default'"
-                @save="(template) => handleSave('email', template)"
+                @save="(template) => handleSave('email_template_id', template)"
                 :selected="days[currentDayIndex].email_template_id"
                 template_type="email"
             />
@@ -115,7 +115,7 @@
             <Templates
                 v-if="currentEditor === 'sms'"
                 @cancel="currentEditor = 'default'"
-                @save="(template) => handleSave('sms', template)"
+                @save="(template) => handleSave('sms_template_id', template)"
                 :selected="days[currentDayIndex].sms_template_id"
                 template_type="sms"
             />
