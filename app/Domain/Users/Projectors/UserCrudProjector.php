@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Projectors;
 
-use App\Domain\LocationEmployees\Actions\CreateLocationEmployee;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserReinstated;
 use App\Domain\Users\Events\UserTerminated;
 use App\Domain\Users\Events\UserUpdated;
-use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Services\Helpers\UserDataReflector;
+use App\Domain\Users\Services\UserDataReflector;
+use App\Domain\Users\Services\UserTypeDeterminer;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
 use App\Models\Note;
@@ -56,10 +55,9 @@ class UserCrudProjector extends Projector
     ];
     private $non_fillable_fields = [
         'email', 'barcode', 'home_location_id', 'external_id', 'misc', 'client_id',
-        'profile_photo_path', 'alternate_emails', 'user_type', 'password',
-        'two_factor_secret', 'two_factor_recovery_codes', 'ip_address',
-        'entry_source', 'opportunity', 'started_at', 'ended_at',
-        'terminated_at', 'agreement_id', 'is_previous',
+        'profile_photo_path', 'alternate_emails', 'password', 'two_factor_secret',
+        'two_factor_recovery_codes', 'ip_address', 'entry_source', 'opportunity',
+        'started_at', 'ended_at', 'terminated_at', 'agreement_id', 'is_previous',
     ];
 
     public function onStartingEventReplay()
@@ -79,7 +77,7 @@ class UserCrudProjector extends Projector
         DB::transaction(function () use ($data, $event) {
             $user = new User();
             $user->id = $event->aggregateRootUuid();
-            foreach ($this->non_fillable_fields as $key => $field) {
+            foreach ($this->non_fillable_fields as $field) {
                 if (array_key_exists($field, $data)) {
                     $user[$field] = $data[$field];
                 }
@@ -88,18 +86,12 @@ class UserCrudProjector extends Projector
                 return in_array($key, (new User())->getFillable());
             }, ARRAY_FILTER_USE_KEY);
             $user->fill($user_table_data);
+            $user->user_type = $data['user_type'] ?? UserTypesEnum::LEAD;
             $user->save();
             $user = User::findOrFail($event->aggregateRootUuid());
 
-            if (array_key_exists('departments', $data)) {
-                $this->syncLocationEmployees($user, $data);
-            }
-
-            $this->setUserDetails($user, $data);
-
-            $notes = $data['notes'] ?? false;
-            if ($notes) {
-                $this->createUserNotes($event, $user, $notes);
+            if (array_key_exists('notes', $data)) {
+                $this->createUserNotes($event, $data['notes']);
             }
 
             /**
@@ -128,7 +120,7 @@ class UserCrudProjector extends Projector
                 Bouncer::assign($role)->to($user);
             }
 
-            $this->setUserDetails($user, $data);
+            $this->setUserDetails($user, $data, $user->user_type);
             $user->save();
 
             UserDataReflector::reflectData($user);
@@ -150,26 +142,26 @@ class UserCrudProjector extends Projector
                 $user_query = User::withoutGlobalScopes();
             }
             $user = $user_query->findOrFail($event->aggregateRootUuid());
-            $previous_type = $user->user_type;
-            foreach ($this->non_fillable_fields as $key => $field) {
+            foreach ($this->non_fillable_fields as $field) {
                 if (array_key_exists($field, $data)) {
                     $user[$field] = $data[$field];
                 }
             }
-
+            $user->user_type = $data['user_type'] ?? $user->user_type;
             $user->updateOrFail($data);
-
-            if (array_key_exists('departments', $data)) {
-                $this->syncLocationEmployees($user, $data);
+            $user_type = UserTypeDeterminer::getUserType($user);
+            if ($user->user_type !== $user_type) {
+                $user->user_type = $user_type;
             }
+            $this->setUserDetails($user, $data, $user_type, true);
 
-            $this->setUserDetails($user, $data, true);
+
             $user->save();
-            UserDataReflector::reflectData($user, $previous_type);
+            UserDataReflector::reflectData($user);
 
             $notes = $data['notes'] ?? false;
             if ($notes) {
-                $this->createUserNotes($event, $user, $notes);
+                $this->createUserNotes($event, $notes);
             }
 
             if (array_key_exists('role_id', $data)) {
@@ -220,42 +212,29 @@ class UserCrudProjector extends Projector
         });
     }
 
-    protected function syncLocationEmployees(User $user, array $data): void
-    {
-        $location_employee_data['location_id'] = '';
-        $location_employee_data['client_id'] = $user->client_id;
-        $location_employee_data['user_id'] = $user->id;
-        $location_employee_data['primary_supervisor_user_id'] = '';
-
-        if (count($data) != count($data, COUNT_RECURSIVE)) {
-            if (array_key_exists('departments', $data)) {
-                foreach ($data['departments'] as $dept) {
-                    $location_employee_data['department_id'] = $dept['department'];
-                    $location_employee_data['position_id'] = $dept['position'];
-                    CreateLocationEmployee::run($location_employee_data);
-                }
-            }
-        }
-    }
-
     /**
      * Create UserDetails based on values passed in $data
      *
      * @param User $user
      * @param array $data
+     * @param UserTypesEnum $user_type
      * @param bool $is_updating
      */
-    protected function setUserDetails(User $user, array $data, bool $is_updating = false): void
-    {
-        $details = [];
-        if ($this->getUserType($user, $data) == UserTypesEnum::EMPLOYEE) {
+    protected function setUserDetails(
+        User $user,
+        array $data,
+        UserTypesEnum $user_type,
+        bool $is_updating = false
+    ): void {
+        $details = $user->details ?? [];
+        if ($user_type == UserTypesEnum::EMPLOYEE) {
             $default_team = $this->getDefaultTeamId($user, $data, $is_updating);
             if ($default_team) {
                 $data['default_team_id'] = $default_team;
             }
         }
 
-        foreach ($this->user_details_storable[$this->getUserType($user, $data)->value] as $field_value => $default_value) {
+        foreach ($this->user_details_storable[$user_type->value] as $field_value => $default_value) {
             $value = $data[$field_value] ?? null;
             if (! $is_updating) {
                 $value = $value ?? $default_value;
@@ -269,28 +248,19 @@ class UserCrudProjector extends Projector
         $user->details = $details;
     }
 
-    protected function createUserNotes($event, User $user, array $notes): void
+    protected function createUserNotes($event, array $notes): void
     {
         foreach ($notes as $note) {
-            if ($notes['title'] != null) {
+            if ($note['title'] != null) {
                 Note::create([
                     'entity_id' => $event->aggregateRootUuid(),
                     'entity_type' => User::class,
-                    'title' => $notes['title'],
-                    'note' => $notes['note'],
+                    'title' => $note['title'],
+                    'note' => $note['note'],
                     'created_by_user_id' => $event->userId(),
                 ]);
             }
         }
-    }
-
-    protected function getUserType(User $user, array $data): UserTypesEnum
-    {
-        $user_type = array_key_exists('user_type', $data) ? $data['user_type'] : $user->user_type;
-        $user_type = in_array($user_type, UserTypesEnum::cases()) ?
-            $user_type : UserTypesEnum::LEAD;
-
-        return $user_type;
     }
 
     protected function getDefaultTeamId(User $user, array $data, bool $is_updating): ?string

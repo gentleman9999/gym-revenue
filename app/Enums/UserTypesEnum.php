@@ -16,8 +16,7 @@ enum UserTypesEnum: string
         switch ($value) {
             case self::EMPLOYEE->value:
                 return self::EMPLOYEE;
-            
-            // no break
+                // no break
             case self::MEMBER->value:
                 return self::MEMBER;
             case self::CUSTOMER->value:

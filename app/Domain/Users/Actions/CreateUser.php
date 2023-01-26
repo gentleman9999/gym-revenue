@@ -116,7 +116,7 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
      */
     public function rules(): array
     {
-        return ValidationRules::getValidationRules(request()->user_type, true);
+        return ValidationRules::getValidationRules(request()->user_type ?? UserTypesEnum::LEAD, true);
     }
 
     /**
