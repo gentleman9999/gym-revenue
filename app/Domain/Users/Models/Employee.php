@@ -8,8 +8,6 @@ use App\Scopes\ClientScope;
 
 class Employee extends User
 {
-    protected $table = 'employees';
-
     protected static function booted(): void
     {
         parent::booted();

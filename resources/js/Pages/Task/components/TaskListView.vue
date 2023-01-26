@@ -2,7 +2,7 @@
     <gym-revenue-crud
         ref="tasksCrud"
         base-route="tasks"
-        :model-name="`Task-${taskType}`"
+        model-name="Task"
         model-key="task"
         class="border-transparent"
         :fields="fields"
