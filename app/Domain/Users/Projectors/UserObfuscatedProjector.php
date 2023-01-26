@@ -7,7 +7,7 @@ namespace App\Domain\Users\Projectors;
 use App\Domain\Users\Events\UserObfuscated;
 use App\Domain\Users\Models\ObfuscatedUser;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Services\Helpers\UserDataReflector;
+use App\Domain\Users\Services\UserDataReflector;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Hash;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;

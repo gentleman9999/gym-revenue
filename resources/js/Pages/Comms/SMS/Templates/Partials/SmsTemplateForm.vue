@@ -82,7 +82,7 @@ import { toastInfo, toastError } from "@/utils/createToast";
 const emit = defineEmits(["cancel", "done"]);
 
 const props = defineProps({
-    template: {
+    smsTemplate: {
         type: Object,
         default: {
             name: "",
@@ -111,7 +111,7 @@ let operFn = computed(() => {
     return operation.value === "Update" ? updateSmsTemplate : createSmsTemplate;
 });
 
-const form = useGymRevForm(props.template);
+const form = useGymRevForm(props.smsTemplate);
 
 const handleOperation = async () => {
     try {

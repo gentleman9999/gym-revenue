@@ -95,7 +95,7 @@ export default {
     },
     props: ["calendar_event"],
     setup(props, { emit }) {
-        let calendarEvent = props.calendar_event;
+        let calendarEvent = props.calendar_event ?? {};
 
         const form = useGymRevForm(calendarEvent);
         watchEffect(() => {});
