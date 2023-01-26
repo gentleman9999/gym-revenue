@@ -147,8 +147,11 @@ class UserCrudProjector extends Projector
                     $user[$field] = $data[$field];
                 }
             }
+            $user_table_data = array_filter($data, function ($key) {
+                return in_array($key, (new User())->getFillable());
+            }, ARRAY_FILTER_USE_KEY);
             $user->user_type = $data['user_type'] ?? $user->user_type;
-            $user->updateOrFail($data);
+            $user->updateOrFail($user_table_data);
             $user_type = UserTypeDeterminer::getUserType($user);
             if ($user->user_type !== $user_type) {
                 $user->user_type = $user_type;

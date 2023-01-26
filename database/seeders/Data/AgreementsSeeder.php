@@ -28,9 +28,7 @@ class AgreementsSeeder extends Seeder
         if (count($clients) > 0) {
             foreach ($clients as $client) {
                 VarDumper::dump('Generating Agreements for ' . $client->name . '!');
-                $users = $client->employees()->whereJsonContains('details->default_team_id', '!=', '')
-                    ->get()->pluck('id')->toArray();
-                dd($users);
+                $users = $client->employees()->get()->pluck('id')->toArray();
                 $categories = AgreementCategory::whereClientId($client->id)->get()->toArray();
                 $file = File::whereClientId($client->id)->whereFileableType(Contract::class)->first();
                 $amount_of_user = count($users);
@@ -53,10 +51,10 @@ class AgreementsSeeder extends Seeder
                             $agreement_data['client_id'] = $client->id;
                             $agreement_data['agreement_category_id'] = $categories[array_rand($categories, 1)]['id'];
                             $agreement_data['gr_location_id'] = $location->gymrevenue_id;
-                            $agreement_data['created_by'] = $users[array_rand($users, 1)]['id'];
+                            $agreement_data['created_by'] = $users[array_rand($users, 1)];
                             $agreement_data['user_id'] = $enduser_id;
                             $agreement_data['agreement_template_id'] = AgreementTemplate::whereClientId($client->id)->first()->id;
-                            $agreement_data['active'] = $i == 0;
+                            $agreement_data['active'] = true;
                             if ($file) {
                                 $agreement_data['contract_file_id'] = $file->id;
                             }
