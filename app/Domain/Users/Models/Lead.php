@@ -8,8 +8,6 @@ use App\Scopes\ClientScope;
 
 class Lead extends EndUser
 {
-    protected $table = 'leads';
-
     protected $appends = ['owner'];
 
     protected static function booted(): void
