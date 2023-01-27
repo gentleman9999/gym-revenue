@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             /** Get all shared fields */
             $this->getSharedFields($table);
-
+            $table->boolean('is_cape_and_bay_user')->default(false);
             /** DB constraints */
             $table->unique(['client_id', 'email']);
             $table->index(['client_id', 'home_location_id']);
@@ -104,7 +104,6 @@ class CreateUsersTable extends Migration
         $table->json('entry_source')->nullable();
         $table->uuid('home_location_id')->nullable()->index();
         $table->string('manager')->nullable();
-        $table->boolean('is_cape_and_bay_user')->default(false);
         $table->unsignedTinyInteger('opportunity')->nullable();
         $table->string('external_id')->nullable();
         $table->jsonb('misc')->nullable();

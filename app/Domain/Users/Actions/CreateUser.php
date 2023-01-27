@@ -13,6 +13,7 @@ use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\ValidationRules;
 use App\Enums\UserTypesEnum;
+use App\Support\CurrentInfoRetriever;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
@@ -52,6 +53,11 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
 
     public function handle(array $payload): User
     {
+        $payload['user_type'] = $payload['user_type'] ?? UserTypesEnum::LEAD;
+        $payload['unsubscribed_email'] = $payload['unsubscribed_email'] ?? false;
+        $payload['unsubscribed_sms'] = $payload['unsubscribed_sms'] ?? false;
+        $payload['is_previous'] = $payload['is_previous'] ?? false;
+        $payload['client_id'] = $payload['client_id'] ?? CurrentInfoRetriever::getCurrentClientID();
         if (array_key_exists('password', $payload)) {
             $payload['password'] = Hash::make($payload['password']);
         }
@@ -69,9 +75,6 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
 
                 // $team_name = Team::getTeamName($team_id);
                 AddTeamMember::run(Team::findOrFail($team_id), $created_user);
-                // $team_client = Team::getClientFromTeamId($team_id);
-                // $team_client_id = ($team_client) ? $team_client->id : null;
-                // $user_aggy = $user_aggy->addToTeam($team_id, $team_name, $team_client_id);
             }
         }
 

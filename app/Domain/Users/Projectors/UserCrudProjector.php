@@ -86,8 +86,8 @@ class UserCrudProjector extends Projector
             }, ARRAY_FILTER_USE_KEY);
             $user->fill($user_table_data);
             $user->user_type = $data['user_type'] ?? UserTypesEnum::LEAD;
+            $this->setUserDetails($user, $data, $user->user_type);
             $user->save();
-            $user = User::findOrFail($event->aggregateRootUuid());
 
             if (array_key_exists('notes', $data)) {
                 $this->createUserNotes($event, $data['notes']);
@@ -118,9 +118,6 @@ class UserCrudProjector extends Projector
                 //let the bouncer know this $user is OG
                 Bouncer::assign($role)->to($user);
             }
-
-            $this->setUserDetails($user, $data, $user->user_type);
-            $user->save();
 
             UserDataReflector::reflectData($user);
         });
@@ -156,8 +153,6 @@ class UserCrudProjector extends Projector
                 $user->user_type = $user_type;
             }
             $this->setUserDetails($user, $data, $user_type, true);
-
-
             $user->save();
             UserDataReflector::reflectData($user);
 
@@ -223,7 +218,7 @@ class UserCrudProjector extends Projector
      * @param bool $is_updating
      */
     protected function setUserDetails(
-        User $user,
+        User &$user,
         array $data,
         UserTypesEnum $user_type,
         bool $is_updating = false
@@ -250,22 +245,22 @@ class UserCrudProjector extends Projector
         $user->details = $details;
     }
 
-    protected function createUserNotes($event, array $notes): void
+    protected function createUserNotes($event, array $note): void
     {
-        foreach ($notes as $note) {
-            if ($note['title'] != null) {
-                Note::create([
-                    'entity_id' => $event->aggregateRootUuid(),
-                    'entity_type' => User::class,
-                    'title' => $note['title'],
-                    'note' => $note['note'],
-                    'created_by_user_id' => $event->userId(),
-                ]);
-            }
+        // foreach ($notes as $note) {
+        if ($note['title'] != null) {
+            Note::create([
+                'entity_id' => $event->aggregateRootUuid(),
+                'entity_type' => User::class,
+                'title' => $note['title'],
+                'note' => $note['note'],
+                'created_by_user_id' => $event->userId(),
+            ]);
         }
+        // }
     }
 
-    protected function getDefaultTeamId(User $user, array $data, bool $is_updating): ?string
+    protected function getDefaultTeamId(User &$user, array $data, bool $is_updating): ?string
     {
         $default_team = array_key_exists('team_ids', $data) ? $data['team_ids'][0] : $data['team_id'] ?? null;
 

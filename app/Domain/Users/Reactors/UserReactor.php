@@ -10,6 +10,7 @@ use App\Domain\Users\Actions\UpdateUser;
 use App\Domain\Users\Events\FileUploaded;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UsersImported;
+use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\Services\UserTypeDeterminer;
 use App\Imports\UsersImport;
@@ -47,7 +48,7 @@ class UserReactor extends Reactor implements ShouldQueue
         CreateFile::run($data, $model, User::find($event->userId()));
     }
 
-    public function onUserWrite(UserCreated $event): void
+    public function onUserWrite(UserCreated|UserUpdated $event): void
     {
         DB::transaction(function () use ($event) {
             $user = User::findOrFail($event->aggregateRootUuid());
