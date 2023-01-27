@@ -52,7 +52,7 @@ class CallScriptTemplateProjector extends Projector
 
     public function onCampaignTemplateTrashed(CallScriptTemplateTrashed $event): void
     {
-        CallScriptTemplate::withTrashed()->findOrFail($event->aggregateRootUuid()) - writeable()->delete();
+        CallScriptTemplate::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->delete();
     }
 
     public function onCampaignTemplateRestored(CallScriptTemplateRestored $event): void

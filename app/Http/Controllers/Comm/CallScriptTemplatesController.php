@@ -16,35 +16,35 @@ class CallScriptTemplatesController extends Controller
             'data' => [],
         ];
 
-        $templates = CallScriptTemplate::with('creator')
+        $templates = CallScriptTemplate::with(['creator', 'team'])
                 ->filter(request()->only('search', 'trashed'))
                 ->whereUseOnce(false)
                 ->sort()
                 ->paginate($page_count)
                 ->appends(request()->except('page'));
 
-
         return Inertia::render('Comms/CallScripts/Templates/CallScriptTemplatesIndex', [
             'title' => 'callscript Templates',
             'filters' => request()->all('search', 'trashed'),
-//            'templates' => $templates,
+            'templates' => $templates,
         ]);
     }
 
-    public function create(): Response
+    public function create(?CallScriptTemplate $call_template = null): Response
     {
         return Inertia::render('Comms/CallScripts/Templates/CreateCallScriptTemplate', [
             'topolApiKey' => env('TOPOL_API_KEY'),
             'plansUrl' => env('APP_URL') . "/api/plans",
+            'duplicate' => $call_template,
         ]);
     }
 
-    public function edit(CallScriptTemplate $callscriptTemplate): Response
+    public function edit(CallScriptTemplate $call_template): Response
     {
         // @todo - need to build access validation here.
 
         return Inertia::render('Comms/CallScripts/Templates/EditCallScriptTemplate', [
-            'template' => $callscriptTemplate,
+            'template' => $call_template,
             'topolApiKey' => env('TOPOL_API_KEY'),
             'plansUrl' => env('APP_URL') . "/api/plans",
         ]);
