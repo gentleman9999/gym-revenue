@@ -25,7 +25,8 @@ class UpdateCallScriptTemplate
         return [
             'name' => ['string', 'sometimes'],
             'subject' => ['string', 'sometimes'],
-            'markup' => ['string', 'sometimes'],
+            'active' => ['sometimes', 'boolean'],
+            'use_once' => ['sometimes', 'boolean'],
             'json' => ['sometimes', 'array'],
         ];
     }
@@ -51,10 +52,10 @@ class UpdateCallScriptTemplate
         return $current_user->can('call-templates.update', CallScriptTemplate::class);
     }
 
-    public function asController(ActionRequest $request, CallScriptTemplate $callscriptTemplate): CallScriptTemplate
+    public function asController(ActionRequest $request, CallScriptTemplate $call_template): CallScriptTemplate
     {
         return $this->handle(
-            $callscriptTemplate,
+            $call_template,
             $request->validated()
         );
     }
@@ -63,6 +64,6 @@ class UpdateCallScriptTemplate
     {
         Alert::success("CallScript Template'{$template->name}' was updated")->flash();
 
-        return Redirect::route('mass-comms.callscript-templates.edit', $template->id);
+        return Redirect::route('mass-comms.call-templates');
     }
 }

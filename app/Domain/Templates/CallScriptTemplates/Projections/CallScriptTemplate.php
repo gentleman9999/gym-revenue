@@ -2,10 +2,12 @@
 
 namespace App\Domain\Templates\CallScriptTemplates\Projections;
 
+use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CallScriptTemplate extends GymRevProjection
@@ -69,5 +71,10 @@ class CallScriptTemplate extends GymRevProjection
     public function gateway()
     {
         return $this->detail()->whereDetail('campaign_gateway')->whereActive(1);
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'team_id', 'id');
     }
 }

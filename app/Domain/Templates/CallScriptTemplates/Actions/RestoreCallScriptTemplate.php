@@ -14,11 +14,11 @@ class RestoreCallScriptTemplate
 {
     use AsAction;
 
-    public function handle(CallScriptTemplate $callscriptTemplate): CallScriptTemplate
+    public function handle(CallScriptTemplate $call_template): CallScriptTemplate
     {
-        CallScriptTemplateAggregate::retrieve($callscriptTemplate->id)->restore()->persist();
+        CallScriptTemplateAggregate::retrieve($call_template->id)->restore()->persist();
 
-        return $callscriptTemplate->refresh();
+        return $call_template->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -28,17 +28,17 @@ class RestoreCallScriptTemplate
         return $current_user->can('call-templates.restore', CallScriptTemplate::class);
     }
 
-    public function asController(ActionRequest $request, CallScriptTemplate $CallScriptTemplate): CallScriptTemplate
+    public function asController(ActionRequest $request, CallScriptTemplate $call_template): CallScriptTemplate
     {
         return $this->handle(
-            $CallScriptTemplate->id,
+            $call_template,
         );
     }
 
-    public function htmlResponse(CallScriptTemplate $CallScriptTemplate): RedirectResponse
+    public function htmlResponse(CallScriptTemplate $call_template): RedirectResponse
     {
-        Alert::success("CallScript Template'{$CallScriptTemplate->name}' was restored")->flash();
+        Alert::success("CallScript Template'{$call_template->name}' was restored")->flash();
 
-        return Redirect::route('mass-comms.callscript-templates');
+        return Redirect::route('mass-comms.call-templates');
     }
 }
