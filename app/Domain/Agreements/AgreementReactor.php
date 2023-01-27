@@ -10,6 +10,7 @@ use App\Domain\Agreements\Events\AgreementUpdated;
 use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Users\Actions\UpdateUser;
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Services\UserTypeDeterminer;
 use App\Models\File;
 use App\Services\Contract\AdobeAPIService;
 use App\Services\Contract\ClientData;
@@ -73,7 +74,6 @@ class AgreementReactor extends Reactor implements ShouldQueue
 
     protected function updateUserStatus(AgreementSigned|AgreementUpdated $event): void
     {
-        $user_type = User::determineUserType($event->payload['user_id']);
         $agreement = Agreement::findOrFail($event->aggregateRootUuid());
         $agreement->signed_at = $event->createdAt();
 
@@ -132,11 +132,14 @@ class AgreementReactor extends Reactor implements ShouldQueue
         }
 
         /** Convert user type to customer/member */
-        UpdateUser::run(
-            User::find($event->payload['user_id']),
-            [
-                'user_type' => $user_type,
-            ]
-        );
+        $user_type = UserTypeDeterminer::getUserType($agreement->user()->first());
+        if ($agreement->user()->first()->user_type !== $user_type) {
+            UpdateUser::run(
+                User::find($event->payload['user_id']),
+                [
+                    'user_type' => $user_type,
+                ]
+            );
+        }
     }
 }

@@ -13,7 +13,7 @@ use App\Domain\Users\Events\UserReceivedTextMsg;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Services\Helpers\UserDataReflector;
+use App\Domain\Users\Services\UserDataReflector;
 use App\Enums\UserHistoryTypeEnum;
 use App\Enums\UserTypesEnum;
 use App\Models\Note;

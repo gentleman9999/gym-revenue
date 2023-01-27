@@ -35,6 +35,7 @@ class EmailTemplateSeeder extends Seeder
 //
 //        UpdateEmailTemplate::run($template->toArray());
 //
+        $json_string = json_encode($default_json);
         $clients = Client::whereActive(1)->get();
         // For each client
         foreach ($clients as $client) {
@@ -45,7 +46,7 @@ class EmailTemplateSeeder extends Seeder
                 'client_id' => $client->id,
                 'active' => 1,
                 'markup' => $default_markup,
-                'json' => $default_json,
+                'json' => $json_string,
                 'subject' => 'We should remove subject from templates and add it to the campaign/event',
             ]);
 

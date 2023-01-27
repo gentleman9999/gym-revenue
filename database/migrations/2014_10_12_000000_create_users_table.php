@@ -25,23 +25,27 @@ class CreateUsersTable extends Migration
 
         Schema::create('leads', function (Blueprint $table) {
             /** Get all shared fields */
+            $table->foreignUuid('user_id');
             $this->getSharedFields($table);
         });
 
         Schema::create('customers', function (Blueprint $table) {
             /** Get all shared fields */
+            $table->foreignUuid('user_id');
             $this->getSharedFields($table);
             $table->uuid('agreement_id')->nullable();
         });
 
         Schema::create('members', function (Blueprint $table) {
             /** Get all shared fields */
+            $table->foreignUuid('user_id');
             $this->getSharedFields($table);
             $table->uuid('agreement_id')->nullable();
         });
 
         Schema::create('employees', function (Blueprint $table) {
             /** Get all shared fields */
+            $table->foreignUuid('user_id');
             $this->getSharedFields($table);
         });
     }

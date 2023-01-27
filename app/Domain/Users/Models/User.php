@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Models;
 
-use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
-use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
@@ -138,7 +136,7 @@ class User extends Authenticatable implements PhoneInterface
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'name',
+        'profile_photo_url', 'name', 'default_team_id',
     ];
 
     /**
@@ -427,31 +425,5 @@ class User extends Authenticatable implements PhoneInterface
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'location_employees', 'user_id', 'department_id')->withoutGlobalScopes()->where('departments.client_id', '=', 'location_employees.client_id');
-    }
-
-    public static function determineUserType(string $user_id): UserTypesEnum
-    {
-        /** Checking if any agreement is of membership category */
-        $has_active_agreements = false;
-        $is_membership_agreement = false;
-
-        $agreements = Agreement::with('categoryById')->whereActive(1)->whereUserId($user_id)->get();
-
-        if (count($agreements)) {
-            $has_active_agreements = true;
-        }
-
-        foreach ($agreements as $agreement) {
-            if ($agreement->categoryById && $agreement->categoryById['name'] === AgreementCategory::NAME_MEMBERSHIP) {
-                $is_membership_agreement = true;
-            }
-        }
-
-        if (! $has_active_agreements) {
-            return UserTypesEnum::LEAD;
-        }
-
-        return $is_membership_agreement ?
-            UserTypesEnum::MEMBER : UserTypesEnum::CUSTOMER;
     }
 }
