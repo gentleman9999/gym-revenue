@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Users\Actions;
 
 use App\Actions\GymRevAction;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
@@ -30,12 +31,15 @@ class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
 
     public function handle(User $user, array $payload): User
     {
-        dd($payload);
         $payload['user_type'] = $payload['user_type'] ?? $user->user_type;
         if (array_key_exists('password', $payload)) {
             $payload['password'] = bcrypt($payload['password']);
         }
-
+        if (array_key_exists('home_location_id', $payload)) {
+            $home_location = Location::find($payload['home_location_id']);
+            $payload['home_location_id'] = ! is_null($home_location) ?
+                $home_location->gymrevenue_id : $payload['home_location_id'];
+        }
         UserAggregate::retrieve((string)$user->id)->update($payload)->persist();
 
         if ($this->updatingSelf) {

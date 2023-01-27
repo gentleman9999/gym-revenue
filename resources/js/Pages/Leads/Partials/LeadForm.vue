@@ -91,7 +91,7 @@
             <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="gender" value="Gender" />
                 <!--                TODO: create gender dropdown from dynamic data provided by gql  -->
-                <select class="" v-model="form['gender']" required id="gender">
+                <select class="" v-model="form.gender" required id="gender">
                     <option value="">Select a Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -157,9 +157,9 @@
                         {{ location.name }}
                     </option>
                 </select> -->
-                <ClubSelect v-model="form['home_location_id']" required />
+                <ClubSelect v-model="form.home_location_id" required />
                 <jet-input-error
-                    :message="form.errors['home_location_id']"
+                    :message="form.errors.home_location_id"
                     class="mt-2"
                 />
             </div>
@@ -473,7 +473,8 @@ let handleSubmit = async () => {
             notes: form.notes,
             team_id: form.team_id,
             role_id: form.role_id,
-            home_location_id: null,
+            home_location_id: form.home_location_id,
+            gender: form.gender,
             manager: null,
         },
     });
@@ -501,7 +502,8 @@ if (operation === "Create") {
                 notes: form.notes,
                 team_id: form.team_id,
                 role_id: form.role_id,
-                home_location_id: null,
+                home_location_id: form.home_location_id,
+                gender: form.gender,
                 manager: null,
                 departments: [],
                 positions: [],

@@ -98,6 +98,6 @@ class Helper
 
     public static function getTeamLocations(string $current_team_id): array
     {
-        return Team::find($current_team_id)->locations->toArray();
+        return Team::find($current_team_id)->locations();
     }
 }

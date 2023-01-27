@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserGenderEnum;
 use App\Enums\UserTypesEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -72,7 +73,7 @@ class CreateUsersTable extends Migration
 
         /** Personal/Sensitive */
         $table->timestamp('date_of_birth')->nullable();
-        $table->string('gender')->nullable();
+        $table->enum('gender', array_column(UserGenderEnum::cases(), 'value'))->nullable();
         $table->string('drivers_license_number')->nullable();
         $table->string('profile_photo_path', 2048)->nullable();
 

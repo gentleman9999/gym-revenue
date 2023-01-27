@@ -747,6 +747,8 @@ const { mutate: createUser } = useMutation(mutations.user.create);
 const { mutate: updateUser } = useMutation(mutations.user.update);
 
 let handleSubmit = async () => {
+    console.log("BAAAAAl");
+    console.log();
     console.log("form post", JSON.stringify(form.dirtyData));
     await updateUser({
         input: {
@@ -768,8 +770,10 @@ let handleSubmit = async () => {
             notes: form.notes,
             team_id: form.team_id,
             role_id: form.role_id,
-            home_location_id: null,
+            home_location_id: form.home_location_id,
+            departments: JSON.parse(JSON.stringify(form.departments)),
             manager: null,
+            gender: form.gender,
         },
     });
     handleClickCancel();
@@ -797,10 +801,11 @@ if (operation === "Create") {
                 notes: form.notes,
                 team_id: form.team_id,
                 role_id: form.role_id,
-                home_location_id: null,
+                home_location_id: form.home_location_id,
                 manager: null,
-                departments: [],
+                departments: JSON.parse(JSON.stringify(form.departments)),
                 positions: [],
+                gender: form.gender,
             },
         });
         handleClickCancel();
