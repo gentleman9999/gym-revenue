@@ -237,7 +237,6 @@ const addDay = () => {
             email_template_id: false,
             sms_template_id: false,
             call_template_id: false,
-            date: false,
             day_in_campaign: maxDay + 1,
         },
     ];
@@ -258,11 +257,6 @@ const resetField = (i, field) => {
     days.value[i][field] = false;
 };
 
-// const handleCancelScript = () => {
-//     emit("update", days.value);
-//     currentEditor.value = "default";
-// };
-
 const updateEditor = (i, method) => {
     currentDayIndex.value = i;
     currentEditor.value = method;
@@ -279,23 +273,29 @@ const updateDayIx = (ix, v) => {
 };
 
 const saveCampaign = async () => {
-    // if (campaignHasInvalidDays.value)
-    //     return toastError(
-    //         "Each day must contain at least one method of communication"
-    //     );
-    // if (props.campaignType === "scheduled" && !days.value[0].date)
-    //     return toastError("You must select a date to launch this campaign at.");
+    let dripDays = _.cloneDeep(days.value);
+
+    for (const dripDay of dripDays) {
+        if (dripDay?.send_at === 0 || dripDay?.send_at === false)
+            delete dripDay["send_at"];
+        if (dripDay?.email_template_id === false)
+            delete dripDay["email_template_id"];
+        if (dripDay?.call_template_id === false)
+            delete dripDay["call_template_id"];
+        if (dripDay?.sms_template_id === false)
+            delete dripDay["sms_template_id"];
+    }
 
     let inputDataDrip = {
         name: props.campaign.name,
-        camnpaignType: props.campaignType,
+        campaignType: props.campaignType,
         audience_id: props.campaign.audience_id,
-        days: days.value,
+        days: dripDays,
     };
 
     let inputDataScheduled = {
         name: props.campaign.name,
-        camnpaignType: props.campaignType,
+        campaignType: props.campaignType,
         audience_id: props.campaign.audience_id,
         email_template_id: days.value[0].email_template_id,
         call_template_id: days.value[0].call_template_id,
@@ -314,91 +314,4 @@ const saveCampaign = async () => {
         toastError("Problem saving campaign");
     }
 };
-
-// const saveCampaign = async () => {
-//     if (invalidDays.value) {
-//         return toastError(
-//             "Each day must contain at least one method of communication"
-//         );
-//     }
-
-//     if (
-//         props?.campaignType === "scheduled" &&
-//         days?.value?.length &&
-//         !days?.value[0]?.date
-//     ) {
-//         return toastError("You must select a date to launch this campaign at.");
-//     }
-
-//     let fmtCampaign = {
-//         name: props.name,
-//         campaignType: props.campaignType,
-//         audience_id: props.form.audience,
-//         days: [
-//             ...days.value.map((d) => {
-//                 return {
-//                     ...d,
-//                     call:
-//                         typeof d?.call?.message === "string"
-//                             ? d.call.message
-//                             : typeof d?.call === "string"
-//                             ? d.call
-//                             : null,
-//                     email: typeof d?.email === "string" ? d.email : null,
-//                     sms: typeof d?.sms === "string" ? d.sms : null,
-//                     date:
-//                         typeof d?.date !== undefined
-//                             ? transformDate(d.date)
-//                             : null,
-//                 };
-//             }),
-//         ],
-//     };
-//     if (props.campaignType === "scheduled") {
-//         fmtCampaign.send_at = fmtCampaign.days[0].date;
-//         if (fmtCampaign.days[0]?.email) {
-//             fmtCampaign.email_template_id = fmtCampaign.days[0].email;
-//         }
-//         if (fmtCampaign.days[0]?.sms) {
-//             fmtCampaign.sms_template_id = fmtCampaign.days[0].sms;
-//         }
-//         if (fmtCampaign.days[0]?.call) {
-//             fmtCampaign.call_template_id = fmtCampaign.days[0].call;
-//         }
-//         delete fmtCampaign.days;
-//     }
-//     console.log({ fmtCampaign, days: days.value });
-
-//     try {
-//         loading.value = true;
-//         console.log("sending campaign", fmtCampaign);
-
-//         /** route helpers */
-
-//         let action = props.isNew ? "store" : "update";
-//         let campType = props.campaignType === "drip" ? "drip" : "scheduled";
-//         let endp = `mass-comms.${campType}-campaigns.${action}`;
-
-//         console.log("sending to endpoint", endp);
-
-//         const res = props.isNew
-//             ? await axios.post(route(endp), {
-//                   ...fmtCampaign,
-//               })
-//             : await axios.put(route(endp, props.existingId), {
-//                   ...fmtCampaign,
-//               });
-
-//         if (res.status === 200) {
-//             toastInfo("Campaign Saved!");
-//             loading.value = false;
-//             emit("done");
-//         }
-//         console.log("data received back from server:", res.data);
-//     } catch (err) {
-//         loading.value = false;
-//         toastError("Problem Saving Campaign");
-//         console.log("problem saving campaign", err);
-//     }
-// };
 </script>

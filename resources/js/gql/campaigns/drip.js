@@ -80,7 +80,9 @@ export const dripCampaign = {
                 start_at
                 end_at
                 completed_at
-                status
+                status {
+                    value
+                }
                 created_at
                 updated_at
                 deleted_at
@@ -104,7 +106,9 @@ export const dripCampaign = {
                 start_at
                 end_at
                 completed_at
-                status
+                status {
+                    value
+                }
                 created_at
                 updated_at
                 deleted_at
