@@ -17,7 +17,6 @@ use function bcrypt;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Lorisleiva\Actions\ActionRequest;
@@ -58,71 +57,44 @@ class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
         return [User::find($user['id']), $user];
     }
 
-    /**
-     * Custom validation based on user_type
-     *
-     * @return array
-     */
-    public function rules(): array
-    {
-        return ValidationRules::getValidationRules(request()->user_type, false);
-    }
+    // /**
+    //  * Custom validation based on user_type
+    //  *
+    //  * @return array
+    //  */
+    // public function rules(): array
+    // {
+    //     return ValidationRules::getValidationRules(request()->user_type, false);
+    // }
 
-    /**
-     * Validate the address provided using USPS API after main rules
-     * Which also sends back correct address1, city and state
-     *
-     * @return void
-     */
-    public function afterValidator(Validator $validator, ActionRequest $request): void
-    {
-        /**
-         * @TODO: Send the suggestion data back to UI, and display to the User.
-         * They can make a choice (confirm/cancel), and have it update if confirmed
-         */
-        session()->forget('address_validation');
-    }
+    // /**
+    //  * Validate the address provided using USPS API after main rules
+    //  * Which also sends back correct address1, city and state
+    //  *
+    //  * @return void
+    //  */
+    // public function afterValidator(Validator $validator, ActionRequest $request): void
+    // {
+    //     /**
+    //      * @TODO: Send the suggestion data back to UI, and display to the User.
+    //      * They can make a choice (confirm/cancel), and have it update if confirmed
+    //      */
+    //     session()->forget('address_validation');
+    // }
 
-    /**
-     * Transform the request object in
-     * preparation for validation
-     *
-     * @param ActionRequest $request
-     */
-    public function prepareForValidation(ActionRequest $request): void
-    {
-        $request = $this->mergeUserTypeToRequest($request);
-
-        if ($request->user_type == UserTypesEnum::LEAD) {
-            /** @TODO: Need to update with what entry_source data should be */
-            $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
-        }
-    }
-
-    /**
-     * Adds the user type to the request object
-     * based on the route name of the request
-     *
-     * @param ActionRequest $request
-     *
-     * @return ActionRequest $request
-     */
-    private function mergeUserTypeToRequest(ActionRequest $request): ActionRequest
-    {
-        $current_route = Route::currentRouteName();
-
-        if ($current_route == 'users.store' || $current_route == 'users.update') {
-            $request->merge(['user_type' => UserTypesEnum::EMPLOYEE]);
-        } elseif ($current_route == 'data.leads.store' || $current_route == 'data.leads.update') {
-            $request->merge(['user_type' => UserTypesEnum::LEAD]);
-        } elseif ($current_route == 'data.members.store' || $current_route == 'data.members.update') {
-            $request->merge(['user_type' => UserTypesEnum::MEMBER]);
-        } else {
-            $request->merge(['user_type' => UserTypesEnum::CUSTOMER]);
-        }
-
-        return $request;
-    }
+    // /**
+    //  * Transform the request object in
+    //  * preparation for validation
+    //  *
+    //  * @param ActionRequest $request
+    //  */
+    // public function prepareForValidation(ActionRequest $request): void
+    // {
+    //     if ($request->user_type == UserTypesEnum::LEAD) {
+    //         /** @TODO: Need to update with what entry_source data should be */
+    //         $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
+    //     }
+    // }
 
     public function authorize(ActionRequest $request): bool
     {
@@ -186,21 +158,21 @@ class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
         ];
     }
 
-    protected function getPreviousUserType(string $id): UserTypesEnum
-    {
-        if ($this->updatingSelf) {
-            $user = User::withoutGlobalScopes()->findOrFail($id);
-        } else {
-            $user = User::findOrFail($id);
-        }
+    // protected function getPreviousUserType(string $id): UserTypesEnum
+    // {
+    //     if ($this->updatingSelf) {
+    //         $user = User::withoutGlobalScopes()->findOrFail($id);
+    //     } else {
+    //         $user = User::findOrFail($id);
+    //     }
 
-        return $user->user_type;
-    }
+    //     return $user->user_type;
+    // }
 
-    public function getValidationAttributes(): array
-    {
-        return [
-            'addres1' => 'address line 1',
-        ];
-    }
+    // public function getValidationAttributes(): array
+    // {
+    //     return [
+    //         'addres1' => 'address line 1',
+    //     ];
+    // }
 }
