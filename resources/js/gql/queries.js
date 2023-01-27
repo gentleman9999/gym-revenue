@@ -64,6 +64,7 @@ const USER_EDIT = gql`
             last_name
             contact_preference
             alternate_email
+            gender
             address1
             address2
             city
