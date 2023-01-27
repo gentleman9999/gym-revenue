@@ -6,6 +6,7 @@ use Database\Seeders\AccessControl\BouncerAbilitiesSeeder;
 use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClientSeeder;
+use Database\Seeders\Clients\GymAmenitySeeder;
 use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Clients\LocationVendorCategorySeeder;
 use Database\Seeders\Clients\LocationVendorSeeder;
@@ -100,6 +101,10 @@ class DatabaseSeeder extends Seeder
         // New vendors for different location are created here
         VarDumper::dump('Running Location Vendor Seeder');
         $this->call(LocationVendorSeeder::class);
+
+        // New Gym Amenities for different location are created here
+        VarDumper::dump('Running Location Vendor Seeder');
+        $this->call(GymAmenitySeeder::class);
 
         // Secondary Teams linked to each client's account owner are defined here.
         // There is a team for each location, along with various sales teams
