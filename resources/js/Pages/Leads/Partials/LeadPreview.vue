@@ -48,6 +48,22 @@
                 > Existing Notes
             </div>
             <div class="flex flex-col gap-2 collapse-content">
+                <!-- this was from dev, dunno wtf it is
+                <div v-for="(note, ndx) in data.preview_note" :key="ndx">
+                    <div
+                        class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"
+                    >
+                        <hr
+                            v-if="
+                                ndx != 0 &&
+                                data.preview_note[ndx - 1]['lifecycle'] !=
+                                    note['lifecycle']
+                            "
+                            class="pb-5"
+                        />
+                        {{ note["note"] }}
+                    </div>
+                -->
                 <div
                     v-for="(note, ndx) in lead.notes"
                     :key="ndx"

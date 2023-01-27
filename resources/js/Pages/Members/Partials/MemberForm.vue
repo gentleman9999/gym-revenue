@@ -170,53 +170,15 @@
 
             <div
                 class="form-control md:col-span-2 col-span-6"
-                v-if="member?.agreement_number"
+                v-if="member?.agreement_id"
             >
-                <jet-label for="agreement_number" value="Agreement Number" />
+                <jet-label for="agreement_id" value="Agreement Number" />
                 <input
                     disabled
                     type="text"
-                    v-model="member.agreement_number"
+                    v-model="member.agreement_id"
                     class="opacity-70"
-                    id="agreement_number"
-                />
-            </div>
-
-            <div
-                class="form-control md:col-span-2 col-span-6"
-                v-if="member?.external_id"
-            >
-                <jet-label for="external_id" value="External ID" />
-                <input
-                    disabled
-                    type="text"
-                    v-model="member.external_id"
-                    class="opacity-70"
-                    id="external_id"
-                />
-            </div>
-            <div
-                class="form-control md:col-span-2 col-span-6"
-                v-if="member?.misc"
-            >
-                <jet-label for="json_viewer" value="Additional Data" />
-                <vue-json-pretty
-                    :data="member.misc"
-                    id="json_viewer"
-                    class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
-                />
-            </div>
-            <div
-                class="form-control md:col-span-2 col-span-6"
-                v-if="member?.agreement_number"
-            >
-                <jet-label for="agreement_number" value="Agreement Number" />
-                <input
-                    disabled
-                    type="text"
-                    v-model="member.agreement_number"
-                    class="opacity-70"
-                    id="agreement_number"
+                    id="agreement_id"
                 />
             </div>
 
@@ -281,13 +243,21 @@
                 <div
                     class="collapse col-span-6"
                     tabindex="0"
-                    v-for="note in member.all_notes"
+                    v-for="(note, ndx) in member.all_notes"
                     :key="note.id"
                 >
                     <div
                         class="collapse-title text-sm font-medium"
                         v-on:click="handleNoteExpansion(note)"
                     >
+                        <hr
+                            v-if="
+                                ndx != 0 &&
+                                member.all_notes[ndx - 1]['lifecycle'] !=
+                                    note['lifecycle']
+                            "
+                            class="pb-5"
+                        />
                         > {{ note.title }}
                         <div
                             v-if="note.read == false"

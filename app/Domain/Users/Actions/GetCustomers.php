@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Actions;
 
-use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\Customer;
@@ -36,38 +35,29 @@ class GetCustomers
 
         $client_id = $user->client_id;
 
-        $locations_records = Helper::setUpLocationsObject($current_team->id, $user->isClientUser(), $client_id)->get();
-
-        $locations = [];
-        foreach ($locations_records as $location) {
-            $locations[$location->gymrevenue_id] = $location->name;
-        }
-
         $customers_model = Helper::setUpCustomersObject($current_team->id, $client_id);
 
         if (! empty($customers_model)) {
             $customers = $customers_model
                 ->with('location')
-                // ->with('customershipType')
-                // ->with('detailsDesc')
                 ->with('notes')
                 ->filter($filter_params)
                 ->orderBy('created_at', 'desc')
                 ->sort()
                 ->paginate($page_count)
                 ->appends(request()->except('page'));
-        }
 
-        //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
-        //MUST FIX BY DEMO 6/15/22
-        //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
-        if ($sort != '') {
-            if ($dir == 'DESC') {
-                $sorted_result = $customers->getCollection()->sortByDesc($sort)->values();
-            } else {
-                $sorted_result = $customers->getCollection()->sortBy($sort)->values();
+            //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
+            //MUST FIX BY DEMO 6/15/22
+            //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
+            if ($sort != '') {
+                if ($dir == 'DESC') {
+                    $sorted_result = $customers->getCollection()->sortByDesc($sort)->values();
+                } else {
+                    $sorted_result = $customers->getCollection()->sortBy($sort)->values();
+                }
+                $customers->setCollection($sorted_result);
             }
-            $customers->setCollection($sorted_result);
         }
 
         $new_customer_count = 0;
@@ -90,7 +80,7 @@ class GetCustomers
         return [
             'customers' => $customers,
             'available_customer_owners' => $available_customer_owners,
-            'locations' => $locations,
+            'locations' => Helper::getLocations($current_team->id, $user->isClientUser(), $client_id),
             'new_customer_count' => $new_customer_count,
         ];
     }

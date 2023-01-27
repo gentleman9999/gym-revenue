@@ -63,7 +63,6 @@ class EndUser extends User
                     ->orWhere('first_name', 'like', $searchable_phrase)
                     ->orWhere('last_name', 'like', $searchable_phrase)
                     ->orWhere('home_location_id', 'like', $searchable_phrase)
-                    ->orWhere('ip_address', 'like', $searchable_phrase)
                     ->orWhere('agreement_id', 'like', $searchable_phrase)
                     ->orWhereHas('location', function ($query) use ($searchable_phrase) {
                         $query->where('name', 'like', $searchable_phrase);

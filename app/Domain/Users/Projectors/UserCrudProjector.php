@@ -70,7 +70,6 @@ class UserCrudProjector extends Projector
     public function onUserCreated(UserCreated $event): void
     {
         $data = $event->payload;
-
         if (array_key_exists('phone', $data)) {
             $data['phone'] = "{$data['phone']}";
         }
@@ -271,16 +270,15 @@ class UserCrudProjector extends Projector
 
     protected function createUserNotes($event, User $user, array $notes): void
     {
-        foreach ($notes as $note) {
-            if ($notes['title'] != null) {
-                Note::create([
-                    'entity_id' => $event->aggregateRootUuid(),
-                    'entity_type' => User::class,
-                    'title' => $notes['title'],
-                    'note' => $notes['note'],
-                    'created_by_user_id' => $event->userId(),
-                ]);
-            }
+        if ($notes['title'] != null) {
+            Note::create([
+                'id' => $event->payload['note_id'],
+                'entity_id' => $event->aggregateRootUuid(),
+                'entity_type' => User::class,
+                'title' => $notes['title'],
+                'note' => $notes['note'],
+                'created_by_user_id' => $event->userId(),
+            ]);
         }
     }
 

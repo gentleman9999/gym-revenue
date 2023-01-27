@@ -12,6 +12,7 @@ use App\Domain\Reminders\Events\ReminderUpdated;
 use App\Domain\Users\Aggregates\Traits\EndUserAggregate;
 use App\Domain\Users\Events\AccessTokenGranted;
 use App\Domain\Users\Events\FileUploaded;
+use App\Domain\Users\Events\Notes\NoteUpdated;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserImpersonatedAnother;
@@ -28,6 +29,8 @@ use App\Domain\Users\Events\UserTerminated;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Events\UserWasImpersonated;
 use App\Domain\Users\Events\UserWelcomeEmailSent;
+use App\Enums\UserTypesEnum;
+use App\Support\Uuid;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class UserAggregate extends AggregateRoot
@@ -52,6 +55,7 @@ class UserAggregate extends AggregateRoot
     protected string $start_date = '';
     protected string $end_date = '';
     protected string $termination_date = '';
+    protected array $note_list = [];
 
     public function grantAccessToken(): static
     {
@@ -81,7 +85,6 @@ class UserAggregate extends AggregateRoot
             $this->email = $event->payload['email'];
         }
 
-
         // @todo - put something useful here
     }
 
@@ -98,7 +101,6 @@ class UserAggregate extends AggregateRoot
         if (array_key_exists('email', $event->payload)) {
             $this->email = $event->payload['email'];
         }
-
         // @todo - put something useful here
     }
 
@@ -108,6 +110,29 @@ class UserAggregate extends AggregateRoot
             'team_id' => $event->team,
             'client_id' => $event->client,
         ];
+    }
+
+    public function applyNoteUpdated(NoteUpdated $event): void
+    {
+        if ($event->payload['user_type'] instanceof UserTypesEnum) {
+            $event->payload['user_type'] = (array) $event->payload['user_type'];
+        }
+
+        $length_array = count($this->note_list);
+        $prev_type = '';
+        if ($length_array > 0) {
+            $prev_type = $this->note_list[$length_array - 1]['current_type'];
+        }
+
+        array_push(
+            $this->note_list,
+            ['note_id' => $event->note_id,
+            'title' => $event->payload['notes']['title'],
+            'note' => $event->payload['notes']['note'],
+            'current_type' => $event->payload['user_type']['value'],
+            'prev_type' => $prev_type,
+        ]
+        );
     }
 
     public function applyUserImpersonatedAnother(UserImpersonatedAnother $event): void
@@ -186,6 +211,11 @@ class UserAggregate extends AggregateRoot
 
     public function create(array $payload): static
     {
+        if (isset($payload['notes'])) {
+            $id = Uuid::new();
+            $this->recordThat(new NoteUpdated($id, $payload));
+            $payload['note_id'] = $id;
+        }
         $this->recordThat(new UserCreated($payload));
 
         return $this;
@@ -193,6 +223,12 @@ class UserAggregate extends AggregateRoot
 
     public function update(array $payload): static
     {
+        if (isset($payload['notes'])) {
+            $id = Uuid::new();
+            $this->recordThat(new NoteUpdated($id, $payload));
+            $payload['note_id'] = $id;
+        }
+
         $this->recordThat(new UserUpdated($payload));
 
         return $this;
@@ -362,5 +398,23 @@ class UserAggregate extends AggregateRoot
         $this->recordThat(new FileUploaded($payload));
 
         return $this;
+    }
+
+    public function getNoteList(string $type): array
+    {
+        $list = [];
+        $lifecycle = 0;
+        foreach ($this->note_list as $key => $value) {
+            # code...
+            if ($value['current_type'] === $type) {
+                if ($value['prev_type'] != $value['current_type'] && $value['prev_type'] != "") {
+                    $lifecycle++;
+                }
+                $value['lifecycle'] = $lifecycle;
+                array_push($list, $value);
+            }
+        }
+        // dd($list);
+        return $list ;
     }
 }

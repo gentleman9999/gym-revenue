@@ -10,34 +10,31 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\Customer;
 use Illuminate\Database\Eloquent\Builder;
 
+//TODO: this should just be handled via Team (or soon to be Location) Scopes.
 class Helper
 {
-    public static function setUpCustomersObject(string $current_team_id, string $client_id = null): Builder
+    public static function setUpCustomersObject(string $current_team_id, string $client_id = null): ?Builder
     {
-        $results = [];
+        $customer_query = null;
 
         if ($client_id !== null) {
             $client = Client::find($client_id);
 
-            $team_locations = [];
-
             if ($current_team_id != $client->home_team_id) {
-                $team_locations = Team::find($current_team_id)->locations();
-
+                $team_locations = self::getTeamLocations($current_team_id);
                 if (count($team_locations) > 0) {
-                    $results = Customer::whereIn('home_location_id', $team_locations);
+                    $customer_query = Customer::whereIn('home_location_id', $team_locations);
                 }
             } else {
-                $results = new Customer();
+                $customer_query = new Customer();
             }
         }
 
-        return $results;
+        return $customer_query;
     }
 
-    public static function setUpLocationsObject(string $current_team_id, bool $is_client_user, string $client_id = null): Builder | Location
+    public static function getLocations(string $current_team_id, bool $is_client_user, string $client_id = null): array
     {
-        $results = [];
         /**
          * BUSINESS RULES
          * 1. All Locations
@@ -53,29 +50,32 @@ class Helper
          *      but the user is not a cape & bay user.
          */
 
+        $locations_records = [];
 
         if ($client_id !== null) {
             $client = Client::find($client_id);
-
             // The active_team is the current client's default_team (gets all the client's locations)
             if ($current_team_id == $client->home_team_id) {
-                $results = new Location();
+                $locations_records = Location::all();
             } else {
-                // The active_team is not the current client's default_team
-                $team_locations = Team::find($current_team_id)->locations();
-
+                $team_locations = self::getTeamLocations($current_team_id);
                 if (count($team_locations) > 0) {
-                    $results = Location::whereIn('gymrevenue_id', $team_locations);
+                    $locations_records = Location::whereIn('gymrevenue_id', $team_locations)->get();
                 }
             }
         } else {
             // Cape & Bay user
             if (! $is_client_user) {
-                $results = new Location();
+                $locations_records = Location::all();
             }
         }
 
-        return $results;
+        $locations = [];
+        foreach ($locations_records as $location) {
+            $locations[$location->gymrevenue_id] = $location->name;
+        }
+
+        return $locations;
     }
 
     public static function getCurrentTeam(string $default_team_id): Team
@@ -94,5 +94,10 @@ class Helper
         }
 
         return Team::find($team_id);
+    }
+
+    public static function getTeamLocations(string $current_team_id): array
+    {
+        return Team::find($current_team_id)->locations->toArray();
     }
 }

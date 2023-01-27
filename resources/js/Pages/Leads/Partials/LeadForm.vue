@@ -113,19 +113,6 @@
                     class="mt-2"
                 />
             </div>
-            <div
-                class="form-control md:col-span-2 col-span-6"
-                v-if="lead?.agreement_number"
-            >
-                <jet-label for="agreement_number" value="Agreement Number" />
-                <input
-                    disabled
-                    type="text"
-                    v-model="lead['agreement_number']"
-                    class="opacity-70"
-                    id="agreement_number"
-                />
-            </div>
 
             <div
                 class="form-control md:col-span-2 col-span-6"
@@ -244,13 +231,21 @@
                 <div
                     class="collapse col-span-6"
                     tabindex="0"
-                    v-for="note in lead.all_notes"
+                    v-for="(note, ndx) in lead.all_notes"
                     :key="note.id"
                 >
                     <div
                         class="collapse-title text-sm font-medium"
                         v-on:click="notesExpanded(note)"
                     >
+                        <hr
+                            v-if="
+                                ndx != 0 &&
+                                lead.all_notes[ndx - 1]['lifecycle'] !=
+                                    note['lifecycle']
+                            "
+                            class="pb-5"
+                        />
                         > {{ note.title }}
                         <div
                             v-if="note.read == false"
