@@ -3,9 +3,11 @@ extend type Mutation {
     createScheduledCampaign(
         campaign: CreateScheduledCampaignInput!
     ): ScheduledCampaign!
+        @inject(context: "user.client_id", name: "campaign.client_id")
 
     "Updates a Scheduled Campaign"
     updateScheduledCampaign(
         campaign: UpdateScheduledCampaignInput!
     ): ScheduledCampaign!
+        @inject(context: "user.client_id", name: "campaign.client_id")
 }

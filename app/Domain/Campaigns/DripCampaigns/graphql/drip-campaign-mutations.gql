@@ -1,7 +1,9 @@
 extend type Mutation {
     "Creates a Drip Campaign"
     createDripCampaign(campaign: CreateDripCampaignInput): DripCampaign
+        @inject(context: "user.client_id", name: "campaign.client_id")
 
     "Updates a Drip Campaign"
     updateDripCampaign(campaign: UpdateDripCampaignInput): DripCampaign
+        @inject(context: "user.client_id", name: "campaign.client_id")
 }
