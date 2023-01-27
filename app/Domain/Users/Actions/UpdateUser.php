@@ -30,7 +30,8 @@ class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
 
     public function handle(User $user, array $payload): User
     {
-        $previous_type = $this->getPreviousUserType((string)$user->id);
+        dd($payload);
+        $payload['user_type'] = $payload['user_type'] ?? $user->user_type;
         if (array_key_exists('password', $payload)) {
             $payload['password'] = bcrypt($payload['password']);
         }
