@@ -76,7 +76,8 @@
         <div
             class="flex lg:flex-row flex-col justify-between col-span-6 lg:col-span-6 text-secondary"
         >
-            <label>Club/ Location: {{ lead.home_location.name }}</label>
+            <!--            TODO: Fix Preview when home_location is null-->
+            <!--            <label>Club/ Location: {{ lead.home_location.name }}</label>-->
             <Button size="xs" primary v-if="assigning" disabled
                 >Assigning...</Button
             >
