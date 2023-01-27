@@ -18,6 +18,7 @@ type Lead @model(class: "Lead") {
     alternate_phone: String
     gender: Boolean
     date_of_birth: DateTime
+#    TODO: need to create projection table to track interaction count + relationships
     interaction_count: InteractionCount! @method(name: "getInteractionCount")
     home_location: Location @belongsTo
     locations: [Location] @belongsToMany

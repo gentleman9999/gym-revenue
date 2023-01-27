@@ -28,7 +28,7 @@ class ViewCustomer
             'user_id' => $user_id,
             'club_location' => $locid,
             'interactionCount' => $aggy->getInteractionCount(),
-            'preview_note' => $preview_note,
+            'preview_note' => $aggy->getNoteList('customer'),
         ];
     }
 

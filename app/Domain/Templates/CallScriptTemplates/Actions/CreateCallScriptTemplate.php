@@ -24,8 +24,10 @@ class CreateCallScriptTemplate extends GymRevAction
            'client_id' => ['required', 'exists:clients,id'],
            'name' => ['string', 'required'],
            'script' => ['string', 'required'],
-           'active' => ['sometimes'],
-           'use_once' => ['sometimes'],
+           'active' => ['sometimes', 'boolean'],
+           'use_once' => ['sometimes', 'boolean'],
+           'json' => ['sometimes', 'array'],
+           'team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
         ];
     }
 
@@ -63,6 +65,6 @@ class CreateCallScriptTemplate extends GymRevAction
     {
         Alert::success("CallScript Template'{$template->name}' was created")->flash();
 
-        return Redirect::route('mass-comms.call-templates.edit', $template->id);
+        return Redirect::route('mass-comms.call-templates');
     }
 }

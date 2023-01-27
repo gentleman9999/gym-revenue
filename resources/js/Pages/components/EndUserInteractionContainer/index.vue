@@ -4,7 +4,7 @@
             <div class="grid grid-cols-12 w-full gap-4">
                 <div class="user-info-container">
                     <end-user-info
-                        :agreementNumber="agreementNumber"
+                        :agreementId="agreementId"
                         :editUrl="route(`data.${endUserType}s.edit`, id)"
                         :fullName="fullName"
                         :opportunity="opportunity"
@@ -109,7 +109,7 @@ const props = defineProps({
     interactionCount: {
         type: Number,
     },
-    agreementNumber: {
+    agreementId: {
         type: Number,
     },
     ownerUserId: {

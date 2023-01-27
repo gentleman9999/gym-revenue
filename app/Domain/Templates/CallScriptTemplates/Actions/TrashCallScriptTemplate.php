@@ -14,11 +14,11 @@ class TrashCallScriptTemplate
 {
     use AsAction;
 
-    public function handle(CallScriptTemplate $callscriptTemplate): CallScriptTemplate
+    public function handle(CallScriptTemplate $call_template): CallScriptTemplate
     {
-        CallScriptTemplateAggregate::retrieve($callscriptTemplate->id)->trash()->persist();
+        CallScriptTemplateAggregate::retrieve($call_template->id)->trash()->persist();
 
-        return $callscriptTemplate->refresh();
+        return $call_template->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -28,17 +28,17 @@ class TrashCallScriptTemplate
         return $current_user->can('call-templates.trash', CallScriptTemplate::class);
     }
 
-    public function asController(ActionRequest $request, CallScriptTemplate $callscriptTemplate): CallScriptTemplate
+    public function asController(ActionRequest $request, CallScriptTemplate $call_template): CallScriptTemplate
     {
         return $this->handle(
-            $callscriptTemplate,
+            $call_template,
         );
     }
 
-    public function htmlResponse(CallScriptTemplate $callscriptTemplate): RedirectResponse
+    public function htmlResponse(CallScriptTemplate $call_template): RedirectResponse
     {
-        Alert::success("CallScript Template '{$callscriptTemplate->name}' was sent to trash")->flash();
+        Alert::success("CallScript Template '{$call_template->name}' was sent to trash")->flash();
 
-        return Redirect::route('mass-comms.callscript-templates');
+        return Redirect::route('mass-comms.call-templates');
     }
 }

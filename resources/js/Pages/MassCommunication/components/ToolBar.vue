@@ -21,6 +21,12 @@
                 </button>
                 <button
                     class="toolbar-btn"
+                    @click="Inertia.visit(route('mass-comms.call-templates'))"
+                >
+                    Call Script Templates
+                </button>
+                <button
+                    class="toolbar-btn"
                     @click="
                         Inertia.visit(
                             route('mass-comms.campaigns.dashboard', 'drip')

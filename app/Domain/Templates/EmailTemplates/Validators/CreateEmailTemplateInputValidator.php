@@ -17,7 +17,7 @@ final class CreateEmailTemplateInputValidator extends Validator
             'name' => [
                 'string',
                 'required',
-                'min:5',
+                'min:2',
                 'max:50',
             ],
             'subject' => [

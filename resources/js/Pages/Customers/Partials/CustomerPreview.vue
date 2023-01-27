@@ -63,6 +63,21 @@
                     {{ note["note"] }}
                 </div>
             </div>
+<!--            this was on dev, not sure if we need it on gql-->
+<!--            <div v-for="(note, ndx) in data.preview_note" :key="ndx">-->
+<!--                <hr-->
+<!--                    v-if="-->
+<!--                            ndx != 0 &&-->
+<!--                            data.preview_note[ndx - 1]['lifecycle'] !=-->
+<!--                                note['lifecycle']-->
+<!--                        "-->
+<!--                    class="pb-5"-->
+<!--                />-->
+<!--                <div-->
+<!--                    class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"-->
+<!--                >-->
+<!--                    {{ note["note"] }}-->
+<!--                </div>-->
         </div>
         <div class="field col-span-6 md:col-span-3 text-secondary">
             <label>Club/ Location: {{ customer.home_location.name }}</label>

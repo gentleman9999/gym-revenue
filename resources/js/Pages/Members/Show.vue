@@ -16,7 +16,7 @@
             :selectedLeadDetailIndex="selectedLeadDetailIndex"
             :trial-dates="trialDates"
             :interaction-count="interactionCount"
-            :agreement-number="member.agreement_number"
+            :agreement-id="member.agreement_id"
             :owner-user-id="member.owner_user_id"
             :has-twilio-conversation="hasTwilioConversation"
         />

@@ -26,11 +26,16 @@ input UserInput {
     agreement_number: Int
     manager: String
     user_type: String
-    departments: [ID]
+    departments: [Departments]
     positions: [ID]
 }
 
 input NoteInput @validator {
     note: String
     title: String
+}
+
+input Departments {
+    department: ID
+    position: ID
 }

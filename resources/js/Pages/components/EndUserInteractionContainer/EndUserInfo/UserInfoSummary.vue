@@ -2,8 +2,8 @@
     <h1 class="text-center text-2xl">
         {{ fullName }}
     </h1>
-    <div class="badge badge-success mt-4">
-        Agreement #: {{ agreementNumber }}
+    <div class="badge badge-success mt-4" v-if="agreementId?.length">
+        Agreement #: {{ agreementId }}
     </div>
     <div class="badge badge-info mt-4" v-if="trialDates?.length">
         Trial Uses: {{ trialDates?.length || 0 }}
@@ -18,7 +18,7 @@ const props = defineProps({
     fullName: {
         type: String,
     },
-    agreementNumber: {
+    agreementId: {
         type: Number,
     },
     trialDates: {

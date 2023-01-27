@@ -26,10 +26,12 @@ class UserDataReflector
 
             if (! is_null($reflection_model)) {
                 foreach ($cols as $col) {
-                    if ($col !== 'id') {
-                        $reflection_model[$col] = $user[$col];
-                    } else {
-                        $reflection_model['user_id'] = $user[$col];
+                    if ($col !== 'is_cape_and_bay_user') {
+                        if ($col !== 'id') {
+                            $reflection_model[$col] = $user[$col];
+                        } else {
+                            $reflection_model['user_id'] = $user[$col];
+                        }
                     }
                 }
 

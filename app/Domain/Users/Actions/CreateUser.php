@@ -13,12 +13,12 @@ use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\ValidationRules;
 use App\Enums\UserTypesEnum;
+use App\Support\CurrentInfoRetriever;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Lorisleiva\Actions\ActionRequest;
@@ -52,6 +52,11 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
 
     public function handle(array $payload): User
     {
+        $payload['user_type'] = $payload['user_type'] ?? UserTypesEnum::LEAD;
+        $payload['unsubscribed_email'] = $payload['unsubscribed_email'] ?? false;
+        $payload['unsubscribed_sms'] = $payload['unsubscribed_sms'] ?? false;
+        $payload['is_previous'] = $payload['is_previous'] ?? false;
+        $payload['client_id'] = $payload['client_id'] ?? CurrentInfoRetriever::getCurrentClientID();
         if (array_key_exists('password', $payload)) {
             $payload['password'] = Hash::make($payload['password']);
         }
@@ -69,9 +74,6 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
 
                 // $team_name = Team::getTeamName($team_id);
                 AddTeamMember::run(Team::findOrFail($team_id), $created_user);
-                // $team_client = Team::getClientFromTeamId($team_id);
-                // $team_client_id = ($team_client) ? $team_client->id : null;
-                // $user_aggy = $user_aggy->addToTeam($team_id, $team_name, $team_client_id);
             }
         }
 
@@ -109,71 +111,44 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
     //     return $this->handle($args['input']);
     // }
 
-    /**
-     * Custom validation based on user_type
-     *
-     * @return array
-     */
-    public function rules(): array
-    {
-        return ValidationRules::getValidationRules(request()->user_type ?? UserTypesEnum::LEAD, true);
-    }
+    // /**
+    //  * Custom validation based on user_type
+    //  *
+    //  * @return array
+    //  */
+    // public function rules(): array
+    // {
+    //     return ValidationRules::getValidationRules(request()->user_type ?? UserTypesEnum::LEAD, true);
+    // }
 
-    /**
-     * Validate the address provided using USPS API after main rules
-     * Which also sends back correct address1, city and state
-     *
-     * @return void
-     */
-    public function afterValidator(Validator $validator, ActionRequest $request): void
-    {
-        /**
-         * @TODO: Send the suggestion data back to UI, and display to the User.
-         * They can make a choice (confirm/cancel), and have it update if confirmed
-         */
-        session()->forget('address_validation');
-    }
+    // /**
+    //  * Validate the address provided using USPS API after main rules
+    //  * Which also sends back correct address1, city and state
+    //  *
+    //  * @return void
+    //  */
+    // public function afterValidator(Validator $validator, ActionRequest $request): void
+    // {
+    //     /**
+    //      * @TODO: Send the suggestion data back to UI, and display to the User.
+    //      * They can make a choice (confirm/cancel), and have it update if confirmed
+    //      */
+    //     session()->forget('address_validation');
+    // }
 
-    /**
-     * Transform the request object in
-     * preparation for validation
-     *
-     * @param ActionRequest $request
-     */
-    public function prepareForValidation(ActionRequest $request): void
-    {
-        $request = $this->mergeUserTypeToRequest($request);
-
-        if ($request->user_type == UserTypesEnum::LEAD) {
-            /** @TODO: Need to update with what entry_source data should be */
-            $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
-        }
-    }
-
-    /**
-     * Adds the user type to the request object
-     * based on the route name of the request
-     *
-     * @param ActionRequest $request
-     *
-     * @return ActionRequest $request
-     */
-    private function mergeUserTypeToRequest(ActionRequest $request): ActionRequest
-    {
-        $current_route = Route::currentRouteName();
-
-        if ($current_route == 'users.store') {
-            $request->merge(['user_type' => UserTypesEnum::EMPLOYEE]);
-        } elseif ($current_route == 'data.leads.store') {
-            $request->merge(['user_type' => UserTypesEnum::LEAD]);
-        } elseif ($current_route == 'data.members.store') {
-            $request->merge(['user_type' => UserTypesEnum::MEMBER]);
-        } else {
-            $request->merge(['user_type' => UserTypesEnum::CUSTOMER]);
-        }
-
-        return $request;
-    }
+    // /**
+    //  * Transform the request object in
+    //  * preparation for validation
+    //  *
+    //  * @param ActionRequest $request
+    //  */
+    // public function prepareForValidation(ActionRequest $request): void
+    // {
+    //     if ($request->user_type == UserTypesEnum::LEAD) {
+    //         /** @TODO: Need to update with what entry_source data should be */
+    //         $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
+    //     }
+    // }
 
     public function authorize(ActionRequest $request): bool
     {
@@ -412,10 +387,10 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
             $user_type : UserTypesEnum::LEAD;
     }
 
-    public function getValidationAttributes(): array
-    {
-        return [
-            'addres1' => 'address line 1',
-        ];
-    }
+    // public function getValidationAttributes(): array
+    // {
+    //     return [
+    //         'addres1' => 'address line 1',
+    //     ];
+    // }
 }
