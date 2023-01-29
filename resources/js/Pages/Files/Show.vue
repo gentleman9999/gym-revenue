@@ -5,8 +5,9 @@
     <div class="files-container" v-if="data">
         <div class="row">
             <file-actions
-                :folderName="data.folderContent.name"
+                :folderName="data?.folder?.name || 'Home'"
                 :refetch="refetch"
+                :upload-modal="uploadModal"
             />
             <file-display-mode
                 :display-mode="displayMode"
@@ -15,7 +16,7 @@
         </div>
         <div class="row">
             <file-nav
-                :folderName="data.folderContent.name"
+                :folderName="data?.folder?.name || 'Home'"
                 class="file-nav"
                 @rootdir="rootDirectory"
             />
@@ -27,7 +28,8 @@
             />
         </div>
         <file-contents
-            v-bind="{ ...data.folderContent }"
+            :folders="{ ...(data?.folder?.id ? [] : data?.folders) }"
+            :files="{ ...( data?.folder?.files || data?.files)}"
             :displayMode="displayMode"
             :handleRename="handleRename"
             :handlePermissions="handlePermissions"
@@ -75,6 +77,9 @@
             @success="shareModal.close"
         />
     </daisy-modal>
+    <daisy-modal ref="uploadModal" id="uploadModal">
+        <Upload/>
+    </daisy-modal>
 </template>
 
 <style scoped>
@@ -94,14 +99,12 @@
 </style>
 
 <script setup>
-import { watchEffect, ref, computed } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import RenameForm from "./Partials/RenameForm.vue";
 import PermissionsForm from "./Partials/PermissionsForm.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
-import FileItem from "@/Components/FileItem/index.vue";
 import ShareForm from "./Partials/ShareForm.vue";
-import Button from "@/Components/Button.vue";
 import FileDisplayMode from "./Partials/FileDisplayMode.vue";
 import FileActions from "./Partials/FileActions.vue";
 import FileContents from "./Partials/FileContents.vue";
@@ -112,12 +115,12 @@ import mutations from "@/gql/mutations";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { toastSuccess } from "@/utils/createToast";
 import queries from "@/gql/queries";
+import Upload from "./Partials/Upload.vue";
 
 const props = defineProps({
     sessions: {
         type: Array,
     },
-
     files: {
         type: Array,
     },
@@ -146,6 +149,7 @@ const renameModal = ref(null);
 const permissionsModal = ref(null);
 const shareModal = ref(null);
 const confirmModal = ref(null);
+const uploadModal = ref(null);
 
 const form = ref({
     id: null,

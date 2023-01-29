@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="(!folders || folders?.length == 0) && files?.data?.length === 0"
+        v-if="(!folders || folders?.length === 0) && files?.data?.length === 0"
         class="border-2 m-5 p-2"
     >
         No files/folders were found
@@ -42,6 +42,7 @@ import FileItem from "@/Components/FileItem/index.vue";
 import FolderItem from "@/Components/FolderItem/index.vue";
 import RecycleBinItem from "@/Components/RecycleBinItem/index.vue";
 import { Inertia } from "@inertiajs/inertia";
+
 const props = defineProps({
     files: {
         type: Object,

@@ -74,14 +74,10 @@ progress::-webkit-progress-value {
 }
 </style>
 <script setup>
-import { ref, computed, onMounted, defineEmits } from "vue";
+import { computed, defineEmits, onMounted, ref } from "vue";
 import { useGymRevForm } from "@/utils";
-
-import JetFormSection from "@/Jetstream/FormSection.vue";
-import JetInputError from "@/Jetstream/InputError.vue";
 import FileExtensionIcon from "./FileExtensionIcon.vue";
 import Vapor from "laravel-vapor";
-import { Inertia } from "@inertiajs/inertia";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimes } from "@fortawesome/pro-solid-svg-icons";
 
@@ -89,7 +85,6 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import mutations from "@/gql/mutations";
 import { useMutation } from "@vue/apollo-composable";
-import { toastSuccess } from "@/utils/createToast";
 
 library.add(faTimes);
 
@@ -128,6 +123,7 @@ const { mutate: createFile } = useMutation(mutations.file.create);
 
 const handleSubmit = async () => {
     try {
+        console.log('file', props.file)
         uploadProgress.value = 0;
         let response = await Vapor.store(props.file, {
             // visibility: form.isPublic ? 'public-read' : null,

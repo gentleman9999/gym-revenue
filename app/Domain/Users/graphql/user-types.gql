@@ -30,6 +30,7 @@ type User {
     positions: [Position] @belongsToMany
     gender: String
     isClientUser: Boolean @method(name: "isClientUser")
+    files: [File]! @morphMany
 }
 
 type EmergencyContact {

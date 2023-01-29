@@ -5,4 +5,7 @@ type File {
     filename: String
     created_at: DateTime
     size: Int
+    fileable: Fileable! @morphTo
 }
+
+union Fileable = User | Lead | Member | Customer

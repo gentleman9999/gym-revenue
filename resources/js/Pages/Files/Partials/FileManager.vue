@@ -1,24 +1,7 @@
 <template>
-    <LayoutHeader title="File Manager"> Location Details </LayoutHeader>
+    <LayoutHeader title="File Manager"/>
     <jet-form-section @submitted="handleSubmit">
-        <!--        <template #title>-->
-        <!--            Location Details-->
-        <!--        </template>-->
-
-        <!--        <template #description>-->
-        <!--            {{ buttonText }} a location.-->
-        <!--        </template>-->
         <template #form>
-            <!--            <div class="col-span-6">-->
-            <!--                <jet-label for="name" value="Name" />-->
-            <!--                <input-->
-            <!--                    id="name"-->
-            <!--                    type="text"-->
-            <!--                    class="block w-full mt-1"-->
-            <!--                    v-model="form.name"-->
-            <!--                    autofocus-->
-            <!--                />-->
-            <!--            </div>-->
             <section class="col-span-6 overflow-hidden">
                 <div
                     class="max-w-screen-xl mx-auto text-center px-4 sm:px-6 lg:px-8"
@@ -147,7 +130,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeUpdate, defineEmits } from "vue";
+import { computed, defineEmits, onBeforeUpdate, ref } from "vue";
 import { useGymRevForm } from "@/utils";
 
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
@@ -156,8 +139,6 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import FileUploadForm from "./FileUploadForm.vue";
 import UploadIcon from "./UploadIcon.vue";
-
-import Vapor from "laravel-vapor";
 import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-vue3";
 
@@ -261,9 +242,6 @@ const handleSubmit = () => {
             emit("submitted");
             form.reset();
             fileRefs.value.forEach((fileRef) => fileRef.form.reset());
-        },
-        headers: {
-            "X-Inertia-Modal-Redirect-Back": "close",
         },
         ...formSubmitOptions,
     });

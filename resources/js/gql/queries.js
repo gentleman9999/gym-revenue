@@ -1,34 +1,10 @@
 import gql from "graphql-tag";
-import {
-    EMAIL_TEMPLATES,
-    EMAIL_TEMPLATE_EDIT,
-    EMAIL_TEMPLATE_CREATE,
-} from "./templates/email";
-import {
-    SMS_TEMPLATES,
-    SMS_TEMPLATE_EDIT,
-    SMS_TEMPLATE_CREATE,
-} from "./templates/sms";
-import {
-    CALL_TEMPLATES,
-    CALL_TEMPLATE_EDIT,
-    CALL_TEMPLATE_CREATE,
-} from "./templates/call";
-import {
-    AUDIENCES,
-    AUDIENCE_EDIT,
-    AUDIENCE_PERMISSIONS,
-} from "./campaigns/audiences";
-import {
-    DRIPCAMPAIGNS,
-    DRIPCAMPAIGN_EDIT,
-    DRIPCAMPAIGN_CREATE,
-} from "./campaigns/drip";
-import {
-    SCHEDULEDCAMPAIGNS,
-    SCHEDULEDCAMPAIGN_EDIT,
-    SCHEDULEDCAMPAIGN_CREATE,
-} from "./campaigns/scheduled";
+import { EMAIL_TEMPLATE_CREATE, EMAIL_TEMPLATE_EDIT, EMAIL_TEMPLATES } from "./templates/email";
+import { SMS_TEMPLATE_CREATE, SMS_TEMPLATE_EDIT, SMS_TEMPLATES } from "./templates/sms";
+import { CALL_TEMPLATE_CREATE, CALL_TEMPLATE_EDIT, CALL_TEMPLATES } from "./templates/call";
+import { AUDIENCE_EDIT, AUDIENCE_PERMISSIONS, AUDIENCES } from "./campaigns/audiences";
+import { DRIPCAMPAIGN_CREATE, DRIPCAMPAIGN_EDIT, DRIPCAMPAIGNS } from "./campaigns/drip";
+import { SCHEDULEDCAMPAIGN_CREATE, SCHEDULEDCAMPAIGN_EDIT, SCHEDULEDCAMPAIGNS } from "./campaigns/scheduled";
 
 const USER_PREVIEW = gql`
     query User($id: ID) {
@@ -1091,23 +1067,29 @@ const TASKS = gql`
     }
 `;
 const FILE_FOLDERS = gql`
-    query FilesAndFolders($id: ID, $filter: Filter) {
-        folderContent(id: $id, filter: $filter) {
+    query FilesAndFolders($id: ID) {
+        files {
+            id
+            extension
+            url
+            filename
+            created_at
+            size
+        }
+        folder(id: $id) {
+            id
             name
-            files {
+            files{
                 id
-                extension
-                url
                 filename
-                created_at
-                size
             }
-            folders {
-                id
-                name
-                created_at
-                files_count
-            }
+            files_count
+        }
+        folders {
+            id
+            name
+            created_at
+            files_count
         }
     }
 `;

@@ -3,7 +3,6 @@
 namespace App\Domain\Files\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Aggregates\Clients\FileAggregate;
 use App\Domain\Users\Models\User;
 use App\Models\File;
@@ -36,6 +35,7 @@ class CreateFile extends GymRevAction
         ];
     }
 
+//    TODO: remove $user from params, you can pull it from $event->userId() in projector/reactor
     public function handle($data, $model, ?User $user = null): File
     {
         FileAggregate::retrieve($data['id'])->create($model, (string) $user?->id, $data)->persist();

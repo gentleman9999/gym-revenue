@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
@@ -19,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
  *
  * @mixin Builder
  */
+//TODO: this needs to be refactored to use gymRevProjection and moved to Domain\Files
 class File extends Model
 {
     use HasFactory;
@@ -28,7 +28,7 @@ class File extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
-
+//TODO: 'id' and 'client_id' should not be mass assignable.
     protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'folder', 'is_hidden', 'visibility', 'type','fileable_type','fileable_id']; //'deleted_at'
 
     protected $casts = [
@@ -60,27 +60,15 @@ class File extends Model
         return $this->morphTo();
     }
 
-    public function files(): MorphMany
+    public function scopeIsVisible(Builder $query): Builder
     {
-        return $this->morphMany(File::class, 'fileable');
+        return $query->where('is_hidden', false);
     }
-
-
-
-//    public function details()
-//    {
-//        return $this->hasMany(FileDetails::class);
-//    }
-//
-//    public function detail()
-//    {
-//        return $this->hasOne(FileDetails::class);
-//    }
 
     public function scopeFilter($query, array $filters)
     {
         $client_id = request()->user()->client_id;
-        $security_group = request()->user()->securityGroup();
+//        $security_group = request()->user()->securityGroup();
 
         $query->whereClientId($client_id)
         // ->whereUserId(null)

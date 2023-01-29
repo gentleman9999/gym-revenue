@@ -3,7 +3,7 @@
         <Button
             primary
             size="sm"
-            @click="Inertia.visitInModal(route('files.upload'))"
+            @click="handleFileUpload"
         >
             Upload
         </Button>
@@ -27,6 +27,10 @@ const props = defineProps({
     refetch: {
         type: Function,
     },
+    uploadModal:{
+        type: Object,
+        required: true,
+    }
 });
 
 const { mutate: createFolder } = useMutation(mutations.folder.create);
@@ -39,4 +43,11 @@ const addFolder = async () => {
         toastSuccess("Folder Created");
     }
 };
+
+const handleFileUpload = () => {
+    console.log({uploadModal: props.uploadModal});
+    props.uploadModal.open();
+
+    // Inertia.visitInModal(route('files.upload'))
+}
 </script>

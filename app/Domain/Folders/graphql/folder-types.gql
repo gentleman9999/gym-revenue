@@ -4,10 +4,5 @@ type Folder {
     name: String
     created_at: DateTime
     files_count: Int
-}
-
-type FolderContent {
-    name: String
-    files: [File]
-    folders: [Folder]
+    files: [File] @hasMany(scopes: ["isVisible"])
 }

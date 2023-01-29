@@ -2,18 +2,16 @@
 
 namespace App\Domain\Files\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Users\Models\User;
-use App\Http\Middleware\InjectClientId;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateFiles
+class CreateFiles extends GymRevAction
 {
-    use AsAction;
 
     /**
      * Get the validation rules that apply to the action.
@@ -38,6 +36,12 @@ class CreateFiles
         ];
     }
 
+    public function mapArgsToHandle(array $args): array
+    {
+        return $args;
+    }
+
+//TODO: remove $current_user from params, you can pull it from $event->userId() in projector/reactor
     public function handle($data, $current_user = null)
     {
         $files = [];
@@ -55,11 +59,6 @@ class CreateFiles
         return $files;
     }
 
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
-    }
-
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
@@ -69,12 +68,15 @@ class CreateFiles
 
     public function asController(ActionRequest $request)
     {
-        $files = $this->handle(
+        return $this->handle(
             $request->validated(),
             (! is_null($request->user()) ? $request->user() : request()->user()),
         );
+    }
 
-        $fileCount = count($files);
+    public function htmlResponse($data = []): \Illuminate\Http\RedirectResponse
+    {
+        $fileCount = count($data);
         Alert::success("{$fileCount} Files created")->flash();
 
 //        return Redirect::route('files');
