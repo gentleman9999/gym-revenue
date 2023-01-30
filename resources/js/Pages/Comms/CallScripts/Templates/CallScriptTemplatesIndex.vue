@@ -11,10 +11,10 @@
                 :href="route('mass-comms.dashboard')"
             >
                 <span
-                ><font-awesome-icon
-                    :icon="['far', 'chevron-double-left']"
-                    size="sm"
-                />
+                    ><font-awesome-icon
+                        :icon="['far', 'chevron-double-left']"
+                        size="sm"
+                    />
                     Back</span
                 >
             </inertia-link>
@@ -54,25 +54,29 @@ import Confirm from "@/Components/Confirm.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faChevronDoubleLeft, faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
+import {
+    faChevronDoubleLeft,
+    faEllipsisH,
+} from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import CallScriptTemplateForm from "./partials/CallScriptTemplateForm.vue";
+import CallScriptTemplateForm from "./Partials/CallScriptTemplateForm.vue";
 
 library.add(faChevronDoubleLeft, faEllipsisH);
 
 const props = defineProps({
-        title: {
-            type: String,
-            required: true
-        },
-        filters: {
-            type: Object, required: true
-        },
-        templates: {
-            type: Object, required: true
-        }
-    }
-);
+    title: {
+        type: String,
+        required: true,
+    },
+    filters: {
+        type: Object,
+        required: true,
+    },
+    templates: {
+        type: Object,
+        required: true,
+    },
+});
 
 const confirmTrash = ref(null);
 const handleClickTrash = (id) => {
@@ -97,17 +101,17 @@ const fields = computed(() => {
                 getProps: ({ data }) =>
                     data.active
                         ? { text: "Active", class: "badge-success" }
-                        : { text: "Draft", class: "badge-warning" }
+                        : { text: "Draft", class: "badge-warning" },
             },
-            export: (active) => (active ? "Active" : "Draft")
+            export: (active) => (active ? "Active" : "Draft"),
         },
         {
             name: "creator.name",
             label: "updated by",
-            transform: (creator) => creator || "Auto Generated"
+            transform: (creator) => creator || "Auto Generated",
         },
         { name: "team.name", label: "team" },
-        { name: "updated_at", label: "date updated" }
+        { name: "updated_at", label: "date updated" },
     ];
 });
 
@@ -117,17 +121,13 @@ const actions = computed(() => {
             label: "Duplicate Template",
             handler: ({ data }) => {
                 Inertia.visitInModal(
-                    route(
-                        "mass-comms.call-templates.duplicate",
-                        data.id
-                    )
+                    route("mass-comms.call-templates.duplicate", data.id)
                 );
-            }
+            },
         },
         trash: {
-            handler: ({ data }) => handleClickTrash(data.id)
-        }
+            handler: ({ data }) => handleClickTrash(data.id),
+        },
     };
 });
-
 </script>
