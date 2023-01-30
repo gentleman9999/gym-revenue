@@ -1,10 +1,34 @@
 import gql from "graphql-tag";
-import { EMAIL_TEMPLATE_CREATE, EMAIL_TEMPLATE_EDIT, EMAIL_TEMPLATES } from "./templates/email";
-import { SMS_TEMPLATE_CREATE, SMS_TEMPLATE_EDIT, SMS_TEMPLATES } from "./templates/sms";
-import { CALL_TEMPLATE_CREATE, CALL_TEMPLATE_EDIT, CALL_TEMPLATES } from "./templates/call";
-import { AUDIENCE_EDIT, AUDIENCE_PERMISSIONS, AUDIENCES } from "./campaigns/audiences";
-import { DRIPCAMPAIGN_CREATE, DRIPCAMPAIGN_EDIT, DRIPCAMPAIGNS } from "./campaigns/drip";
-import { SCHEDULEDCAMPAIGN_CREATE, SCHEDULEDCAMPAIGN_EDIT, SCHEDULEDCAMPAIGNS } from "./campaigns/scheduled";
+import {
+    EMAIL_TEMPLATE_CREATE,
+    EMAIL_TEMPLATE_EDIT,
+    EMAIL_TEMPLATES,
+} from "./templates/email";
+import {
+    SMS_TEMPLATE_CREATE,
+    SMS_TEMPLATE_EDIT,
+    SMS_TEMPLATES,
+} from "./templates/sms";
+import {
+    CALL_TEMPLATE_CREATE,
+    CALL_TEMPLATE_EDIT,
+    CALL_TEMPLATES,
+} from "./templates/call";
+import {
+    AUDIENCE_EDIT,
+    AUDIENCE_PERMISSIONS,
+    AUDIENCES,
+} from "./campaigns/audiences";
+import {
+    DRIPCAMPAIGN_CREATE,
+    DRIPCAMPAIGN_EDIT,
+    DRIPCAMPAIGNS,
+} from "./campaigns/drip";
+import {
+    SCHEDULEDCAMPAIGN_CREATE,
+    SCHEDULEDCAMPAIGN_EDIT,
+    SCHEDULEDCAMPAIGNS,
+} from "./campaigns/scheduled";
 
 const USER_PREVIEW = gql`
     query User($id: ID) {
@@ -875,15 +899,12 @@ const EVENT_TYPES = gql`
 
 const EVENT_TYPES_EDIT = gql`
     query EventType($id: ID) {
-        eventType: calendar_event_type(id: $id) {
+        eventType: calendarEventType(id: $id) {
             id
             name
             description
             type
             color
-            client {
-                id
-            }
         }
     }
 `;
@@ -1079,7 +1100,7 @@ const FILE_FOLDERS = gql`
         folder(id: $id) {
             id
             name
-            files{
+            files {
                 id
                 filename
             }
@@ -1134,9 +1155,6 @@ const DASHBOARD_QUERY = gql`
             teams {
                 id
                 name
-                client {
-                    name
-                }
             }
             announcements {
                 id
