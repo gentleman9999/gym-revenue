@@ -25,8 +25,7 @@ class DiscoverModelNamespaces
             ->map(fn (string $class) => str($class)->explode('\\')->splice(0, -1)->implode('\\'))
             ->toArray();
 
-//        collect($namespaces)->each(fn (string $namespace) => error_log($namespace));
-        collect($namespaces)->each(fn (string $namespace) => var_dump($namespace));
+//        collect($namespaces)->each(fn (string $namespace) => var_dump($namespace));
         return $namespaces;
     }
 
