@@ -11,10 +11,6 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import inputs/*.gql
 #import mutations/*.gql
 
-type Query {
-    me: User @auth
-}
-
 input Filter {
     search: String
     trashed: String
