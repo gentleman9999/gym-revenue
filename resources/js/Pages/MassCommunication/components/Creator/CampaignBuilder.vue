@@ -33,30 +33,22 @@
                     id="journey-name"
                 />
 
-                <div class="flex justify-between py-2 mt-4">
-                    <label class="text-black font-bold" for="journey-audience">
-                        Audience
-                    </label>
-                    <span class="text-black opacity-50">Required</span>
-                </div>
-                <select
-                    v-model="form.audience"
-                    id="journey-audience"
-                    class="bg-base-content text-black p-2 rounded-none border border-black w-full mb-4"
+                <AudienceSelect
+                    v-model="form.audience_id"
+                    @update:modelValue="handleUpdateSelectState"
                 >
-                    <option :disabled="true" :value="null" :selected="true">
-                        Select an Audience
-                    </option>
-                    <option
-                        v-for="audience in propAudiences"
-                        :disabled="audience.title === 'Select an Audience'"
-                        :value="audience.id"
-                        :selected="audience.id === form.audience"
-                    >
-                        {{ audience.title }}
-                    </option>
-                </select>
-
+                    <template #label>
+                        <div class="flex justify-between py-2 mt-4">
+                            <label
+                                class="text-black font-bold"
+                                for="journey-audience"
+                            >
+                                Audience
+                            </label>
+                            <span class="text-black opacity-50">Required</span>
+                        </div>
+                    </template>
+                </AudienceSelect>
                 <button
                     @click="createAudience"
                     class="border border-secondary bg-secondary px-2 py-1 rounded-md hover:bg-base-content hover:text-secondary transition-all"
@@ -65,8 +57,8 @@
                 </button>
 
                 <button
-                    @click="() => editAudience(selectedAudience.id)"
-                    :disabled="!selectedAudience?.editable"
+                    @click="() => (currentStep = 'audience-builder')"
+                    :disabled="audiencePermissions[form.audience_id] === 0"
                     class="border border-secondary bg-secondary px-2 py-1 rounded-md hover:bg-base-content ml-4 hover:text-secondary transition-all disabled:opacity-20 disabled:hover:bg-secondary disabled:hover:text-base-content disabled:cursor-not-allowed"
                 >
                     Edit
@@ -93,39 +85,22 @@
 
     <Scheduler
         v-if="currentStep === 'scheduler'"
-        :isNew="precampaign === null"
-        :form="form"
-        :name="form.name"
-        :existingId="precampaign?.id"
-        :campaignType="campaignType"
-        :templates="form.templates"
-        :topol-api-key="topolApiKey"
-        :email_templates="emailTemplates"
-        :sms_templates="smsTemplates"
-        :call_templates="callTemplates"
-        :temp_audiences="propAudiences"
-        @back="
-            () => {
-                currentStep = 'audience-picker';
-            }
-        "
-        @update="
-            (v) => {
-                form.templates = v;
-            }
-        "
+        :campaignType="type"
+        :campaign="form"
+        @back="currentStep = 'audience-picker'"
+        @update="handleUpdateTemplates"
         @done="handleDone"
     />
 
-    <AudienceBuilder
-        v-if="currentStep === 'audience-builder'"
-        :endpoint="routeEndpoint"
-        :audience="tempAudience"
-        :membership-types="membershipTypes"
-        :lead-types="leadTypes"
-        @canceled="cancelEditor"
-        @save="updateAudiences"
-    />
+    <template v-if="currentStep === 'audience-builder'">
+        <AudienceBuilder
+            :audience_id="form.audience_id"
+            :membership-types="membershipTypes"
+            :lead-types="leadTypes"
+            @cancel="currentStep = 'audience-picker'"
+            @update="handleAudienceUpdate"
+        />
+    </template>
 </template>
 
 <style scoped>
@@ -135,115 +110,106 @@
 </style>
 
 <script setup>
-import { computed, ref } from "vue";
+import queries from "@/gql/queries";
+import { computed, ref, watch, onMounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { toastError } from "@/utils/createToast";
+import { useQuery } from "@vue/apollo-composable";
 import { Inertia } from "@inertiajs/inertia";
 import {
-    audienceItemTemplate,
     transformAudience,
     transformDayTemplate,
     transformSource,
 } from "./helpers";
+
 import DaisyModal from "@/Components/DaisyModal.vue";
 import AudienceBuilder from "../AudienceBuilder/AudienceBuilder.vue";
+import AudienceSelect from "../AudienceBuilder/AudienceSelect.vue";
 import Scheduler from "../Scheduler.vue";
 
 const props = defineProps({
-    campaignType: {
+    type: {
         type: String,
-        required: true,
+        default: "scheduled",
     },
-    topolApiKey: {
-        type: String,
-        required: true,
-    },
-    precampaign: {
+    campaign: {
         type: [Object, null],
         default: null,
     },
 });
 
-const emit = defineEmits(["done"]);
+const editParam = ref(
+    props.campaign === null ? null : { id: props.campaign?.id }
+);
 
-const defaultTemplatesDrip = [
-    {
-        email: false,
-        sms: false,
-        call: false,
-        date: false,
-        day_in_campaign: 0,
-    },
-];
+const form = ref({ ...props.campaign });
 
-const defaultTemplatesScheduled = [
-    {
-        email: false,
-        sms: false,
-        call: false,
-        date: null,
-        day_in_campaign: 0,
-    },
-];
+const currentStep = ref("audience-picker");
+const audiencePermissions = ref({});
 
-const form = ref({
-    name: props?.precampaign?.name ? props.precampaign.name : null,
-    audience: props?.precampaign?.audience_id
-        ? props.precampaign.audience_id
-        : null,
-    templates:
-        props.campaignType === "drip"
-            ? props?.precampaign?.days?.map((d) => transformDayTemplate(d)) ||
-              defaultTemplatesDrip
-            : props?.precampaign
-            ? [transformDayTemplate(props.precampaign)]
-            : defaultTemplatesScheduled,
+const {
+    result,
+    loading: apermLoading,
+    error,
+    refetch,
+} = useQuery(queries["audiencePermissions"]);
+
+watch(result, (data) => {
+    console.log("audience permissions", data);
+    if (!!data["audiences"]) {
+        data["audiences"]?.data.forEach((aud) => {
+            audiencePermissions.value[aud.id] = aud["editable"];
+        });
+    }
 });
 
+const emit = defineEmits(["close"]);
+
+// const defaultTemplatesDrip = [
+//     {
+//         email: false,
+//         sms: false,
+//         call: false,
+//         date: false,
+//         day_in_campaign: 0,
+//     },
+// ];
+
+// const defaultTemplatesScheduled = [
+//     {
+//         email: false,
+//         sms: false,
+//         call: false,
+//         date: null,
+//         day_in_campaign: 0,
+//     },
+// ];
+
+/** @TODO gotta get rid of these... need a way to get member/lead types from gql */
+/************************************************************/
 const membershipTypes = computed(() =>
     transformSource(usePage().props.value.member_types)
 );
 const leadTypes = computed(() =>
     transformSource(usePage().props.value.lead_types)
 );
-const propAudiences = computed(() =>
-    transformAudience(usePage().props.value.audiences)
-);
-const emailTemplates = computed(() => {
-    return usePage().props.value.email_templates;
-});
-const smsTemplates = computed(() => {
-    return usePage().props.value.sms_templates;
-});
-const callTemplates = computed(() => {
-    return usePage().props.value.call_templates;
-});
-
-const currentStep = ref("audience-picker");
-const tempAudience = ref(null);
+/************************************************************/
 
 /**
  * check for invalid entries and return an informative message
  * to the user to fix it before submission
  */
 const advancementDisabled = computed(() => {
-    if (typeof form.value.audience !== "string")
+    if (typeof form.value.audience_id !== "string")
         return "You must choose an audience.";
     if (!form.value.name || form.value.name.trim() === "")
         return "You must name your campaign.";
     return false;
 });
 
-/** audience endpoints to update an existing or create a new one if necessary */
-const routeEndpoint = computed(() => {
-    return propAudiences.value.filter((a) => a?.id === tempAudience.value.id)
-        .length > 0
-        ? "mass-comms.audiences.update"
-        : "mass-comms.audiences.create";
-});
-
-const selectedAudience = computed(() => {
-    return propAudiences.value.filter((v) => v?.id === form.value.audience)[0];
+watch(form.audience_id, (nv, ov) => {
+    console.log("form.audience_id updated to: ", nv);
+    console.log("from: ", ov);
 });
 
 /**
@@ -257,48 +223,26 @@ const handleAdvancementCheck = () => {
     toastError(advancementDisabled.value);
 };
 
-/**
- * handles the 'save' emit from the AudienceBuilder.
- * replace the existing audience or add it new if it doesn't exist.
- */
-const updateAudiences = (newAudience) => {
-    let fmtAudience = audienceItemTemplate(newAudience);
-
-    Inertia.reload({ only: ["audiences"] });
-
-    form.value.audience = fmtAudience?.id;
-    tempAudience.value = null;
-    currentStep.value = "audience-picker";
+const handleUpdateTemplates = (templates) => {
+    form.value.templates = templates;
 };
 
-/**
- * temporarily creates a new audience with default values that can be freely modified,
- * if it isn't saved we can simply destroy it or add it to the existing audiences if it is.
- */
+/** New audience creation */
 const createAudience = () => {
-    tempAudience.value = audienceItemTemplate({
-        title: "New Audience",
-        filters: [],
-    });
-
+    form.value.audience_id = "";
     currentStep.value = "audience-builder";
 };
 
-/**
- * places a copy of the existing audience into a temporary one that can be freely modified.
- * we only need to update back end if the audience is actually saved
- */
-const editAudience = (id) => {
-    tempAudience.value = propAudiences.value.filter((a) => a.id === id)[0];
-    currentStep.value = "audience-builder";
-};
-
-const cancelEditor = () => {
-    tempAudience.value = null;
+const handleAudienceUpdate = (audience) => {
     currentStep.value = "audience-picker";
+    form.value.audience_id = audience?.id ?? "";
+};
+
+const handleUpdateSelectState = (id) => {
+    form.value.audience_id = id;
 };
 
 const handleDone = () => {
-    emit("done");
+    emit("close");
 };
 </script>

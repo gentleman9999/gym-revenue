@@ -97,6 +97,7 @@
         <div class="col-span-6">
             <jet-label for="title" value="Title" />
             <input
+                required
                 id="title"
                 type="text"
                 class="bg-neutral text-base-content"
@@ -147,7 +148,7 @@
                 v-model="form.location_id"
                 class="bg-neutral text-base-content"
             >
-                <option v-for="{ id, name } in locations" :value="id">
+                <option v-for="{ id, name } in locations" :value="id" :key="id">
                     {{ name }}
                 </option>
             </select>
@@ -435,6 +436,8 @@ import { Inertia } from "@inertiajs/inertia";
 import FileIcon from "@/Components/Icons/File.vue";
 import AddIcon from "@/Components/Icons/Add.vue";
 import { transformDate } from "@/utils/transformDate";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
 export default {
     components: {
@@ -460,6 +463,7 @@ export default {
         "duration",
         "start_date",
         "locations",
+        "calendar_event_types",
     ],
     setup: function (props, { emit }) {
         const page = usePage();
@@ -488,6 +492,10 @@ export default {
 
         let calendarEvent = props.calendar_event;
         const calendarEventTypes = page.props.value.calendar_event_types;
+        console.log(
+            "==============================================page.props.value==============================================",
+            page.props.value
+        );
 
         const showAttendeesModal = ref();
         const attendeesModal = ref(null);
@@ -515,10 +523,9 @@ export default {
                 end: props.duration.end
                     ? props.duration.end
                     : props.duration.start,
-                event_type_id:
-                    calendarEventTypes.length <= 1
-                        ? calendarEventTypes[0].id
-                        : "",
+                event_type_id: calendarEventTypes.length
+                    ? calendarEventTypes[0].id
+                    : "",
                 location_id: null,
                 client_id: page.props.value.user?.client_id,
                 user_attendees: [],
@@ -529,15 +536,15 @@ export default {
             operation = "Create";
         } else {
             calendarEventForm = {
+                id: calendarEvent.id,
                 title: calendarEvent.title,
                 description: calendarEvent.description,
                 full_day_event: calendarEvent.full_day_event,
                 start: calendarEvent.start + " UTC",
                 end: calendarEvent.end + " UTC",
-                event_type_id:
-                    calendarEventTypes?.length <= 1
-                        ? calendarEventTypes[0].id
-                        : calendarEvent.event_type_id,
+                event_type_id: calendarEventTypes?.length
+                    ? calendarEventTypes[0].id
+                    : calendarEvent.event_type_id,
                 location_id: calendarEvent.location_id,
                 client_id: page.props.value.user?.client_id,
                 user_attendees:
@@ -572,38 +579,49 @@ export default {
             { deep: true }
         );
 
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform((data) => ({
-                    ...data,
-                    start: transformDate(data.start),
-                    end: transformDate(data.end),
-                }))
-                .put(route("calendar.event.update", calendarEvent.id), {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        form.reset();
-                        emit("submitted");
-                    },
-                });
+        const { mutate: createTask } = useMutation(mutations.task.create);
+        const { mutate: updateTask } = useMutation(mutations.task.update);
+
+        let handleSubmit = async () => {
+            await updateTask({
+                input: {
+                    id: form.id,
+                    title: form.title,
+                    description: form.description,
+                    event_type_id: form.event_type_id,
+                    user_attendees: form.user_attendees,
+                    lead_attendees: form.lead_attendees,
+                    member_attendees: form.member_attendees,
+                    location_id: form.location_id,
+                    start: transformDate(form.start),
+                    end: transformDate(form.end),
+                    full_day_event: !!form.full_day_event,
+                },
+            });
+            emit("submitted");
+        };
 
         if (operation === "Create") {
-            handleSubmit = () =>
-                form
-                    .transform((data) => ({
-                        ...data,
-                        start: transformDate(data.start),
-                        end: transformDate(data.end),
-                        full_day_event: !!data.full_day_event,
-                    }))
-                    .post(route("calendar.event.store"), {
-                        preserveScroll: true,
-                        onSuccess: () => {
-                            form.reset();
-                            emit("submitted");
-                        },
-                    });
+            handleSubmit = async () => {
+                if (!form?.title || form.title === "") {
+                    return toastError("Title is requried");
+                }
+                await createTask({
+                    input: {
+                        title: form.title,
+                        description: form.description,
+                        event_type_id: form.event_type_id,
+                        user_attendees: form.user_attendees,
+                        lead_attendees: form.lead_attendees,
+                        member_attendees: form.member_attendees,
+                        location_id: form.location_id,
+                        start: transformDate(form.start),
+                        end: transformDate(form.end),
+                        full_day_event: !!form.full_day_event,
+                    },
+                });
+                emit("submitted");
+            };
         }
 
         const dateFormat = computed(() =>

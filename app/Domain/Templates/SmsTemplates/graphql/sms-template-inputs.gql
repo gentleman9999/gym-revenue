@@ -1,0 +1,31 @@
+# Create Input for Sms Templates
+input CreateSmsTemplateInput {
+    name: String
+    markup: String
+    active: Boolean
+    details: [CreateSmsTemplateDetailsInput]
+}
+
+# Create Input for Sms Templates
+input UpdateSmsTemplateInput {
+    id: ID
+    name: String
+    markup: String
+    active: Boolean
+    details: [CreateSmsTemplateDetailsInput]
+}
+
+# Create Input for Sms Template Details
+input CreateSmsTemplateDetailsInput {
+    sms_template_id: ID
+    field: String
+    value: String
+}
+
+# Update Input for Sms Template Details
+input UpdateSmsTemplateDetailsInput {
+    id: ID
+    sms_template_id: ID
+    field: String
+    value: String
+}

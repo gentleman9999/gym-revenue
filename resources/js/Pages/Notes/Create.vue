@@ -10,44 +10,26 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import Button from "@/Components/Button.vue";
-import JetFormSection from "@/Jetstream/FormSection.vue";
-import JetInputError from "@/Jetstream/InputError.vue";
-import JetLabel from "@/Jetstream/Label.vue";
 import NoteForm from "@/Pages/Notes/Partials/NoteForm.vue";
-import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
-export default defineComponent({
-    components: {
-        NoteForm,
-        LayoutHeader,
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
-        ModalableWrapper,
-        ModalSlot,
+const props = defineProps({
+    userId: {
+        type: String,
+        default: "",
     },
-    props: {
-        userId: {
-            type: String,
-            default: "",
-        },
-        title: {
-            type: String,
-            default: "",
-        },
-        note: {
-            type: String,
-            default: "",
-        },
-        active: {
-            type: Boolean,
-            default: false,
-        },
+    title: {
+        type: String,
+        default: "",
+    },
+    note: {
+        type: String,
+        default: "",
+    },
+    active: {
+        type: Boolean,
+        default: false,
     },
 });
 </script>

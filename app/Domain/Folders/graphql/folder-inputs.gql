@@ -1,0 +1,9 @@
+input FolderSharingInput {
+    id: ID
+    team_ids: [ID]
+    location_ids: [ID]
+    user_ids: [ID]
+    position_ids: [ID]
+    department_ids: [ID]
+    role_ids: [ID]
+}

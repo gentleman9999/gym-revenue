@@ -11,7 +11,7 @@
             :opportunity="lead.opportunity"
             :email="lead.email"
             :phone="lead.phone"
-            :details="lead.details_desc"
+            :details="lead.details"
             ref="leadInteractionRef"
             :selectedLeadDetailIndex="selectedLeadDetailIndex"
             :trial-dates="trialDates"

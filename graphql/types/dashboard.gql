@@ -1,0 +1,7 @@
+type DashboardProps {
+    teamName: String
+    accountName: String
+    teams: [Team]
+    announcements: [Announcement]
+    widgets: [Widget]!
+}

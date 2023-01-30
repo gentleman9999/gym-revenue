@@ -51,11 +51,10 @@ class DashboardController extends Controller
         $announcements = [];
         $team_name = $team->name;
         $vue = 'Dashboard';
-
+        $widgets = $this->service->getDashboardWidgets();
         if ($client !== null) {
             $clients = collect([$client]);
             $account = $client->name;
-            $widgets = $this->service->getDashboardWidgets();
             if ($user->inSecurityGroup(SecurityGroupEnum::ADMIN, SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN)) {
                 $vue = 'Dashboards/AccountAdminDashboard';
             } elseif ($user->inSecurityGroup(SecurityGroupEnum::LOCATION_MANAGER)) {
@@ -77,7 +76,6 @@ class DashboardController extends Controller
         } else {
             $account = 'GymRevenue';
             $clients = $this->clients->all();
-            $widgets = $this->service->getDashboardWidgets();
             $announcements = $this->service->getAppStateAnnouncements();
 
             // Check if this is the CnB Default team.

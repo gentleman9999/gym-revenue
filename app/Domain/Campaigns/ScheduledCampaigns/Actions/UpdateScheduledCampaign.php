@@ -2,19 +2,16 @@
 
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaignAggregate;
-use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateScheduledCampaign
+class UpdateScheduledCampaign extends GymRevAction
 {
-    use AsAction;
-
     public function handle(ScheduledCampaign $scheduledCampaign, array $payload): ScheduledCampaign
     {
 //        if(!$scheduledCampaign->can_publish){
@@ -43,9 +40,11 @@ class UpdateScheduledCampaign
         ];
     }
 
-    public function getControllerMiddleware(): array
+    public function mapArgsToHandle($args): array
     {
-        return [InjectClientId::class];
+        $scheduledCampaign = $args['campaign'];
+
+        return [ScheduledCampaign::find($scheduledCampaign['id']), $scheduledCampaign];
     }
 
     public function authorize(ActionRequest $request): bool

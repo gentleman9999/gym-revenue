@@ -41,7 +41,7 @@ class GetUsersToImpersonate
             $data = $request->validated();
 
             $user = auth()->user();
-            $user_role = $user->getRole();
+            $user_role = User::find($user->id)->role();
 
             // Get the User's currently active team
             $team = CurrentInfoRetriever::getCurrentTeam();
@@ -55,7 +55,7 @@ class GetUsersToImpersonate
             }
 
             $users = [];
-            switch ($user_role) {
+            switch ($user_role->name) {
                 case 'Admin':
                     $allowed_roles = [SecurityGroupEnum::ADMIN, SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN, SecurityGroupEnum::LOCATION_MANAGER, SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
 
@@ -104,7 +104,7 @@ class GetUsersToImpersonate
                                     $users[] = [
                                         'userId' => $potential_imp_user->id,
                                         'name' => $potential_imp_user->name,
-                                        'role' => $potential_imp_user->getRole(),
+                                        'role' => $potential_imp_user->role()->name,
                                         'group' => $potential_imp_user->role()->group,
                                     ];
 

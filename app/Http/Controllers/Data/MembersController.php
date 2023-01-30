@@ -6,7 +6,6 @@ use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\Member;
@@ -210,16 +209,9 @@ class MembersController extends Controller
             $team_locations = [];
 
             if ($current_team->id != $client->home_team_id) {
-                $team_locations_records = TeamDetail::whereTeamId($current_team->id)
-                    ->where('field', '=', 'team-location')->get();
+                $team_locations = $current_team->locations();
 
-                if (count($team_locations_records) > 0) {
-                    foreach ($team_locations_records as $team_locations_record) {
-                        // @todo - we will probably need to do some user-level scoping
-                        // example - if there is scoping and this club is not there, don't include it
-                        $team_locations[] = $team_locations_record->value;
-                    }
-
+                if (count($team_locations) > 0) {
                     $results = Member::whereIn('home_location_id', $team_locations);
                 }
             } else {
@@ -327,18 +319,10 @@ class MembersController extends Controller
                 $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('field', '=', 'team-location')
-                    ->get();
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
-                    $in_query = [];
-                    // so get the teams listed in team_details
-                    foreach ($team_locations as $team_location) {
-                        $in_query[] = $team_location->value;
-                    }
-
-                    $results = Location::whereIn('gymrevenue_id', $in_query);
+                    $results = Location::whereIn('gymrevenue_id', $team_locations);
                 }
             }
         } else {

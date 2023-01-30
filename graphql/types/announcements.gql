@@ -1,0 +1,5 @@
+type Announcement {
+    id: ID!
+    version: String!
+    notes: [String]
+}

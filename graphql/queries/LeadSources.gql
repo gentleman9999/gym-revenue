@@ -1,0 +1,3 @@
+extend type Query {
+    lead_sources: [LeadSource!]! @all
+}

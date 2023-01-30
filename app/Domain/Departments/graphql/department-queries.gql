@@ -1,0 +1,9 @@
+extend type Query {
+    departments(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        filter: DepartmentFilter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [Department!]! @paginate(defaultCount: 10)
+
+    department(id: ID @eq): Department @find
+}

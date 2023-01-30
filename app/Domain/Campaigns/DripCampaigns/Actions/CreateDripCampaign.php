@@ -2,25 +2,22 @@
 
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\DripCampaigns\DripCampaignAggregate;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateDripCampaign
+class CreateDripCampaign extends GymRevAction
 {
-    use AsAction;
-
     public string $commandSignature = 'drip-campaign:create';
     public string $commandDescription = 'Creates a DripCampaign with the given name.';
 
@@ -63,9 +60,9 @@ class CreateDripCampaign
         ];
     }
 
-    public function getControllerMiddleware(): array
+    public function mapArgsToHandle($args): array
     {
-        return [InjectClientId::class];
+        return [$args['campaign']];
     }
 
     public function authorize(ActionRequest $request): bool

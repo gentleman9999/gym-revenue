@@ -3,8 +3,8 @@
 
     <teleport to="#premaincontent">
         <ToolBar
-            :toggleDripBuilder="toggleDripBuilder"
-            :toggleScheduleBuilder="toggleScheduleBuilder"
+            :toggleDripBuilder="() => handleNewCampaign('drip')"
+            :toggleScheduleBuilder="handleNewCampaign"
         />
     </teleport>
 
@@ -13,156 +13,201 @@
             <h1 class="text-2xl">Mass Comms Dashboard</h1>
             <div class="flex gap-2">
                 <button
-                    @click="
-                        Inertia.get(route('mass-comms.dashboard', 'scheduled'))
-                    "
+                    @click="handleClickTabSchedule"
                     class="btn btn-outline btn-secondary border-secondary btn-sm !text-base-content !normal-case"
-                    :class="{ '!btn-active': type === 'ScheduledCampaign' }"
+                    :class="{ '!btn-active': selectedTab === 'scheduled' }"
                 >
                     Scheduled Campaigns
                 </button>
                 <button
-                    @click="Inertia.get(route('mass-comms.dashboard', 'drip'))"
+                    @click="handleClickTabDrip"
                     class="btn btn-outline btn-secondary btn-sm !text-base-content !normal-case"
-                    :class="{ '!btn-active': type === 'DripCampaign' }"
+                    :class="{ '!btn-active': selectedTab === 'drip' }"
                 >
                     Drip Campaigns
                 </button>
             </div>
         </div>
-        <div class="flex flex-col">
-            <div class="campaign-wrapper">
-                <div class="campaign-title">Future Campaigns</div>
-                <div class="campaign-body flex-col">
-                    <campaign-list
-                        :campaigns="campaigns"
-                        :type="type"
-                        :filter="FUTURE_CAMPAIGNS"
-                        @open-campaign="openCampaign"
-                    />
-                </div>
-            </div>
-            <div class="campaign-wrapper">
-                <div class="campaign-title">Current Campaigns</div>
-                <div class="campaign-body flex-col">
-                    <campaign-list
-                        :campaigns="campaigns"
-                        :filter="CURRENT_CAMPAIGNS"
-                        :type="type"
-                    />
-                </div>
-            </div>
-            <div class="campaign-wrapper">
-                <div class="campaign-title">Recent campaigns</div>
-                <div class="campaign-body flex-col">
-                    <recent-campaign />
-                </div>
-            </div>
-            <div class="text-secondary text-lg pt-6 pl-6 cursor-pointer">
-                Load all activity
-            </div>
-        </div>
+
+        <CampaignListDisplay
+            v-if="selectedTab === 'scheduled'"
+            @edit="handleEditCampaign"
+            type="scheduled"
+        />
+
+        <CampaignListDisplay
+            v-if="selectedTab === 'drip'"
+            @edit="handleEditCampaign"
+            type="drip"
+        />
     </jet-bar-container>
+
+    <!-- DRIP CAMPAIGN - EDIT -->
+    <ApolloQuery
+        v-if="isEditingDrip && currentEditor === 'edit:drip'"
+        :query="(gql) => queries.dripCampaign.edit"
+        :variables="editParam"
+    >
+        <template v-slot="{ result: { data, loading, error }, isLoading }">
+            <template v-if="isLoading">
+                <Modal>
+                    <div
+                        class="flex flex-col h-full w-full justify-center items-center bg-black bg-opacity-80"
+                    >
+                        <div
+                            class="shadow border border-secondary rounded-lg p-6 bg-neutral"
+                        >
+                            <Spinner />
+                        </div>
+                    </div>
+                </Modal>
+            </template>
+
+            <CampaignBuilder
+                v-if="!isLoading && !!data"
+                type="drip"
+                @close="resetEditors"
+                :campaign="data['dripCampaign']"
+            />
+        </template>
+    </ApolloQuery>
+
+    <!-- DRIP CAMPAIGN - CREATE -->
     <CampaignBuilder
-        v-if="dripV || selectedCampaignType === 'DripCampaign'"
-        campaignType="drip"
-        @close="handleDone"
-        :topol-api-key="topolApiKey"
-        :precampaign="selectedCampaign"
-        @done="handleDone"
+        v-if="isEditingDrip && currentEditor === 'create:drip'"
+        type="drip"
+        @close="resetEditors"
     />
+
+    <!-- SCHEDULED CAMPAIGN - EDIT -->
+    <ApolloQuery
+        v-if="isEditingScheduled && currentEditor === 'edit:scheduled'"
+        :query="(gql) => queries.scheduledCampaign.edit"
+        :variables="editParam"
+    >
+        <template v-slot="{ result: { data, loading, error }, isLoading }">
+            <template v-if="isLoading">
+                <Modal>
+                    <div
+                        class="flex flex-col h-full w-full justify-center items-center bg-black bg-opacity-80"
+                    >
+                        <div
+                            class="shadow border border-secondary rounded-lg p-6 bg-neutral"
+                        >
+                            <Spinner />
+                        </div>
+                    </div>
+                </Modal>
+            </template>
+
+            <CampaignBuilder
+                v-if="!isLoading && !!data"
+                type="scheduled"
+                @close="resetEditors"
+                :campaign="data['scheduledCampaign']"
+            />
+        </template>
+    </ApolloQuery>
+
+    <!-- SCHEDULED CAMPAIGN - CREATE -->
     <CampaignBuilder
-        v-if="scheduleV || selectedCampaignType === 'ScheduledCampaign'"
-        campaignType="scheduled"
-        @close="handleDone"
-        :topol-api-key="topolApiKey"
-        :precampaign="selectedCampaign"
-        @done="handleDone"
+        v-if="isEditingScheduled && currentEditor === 'create:scheduled'"
+        type="scheduled"
+        @close="resetEditors"
     />
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { Inertia } from "@inertiajs/inertia";
+import queries from "@/gql/queries";
+
 import ToolBar from "./components/ToolBar.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import CampaignList from "./components/CampaignList/CampaignList.vue";
-import RecentCampaign from "./components/RecentCampaign/RecentCampaign.vue";
 import CampaignBuilder from "./components/Creator/CampaignBuilder.vue";
-import {
-    CURRENT_CAMPAIGNS,
-    FUTURE_CAMPAIGNS,
-    ALL_CAMPAIGNS,
-} from "@/Pages/MassCommunication/components/Creator/helpers";
+import CampaignListDisplay from "./Partials/CampaignListDisplay.vue";
+import Modal from "@/Components/ModalUnopinionated.vue";
+import Spinner from "@/Components/Spinner.vue";
 
 const props = defineProps({
-    topolApiKey: {
-        type: String,
-        required: true,
-    },
-    campaigns: {
-        type: Array,
-        required: true,
-    },
     type: {
         type: String,
-        required: true,
+        default: "scheduled",
     },
 });
 
-const dripV = ref(false);
-const scheduleV = ref(false);
+const editParam = ref(null);
 
-const toggleDripBuilder = () => (dripV.value = !dripV.value);
-const toggleScheduleBuilder = () => (scheduleV.value = !scheduleV.value);
+/**
+ * indicates which type of campaign is being edited and if it's new or not
+ *      edit:drip - create:drip
+ *      edit:scheduled - create:scheduled
+ */
+const currentEditor = ref(null);
 
-const selectedCampaign = ref(null);
-const selectedCampaignType = ref(null);
-const openCampaign = async ({ type, campaign }) => {
-    console.log({ type, campaign });
-    if (type === "ScheduledCampaign") {
-        const response = await axios.get(
-            route("mass-comms.scheduled-campaigns.get", campaign.id)
-        );
-        selectedCampaign.value = response.data;
-    }
-    if (type === "DripCampaign") {
-        const response = await axios.get(
-            route("mass-comms.drip-campaigns.get", campaign.id)
-        );
-        selectedCampaign.value = response.data;
-    }
-    selectedCampaignType.value = type;
+/**
+ * Campaign type display & handling
+ */
+// const selectedTab = ref(props.type); // @TODO figure out how to tie the URL to this
+const selectedTab = ref("scheduled");
+
+const handleClickTabSchedule = () => {
+    if (selectedTab.value === "scheduled") return;
+    selectedTab.value = "scheduled";
 };
-const handleDone = () => {
-    selectedCampaign.value = null;
-    selectedCampaignType.value = null;
-    dripV.value = false;
-    scheduleV.value = false;
-    Inertia.reload();
+
+const handleClickTabDrip = () => {
+    if (selectedTab.value === "drip") return;
+    selectedTab.value = "drip";
+};
+
+/**
+ * Campaign creation/updating handling
+ */
+const isEditingDrip = ref(false);
+const isEditingScheduled = ref(false);
+
+const toggleDripBuilder = () => (isEditingDrip.value = !isEditingDrip.value);
+const toggleScheduleBuilder = () =>
+    (isEditingScheduled.value = !isEditingScheduled.value);
+
+/**
+ * Clear editor and management state for next event
+ */
+const resetEditors = () => {
+    currentEditor.value = null;
+    isEditingDrip.value = false;
+    isEditingScheduled.value = false;
+    editParam.value = null;
+};
+
+/**
+ * Setup state for new campaign creation with the specified type
+ */
+const handleNewCampaign = (type = "scheduled") => {
+    resetEditors();
+    currentEditor.value = `create:${type}`;
+    if (type === "scheduled") toggleScheduleBuilder();
+    else if (type === "drip") toggleDripBuilder();
+};
+
+/**
+ * Setup state to edit an existing campaign and prepare gql to fetch the full details of the campaign
+ * for modifications
+ */
+const handleEditCampaign = (type, id) => {
+    console.log("edit campaign called", type, id);
+    if (!type || !["drip", "scheduled"].includes(type))
+        throw new Error("unknown campaign type");
+
+    if (!id || typeof id !== "string")
+        throw new Error("cannot edit campaign without an id");
+    currentEditor.value = `edit:${type}`;
+    editParam.value = {
+        id: id,
+    };
+
+    if (type === "drip") toggleDripBuilder();
+    else if (type === "scheduled") toggleScheduleBuilder();
 };
 </script>
-
-<style scoped>
-.campaign-wrapper {
-    @apply flex flex-col pt-12;
-}
-.campaign-title {
-    @apply pb-4 text-xl font-bold text-base-content;
-}
-
-.campaign-body {
-    @apply flex border border-secondary rounded p-4 bg-neutral;
-}
-
-main {
-    @apply !p-0;
-}
-</style>
-
-<style>
-.absolutely-hide {
-    @apply !hidden;
-}
-</style>

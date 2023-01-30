@@ -2,19 +2,16 @@
 
 namespace App\Domain\Roles\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Roles\Role;
 use App\Domain\Roles\RoleAggregate;
-use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateRole
+class CreateRole extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -38,9 +35,9 @@ class CreateRole
         return Role::findOrFail($id);
     }
 
-    public function getControllerMiddleware(): array
+    public function mapArgsToHandle($args): array
     {
-        return [InjectClientId::class];
+        return [$args['input']];
     }
 
     public function authorize(ActionRequest $request): bool

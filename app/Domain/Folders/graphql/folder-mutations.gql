@@ -1,0 +1,29 @@
+extend type Mutation {
+    createFolder(
+        name: String,
+    ): Folder!
+    @inject(context: "user.client_id", name: "client_id")
+
+    deleteFolder(
+        id: ID!,
+    ): Folder!
+
+    restoreFolder(
+        id: ID!,
+    ): Folder!
+
+    trashFolder(
+        id: ID!,
+    ): Folder!
+
+    updateFolder(
+        id: ID!,
+        name: String,
+    ): Folder!
+    @inject(context: "user.client_id", name: "client_id")
+
+    updateFolderSharing(
+        input: FolderSharingInput @spread
+    ): Folder!
+    @inject(context: "user.client_id", name: "client_id")
+}

@@ -7,25 +7,20 @@ namespace App\Domain\Users\Projectors;
 use App\Domain\Users\Events\UserObfuscated;
 use App\Domain\Users\Models\ObfuscatedUser;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
+use App\Domain\Users\Services\UserDataReflector;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Hash;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class UserObfuscatedProjector extends Projector
 {
-    public function onStartingEventReplay()
-    {
-        User::query()->delete();
-        UserDetails::query()->delete();
-    }
-
     public function onUserObfuscated(UserObfuscated $event): void
     {
         $user = User::find($event->aggregateRootUuid());
         $timestamp = $event->createdAt()->toDate()->getTimestamp();
         $user->obfuscated_at = date("Y-m-d H:i:s", $timestamp);
         $user->save();
+        UserDataReflector::reflectData($user);
         $obfuscated_user = new ObfuscatedUser();
         $obfuscated_user->id = Uuid::new();
         $obfuscated_user->client_id = $user->client_id;

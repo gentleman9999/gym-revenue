@@ -5,8 +5,8 @@
         base-route="notes"
         model-name="Note"
         model-key="note"
+        :edit-component="NoteForm"
         :fields="fields"
-        :resource="notes"
         :actions="{
             trash: false,
             restore: false,
@@ -34,6 +34,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import NoteForm from "@/Pages/Notes/Partials/NoteForm.vue";
 
 export default defineComponent({
     components: {
@@ -44,7 +45,7 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["notes", "filters"],
+    props: [],
     setup(props) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
@@ -72,7 +73,6 @@ export default defineComponent({
                 active: true,
             },
         ];
-
         return {
             fields,
             confirmDelete,
@@ -80,6 +80,7 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
+            NoteForm,
         };
     },
 });

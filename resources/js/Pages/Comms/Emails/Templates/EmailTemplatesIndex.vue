@@ -20,17 +20,16 @@
             </inertia-link>
         </div>
     </LayoutHeader>
-
     <gym-revenue-crud
-        base-route="mass-comms.email-templates"
-        model-name="Email Template"
-        model-key="template"
+        base-route="emailTemplates"
+        model-name="EmailTemplate"
+        model-key="emailTemplate"
         :fields="fields"
-        :resource="templates"
         :actions="actions"
         :top-actions="{ create: { label: 'New Template' } }"
         :table-component="false"
-        :card-component="EmailTemplateCard"
+        :cardComponent="EmailTemplateCard"
+        :edit-component="EmailTemplateForm"
     />
 
     <confirm
@@ -55,7 +54,7 @@
 }
 </style>
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import Confirm from "@/Components/Confirm.vue";
@@ -70,6 +69,9 @@ import { faImage } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail.vue";
 import EmailTemplateCard from "./Partials/EmailTemplateCard.vue";
+import EmailTemplateForm from "./Partials/EmailTemplateForm.vue";
+import queries from "@/gql/queries";
+
 library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 export default defineComponent({
@@ -94,6 +96,10 @@ export default defineComponent({
             confirmTrash.value = null;
         };
 
+        const param = ref({
+            page: 1,
+        });
+
         const confirmSend = ref(null);
         const sendVars = () => {
             return {
@@ -115,31 +121,51 @@ export default defineComponent({
             //sendModal.value.close();
             confirmSend.value = null;
         };
-        const fields = computed(() => {
-            return [
-                "name",
-                {
-                    name: "active",
-                    label: "status",
-                    props: {
-                        truthy: "Active",
-                        falsy: "Draft",
-                        getProps: ({ data }) =>
-                            !!data.active
-                                ? { text: "Active", class: "badge-success" }
-                                : { text: "Draft", class: "badge-warning" },
-                    },
-                    export: (active) => (active ? "Active" : "Draft"),
-                },
-                { name: "type", transform: () => "Regular" },
-                { name: "updated_at", label: "date updated" },
-                {
-                    name: "creator.name",
-                    label: "updated by",
-                    transform: (creator) => creator || "Auto Generated",
-                },
-            ];
-        });
+
+        // const fields = ["name", "created_at", "updated_at"];
+
+        // const fields = computed(() => {
+        //     return [
+        //         "name",
+        //         {
+        //             name: "active",
+        //             label: "status",
+        //             props: {
+        //                 truthy: "Active",
+        //                 falsy: "Draft",
+        //                 getProps: ({ data }) =>
+        //                     !!data.active
+        //                         ? { text: "Active", class: "badge-success" }
+        //                         : { text: "Draft", class: "badge-warning" },
+        //             },
+        //             export: (active) => (active ? "Active" : "Draft"),
+        //         },
+        //         { name: "type", transform: () => "Regular" },
+        //         { name: "updated_at", label: "date updated" },
+        //         {
+        //             name: "creator.name",
+        //             label: "updated by",
+        //             transform: (creator) => creator || "Auto Generated",
+        //         },
+        //     ];
+        // });
+
+        const fields = [
+            "id",
+            "name",
+            "markup",
+            "subject",
+            "thumbnail",
+            "thumbnail.key",
+            "thumbnail.url",
+            "active",
+            "client_id",
+            "team_id",
+            "created_by_user_id",
+            "creator.id",
+            "created_at",
+            "updated_at",
+        ];
 
         const actions = computed(() => {
             return {
@@ -163,7 +189,10 @@ export default defineComponent({
             handleCloseTextModal,
             confirmSend,
             sendVars,
+            queries,
+            param,
             EmailTemplateCard,
+            EmailTemplateForm,
         };
     },
 });

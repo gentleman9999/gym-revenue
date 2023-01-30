@@ -2,6 +2,7 @@
 
 namespace App\Domain\Positions\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Positions\PositionAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Position;
@@ -9,13 +10,10 @@ use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreatePosition
+class CreatePosition extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -30,7 +28,7 @@ class CreatePosition
         ];
     }
 
-    public function handle($data): Position
+    public function handle(array $data): Position
     {
         $id = Uuid::new();
 
@@ -41,10 +39,20 @@ class CreatePosition
         return Position::findOrFail($id);
     }
 
-    public function getControllerMiddleware(): array
+    // public function __invoke($_, array $args): Position
+    // {
+    //     return $this->handle($args);
+    // }
+
+    public function mapArgsToHandle($args): array
     {
-        return [InjectClientId::class];
+        return [$args['input']];
     }
+
+    // public function getControllerMiddleware(): array
+    // {
+    //     return [InjectClientId::class];
+    // }
 
     public function authorize(ActionRequest $request): bool
     {

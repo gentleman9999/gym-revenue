@@ -1,21 +1,21 @@
 <template>
-    <jet-form-section @submitted="handleSubmit">
-        <!--        <template #title>-->
-        <!--            Location Details-->
-        <!--        </template>-->
-
-        <!--        <template #description>-->
-        <!--            {{ buttonText }} a location.-->
-        <!--        </template>-->
+    <jet-form-section @submitted="handleOperation">
         <template #form>
             <div class="form-control col-span-6">
                 <label for="name" class="label">Name</label>
-                <input type="text" v-model="form.name" autofocus id="name" />
+                <input
+                    type="text"
+                    :disabled="isProcessing"
+                    v-model="form.name"
+                    autofocus
+                    id="name"
+                />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
             <div class="col-span-6">
                 <sms-form-control
                     v-model="form.markup"
+                    :disabled="isProcessing"
                     id="markup"
                     label="Template"
                 />
@@ -37,20 +37,16 @@
                 >
                 <jet-input-error :message="form.errors.active" class="mt-2" />
             </div>
-            <!--                <input id="client_id" type="hidden" v-model="form.client_id"/>-->
-            <!--                <jet-input-error :message="form.errors.client_id" class="mt-2"/>-->
         </template>
 
         <template #actions>
-            <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button
-                v-if="useInertia"
                 type="button"
-                @click="handleCancel"
-                :class="{ 'opacity-25': form.processing }"
+                @click="$emit('cancel')"
+                :class="{ 'opacity-25': isProcessing }"
                 error
                 outline
-                :disabled="form.processing"
+                :disabled="isProcessing"
             >
                 Cancel
             </Button>
@@ -68,109 +64,92 @@
             <div class="flex-grow" />
             <Button
                 class="btn-secondary"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.isDirty"
-                :loading="form.processing"
+                :class="{ 'opacity-25': isProcessing }"
+                :disabled="isProcessing"
+                :loading="isProcessing"
             >
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from "vue";
+
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import Spinner from "@/Components/Spinner.vue";
 import { useGymRevForm } from "@/utils";
 import SmsFormControl from "@/Components/SmsFormControl.vue";
 import Button from "@/Components/Button.vue";
-import JetFormSection from "@/Jetstream/FormSection.vue";
+
+import queries from "@/gql/queries";
 import JetInputError from "@/Jetstream/InputError.vue";
-import { useModal } from "@/Components/InertiaModal";
-import { Inertia } from "@inertiajs/inertia";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        SmsFormControl,
-        JetInputError,
-    },
-    props: {
-        template: {
-            type: Object,
-        },
-        canActivate: {
-            type: Boolean,
-            required: true,
-        },
-        useInertia: {
-            type: Boolean,
-            default: true,
+import { toastInfo, toastError } from "@/utils/createToast";
+
+const emit = defineEmits(["cancel", "done"]);
+
+const props = defineProps({
+    smsTemplate: {
+        type: Object,
+        default: {
+            name: "",
+            markup: "",
+            active: true,
         },
     },
-    setup(props, { emit }) {
-        let template = props.template;
-        let operation = "Update";
-        if (!template) {
-            template = {
-                markup: null,
-                name: null,
-                active: false,
-                // client_id: props.clientId
-            };
-            operation = "Create";
-        }
+    editParam: {
+        type: [Object, null],
+        default: null,
+    },
+});
 
-        const form = useGymRevForm(template);
+// TODO: need to get this from gql somehow
+const canActivate = ref(false);
+const isProcessing = ref(false);
 
-        let handleSubmit = () => {
-            if (props.useInertia) {
-                form.dirty().put(
-                    route("mass-comms.sms-templates.update", template.id)
-                );
-            } else {
-                axios
-                    .put(
-                        route("mass-comms.sms-templates.update", template.id),
-                        form.dirty().data()
-                    )
-                    .then(({ data }) => {
-                        console.log("closeAfterSave", data);
-                        emit("done", data);
-                    })
-                    .catch((err) => {
-                        emit("error", err);
-                    });
-            }
+const { mutate: createSmsTemplate } = useMutation(mutations.smsTemplate.create);
+const { mutate: updateSmsTemplate } = useMutation(mutations.smsTemplate.update);
+
+let operation = computed(() => {
+    return props.editParam !== null ? "Update" : "Create";
+});
+
+let operFn = computed(() => {
+    return operation.value === "Update" ? updateSmsTemplate : createSmsTemplate;
+});
+
+const form = useGymRevForm(props.smsTemplate);
+
+const handleOperation = async () => {
+    try {
+        isProcessing.value = true;
+        let rawData = {
+            id: form.id,
+            name: form.name,
+            markup: form.markup,
+            active: form.active,
         };
-        if (operation === "Create") {
-            if (props.useInertia) {
-                handleSubmit = () =>
-                    form
-                        .post(route("mass-comms.sms-templates.store"))
-                        .then(({ data }) => {
-                            console.log("closeAfterSave", data);
-                            emit("done", data);
-                        })
-                        .catch((err) => {
-                            emit("error", err);
-                        });
-            } else {
-                handleSubmit = () =>
-                    axios
-                        .post(
-                            route("mass-comms.sms-templates.store"),
-                            form.data()
-                        )
-                        .then(({ data }) => {
-                            console.log("closeAfterSave", data);
-                            emit("done", data);
-                        })
-                        .catch((err) => {
-                            emit("error", err);
-                        });
-            }
-        }
+        if (props.editParam === null) delete rawData.id;
 
+        const { data } = await operFn.value({
+            input: rawData,
+        });
+
+        let savedTemplate =
+            data["createSmsTemplate"] ?? data["updateSmsTemplate"];
+
+        toastInfo("SMS Template " + operation.value + "d!");
+        isProcessing.value = false;
+        emit("done", savedTemplate);
+    } catch (error) {
+        toastError("There was a problem updating the data - try again..");
+        isProcessing.value = false;
+        console.log("template operation error:", error);
+    }
         const inertiaModal = useModal();
         const handleCancel = () => {
             if (inertiaModal?.value?.close) {

@@ -29,7 +29,7 @@ export const flattenObj = (ob) => {
 
 export const getData = (props) => {
     return computed(() => {
-        const data = props.resource.data;
+        const data = props.resource?.data;
         return merge(data, data?.map(flattenObj));
     });
 };

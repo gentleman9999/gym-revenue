@@ -2,18 +2,16 @@
 
 namespace App\Domain\Roles\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Roles\Role;
 use App\Domain\Roles\RoleAggregate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateRole
+class UpdateRole extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -35,6 +33,13 @@ class UpdateRole
         return $role->refresh();
     }
 
+    public function mapArgsToHandle($args): array
+    {
+        $role = $args['input'];
+
+        return [Role::find($role['id']), $role];
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
@@ -44,11 +49,9 @@ class UpdateRole
 
     public function asController(ActionRequest $request, Role $role): Role
     {
-        $data = $request->validated();
-
         return $this->handle(
             $role,
-            $data,
+            $request->validated(),
         );
     }
 

@@ -7,10 +7,10 @@ namespace App\Domain\Users\Services\Helpers;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Models\Customer;
 use Illuminate\Database\Eloquent\Builder;
 
+//TODO: this should just be handled via Team (or soon to be Location) Scopes.
 class Helper
 {
     public static function setUpCustomersObject(string $current_team_id, string $client_id = null): ?Builder
@@ -98,17 +98,6 @@ class Helper
 
     public static function getTeamLocations(string $current_team_id): array
     {
-        // The active_team is not the current client's default_team
-        $team_locations_records = TeamDetail::whereTeamId($current_team_id)
-            ->where('field', '=', 'team-location')
-            ->get();
-
-        if (count($team_locations_records) > 0) {
-            // @todo - we will probably need to do some user-level scoping
-            // example - if there is scoping and this club is not there, don't include it
-            return array_column($team_locations_records->toArray(), 'value');
-        }
-
-        return [];
+        return Team::find($current_team_id)->locations();
     }
 }

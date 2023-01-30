@@ -2,6 +2,7 @@
 
 namespace App\Domain\Users\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Roles\Role;
@@ -12,23 +13,19 @@ use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\ValidationRules;
 use App\Enums\UserTypesEnum;
-use App\Http\Middleware\InjectClientId;
+use App\Support\CurrentInfoRetriever;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateUser implements CreatesNewUsers
+class CreateUser extends GymRevAction implements CreatesNewUsers
 {
-    use AsAction;
-
     protected $command;
 
     /**
@@ -55,6 +52,11 @@ class CreateUser implements CreatesNewUsers
 
     public function handle(array $payload): User
     {
+        $payload['user_type'] = $payload['user_type'] ?? UserTypesEnum::LEAD;
+        $payload['unsubscribed_email'] = $payload['unsubscribed_email'] ?? false;
+        $payload['unsubscribed_sms'] = $payload['unsubscribed_sms'] ?? false;
+        $payload['is_previous'] = $payload['is_previous'] ?? false;
+        $payload['client_id'] = $payload['client_id'] ?? CurrentInfoRetriever::getCurrentClientID();
         if (array_key_exists('password', $payload)) {
             $payload['password'] = Hash::make($payload['password']);
         }
@@ -72,9 +74,6 @@ class CreateUser implements CreatesNewUsers
 
                 // $team_name = Team::getTeamName($team_id);
                 AddTeamMember::run(Team::findOrFail($team_id), $created_user);
-                // $team_client = Team::getClientFromTeamId($team_id);
-                // $team_client_id = ($team_client) ? $team_client->id : null;
-                // $user_aggy = $user_aggy->addToTeam($team_id, $team_name, $team_client_id);
             }
         }
 
@@ -83,81 +82,73 @@ class CreateUser implements CreatesNewUsers
             UserAggregate::retrieve($created_user->id)->sendWelcomeEmail()->persist();
         }
 
-        ReflectUserData::run($created_user);
-
         return $created_user;
     }
 
-    /**
-     * Custom validation based on user_type
-     *
-     * @return array
-     */
-    public function rules(): array
+    public function mapArgsToHandle($args): array
     {
-        return ValidationRules::getValidationRules(request()->user_type, true);
+        return [$args['input']];
     }
 
-    /**
-     * Validate the address provided using USPS API after main rules
-     * Which also sends back correct address1, city and state
-     *
-     * @return void
-     */
-    public function afterValidator(Validator $validator, ActionRequest $request): void
-    {
-        /**
-         * @TODO: Send the suggestion data back to UI, and display to the User.
-         * They can make a choice (confirm/cancel), and have it update if confirmed
-         */
-        session()->forget('address_validation');
-    }
+    // public function __invoke($_, array $args): User
+    // {
+    //     if ($args['input']['started_at']) {
+    //         $args['input']['started_at'] = CarbonImmutable::create($args['input']['started_at']);
+    //     } else {
+    //         $args['input']['started_at'] = null;
+    //     }
+    //     if ($args['input']['ended_at']) {
+    //         $args['input']['ended_at'] = CarbonImmutable::create($args['input']['ended_at']);
+    //     } else {
+    //         $args['input']['ended_at'] = null;
+    //     }
+    //     if ($args['input']['terminated_at']) {
+    //         $args['input']['terminated_at'] = CarbonImmutable::create($args['input']['terminated_at']);
+    //     } else {
+    //         $args['input']['terminated_at'] = null;
+    //     }
 
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
-    }
+    //     return $this->handle($args['input']);
+    // }
 
-    /**
-     * Transform the request object in
-     * preparation for validation
-     *
-     * @param ActionRequest $request
-     */
-    public function prepareForValidation(ActionRequest $request): void
-    {
-        $request = $this->mergeUserTypeToRequest($request);
+    // /**
+    //  * Custom validation based on user_type
+    //  *
+    //  * @return array
+    //  */
+    // public function rules(): array
+    // {
+    //     return ValidationRules::getValidationRules(request()->user_type ?? UserTypesEnum::LEAD, true);
+    // }
 
-        if ($request->user_type == UserTypesEnum::LEAD) {
-            /** @TODO: Need to update with what entry_source data should be */
-            $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
-        }
-    }
+    // /**
+    //  * Validate the address provided using USPS API after main rules
+    //  * Which also sends back correct address1, city and state
+    //  *
+    //  * @return void
+    //  */
+    // public function afterValidator(Validator $validator, ActionRequest $request): void
+    // {
+    //     /**
+    //      * @TODO: Send the suggestion data back to UI, and display to the User.
+    //      * They can make a choice (confirm/cancel), and have it update if confirmed
+    //      */
+    //     session()->forget('address_validation');
+    // }
 
-    /**
-     * Adds the user type to the request object
-     * based on the route name of the request
-     *
-     * @param ActionRequest $request
-     *
-     * @return ActionRequest $request
-     */
-    private function mergeUserTypeToRequest(ActionRequest $request): ActionRequest
-    {
-        $current_route = Route::currentRouteName();
-
-        if ($current_route == 'users.store') {
-            $request->merge(['user_type' => UserTypesEnum::EMPLOYEE]);
-        } elseif ($current_route == 'data.leads.store') {
-            $request->merge(['user_type' => UserTypesEnum::LEAD]);
-        } elseif ($current_route == 'data.members.store') {
-            $request->merge(['user_type' => UserTypesEnum::MEMBER]);
-        } else {
-            $request->merge(['user_type' => UserTypesEnum::CUSTOMER]);
-        }
-
-        return $request;
-    }
+    // /**
+    //  * Transform the request object in
+    //  * preparation for validation
+    //  *
+    //  * @param ActionRequest $request
+    //  */
+    // public function prepareForValidation(ActionRequest $request): void
+    // {
+    //     if ($request->user_type == UserTypesEnum::LEAD) {
+    //         /** @TODO: Need to update with what entry_source data should be */
+    //         $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
+    //     }
+    // }
 
     public function authorize(ActionRequest $request): bool
     {
@@ -396,10 +387,10 @@ class CreateUser implements CreatesNewUsers
             $user_type : UserTypesEnum::LEAD;
     }
 
-    public function getValidationAttributes(): array
-    {
-        return [
-            'addres1' => 'address line 1',
-        ];
-    }
+    // public function getValidationAttributes(): array
+    // {
+    //     return [
+    //         'addres1' => 'address line 1',
+    //     ];
+    // }
 }

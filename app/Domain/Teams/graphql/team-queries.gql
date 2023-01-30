@@ -1,0 +1,6 @@
+extend type Query {
+    teams(filter: Filter @scope, orderBy: [OrderByClause!] @orderBy): [Team!]!
+        @paginate(defaultCount: 10)
+
+    team(id: ID @eq): Team @find
+}

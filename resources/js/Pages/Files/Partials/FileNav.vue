@@ -21,7 +21,6 @@ span {
 }
 </style>
 <script setup>
-import { Inertia } from "@inertiajs/inertia";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faHome, faAngleRight } from "@fortawesome/pro-solid-svg-icons";

@@ -11,6 +11,7 @@ use App\StorableEvents\Clients\Files\FilePermissionsUpdated;
 use App\StorableEvents\Clients\Files\FileRenamed;
 use App\StorableEvents\Clients\Files\FileRestored;
 use App\StorableEvents\Clients\Files\FileTrashed;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -25,6 +26,7 @@ class FileProjector extends Projector
 
         if (! is_null($event->user) && $event->user <> "") {
             $user = User::find($event->user);
+            Log::info("FileProjector: onFileCreated: user: " . $user->name);
             $file_table_data['user_id'] = $user->id;
             $file_table_data['client_id'] = $user->client_id;
         }

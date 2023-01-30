@@ -1,13 +1,19 @@
 import { ref } from "vue";
+// import queries from "@/gql/queries";
+// import { useQuery } from '@vue/apollo-composable'
 
-export const previewData = ref(null);
+export const queryParam = ref(null);
 
-export const setPreviewData = (data) => (previewData.value = data);
+// export const {data: previewData} = useQuery(queries[query_key.value], query_param);;
 
-export const clearPreviewData = () => (previewData.value = null);
+// export const setPreviewData = (data) => (previewData.value = data);
+
+export const clearPreviewData = () => {
+    queryParam.value = null;
+};
 
 export const preview = async (baseRoute, id) => {
-    const routeName = `${baseRoute}.view`;
-    const resp = await axios.get(route(routeName, id));
-    setPreviewData(resp.data);
+    queryParam.value = {
+        id: id,
+    };
 };

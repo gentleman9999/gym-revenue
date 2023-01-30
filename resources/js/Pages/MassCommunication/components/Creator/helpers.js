@@ -31,8 +31,8 @@ export const ITemplate = {
  */
 export const audienceItemTemplate = (audience = { ...Iaudience }) => {
     return {
-        id: audience?.id || genId(), // only for client side collision prevention - generate id's on back end
-        title: audience?.name || null,
+        id: audience?.id || "", // only for client side collision prevention - generate id's on back end
+        title: audience?.name || "",
         filters: audience?.filters || [],
         entity:
             audience?.entity ||
@@ -170,6 +170,14 @@ export const DRAFT_CAMPAIGNS = "draft campaigns";
 export const ALL_CAMPAIGNS = "all campaigns";
 export const FUTURE_CAMPAIGNS = "future campaigns";
 export const COMPLETED_CAMPAIGNS = "completed campaigns";
+
+export const FILTER = {
+    CURRENT: CURRENT_CAMPAIGNS,
+    DRAFT: DRAFT_CAMPAIGNS,
+    ALL: ALL_CAMPAIGNS,
+    FUTURE: FUTURE_CAMPAIGNS,
+    COMPLETE: COMPLETED_CAMPAIGNS,
+};
 
 export const CAMPAIGN_FILTERS = [
     ALL_CAMPAIGNS,

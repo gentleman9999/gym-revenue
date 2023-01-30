@@ -12,7 +12,6 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamInvitation;
 use App\Domain\Users\Actions\DeleteUser;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
 use App\Enums\UserTypesEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -74,8 +73,7 @@ class JetstreamServiceProvider extends ServiceProvider
                  */
 
                 if ($user->user_type == UserTypesEnum::EMPLOYEE) {
-                    $team = Team::withoutGlobalScopes()->findOrFail(UserDetails::withoutGlobalScopes()
-                        ->whereUserId($user->id)->whereField('default_team_id')->first()->value);
+                    $team = $user->defaultTeam;
                     if ($team !== null) {
                         /**
                          * Set current_locaiton_id as null

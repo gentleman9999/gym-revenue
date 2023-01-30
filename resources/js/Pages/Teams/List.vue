@@ -7,18 +7,20 @@
         model-name="Team"
         model-key="team"
         :fields="fields"
-        :resource="teams"
         :actions="actions"
         :preview-component="TeamPreview"
+        :edit-component="TeamForm"
+        ref="teamsCrud"
     >
         <template #filter>
             <beefy-search-filter
                 v-model:modelValue="form.search"
-                :filtersActive="filtersActive"
+                @update:modelValue="
+                    handleCrudUpdate('filter', {
+                        search: form.search,
+                    })
+                "
                 class="w-full max-w-md mr-4"
-                @reset="reset"
-                @clear-filters="clearFilters"
-                @clear-search="clearSearch"
             >
                 <div class="form-control">
                     <label for="users" class="label label-text py-1 text-xs">
@@ -49,6 +51,7 @@
                         <option></option>
                         <option
                             v-for="club in clubs"
+                            :key="club.gymrevenue_id"
                             :value="club.gymrevenue_id"
                         >
                             {{ club.name }}
@@ -78,10 +81,10 @@ import Confirm from "@/Components/Confirm.vue";
 import TeamPreview from "@/Pages/Teams/Partials/TeamPreview.vue";
 import { preview } from "@/Components/CRUD/helpers/previewData";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
+import TeamForm from "@/Pages/Teams/Partials/TeamForm.vue";
 
 export default defineComponent({
     components: {
@@ -92,15 +95,18 @@ export default defineComponent({
         TeamPreview,
         Multiselect,
     },
-    props: ["filters", "clubs", "teams", "preview", "potentialUsers"],
-    setup(props) {
+    props: ["filters", "clubs", "preview", "potentialUsers"],
+    setup(props, { emit }) {
         const baseRoute = "teams";
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
-        const { form, reset, clearFilters, clearSearch, filtersActive } =
-            useSearchFilter("teams", {
-                club: null,
-            });
+        const form = ref({
+            search: "",
+        });
+        const teamsCrud = ref(null);
+        const handleCrudUpdate = (key, value) => {
+            teamsCrud.value.handleCrudUpdate(key, value);
+        };
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
             confirmDelete.value = user;
@@ -132,21 +138,19 @@ export default defineComponent({
                 preview(baseRoute, props.preview);
             }
         });
-
         return {
             confirmDelete,
             fields,
             actions,
             Inertia,
             handleConfirmDelete,
-            form,
-            reset,
             TeamPreview,
             baseRoute,
-            clearFilters,
-            clearSearch,
-            filtersActive,
             multiselectClasses: getDefaultMultiselectTWClasses(),
+            TeamForm,
+            teamsCrud,
+            form,
+            handleCrudUpdate,
         };
     },
 });

@@ -80,7 +80,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useGymRevForm } from "@/utils";
-import { useModal } from "@/Components/InertiaModal";
+
 import { Inertia } from "@inertiajs/inertia";
 import { resolveModel, models, parseFilterValues } from "./helpers";
 
@@ -142,7 +142,6 @@ let report = {
     model: selectedModelName,
 };
 
-const modal = useModal();
 const form = useGymRevForm(report);
 
 const handleSubmit = () => {
@@ -158,10 +157,6 @@ const handleSubmit = () => {
 };
 
 const handleCancel = () => {
-    if (modal?.value?.close) {
-        modal.value.close();
-        return;
-    }
     Inertia.visit(route("dynamic-reports"));
 };
 

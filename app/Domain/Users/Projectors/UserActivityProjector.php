@@ -11,11 +11,10 @@ use App\Domain\Users\Events\EndUserWasTextMessagedByRep;
 use App\Domain\Users\Events\UserReceivedEmail;
 use App\Domain\Users\Events\UserReceivedTextMsg;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
-use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
-use App\Enums\UserDetailsFieldEnum;
+use App\Domain\Users\Services\UserDataReflector;
+use App\Enums\UserHistoryTypeEnum;
 use App\Enums\UserTypesEnum;
 use App\Models\Note;
 use Illuminate\Support\Facades\DB;
@@ -28,15 +27,16 @@ class UserActivityProjector extends Projector
         $user = User::findOrFail($event->aggregateRootUuid());
 
         if ($user->user_type == UserTypesEnum::EMPLOYEE) {
-            UserDetails::createOrUpdateRecord(
-                $event->aggregateRootUuid(),
-                UserDetailsFieldEnum::SMS_TRANSMISSION->value,
-                $event->template,
-                [
-                    'response' => $event->response,
-                    'client' => $event->client ?? null,
-                ]
-            );
+            //TODO: Create Projection Table for User Communication History
+//            UserDetails::createOrUpdateRecord(
+//                $event->aggregateRootUuid(),
+//                UserDetailsFieldEnum::SMS_TRANSMISSION->value,
+//                $event->template,
+//                [
+//                    'response' => $event->response,
+//                    'client' => $event->client ?? null,
+//                ]
+//            );
         }
     }
 
@@ -45,15 +45,16 @@ class UserActivityProjector extends Projector
         $user = User::findOrFail($event->aggregateRootUuid());
 
         if ($user->user_type == UserTypesEnum::EMPLOYEE) {
-            UserDetails::createOrUpdateRecord(
-                $event->aggregateRootUuid(),
-                UserDetailsFieldEnum::EMAIL_TRANSMISSION->value,
-                $event->template,
-                [
-                    'response' => $event->response,
-                    'client' => $event->client ?? null,
-                ]
-            );
+            //TODO: Create Projection Table for User Communication History
+//            UserDetails::createOrUpdateRecord(
+//                $event->aggregateRootUuid(),
+//                UserHistoryTypeEnum::EMAIL_TRANSMISSION->value,
+//                $event->template,
+//                [
+//                    'response' => $event->response,
+//                    'client' => $event->client ?? null,
+//                ]
+//            );
         }
     }
 
@@ -62,12 +63,10 @@ class UserActivityProjector extends Projector
         $user = User::findOrFail($event->aggregateRootUuid());
 
         if ($user->user_type == UserTypesEnum::EMPLOYEE) {
-            UserDetails::createOrUpdateRecord(
-                $event->aggregateRootUuid(),
-                UserDetailsFieldEnum::COLUMN_CONFIG->value,
-                $event->table,
-                $event->fields
-            );
+            $details = $user->details;
+            $details[UserHistoryTypeEnum::COLUMN_CONFIG->value] = [$event->table => $event->fields] ;
+            $user->details;
+            $user->save();
         }
     }
 
@@ -86,14 +85,15 @@ class UserActivityProjector extends Projector
 
     public function onEndUserClaimedByRep(EndUserClaimedByRep $event): void
     {
-        DB::transaction(function () use ($event) {
-            $end_user = Lead::findOrFail($event->aggregateRootUuid());
-            UserDetails::createOrUpdateRecord(
-                $end_user->id,
-                UserDetailsFieldEnum::OWNER_USER_ID->value,
-                $event->claimed_by_user_id
-            );
-        });
+        //TODO: Create Projection Table for User Communication History
+//        DB::transaction(function () use ($event) {
+//            $end_user = Lead::findOrFail($event->aggregateRootUuid());
+//            UserDetails::createOrUpdateRecord(
+//                $end_user->id,
+//                UserHistoryTypeEnum::OWNER_USER_ID->value,
+//                $event->claimed_by_user_id
+//            );
+//        });
     }
 
     public function onEndUserWasEmailedByRep(EndUserWasEmailedByRep $event): void
@@ -107,12 +107,13 @@ class UserActivityProjector extends Projector
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
 
-        (new UserDetails())->createOrUpdateRecord(
-            $end_user->id,
-            UserDetailsFieldEnum::EMAILED_BY_REP->value,
-            $event->modifiedBy(),
-            $misc
-        );
+        //TODO: Create Projection Table for User Communication History
+//        (new UserDetails())->createOrUpdateRecord(
+//            $end_user->id,
+//            UserHistoryTypeEnum::EMAILED_BY_REP->value,
+//            $event->modifiedBy(),
+//            $misc
+//        );
     }
 
     public function onEndUserWasTextMessagedByRep(EndUserWasTextMessagedByRep $event): void
@@ -124,12 +125,13 @@ class UserActivityProjector extends Projector
 
         $misc = $event->payload;
 
-        (new UserDetails())->createOrUpdateRecord(
-            $end_user->id,
-            UserDetailsFieldEnum::SMS_BY_REP->value,
-            $event->modifiedBy(),
-            $misc
-        );
+        //TODO: Create Projection Table for User Communication History
+//        (new UserDetails())->createOrUpdateRecord(
+//            $end_user->id,
+//            UserHistoryTypeEnum::SMS_BY_REP->value,
+//            $event->modifiedBy(),
+//            $misc
+//        );
     }
 
     public function onEndUserWasCalledByRep(EndUserWasCalledByRep $event): void
@@ -143,13 +145,15 @@ class UserActivityProjector extends Projector
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
 
-        (new UserDetails())->createOrUpdateRecord(
-            $end_user->id,
-            UserDetailsFieldEnum::CALLED_BY_REP->value,
-            $event->modifiedBy(),
-            $misc
-        );
+        //TODO: Create Projection Table for User Communication History
+//        (new UserDetails())->createOrUpdateRecord(
+//            $end_user->id,
+//            UserHistoryTypeEnum::CALLED_BY_REP->value,
+//            $event->modifiedBy(),
+//            $misc
+//        );
 
+        //TODO: THIS NEEDS TO BE REFACTORED.  FIRE OFF A CreateNote Action in the REACTOR
         if (isset($misc['notes'])) {
             /** @TODO: use action */
             Note::create([
@@ -162,37 +166,10 @@ class UserActivityProjector extends Projector
         }
     }
 
-    protected function createOrUpdateEndUserDetailsAndNotes($event, EndUser $end_user): void
-    {
-        foreach ($this->getModel()->getDetailFields() as $field) {
-            ($end_user::getDetailsModel())::createOrUpdateRecord(
-                $event->aggregateRootUuid(),
-                $field,
-                $event->payload[$field] ?? null
-            );
-        }
-
-        $notes = $event->payload['notes'] ?? null;
-        if ($notes && $notes['title'] ?? null) {
-            Note::create([
-                'entity_id' => $end_user->id,
-                'entity_type' => ($end_user::getDetailsModel())::class,
-                'title' => $notes['title'],
-                'note' => $notes['note'],
-                'created_by_user_id' => $event->modifiedBy(),
-            ]);
-
-            $noted_created = ($end_user::getDetailsModel())->createOrUpdateRecord(
-                $end_user->id,
-                UserDetailsFieldEnum::NOTE_CREATED->value,
-                $notes['note']
-            );
-        }
-    }
-
     public function onEndUserUpdatedCommunicationPreferences(EndUserUpdatedCommunicationPreferences $event): void
     {
-        $end_user = $this->getModel()::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
+        $end_user = User::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
         $end_user->forceFill(['unsubscribed_email' => $event->email, 'unsubscribed_sms' => $event->sms])->save();
+        UserDataReflector::reflectData($end_user);
     }
 }

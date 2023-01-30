@@ -56,7 +56,7 @@ class CreateReminderFromCalendarEvent
     public function asController(ActionRequest $request, Reminder $reminder): RedirectResponse
     {
         $data = $request->validated();
-        $data['entity_id'] = request()->id;
+        $data['entity_id'] = $reminder->id;
         $data['user_id'] = $request->user()->id;
         $reminder = $this->handle(
             $data,

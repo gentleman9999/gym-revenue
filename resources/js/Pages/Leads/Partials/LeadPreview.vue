@@ -3,59 +3,52 @@
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
             label="Name"
-            :value="data.lead.first_name + ' ' + data.lead.last_name"
+            :value="lead.first_name + ' ' + lead.last_name"
         />
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
             label="Email"
-            :value="data.lead.email"
+            :value="lead.email"
         />
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
             label="Phone 1"
-            :value="data.lead.phone"
+            :value="lead.phone"
         />
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
             label="Phone 2"
-            :value="data.lead.alternate_phone"
+            :value="lead.alternate_phone"
         />
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
             label="Gender"
-            :value="data.lead.gender"
+            :value="lead.gender"
         />
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
             label="Birthdate"
-            :value="
-                new Date(data.lead.date_of_birth).toLocaleDateString('en-US')
-            "
+            :value="new Date(lead.date_of_birth).toLocaleDateString('en-US')"
         />
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
             label="Lead Owner Email"
-            :value="
-                data.lead?.owner ? data.lead.owner.email : 'Not Yet Claimed'
-            "
+            :value="lead?.owner ? lead.owner.email : 'Not Yet Claimed'"
         />
         <div class="field col-span-6 lg:col-span-3">
             <label>Contact</label>
             <div class="data">
-                Called: {{ data.interactionCount.calledCount }} <br />
-                Emailed: {{ data.interactionCount.emailedCount }} <br />
-                Text: {{ data.interactionCount.smsCount }} <br />
+                Called: {{ lead.interaction_count.calledCount }} <br />
+                Emailed: {{ lead.interaction_count.emailedCount }} <br />
+                Text: {{ lead.interaction_count.smsCount }} <br />
             </div>
         </div>
-        <div
-            class="collapse col-span-6"
-            tabindex="0"
-            v-if="data?.preview_note?.length"
-        >
+        <div class="collapse col-span-6" tabindex="0" v-if="lead.notes?.length">
             <div class="collapse-title text-sm font-medium">
                 > Existing Notes
             </div>
             <div class="flex flex-col gap-2 collapse-content">
+                <!-- this was from dev, dunno wtf it is
                 <div v-for="(note, ndx) in data.preview_note" :key="ndx">
                     <div
                         class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"
@@ -70,27 +63,35 @@
                         />
                         {{ note["note"] }}
                     </div>
+                -->
+                <div
+                    v-for="(note, ndx) in lead.notes"
+                    :key="ndx"
+                    class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"
+                >
+                    {{ note["note"] }}
                 </div>
             </div>
         </div>
         <div
             class="flex lg:flex-row flex-col justify-between col-span-6 lg:col-span-6 text-secondary"
         >
-            <label>Club/ Location: {{ data.club_location.name }}</label>
+            <!--            TODO: Fix Preview when home_location is null-->
+            <!--            <label>Club/ Location: {{ lead.home_location.name }}</label>-->
             <Button size="xs" primary v-if="assigning" disabled
                 >Assigning...</Button
             >
             <Button
                 size="xs"
                 primary
-                v-else-if="data.lead.owner?.id === $page.props.user.id"
+                v-else-if="lead.owner_user_id === $page.props.user.id"
                 @click="handleContact"
                 >Contact</Button
             >
             <Button
                 size="xs"
                 primary
-                v-else-if="!data.lead.owner?.id"
+                v-else-if="!lead.owner_user_id"
                 @click="handleClaim"
                 >Claim</Button
             >
@@ -116,7 +117,7 @@ import Button from "@/Components/Button.vue";
 import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
-    data: {
+    lead: {
         type: Object,
     },
 });
@@ -125,7 +126,7 @@ const assigning = ref(false);
 
 const handleClaim = async () => {
     assigning.value = true;
-    Inertia.visit(route("data.leads.assign", props.data.lead.id), {
+    Inertia.visit(route("data.leads.assign", props.lead.id), {
         method: "put",
         preserveScroll: true,
         onFinish: () => {
@@ -134,6 +135,6 @@ const handleClaim = async () => {
     });
 };
 const handleContact = () => {
-    Inertia.visit(route("data.leads.show", props.data.lead.id));
+    Inertia.visit(route("data.leads.show", props.lead.id));
 };
 </script>

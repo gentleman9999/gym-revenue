@@ -1,0 +1,6 @@
+extend type Query {
+    globalSearch(
+        term: String,
+        pagination: PaginationInput
+    ): GlobalSearchResult
+}

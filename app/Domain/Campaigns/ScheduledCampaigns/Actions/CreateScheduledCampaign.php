@@ -2,6 +2,7 @@
 
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaignAggregate;
@@ -9,20 +10,16 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateScheduledCampaign
+class CreateScheduledCampaign extends GymRevAction
 {
-    use AsAction;
-
     public string $commandSignature = 'scheduled-campaign:create';
     public string $commandDescription = 'Creates a ScheduledCampaign with the given name.';
 
@@ -53,9 +50,9 @@ class CreateScheduledCampaign
         ];
     }
 
-    public function getControllerMiddleware(): array
+    public function mapArgsToHandle($args): array
     {
-        return [InjectClientId::class];
+        return [$args['campaign']];
     }
 
     public function authorize(ActionRequest $request): bool
@@ -68,8 +65,7 @@ class CreateScheduledCampaign
     public function asController(ActionRequest $request): ScheduledCampaign
     {
         return $this->handle(
-            $request->validated(),
-            $request->user(),
+            $request->validated()
         );
     }
 

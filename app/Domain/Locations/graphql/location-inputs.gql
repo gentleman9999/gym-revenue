@@ -1,0 +1,45 @@
+# Create Input for Location
+input CreateLocationInput @validator {
+    gymrevenue_id: String
+    location_no: String!
+    location_type: LocationType!
+    name: String!
+    city: String!
+    state: String!
+    active: Boolean
+    zip: String
+    phone: String
+    address1: String!
+    address2: String
+    poc_phone: String
+    poc_first: String
+    poc_last: String
+    opened_at: DateTime
+    closed_at: DateTime
+    latitude: Int
+    longitude: Int
+    capacity: Int
+}
+
+input UpdateLocationInput @validator {
+    id: ID!
+    gymrevenue_id: String
+    location_no: String
+    location_type: LocationType
+    name: String
+    city: String
+    state: String
+    active: Boolean
+    zip: String
+    phone: String
+    address1: String
+    address2: String
+    poc_phone: String
+    poc_first: String
+    poc_last: String
+    opened_at: DateTime
+    closed_at: DateTime
+    latitude: Int
+    longitude: Int
+    capacity: Int
+}

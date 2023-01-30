@@ -42,5 +42,8 @@ Route::middleware('MailgunAuth')->prefix('mailgun')->group(function () {
     Route::post('/statusCallBack', \App\Domain\Email\Actions\MailgunStatusCallback::class);
 });
 
+Route::get('/csrf', function () {
+    return csrf_token();
+});
 
 Route::post('/plans', \App\Actions\Clients\GetPlans::class);

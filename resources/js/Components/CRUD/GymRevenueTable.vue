@@ -46,9 +46,11 @@
                                     <tr
                                         v-for="row in resource?.data || []"
                                         class="hover"
+                                        :key="row.id"
                                     >
                                         <td
                                             v-for="(header, index) in __headers"
+                                            :key="index"
                                         >
                                             <component
                                                 v-if="headers.component"

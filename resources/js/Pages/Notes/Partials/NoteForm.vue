@@ -27,14 +27,12 @@
                 <input :id="active" type="checkbox" v-model="form.active" />
                 <jet-input-error :message="form.errors.active" class="mt-2" />
             </div>
-
-            <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
         <template #actions>
             <Button
                 type="button"
-                @click="handleClickCancel"
+                @click="$emit('close')"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -50,85 +48,76 @@
                 :loading="form.processing"
             >
                 <!--this goes in disabled:  || !form.isDirty" -->
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
 </template>
 
-<script>
-//import { computed, ref } from "vue";
+<script setup>
+import * as _ from "lodash";
+import { computed, ref } from "vue";
 import { useGymRevForm } from "@/utils";
-
+import { toastError, toastSuccess } from "@/utils/createToast";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import { Inertia } from "@inertiajs/inertia";
-import { useModal } from "@/Components/InertiaModal";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
+const emit = defineEmits(["close", "refresh"]);
 
-        JetInputError,
-        JetLabel,
-    },
-    props: {
-        clientId: {
-            type: String,
-            required: true,
-        },
-        note: {
-            type: Object,
+const props = defineProps({
+    note: {
+        type: Object,
+        default: {
+            title: "",
+            note: "",
+            active: false,
         },
     },
-    setup(props, context) {
-        let note = props.note;
-        let operation = "Update";
-        if (!note) {
-            note = {
-                title: "",
-                note: "",
-                active: false,
-                id: "",
-                client_id: props.clientId,
-            };
-            operation = "Create";
-        }
+});
 
-        const form = useGymRevForm({
-            title: note.title,
-            note: note.note,
-            active: note.active,
-            id: note.id,
-            client_id: props.clientId,
+const { mutate: createNote } = useMutation(mutations.note.create);
+const { mutate: updateNote } = useMutation(mutations.note.update);
+
+const operation = computed(() => {
+    return props.note?.id ? "Update" : "Create";
+});
+
+const operFn = computed(() => {
+    return operation.value === "Update" ? updateNote : createNote;
+});
+
+const note = _.cloneDeep(props.note);
+
+const form = useGymRevForm({
+    ...note,
+});
+
+let handleSubmit = async () => {
+    try {
+        let inputData = {
+            title: form?.title,
+            note: form?.note,
+            active: form?.active,
+            id: note?.id,
+        };
+
+        if (operation.value === "Create") delete inputData["id"];
+        await operFn.value({
+            input: {
+                ...inputData,
+            },
         });
-
-        const modal = useModal();
-
-        let handleSubmit = () => form.put(route("notes.update", note.id));
-        if (operation === "Create") {
-            handleSubmit = () => form.post(route("notes.store"));
-        }
-
-        const handleClickCancel = () => {
-            console.log("modal", modal.value);
-            if (modal.value.close) {
-                modal.value.close();
-            } else {
-                Inertia.visit(route("notes"));
-            }
-        };
-
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            handleClickCancel,
-        };
-    },
+        toastSuccess("Note" + operation.value + "d!");
+        emit("close");
+        emit("refresh");
+    } catch (error) {
+        toastError("There was a problem");
+        console.log("Error saving note:", error);
+    }
 };
 </script>

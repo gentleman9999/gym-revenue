@@ -1,0 +1,20 @@
+extend type Mutation {
+    createFile(file: CreateFileInput @spread): File!
+        @inject(context: "user.client_id", name: "client_id")
+        @inject(context: "user.id", name: "user_id")
+
+    renameFile(input: RenameFileInput @spread): File!
+        @inject(context: "user.id", name: "user_id")
+
+    updateFileFolder(input: UpdateFileFolderInput @spread): File!
+        @inject(context: "user.id", name: "user_id")
+
+    updateFilePermissions(input: UpdateFilePermissionsInput @spread): File!
+        @inject(context: "user.id", name: "user_id")
+
+    restoreFile(id: ID!): File! @inject(context: "user.id", name: "user_id")
+
+    deleteFile(id: ID!): File! @inject(context: "user.id", name: "user_id")
+
+    trashFile(id: ID!): File! @inject(context: "user.id", name: "user_id")
+}

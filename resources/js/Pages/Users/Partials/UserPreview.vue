@@ -1,5 +1,5 @@
 <template>
-    <div class="grid grid-cols-12 gap-3">
+    <div class="grid grid-cols-12 gap-3" v-if="user">
         <div class="preview-title">User Preview</div>
         <div class="preview-avatar">
             <img :src="avatar" />
@@ -107,7 +107,8 @@ const props = defineProps({
     },
 });
 
+console.log("data", props.user);
 const avatar = computed(() =>
-    getAvatarImg(props.user.first_name, props.user.last_name)
+    props.user ? getAvatarImg(props.user.first_name, props.user.last_name) : ""
 );
 </script>

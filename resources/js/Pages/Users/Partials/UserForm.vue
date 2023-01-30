@@ -129,8 +129,8 @@
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
-                    :options="optionStates"
-                    :classes="multiselectClasses"
+                    :options="optionsStates"
+                    :classes="getDefaultMultiselectTWClasses()"
                 />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
@@ -174,20 +174,21 @@
                 class="form-control col-span-6 md:col-span-2"
                 v-if="isClientUser"
             >
-                <jet-label for="role_id" value="Security Role" />
+                <!-- <jet-label for="role_id" value="Security Role" />
                 <select
                     id="role_id"
                     class="block w-full mt-1"
                     v-model="form.role_id"
                 >
                     <option
-                        v-for="role_id in roles"
+                        v-for="role_id in roles?.data"
                         :value="role_id.id"
                         :key="role_id.id"
                     >
                         {{ role_id.title }}
                     </option>
-                </select>
+                </select> -->
+                <SecurityRoleSelect v-model="form.role_id" />
                 <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
             <!-- Home Club -->
@@ -202,7 +203,7 @@
                     v-model="form.home_location_id"
                 >
                     <option
-                        v-for="{ gymrevenue_id, name } in locations"
+                        v-for="{ gymrevenue_id, name } in locations?.data"
                         :value="gymrevenue_id"
                         :key="gymrevenue_id"
                     >
@@ -259,7 +260,7 @@
                 class="form-control col-span-6 md:col-span-2"
                 v-if="isClientUser"
             >
-                <jet-label for="role_id" value="Select Departments" />
+                <!-- <jet-label for="role_id" value="Select Departments" />
                 <select
                     v-model="selectedDepartment"
                     class="mt-1 w-full form-select"
@@ -272,7 +273,8 @@
                     >
                         {{ department.name }}
                     </option>
-                </select>
+                </select> -->
+                <DepartmentSelect v-model="selectedDepartment" />
                 <jet-input-error
                     :message="form.errors.departments"
                     class="mt-2"
@@ -467,7 +469,7 @@
                 :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
@@ -490,7 +492,8 @@
                                     :href="file.url"
                                     :download="file.filename"
                                     target="_blank"
-                                    >{{ file.filename }}</a
+                                >
+                                    {{ file.filename }}</a
                                 >
                             </div>
                             <button
@@ -506,7 +509,6 @@
             <daisy-modal
                 ref="fileManagerModal"
                 class="lg:max-w-5xl bg-base-300"
-                @close="resetFileManager"
             >
                 <file-manager
                     ref="fileManager"
@@ -540,8 +542,8 @@
     </jet-form-section>
 </template>
 
-<script>
-import { ref, computed, watch } from "vue";
+<script setup>
+import { ref, computed, watch, inject, watchEffect } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
@@ -551,6 +553,7 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
+import DepartmentSelect from "@/Pages/Departments/Partials/DepartmentSelect.vue";
 
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
@@ -562,378 +565,336 @@ import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager.vue";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
-import { useModal } from "@/Components/InertiaModal";
+import SecurityRoleSelect from "@/Pages/components/SecurityRoleSelect.vue";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
-        DatePicker,
-        Multiselect,
-        Confirm,
-        DaisyModal,
-        FileManager,
-        PhoneInput,
+import * as _ from "lodash";
+
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
+
+const props = defineProps({
+    user: {
+        type: Object,
     },
-    props: [
-        "user",
-        "clientName",
-        "isClientUser",
-        "roles",
-        "locations",
-        "availablePositions",
-        "availableDepartments",
-        "uploadFileRoute",
-    ],
-    emits: ["success"],
-    setup(props, { emit }) {
-        function notesExpanded(note) {
-            console.error(props.user.all_notes);
-            axios.post(route("note.seen"), {
-                note: note,
-            });
-        }
+    clientName: {
+        type: String,
+    },
+    roles: {
+        type: [Array, Object],
+    },
+    locations: {
+        type: [Array, Object],
+    },
+    availablePositions: {
+        type: [Array, Object],
+    },
+    availableDepartments: {
+        type: [Array, Object],
+    },
+    uploadFileRoute: {
+        type: String,
+    },
+});
 
-        const wantsToDeleteFile = ref(null);
-        const page = usePage();
-        let user = props.user;
+const emit = defineEmits(["success"]);
 
-        const team_id = page.props.value.user.current_team_id;
+function notesExpanded(note) {
+    console.error(props.user.all_notes);
+    axios.post(route("note.seen"), {
+        note: note,
+    });
+}
 
-        let operation = "Update";
-        if (user) {
-            if (props.isClientUser) {
-                user.role_id = user["role_id"];
-            }
-            user.contact_preference = user["contact_preference"]?.value;
-            user.team_id = team_id;
-            user.notes = { title: "", note: "" };
-            user.ec_first_name =
-                user["emergency_contact"]["misc"]["ec_first_name"];
-            user.ec_last_name =
-                user["emergency_contact"]["misc"]["ec_last_name"];
-            user.ec_phone = user["emergency_contact"]["misc"]["ec_phone"];
-        } else {
-            user = {
-                first_name: "",
-                last_name: "",
-                gender: "",
-                email: "",
-                alternate_email: "",
-                role_id: 0,
-                contact_preference: null,
-                phone: "",
-                address1: "",
-                address2: "",
-                city: "",
-                team_id,
-                notes: { title: "", note: "" },
-                started_at: "",
-                ended_at: "",
-                terminated_at: "",
-                state: "",
-                zip: "",
-                job_title: "",
-                positions: [],
-                departments: [],
-                ec_first_name: "",
-                ec_last_name: "",
-                ec_phone: "",
-            };
-            //only add client specific when applicable to make user validation rules work better
-            if (props.isClientUser) {
-                user.home_location_id = null;
-                user.notes = { title: "", note: "" };
-                user.started_at = null;
-                user.ended_at = null;
-                user.terminated_at = null;
-                user.role_id = null;
-                // user.departments = {
-                //
-                // }
-            }
-            operation = "Create";
-        }
-        const form = useGymRevForm(user);
+const wantsToDeleteFile = ref(null);
+const page = usePage();
+let user = _.cloneDeep(props.user);
 
-        let selectedDepartment = ref("");
-        let selectedPosition = ref(null);
-        const _addDepartmentPosition = (department, position) => {
-            form.departments = [
-                ...form.departments,
-                {
-                    department,
-                    position,
-                },
-            ];
-            console.log("form.departments set to", form.departments);
-        };
+const team_id = page.props.value.user.current_team_id;
+const isClientUser = page.props.value.user.is_client_user;
 
-        const selectableDepartments = computed(() =>
-            props.availableDepartments.filter(
-                ({ id, positions }) =>
-                    positions?.filter((p) => !selectedPosition.value !== p.id)
-                        .length
-            )
-        );
-        const renderableDepartments = ref([]);
-
-        watch(
-            [selectableDepartments],
-            () => {
-                if (
-                    selectableDepartments.value?.length &&
-                    !renderableDepartments.value?.length
-                ) {
-                    console.log("renderableDepartments - entered");
-                    const department_positions = [];
-                    console.log(
-                        "renderableDepartments-selectableDepartments",
-                        selectableDepartments.value
-                    );
-                    selectableDepartments.value.forEach(({ id, positions }) => {
-                        console.log("renderableDepartments-id.pos", {
-                            id,
-                            positions,
-                        });
-                        const department = props.user?.departments?.find(
-                            (d) => (d.id = id)
-                        );
-                        console.log("renderableDepartments-found depts", {
-                            department,
-                            user_positions: props.user?.positions,
-                        });
-                        const owned_positions =
-                            props.user?.positions?.filter((user_pos) =>
-                                positions?.find((dept_pos) => {
-                                    console.log(
-                                        "renderableDepartments-own po loop",
-                                        { user_pos, dept_pos }
-                                    );
-                                    return user_pos.id === dept_pos.id;
-                                })
-                            ) || [];
-                        console.log("renderableDepartments-found pos", {
-                            owned_positions,
-                        });
-                        owned_positions.forEach((owned_position) => {
-                            department_positions.push({
-                                department: department.id,
-                                position: owned_position.id,
-                            });
-                        });
-                    });
-                    renderableDepartments.value = department_positions;
-                }
-            },
-            { immediate: true }
-        );
-        watch(
-            renderableDepartments,
-            () => {
-                if (renderableDepartments.value?.length) {
-                    form.departments = [...renderableDepartments.value];
-                    console.log("set form.departments to", {
-                        renderableDepartments: renderableDepartments.value,
-                        formDeps: form.departments,
-                    });
-                }
-            },
-            { immediate: true }
-        );
-
-        let upperCaseF = (text) => {
-            form.state = text.toUpperCase();
-        };
-
-        const transformFormSubmission = (data) => {
-            if (!data.notes?.title) {
-                delete data.notes;
-            }
-            if (data?.started_at) {
-                data.started_at = transformDate(data.started_at);
-                data.ended_at = transformDate(data.ended_at);
-                data.terminated_at = transformDate(data.terminated_at);
-            }
-            return data;
-        };
-
-        const modal = useModal();
-
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform(transformFormSubmission)
-                .put(route("users.update", user.id), {
-                    onSuccess: () => (form.notes = { title: "", note: "" }),
-                });
-        if (operation === "Create") {
-            handleSubmit = () =>
-                form
-                    .transform(transformFormSubmission)
-                    .post(route("users.store"), {
-                        headers: { "X-Inertia-Modal-Redirect": true },
-                        onSuccess: () => (form.notes = { title: "", note: "" }),
-                    });
-        }
-
-        const handleConfirmDeleteFile = () => {
-            Inertia.delete(route("files.trash", wantsToDeleteFile.value), {
-                preserveScroll: true,
-            });
-            wantsToDeleteFile.value = null;
-        };
-
-        const fileManagerModal = ref();
-        const fileManager = ref();
-
-        // const closeFileManagerModal = computed(()=>{
-        //     console.log({fileManager: fileManager.value})
-        //     const reset = fileManager.value?.reset || fileManager?.reset || false;
-        //     console.log({reset})
-        //     return fileManager.value?.reset;
-        // })
-
-        const closeFileManagerModal = () => {
-            console.log({ fileManager: fileManager.value });
-            const reset =
-                fileManager.value?.reset || fileManager?.reset || false;
-            console.log({ reset });
-            return fileManager.value?.reset;
-        };
-
-        let optionsStates = [];
-        for (let x in states) {
-            optionsStates.push(states[x].abbreviation);
-        }
-
-        const handleClickCancel = () => {
-            if (modal.value.close) {
-                console.log("closing modal");
-                modal.value.close();
-            } else {
-                Inertia.visit(route("users"));
-            }
-        };
-
-        const addDepartmentPosition = () => {
-            _addDepartmentPosition(
-                selectedDepartment.value,
-                selectedPosition.value
-            );
-            selectedDepartment.value = null;
-            selectedPosition.value = null;
-        };
-        watch(selectedDepartment, () => {
-            selectedPosition.value = null;
-        });
-        const removeDepartment = (ndx) => {
-            form.departments.splice(ndx, 1);
-        };
-        const getDepartment = (id) => {
-            return props.availableDepartments.find((item) => item.id === id);
-        };
-        const getPosition = (id) => {
-            return props.availablePositions.find((item) => item.id === id);
-        };
-
-        const getPositions = (id_arr) => {
-            const positions = [];
-            id_arr.map((id) => {
-                const position = getPosition(id);
-                if (position) {
-                    positions.push(position);
-                }
-            });
-            return positions;
-        };
-
-        const all_positions_for_selected_department = computed(() => {
-            const selected_department = getDepartment(selectedDepartment.value);
-            return selected_department?.positions?.length
-                ? selected_department?.positions
-                : [];
-        });
-        // const selectablePositions = computed(()=>{
-        //     const filtered =  all_positions_for_selected_department.value.filter( department_position =>
-        //         //selected Positions does not yet have this department_position
-        //         !selectedPositions.value?.includes(department_position.id)
-        //     );
-        //     return filtered?.length ? filtered : [];
-        // })
-
-        const selectablePositions = computed(() => {
-            const filtered = all_positions_for_selected_department.value.filter(
-                (department_position) =>
-                    //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
-                    !form.departments?.find(
-                        ({ department, position }) =>
-                            department === selectedDepartment.value &&
-                            position === department_position.id
-                    )
-            );
-            return filtered?.length ? filtered : [];
-        });
-
-        const selectablePositionOptions = computed(() => {
-            if (selectablePositions.value?.length) {
-                return selectablePositions.value?.map((position) => ({
-                    label: position.name,
-                    value: position.id,
-                }));
-            } else {
-                return [];
-            }
-        });
+let operation = "Update";
+if (user) {
+    if (isClientUser) {
+        user.role_id = user["role_id"];
+    }
+    user.gender = user["gender"];
+    user.contact_preference = user?.contact_preference?.value;
+    user.team_id = team_id;
+    user.notes = { title: "", note: "" };
+    user.ec_first_name = user?.emergency_contact?.ec_first_name;
+    user.ec_last_name = user?.emergency_contact?.ec_last_name;
+    user.ec_phone = user?.emergency_contact?.ec_phone;
+} else {
+    user = {
+        first_name: "",
+        last_name: "",
+        gender: "",
+        email: "",
+        alternate_email: "",
+        role_id: 0,
+        contact_preference: null,
+        phone: "",
+        address1: "",
+        address2: "",
+        city: "",
+        team_id,
+        notes: { title: "", note: "" },
+        started_at: "",
+        ended_at: "",
+        terminated_at: "",
+        state: "",
+        zip: "",
+        job_title: "",
+        positions: [],
+        departments: [],
+        ec_first_name: "",
+        ec_last_name: "",
+        ec_phone: "",
+    };
+    //only add client specific when applicable to make user validation rules work better
+    if (isClientUser) {
+        user.home_location_id = null;
+        user.notes = { title: "", note: "" };
+        user.started_at = null;
+        user.ended_at = null;
+        user.terminated_at = null;
+        user.role_id = null;
+        // user.departments = {
         //
-        // const selectablePositions = computed(() => {
-        //     const selected_department = getDepartment(selectedDepartment.value);
-        //     const all_departments_positions = selected_department?.positions || [];
-        //     const filtered =  all_departments_positions.filter( department_position =>
-        //         //selected Positions does not yet have this department_position
-        //          !selectedPositions.value?.includes(department_position.id)
-        //             //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
-        //             && form.departments?.filter(({department, position})=> department === selected_department.id &&  position === department_position.id));
-        //     return  filtered?.length ? filtered : [];
-        // });
+        // }
+    }
+    operation = "Create";
+}
+const form = useGymRevForm(user);
 
-        return {
-            form,
-            buttonText: operation,
-            operation,
-            handleSubmit,
-            upperCaseF,
-            optionStates: optionsStates,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
-            wantsToDeleteFile,
-            handleConfirmDeleteFile,
-            fileManagerModal,
-            fileManager,
-            closeFileManagerModal,
-            notesExpanded,
-            handleClickCancel,
-            selectedDepartment,
-            selectedPosition,
-            addDepartmentPosition,
-            getDepartment,
-            getPosition,
-            getPositions,
-            removeDepartment,
-            selectableDepartments,
-            selectablePositions,
-            renderableDepartments,
-            // positions_for_selected_department_without_already_assigned_positions,
-            // positions_for_selected_department_excluding_currently_selected,
-            all_positions_for_selected_department,
-            selectablePositionOptions,
-            // closeFileManagerModal: ()=> fileManagerModal.value.close(),
-            // resetFileManager: () => console.log(fileManager.value)
-            // resetFileManager: () => fileManager.value?.reset()
-        };
-    },
+let selectedDepartment = ref(null);
+let selectedPosition = ref(null);
+const _addDepartmentPosition = (department, position) => {
+    form.departments = [
+        ...form.departments,
+        {
+            department,
+            position,
+        },
+    ];
 };
+
+const selectableDepartments = computed(() =>
+    props.availableDepartments.data.filter(
+        ({ id, positions }) =>
+            positions?.filter((p) => !selectedPosition.value !== p.id).length
+    )
+);
+const renderableDepartments = ref([]);
+
+watch(
+    [selectableDepartments],
+    () => {
+        if (
+            selectableDepartments.value?.length &&
+            !renderableDepartments.value?.length
+        ) {
+            const department_positions = [];
+            selectableDepartments.value.forEach(({ id, positions }) => {
+                const department = props.user?.departments?.find(
+                    (d) => (d.id = id)
+                );
+                const owned_positions =
+                    props.user?.positions?.filter((user_pos) =>
+                        positions?.find((dept_pos) => {
+                            return user_pos.id === dept_pos.id;
+                        })
+                    ) || [];
+                owned_positions.forEach((owned_position) => {
+                    department_positions.push({
+                        department: department.id,
+                        position: owned_position.id,
+                    });
+                });
+            });
+            renderableDepartments.value = department_positions;
+        }
+    },
+    { immediate: true }
+);
+watch(
+    renderableDepartments,
+    () => {
+        if (renderableDepartments.value?.length) {
+            form.departments = [...renderableDepartments.value];
+        }
+    },
+    { immediate: true }
+);
+
+let upperCaseF = (text) => {
+    form.state = text.toUpperCase();
+};
+
+const transformFormSubmission = (data) => {
+    if (!data.notes?.title) {
+        delete data.notes;
+    }
+    if (data?.started_at) {
+        data.started_at = transformDate(data.started_at);
+        data.ended_at = transformDate(data.ended_at);
+        data.terminated_at = transformDate(data.terminated_at);
+    }
+    return data;
+};
+
+const { mutate: createUser } = useMutation(mutations.user.create);
+const { mutate: updateUser } = useMutation(mutations.user.update);
+
+let handleSubmit = async () => {
+    console.log("BAAAAAl");
+    console.log();
+    console.log("form post", JSON.stringify(form.dirtyData));
+    await updateUser({
+        input: {
+            id: props.user.id,
+            first_name: form.first_name,
+            last_name: form.last_name,
+            email: form.email,
+            alternate_email: form.alternate_email,
+            address1: form.address1,
+            address2: form.address2,
+            phone: form.phone,
+            city: form.city,
+            state: form.state,
+            zip: form.zip + "",
+            contact_preference: form.contact_preference,
+            started_at: form.started_at,
+            ended_at: form.ended_at,
+            terminated_at: form.terminated_at,
+            notes: form.notes,
+            team_id: form.team_id,
+            role_id: form.role_id,
+            home_location_id: form.home_location_id,
+            departments: JSON.parse(JSON.stringify(form.departments)),
+            manager: null,
+            gender: form.gender,
+        },
+    });
+    handleClickCancel();
+};
+
+if (operation === "Create") {
+    handleSubmit = async () => {
+        // form.transform(transformFormSubmission)
+        await createUser({
+            input: {
+                first_name: form.first_name,
+                last_name: form.last_name,
+                email: form.email,
+                alternate_email: form.alternate_email,
+                address1: form.address1,
+                address2: form.address2,
+                phone: form.phone,
+                city: form.city,
+                state: form.state,
+                zip: form.zip + "",
+                contact_preference: form.contact_preference,
+                started_at: form.started_at,
+                ended_at: form.ended_at,
+                terminated_at: form.terminated_at,
+                notes: form.notes,
+                team_id: form.team_id,
+                role_id: form.role_id,
+                home_location_id: form.home_location_id,
+                manager: null,
+                departments: JSON.parse(JSON.stringify(form.departments)),
+                positions: [],
+                gender: form.gender,
+            },
+        });
+        handleClickCancel();
+    };
+}
+
+const handleConfirmDeleteFile = () => {
+    Inertia.delete(route("files.trash", wantsToDeleteFile.value), {
+        preserveScroll: true,
+    });
+    wantsToDeleteFile.value = null;
+};
+
+const fileManagerModal = ref();
+const fileManager = ref();
+
+const closeFileManagerModal = () => {
+    const reset = fileManager.value?.reset || fileManager?.reset || false;
+    return fileManager.value?.reset;
+};
+
+let optionsStates = [];
+for (let x in states) {
+    optionsStates.push(states[x].abbreviation);
+}
+
+const handleClickCancel = () => {
+    emit("close");
+};
+
+const addDepartmentPosition = () => {
+    _addDepartmentPosition(selectedDepartment.value, selectedPosition.value);
+    selectedDepartment.value = null;
+    selectedPosition.value = null;
+};
+watch(selectedDepartment, () => {
+    selectedPosition.value = null;
+});
+const removeDepartment = (ndx) => {
+    form.departments.splice(ndx, 1);
+};
+const getDepartment = (id) => {
+    return props.availableDepartments.data.find((item) => item.id === id);
+};
+const getPosition = (id) => {
+    return props.availablePositions.data.find((item) => item.id === id);
+};
+
+const getPositions = (id_arr) => {
+    const positions = [];
+    id_arr.map((id) => {
+        const position = getPosition(id);
+        if (position) {
+            positions.push(position);
+        }
+    });
+    return positions;
+};
+
+const all_positions_for_selected_department = computed(() => {
+    const selected_department = getDepartment(selectedDepartment.value);
+    return selected_department?.positions?.length
+        ? selected_department?.positions
+        : [];
+});
+
+const selectablePositions = computed(() => {
+    const filtered = all_positions_for_selected_department.value.filter(
+        (department_position) =>
+            //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
+            !form.departments?.find(
+                ({ department, position }) =>
+                    department === selectedDepartment.value &&
+                    position === department_position.id
+            )
+    );
+    return filtered?.length ? filtered : [];
+});
+
+const selectablePositionOptions = computed(() => {
+    if (selectablePositions.value?.length) {
+        return selectablePositions.value?.map((position) => ({
+            label: position.name,
+            value: position.id,
+        }));
+    } else {
+        return [];
+    }
+});
 </script>
 
 <style scoped>

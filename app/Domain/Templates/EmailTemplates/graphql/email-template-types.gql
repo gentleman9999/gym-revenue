@@ -1,0 +1,20 @@
+type EmailTemplate {
+    id: ID!
+    name: String!
+    markup: String!
+    subject: String!
+    json: String! @rename(attribute: "jsonString") # needs to be transformed into a string, then parsed back into json on client
+    thumbnail: Thumbnail
+    active: Boolean
+    team_id: ID
+    team: Team @belongsTo
+    created_by_user_id: ID
+    creator: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Thumbnail {
+    key: String
+    url: String
+}

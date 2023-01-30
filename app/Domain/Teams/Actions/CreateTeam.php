@@ -2,22 +2,19 @@
 
 namespace App\Domain\Teams\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
 use Laravel\Jetstream\Contracts\CreatesTeams;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateTeam implements CreatesTeams
+class CreateTeam extends GymRevAction implements CreatesTeams
 {
-    use AsAction;
-
     public function handle(array $payload): Team
     {
         $id = Uuid::new();
@@ -25,6 +22,11 @@ class CreateTeam implements CreatesTeams
         TeamAggregate::retrieve($id)->create($payload)->persist();
 
         return Team::findOrFail($id);
+    }
+
+    public function __invoke($_, array $args): Team
+    {
+        return $this->handle($args);
     }
 
     /**
@@ -40,11 +42,6 @@ class CreateTeam implements CreatesTeams
             'home_team' => ['sometimes', 'boolean'],
             'locations' => ['sometimes', 'array'],
         ];
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

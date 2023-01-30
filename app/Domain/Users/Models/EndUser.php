@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Users\Models;
 
 use App\Domain\Locations\Projections\Location;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Models\Endusers\MembershipType;
 use App\Scopes\ClientScope;
 use App\Scopes\EndUserScope;
@@ -20,16 +21,6 @@ class EndUser extends User
         static::addGlobalScope(new EndUserScope());
     }
 
-    public function detailsDesc(): HasMany
-    {
-        return $this->details()->orderBy('created_at', 'DESC');
-    }
-
-    public function detailsAsc(): HasMany
-    {
-        return $this->details()->orderBy('created_at', 'ASC');
-    }
-
     public function location(): HasOne
     {
         return $this->hasOne(Location::class, 'gymrevenue_id', 'home_location_id');
@@ -37,7 +28,7 @@ class EndUser extends User
 
     public function getMembershipTypeIdAttribute(): ?string
     {
-        return $this->detail()->where('field', 'membership_type_id')->first()->value;
+        return $this->details['membership_type_id'] ?? null;
     }
 
     public function membershipType(): HasOne
@@ -47,25 +38,19 @@ class EndUser extends User
 
     public function claimed(): HasMany
     {
-        return $this->details()->whereField('claimed');
+        return $this->details['claimed'] ?? null;
     }
 
     //TODO: should utilize a relationship
     public function getOwnerUserIdAttribute(): ?string
     {
-        return $this->detail()->where('field', 'owner_user_id')->first()->value ?? null;
+        return $this->details['owner_user_id'] ?? null;
     }
 
     //TODO: should utilize a relationship
     public function getOwnerAttribute(): ?Employee
     {
         return Employee::find($this->owner_user_id);
-    }
-
-    public function lastUpdated(): HasOne
-    {
-        return $this->detail()->whereField('updated')->whereActive(1)
-            ->orderBy('created_at', 'DESC');
     }
 
     public function scopeFilter($query, array $filters): void
@@ -131,5 +116,13 @@ class EndUser extends User
     public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
         return $this->morphMany('App\Models\File', 'fileable');
+    }
+
+    //    TODO: store as projection somewhere, this is expensive
+    public function getInteractionCount()
+    {
+        $aggy = UserAggregate::retrieve($this->id);
+
+        return $aggy->getInteractionCount();
     }
 }

@@ -25,14 +25,12 @@ class TeamController extends Controller
         //   $users = $current_team->team_users()->get();
         $users = Employee::with(['teams', 'home_location'])->get();
 
-        $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
         $locations = Location::all();
 
 
         return Inertia::render('Teams/List', [
             'filters' => $request->all('search', 'club', 'team', 'users'),
             'clubs' => $locations ?? null,
-            'teams' => $teams ?? null,
             'preview' => $request->preview ?? null,
             'potentialUsers' => $users,
         ]);
@@ -92,7 +90,7 @@ class TeamController extends Controller
             'users' => $users,
             'availablePermissions' => Jetstream::$permissions,
             'defaultPermissions' => Jetstream::$defaultPermissions,
-            'locations' => $team->locations()->get('value'),
+            'locations' => $team->locations(),
             'permissions' => [
                 'canAddTeamMembers' => Gate::check('addTeamMember', $team),
                 'canDeleteTeam' => Gate::check('delete', $team),

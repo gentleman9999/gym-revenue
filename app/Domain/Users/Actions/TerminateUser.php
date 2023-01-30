@@ -21,7 +21,6 @@ class TerminateUser
     public function handle(User $user): User
     {
         UserAggregate::retrieve($user->id)->terminate()->persist();
-        ReflectUserData::run($user);
 
         return $user;
     }

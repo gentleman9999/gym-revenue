@@ -1,0 +1,16 @@
+# Create Input for EmailTemplates
+input CreateEmailTemplateInput @validator {
+    name: String
+    subject: String
+    markup: String
+    json: String
+}
+
+# Update Input for EmailTemplates
+input UpdateEmailTemplateInput @validator {
+    id: ID!
+    name: String
+    subject: String
+    markup: String
+    json: String
+}

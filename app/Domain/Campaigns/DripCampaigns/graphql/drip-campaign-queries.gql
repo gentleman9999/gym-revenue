@@ -1,0 +1,10 @@
+extend type Query {
+    "Queries drip campaigns according to optional input filter"
+    dripCampaigns(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [DripCampaign!]! @paginate(defaultCount: 10)
+
+    "Finds a single drip campaign by ID"
+    dripCampaign(id: ID @eq): DripCampaign @find
+}

@@ -7,10 +7,8 @@ export const getCrudConfig = (table) => {
     }
     const page = usePage();
     const config = computed(() => page?.props.value.user?.column_config || {});
-    console.log({ config: config.value, table });
     //we compare json here to prevent double display of the alert
     if (table) {
-        console.log(config.value["misc"]);
         return computed(() => config.value[table] || []);
     }
     return config;

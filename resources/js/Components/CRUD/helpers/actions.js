@@ -1,13 +1,15 @@
 import { Inertia } from "@inertiajs/inertia";
 import { computed } from "vue";
 import { merge } from "lodash";
-import { preview } from "@/Components/CRUD/helpers/previewData";
+import { preview, edit } from "@/Components/CRUD/helpers/gqlData";
+import { faGameConsoleHandheld } from "@fortawesome/pro-duotone-svg-icons";
 
 export const defaults = Object.freeze({
     edit: {
         label: "Edit",
-        handler: ({ baseRoute, data }) =>
-            Inertia.visitInModal(route(`${baseRoute}.edit`, data.id)),
+        handler: async ({ baseRoute, data, modelName = "" }) => {
+            edit(data["id"], modelName);
+        },
     },
     trash: {
         label: "Trash",
@@ -27,25 +29,20 @@ export const defaults = Object.freeze({
 export const getDefaults = ({ previewComponent }) => {
     const hasPreviewComponent = !!previewComponent;
 
-    if (!hasPreviewComponent) {
-        return defaults;
-    }
-    return merge(
-        {
-            preview: {
-                label: "Preview",
-                handler: async ({ baseRoute, data }) => {
-                    // const routeName = `${baseRoute}.view`;
-                    // const resp = await axios.get(
-                    //     route(routeName, data.id),
-                    // );
-                    // setPreviewData(resp.data);
-                    preview(baseRoute, data["id"]);
+    if (hasPreviewComponent) {
+        return merge(
+            {
+                preview: {
+                    label: "Preview",
+                    handler: async ({ baseRoute, data }) => {
+                        preview(data["id"]);
+                    },
                 },
             },
-        },
-        defaults
-    );
+            defaults
+        );
+    }
+    return defaults;
 };
 
 export const getActions = (props) => {

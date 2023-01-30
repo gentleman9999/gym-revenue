@@ -23,15 +23,7 @@ class PositionsController extends Controller
             return Redirect::back();
         }
 
-        $pos = Position::whereClientId($client_id)
-            ->with('departments')
-            ->filter($request->only('search', 'trashed'))
-            ->sort()
-            ->paginate(10)
-            ->appends(request()->except('page'));
-
         return Inertia::render('Positions/Show', [
-            'positions' => $pos,
             'departments' => Department::all(),
             'filters' => $request->all('search', 'trashed', 'state'),
         ]);

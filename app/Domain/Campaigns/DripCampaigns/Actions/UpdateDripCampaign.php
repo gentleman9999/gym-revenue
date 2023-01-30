@@ -2,19 +2,16 @@
 
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\DripCampaigns\DripCampaignAggregate;
-use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateDripCampaign
+class UpdateDripCampaign extends GymRevAction
 {
-    use AsAction;
-
     public function handle(DripCampaign $dripCampaign, array $payload): DripCampaign
     {
         if (! $dripCampaign->can_publish) {
@@ -73,9 +70,11 @@ class UpdateDripCampaign
         ];
     }
 
-    public function getControllerMiddleware(): array
+    public function mapArgsToHandle($args): array
     {
-        return [InjectClientId::class];
+        $dripCampaign = $args['campaign'];
+
+        return [DripCampaign::find($dripCampaign['id']), $dripCampaign];
     }
 
     public function authorize(ActionRequest $request): bool

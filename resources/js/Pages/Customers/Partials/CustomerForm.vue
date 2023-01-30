@@ -2,7 +2,7 @@
     <div class="col-span-6 flex flex-col items-center gap-4 mb-4">
         <div
             class="w-32 h-32 rounded-full overflow-hidden border"
-            :style="borderStyle"
+            :style="() => resolveBorderColorLevel(form['opportunity'])"
         >
             <img
                 v-if="fileForm.url"
@@ -132,8 +132,8 @@
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
-                    :options="optionStates"
-                    :classes="multiselectClasses"
+                    :options="validStateSelections"
+                    :classes="getDefaultMultiselectTWClasses()"
                 />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
@@ -207,22 +207,7 @@
 
             <div class="form-divider" />
             <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="club_id" value="Club" />
-                <select
-                    class=""
-                    v-model="form['home_location_id']"
-                    required
-                    id="club_id"
-                >
-                    <option value="">Select a Club</option>
-                    <option
-                        v-for="(name, clubId) in locations"
-                        :value="clubId"
-                        :key="clubId"
-                    >
-                        {{ name }}
-                    </option>
-                </select>
+                <ClubSelect v-model="form['home_location_id']" />
                 <jet-input-error
                     :message="form.errors['home_location_id']"
                     class="mt-2"
@@ -290,7 +275,7 @@
                 >
                     <div
                         class="collapse-title text-sm font-medium"
-                        v-on:click="notesExpanded(note)"
+                        v-on:click="handleNoteExpansion(note)"
                     >
                         <hr
                             v-if="
@@ -320,51 +305,12 @@
                     </div>
                 </div>
             </template>
-
-            <!--            <div-->
-            <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="form-divider"-->
-            <!--            />-->
-            <!--            <div-->
-            <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-2"-->
-            <!--            >-->
-            <!--                Times Emailed:-->
-            <!--                <span class="badge badge-success badge-outline">-->
-            <!--                    {{ interactionCount.emailedCount }}-->
-            <!--                </span>-->
-            <!--            </div>-->
-            <!--            <div-->
-            <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-2"-->
-            <!--            >-->
-            <!--                Times Called:-->
-            <!--                <span class="badge badge-error badge-outline">-->
-            <!--                    {{ interactionCount.calledCount }}-->
-            <!--                </span>-->
-            <!--            </div>-->
-            <!--            <div-->
-            <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-2"-->
-            <!--            >-->
-            <!--                Times Text Messaged:-->
-            <!--                <span class="badge badge-info badge-outline">-->
-            <!--                    {{ interactionCount.smsCount }}-->
-            <!--                </span>-->
-            <!--            </div>-->
-
-            <!--            <div class="form-divider" />-->
-            <!--            <div class="col-span-6">-->
-            <!--                <label v-if="operation === 'Update'">-->
-            <!--                    {{ lastUpdated }}-->
-            <!--                </label>-->
-            <!--            </div>-->
         </template>
 
         <template #actions>
             <Button
                 type="button"
-                @click="goBack"
+                @click="$emit('close')"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -375,216 +321,150 @@
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
-                :disabled="form.processing || !form.isDirty"
+                :disabled="form.processing"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                Update
             </Button>
         </template>
     </jet-form-section>
 </template>
 
-<script>
-import { computed, watchEffect } from "vue";
+<script setup>
+import { computed, watchEffect, ref, onMounted } from "vue";
 import { useGymRevForm } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
+import { transformDate } from "@/utils/transformDate";
+import { preformattedForSelect } from "@/utils/formatters/states";
+import { getDefaultMultiselectTWClasses } from "@/utils";
+import { resolveBorderColorLevel } from "@/utils/resolvers/warningLevelToStyle";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
+
 import Vapor from "laravel-vapor";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import { useGoBack } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
-import states from "@/Pages/Comms/States/statesOfUnited";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import ClubSelect from "@/Pages/Locations/Partials/ClubSelect.vue";
 
 library.add(faUserCircle);
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        FontAwesomeIcon,
-        JetInputError,
-        JetLabel,
-        DatePicker,
-        PhoneInput,
-        Multiselect,
+const props = defineProps({
+    userId: {
+        type: String,
     },
-    props: [
-        "userId",
-        "clientId",
-        "customer",
-        "locations",
-        "interactionCount",
-        "agreementCategories",
-    ],
-    setup(props, context) {
-        function notesExpanded(note) {
-            axios.post(route("note.seen"), {
-                client_id: props.clientId,
-                note: note,
-            });
-        }
+    clientId: {
+        type: String,
+    },
+    customer: {
+        type: Object,
+        default: {
+            id: "",
+            user_type: "customer",
+            first_name: "",
+            last_name: "",
+            email: "",
+            phone: "",
+            address1: "",
+            city: "",
+            zip: "",
+        },
+    },
+    locations: {
+        type: [Array, String, Object],
+    },
+    interactionCount: {
+        type: [Number, String],
+    },
+    agreementCategories: {
+        type: [Array, Object],
+    },
+});
 
-        let customer = props.customer;
-        let operation = "Update";
-        let customerData = null;
-        if (!customer) {
-            customerData = {
-                first_name: "",
-                middle_name: "",
-                last_name: "",
-                email: "",
-                phone: "",
-                alternate_phone: "",
-                club_id: "",
-                client_id: props.clientId,
-                home_location_id: null,
-                profile_picture: null,
-                gender: "",
-                date_of_birth: null,
-                notes: { title: "", note: "" },
-                agreement_category_id: "",
-                address1: "",
-                address2: "",
-                zip: "",
-                state: "",
-                city: "",
-            };
-            operation = "Create";
-        } else {
-            customerData = {
-                first_name: customer.first_name,
-                middle_name: customer.middle_name,
-                last_name: customer.last_name,
-                email: customer.email,
-                phone: customer.phone,
-                alternate_phone: customer.alternate_phone,
-                club_id: customer.club_id,
-                client_id: props.clientId,
-                home_location_id: customer.home_location_id,
-                profile_picture: null,
-                gender: customer.gender,
-                notes: { title: "", note: "" },
-                date_of_birth: customer.date_of_birth,
-                address1: customer.address1,
-                address2: customer.address2,
-                zip: customer.zip,
-                state: customer.state,
-                city: customer.city,
-            };
-        }
-        const borderStyle = computed(() => {
-            let color = "transparent";
-            switch (form["opportunity"]) {
-                case "High":
-                    color = "green";
-                    break;
+const validStateSelections = ref(preformattedForSelect);
 
-                case "Medium":
-                    color = "yellow";
-                    break;
+const { mutate: updateCustomer } = useMutation(mutations.user.update);
+const { mutate: updateNote } = useMutation(mutations.note.update);
 
-                case "Low":
-                    color = "red";
-                    break;
-            }
-            return {
-                "border-color": color,
-                "border-width": "5px",
-            };
-        });
-        const lastUpdated = computed(() =>
-            "last_updated" in customer && customer.last_updated
-                ? `Last Updated by ${customer.last_updated.value} at ${new Date(
-                      customer.last_updated.updated_at
-                  ).toLocaleDateString("en-US")}`
-                : "This customer has never been updated"
-        );
-        const form = useGymRevForm(customerData);
-        const fileForm = useGymRevForm({ file: null });
+let customer = _.cloneDeep(props.customer);
+const form = useGymRevForm(customer);
+const fileForm = useGymRevForm({ file: null });
 
-        const transformFormSubmission = (data) => {
-            if (!data.notes?.title) {
-                delete data.notes;
-            }
-            data.date_of_birth = transformDate(data.date_of_birth);
-            return data;
+/** Form submission */
+const handleSubmit = async () => {
+    try {
+        let inputData = {
+            id: form?.id,
+            email: form?.email,
+            first_name: form?.first_name,
+            last_name: form?.last_name,
+            phone: form?.phone,
+            user_type: "customer",
+            gender: form?.gender,
+            address1: form?.address1,
+            zip: form?.zip,
+            city: form?.city,
+            date_of_birth: transformDate(form?.date_of_birth),
         };
 
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform(transformFormSubmission)
-                .put(route("data.customers.update", customer.id), {
-                    preserveState: false,
-                });
-        if (operation === "Create") {
-            handleSubmit = () =>
-                form
-                    .transform(transformFormSubmission)
-                    .post(route("data.customers.store"), {
-                        onSuccess: () => (form.notes = { title: "", note: "" }),
-                    });
+        if (form?.dirtyData?.state) {
+            inputData["state"] = preformattedForSelect.filter(
+                (obj) => obj?.value === form?.state?.dirtyData
+            )[0]?.label;
         }
 
-        const goBack = useGoBack(route("data.customers"));
-
-        watchEffect(async () => {
-            console.log("file Changed!", fileForm.file);
-            if (!fileForm.file) {
-                return;
-            }
-            try {
-                // uploadProgress.value=0;
-                let response = await Vapor.store(fileForm.file, {
-                    // visibility: form.isPublic ? 'public-read' : null,
-                    visibility: "public-read",
-                    // progress: (progress) => {
-                    //     uploadProgress.value = Math.round(progress * 100);
-                    // },
-                });
-                fileForm.url = `https://${response.bucket}.s3.amazonaws.com/${response.key}`;
-
-                form.profile_picture = {
-                    uuid: response.uuid,
-                    key: response.key,
-                    extension: response.extension,
-                    bucket: response.bucket,
-                };
-            } catch (e) {
-                console.error(e);
-                // uploadProgress.value = -1;
-            }
+        await updateCustomer({
+            input: {
+                ...inputData,
+            },
         });
-
-        let optionsStates = [];
-        for (let x in states) {
-            optionsStates.push(states[x].abbreviation);
-        }
-
-        return {
-            form,
-            fileForm,
-            buttonText: operation,
-            optionStates: optionsStates,
-            handleSubmit,
-            goBack,
-            lastUpdated,
-            operation,
-            notesExpanded,
-            borderStyle,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
-        };
-    },
+        emit("close");
+    } catch (error) {
+        console.error("error", error);
+    }
 };
+
+/** Update a note to "seen" */
+const handleNoteExpansion = async (note) => {
+    await updateNote({
+        client_id: props.clientId,
+        note: note,
+    });
+
+    emit("close");
+};
+
+/**
+ * do not remove this
+ */
+// watchEffect(async () => {
+//     if (!fileForm.file) return;
+
+//     try {
+//         let response = await Vapor.store(fileForm.file, {
+//             visibility: "public-read",
+//         });
+//         fileForm.url = `https://${response.bucket}.s3.amazonaws.com/${response.key}`;
+
+//         form.profile_picture = {
+//             uuid: response.uuid,
+//             key: response.key,
+//             extension: response.extension,
+//             bucket: response.bucket,
+//         };
+//     } catch (e) {
+//         console.error(e);
+//     }
+// });
+
+// const optionsStates = ref([...states.map((s) => s.abbreviation)]);
 </script>
 
 <style scoped>

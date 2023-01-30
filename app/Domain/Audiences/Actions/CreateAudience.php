@@ -2,22 +2,17 @@
 
 namespace App\Domain\Audiences\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
 //use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\LeadTypes\LeadType;
-use App\Domain\Users\Models\User;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 
-class CreateAudience
+class CreateAudience extends GymRevAction
 {
-    use AsAction;
-
     public string $commandSignature = 'audience:create';
     public string $commandDescription = 'Creates a Audience with the given name.';
 
@@ -34,10 +29,15 @@ class CreateAudience
     {
         return [
             'name' => ['required', 'string'],
-            'entity' => ['sometimes', 'string'],
+            'entity' => ['required', 'string'],
             'filters' => ['required', 'array', 'min:1'],
             'client_id' => ['string', 'required'],
         ];
+    }
+
+    public function mapArgsToHandle($args): array
+    {
+        return [$args['input']];
     }
 
     public function prepareForValidation(ActionRequest $request): void
@@ -56,28 +56,9 @@ class CreateAudience
         $command->info('Created Audience ' . $audience->name);
     }
 
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
-    }
-
     public function asController(ActionRequest $request): Audience
     {
         $data = $request->validated();
-        $lead_type_ids = [];
-        $member_type_ids = [];
-        foreach ($data['filters']['type_id'] as $type_id) {
-            if (LeadType::whereId($type_id)->exists()) {
-                $lead_type_ids[] = $type_id;
-            } else {
-                $member_type_ids[] = $type_id;
-            }
-        }
-
-        $data['filters']['lead_type_id'] = $lead_type_ids;
-        $data['filters']['member_type_id'] = $member_type_ids;
-
-        unset($data['filters']['type_id']);
 
         return $this->handle(
             $data

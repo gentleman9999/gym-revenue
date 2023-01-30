@@ -3,7 +3,7 @@
         <div class="field col-span-6 md:col-span-3">
             <label>Team Name:</label>
             <div class="data">
-                {{ team.team.name }}
+                {{ team.name }}
             </div>
         </div>
 
@@ -31,29 +31,26 @@
                     <tbody>
                         <!-- row 1 -->
                         <tr v-for="user in team.users" :key="user.id">
-                            <td>{{ user.user.name }}</td>
-                            <td>{{ user.user.email }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
                             <td>
                                 <div
-                                    v-if="user.user.roles[0]?.name == 'Admin'"
+                                    v-if="user.role == 'Admin'"
                                     class="badge badge-outline"
                                 >
-                                    {{ user.user.roles[0]?.name }}
+                                    {{ user.role }}
                                 </div>
                                 <div
-                                    v-else-if="
-                                        user.user.roles[0]?.name ==
-                                        'Account Owner'
-                                    "
+                                    v-else-if="user.role == 'Account Owner'"
                                     class="badge badge-success badge-outline"
                                 >
-                                    {{ user.user.roles[0]?.name }}
+                                    {{ user.role }}
                                 </div>
                                 <div
                                     v-else
                                     class="badge badge-info badge-outline"
                                 >
-                                    {{ user.user.roles[0]?.name }}
+                                    {{ user.role }}
                                 </div>
                             </td>
                         </tr>
@@ -75,7 +72,7 @@
                 </thead>
                 <tbody>
                     <!-- row 1 -->
-                    <tr v-for="club in team.clubs" :key="club.id">
+                    <tr v-for="club in clubs.data" :key="club.id">
                         <th>{{ club.location_no }}</th>
                         <td>{{ club.name }}</td>
                     </tr>
@@ -100,6 +97,9 @@ input {
 <script setup>
 const props = defineProps({
     team: {
+        type: Object,
+    },
+    clubs: {
         type: Object,
     },
 });

@@ -19,10 +19,9 @@
                 v-for="taskType in taskTypes"
                 :key="taskType"
                 :task-type="taskType"
-                :fields="fields"
-                :tasks="getTaskData(taskType)"
                 :on-double-click="handleDoubleClick"
                 @edit="handleOnEdit"
+                :start="selectedDate"
             />
         </div>
     </div>
@@ -169,24 +168,6 @@ export default defineComponent({
             );
             setStartOfTheWeek(start_date);
         };
-        const fields = [
-            {
-                name: "title",
-                label: "Title",
-            },
-            {
-                name: "start",
-                label: "Due At",
-            },
-            {
-                name: "created_at",
-                label: "Created At",
-            },
-            {
-                name: "event_completion",
-                label: "Completed At",
-            },
-        ];
 
         let navLinks = [
             {
@@ -232,16 +213,6 @@ export default defineComponent({
             "overdue_tasks",
             "completed_tasks",
         ];
-        const getData = function () {
-            let options = {
-                preserveState: true,
-                preserveScroll: true,
-            };
-            let query = {
-                start: selectedDateFormatted.value,
-            };
-            Inertia.get(route("tasks"), pickBy(query), options);
-        };
 
         const handleDoubleClick = ({ data }) => {
             openEventForm(data);
@@ -250,29 +221,11 @@ export default defineComponent({
             selectedCalendarEvent.value = data;
             editEventModal.value.open();
         };
-        watch([selectedDate], getData, { deep: true });
-
-        const getTaskData = (taskType) => {
-            switch (taskType) {
-                case "incomplete_tasks":
-                    return props.incomplete_tasks;
-                case "overdue_tasks":
-                    return props.overdue_tasks;
-                case "completed_tasks":
-                    return props.completed_tasks;
-                //TODO: why are we doing thism we should all of that alreadyx
-                default:
-                    throw new Error("unknown taskType " + taskType);
-            }
-        };
 
         const handleOnEdit = (data) => {
-            console.log("handeOnEdit", data);
             openEventForm(data);
         };
-
         return {
-            fields,
             confirmDelete,
             handleConfirmDelete,
             handleClickDelete,
@@ -293,7 +246,6 @@ export default defineComponent({
             setStartOfTheWeek,
             taskTypes,
             selectedDateFormatted,
-            getTaskData,
             switchMonth,
             handleDoubleClick,
             handleOnEdit,

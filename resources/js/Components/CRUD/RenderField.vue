@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 import { isObject } from "lodash";
@@ -31,7 +31,6 @@ export default defineComponent({
         },
         baseRoute: {
             type: String,
-            // required: true,
         },
         data: {
             type: Object,
@@ -50,7 +49,9 @@ export default defineComponent({
         VueJsonPretty,
     },
     setup(props) {
-        const value = props.field.transform(props.data[props.field.name]);
+        const value = computed(() =>
+            props.field.transform(props.data[props.field.name])
+        );
         return { isObject, value };
     },
 });

@@ -5,6 +5,7 @@
             v-for="row in resource?.data || []"
             :is="cardComponent"
             v-bind="{ [modelKey]: row }"
+            :key="row.id"
             :data="row"
             :fields="fields"
             :titleField="titleField"

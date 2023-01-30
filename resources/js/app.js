@@ -3,18 +3,65 @@ import vClickOutside from "click-outside-vue3";
 
 import "./bootstrap";
 
-import { createApp, h } from "vue";
+import { createApp, h, provide } from "vue";
 import { createInertiaApp, Link, usePage } from "@inertiajs/inertia-vue3";
 import { InertiaProgress } from "@inertiajs/progress";
 import Toast from "vue-toastification";
+import {
+    ApolloClient,
+    createHttpLink,
+    InMemoryCache,
+    ApolloLink,
+    concat,
+} from "@apollo/client/core";
+import {
+    DefaultApolloClient,
+    provideApolloClient,
+} from "@vue/apollo-composable";
+import VueApolloComponents from "@vue/apollo-components";
+import { createApolloProvider } from "@vue/apollo-option";
 import * as Sentry from "@sentry/browser";
 import { BrowserTracing } from "@sentry/tracing";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useCsrfToken } from "@/utils/useCsrfToken.js";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
 
 const pageStore = usePage();
+const csrfToken = useCsrfToken();
+
+const authMiddleware = new ApolloLink((operation, forward) => {
+    // add the authorization to the headers
+    operation.setContext({
+        headers: {
+            "X-CSRF-TOKEN": csrfToken.value,
+        },
+    });
+    return forward(operation);
+});
+
+// HTTP connection to the API
+const httpLink = createHttpLink({
+    // credentials: 'same-origin',//include cookie
+    // credentials: 'include',//for diff origin backend
+    uri: import.meta.env.VITE_GRAPHQL_URI || "/graphql",
+});
+
+// Cache implementation
+const cache = new InMemoryCache();
+
+// Create the apollo client
+const apolloClient = new ApolloClient({
+    link: concat(authMiddleware, httpLink),
+    cache,
+});
+
+provideApolloClient(apolloClient);
+
+const apolloProvider = createApolloProvider({
+    defaultClient: apolloClient,
+});
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -25,7 +72,6 @@ createInertiaApp({
             const page = (await match()).default;
             // const module = await import(`./Pages/${name}.vue`);
             // const page = module.default;
-            console.log({ name, page });
             if (page.layout === undefined) {
                 if (name.startsWith("Invite/Show")) {
                     if (pageStore?.props?.value?.user) {
@@ -43,8 +89,15 @@ createInertiaApp({
         }
     },
     setup({ el, app, props, plugin }) {
-        return createApp({ render: () => h(app, props) })
+        return createApp({
+            setup() {
+                provide(DefaultApolloClient, apolloClient);
+            },
+            render: () => h(app, props),
+        })
             .use(plugin)
+            .use(apolloProvider)
+            .use(VueApolloComponents)
             .use(Toast)
             .use(vClickOutside)
             .component("inertia-link", Link)

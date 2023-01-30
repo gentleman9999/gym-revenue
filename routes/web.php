@@ -79,7 +79,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
     Route::prefix('members')->group(function () {
         Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
         Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
-        Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.members.store');
+        // Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.members.store');
         Route::get('/show/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.members.update');
@@ -94,7 +94,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
     Route::prefix('customers')->group(function () {
         Route::get('/', \App\Domain\Users\Actions\GetCustomers::class)->name('data.customers');
         Route::get('/create', \App\Domain\Users\Actions\GetCreateCustomer::class)->name('data.customers.create');
-        Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.customers.store');
+        // Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.customers.store');
         Route::get('/show/{end_user}', \App\Domain\Users\Actions\ShowCustomer::class)->name('data.customers.show');
         Route::get('/edit/{end_user}', \App\Domain\Users\Actions\EditCustomer::class)->name('data.customers.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.customers.update');
@@ -110,14 +110,14 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function () {
     Route::get('/', \App\Http\Controllers\FilesController::class . '@index')->name('files');
     Route::get('/upload', \App\Http\Controllers\FilesController::class . '@upload')->name('files.upload');
-    Route::post('/', \App\Actions\Clients\Files\CreateFiles::class)->name('files.store');
+    Route::post('/', \App\Domain\Files\Actions\CreateFiles::class)->name('files.store');
     Route::get('/edit/{id}', \App\Http\Controllers\FilesController::class . '@edit')->name('files.edit');
-    Route::put('/{id}/rename', \App\Actions\Clients\Files\RenameFile::class)->name('files.rename');
-    Route::put('/{id}', \App\Actions\Clients\Files\UpdateFilePermissions::class)->name('files.update');
-    Route::put('/folder/{id}', \App\Actions\Clients\Files\UpdateFileFolder::class)->name('files.update.folder');
-    Route::delete('/{id}', \App\Actions\Clients\Files\TrashFile::class)->name('files.trash');
-    Route::delete('/{id}/force', \App\Actions\Clients\Files\DeleteFile::class)->name('files.delete');
-    Route::post('/{id}/restore', \App\Actions\Clients\Files\RestoreFile::class)->name('files.restore');
+    Route::put('/{id}/rename', \App\Domain\Files\Actions\RenameFile::class)->name('files.rename');
+    Route::put('/{id}', \App\Domain\Files\Actions\UpdateFilePermissions::class)->name('files.update');
+    Route::put('/folder/{id}', \App\Domain\Files\Actions\UpdateFileFolder::class)->name('files.update.folder');
+    Route::delete('/{id}', \App\Domain\Files\Actions\TrashFile::class)->name('files.trash');
+    Route::delete('/{id}/force', \App\Domain\Files\Actions\DeleteFile::class)->name('files.delete');
+    Route::post('/{id}/restore', \App\Domain\Files\Actions\RestoreFile::class)->name('files.restore');
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
 });
 
@@ -145,10 +145,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(func
 Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function () {
     Route::get('/', \App\Http\Controllers\NotesController::class . '@index')->name('notes');
     Route::get('/create', \App\Http\Controllers\NotesController::class . '@create')->name('notes.create');
-    Route::post('/', \App\Actions\Clients\Notes\CreateNote::class)->name('notes.store');
+    Route::post('/', \App\Domain\Notes\Actions\CreateNote::class)->name('notes.store');
     Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
-    Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
-    Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
+    Route::put('/{id}', \App\Domain\Notes\Actions\UpdateNote::class)->name('notes.update');
+    Route::delete('/{id}/force', \App\Domain\Notes\Actions\DeleteNote::class)->name('notes.delete');
     Route::get('/export', \App\Http\Controllers\NotesController::class . '@export')->name('notes.export');
 });
 

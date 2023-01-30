@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserGenderEnum;
 use App\Enums\UserTypesEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,9 +18,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             /** Get all shared fields */
             $this->getSharedFields($table);
-
-            $table->uuid('agreement_id')->nullable();
-
+            $table->boolean('is_cape_and_bay_user')->default(false);
             /** DB constraints */
             $table->unique(['client_id', 'email']);
             $table->index(['client_id', 'home_location_id']);
@@ -27,23 +26,27 @@ class CreateUsersTable extends Migration
 
         Schema::create('leads', function (Blueprint $table) {
             /** Get all shared fields */
+            $table->foreignUuid('user_id');
             $this->getSharedFields($table);
         });
 
         Schema::create('customers', function (Blueprint $table) {
             /** Get all shared fields */
+            $table->foreignUuid('user_id');
             $this->getSharedFields($table);
             $table->uuid('agreement_id')->nullable();
         });
 
         Schema::create('members', function (Blueprint $table) {
             /** Get all shared fields */
+            $table->foreignUuid('user_id');
             $this->getSharedFields($table);
             $table->uuid('agreement_id')->nullable();
         });
 
         Schema::create('employees', function (Blueprint $table) {
             /** Get all shared fields */
+            $table->foreignUuid('user_id');
             $this->getSharedFields($table);
         });
     }
@@ -70,7 +73,7 @@ class CreateUsersTable extends Migration
 
         /** Personal/Sensitive */
         $table->timestamp('date_of_birth')->nullable();
-        $table->string('gender')->nullable();
+        $table->enum('gender', array_column(UserGenderEnum::cases(), 'value'))->nullable();
         $table->string('drivers_license_number')->nullable();
         $table->string('profile_photo_path', 2048)->nullable();
 
@@ -102,7 +105,6 @@ class CreateUsersTable extends Migration
         $table->json('entry_source')->nullable();
         $table->uuid('home_location_id')->nullable()->index();
         $table->string('manager')->nullable();
-        $table->boolean('is_cape_and_bay_user')->default(false);
         $table->unsignedTinyInteger('opportunity')->nullable();
         $table->string('external_id')->nullable();
         $table->jsonb('misc')->nullable();

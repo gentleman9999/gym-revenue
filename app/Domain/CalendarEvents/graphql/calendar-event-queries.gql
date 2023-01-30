@@ -1,0 +1,9 @@
+extend type Query {
+    calendarEvents(
+        param: CalendarEventInput @scope
+    ): [CalendarEvent!]!
+
+    calendarEventById(
+        id: ID
+    ): CalendarEvent
+}

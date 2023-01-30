@@ -3,20 +3,30 @@
         <h2 class="font-semibold text-xl leading-tight">Locations</h2>
     </LayoutHeader>
     <gym-revenue-crud
+        ref="locationsCrud"
         base-route="locations"
         model-name="Location"
         model-key="location"
         :fields="fields"
-        :resource="locations"
-        :actions="actions"
+        :edit-component="LocationForm"
+        :actions="{
+            trash: {
+                label: 'Close Club',
+                handler: ({ data }) => handleClickTrash(data.id),
+            },
+        }"
         :top-actions="topActions"
         :preview-component="LocationPreview"
     >
         <template #filter>
             <simple-search-filter
                 v-model:modelValue="form.search"
+                @update:modelValue="
+                    handleCrudUpdate('filter', {
+                        search: form.search,
+                    })
+                "
                 class="w-full max-w-md mr-4"
-                @reset="reset"
                 @clear-filters="clearFilters"
                 @clear-search="clearSearch"
             >
@@ -26,8 +36,13 @@
                             Closed Clubs:
                         </div>
                         <select
-                            v-model="form.closed"
+                            v-model="form.trashed"
                             class="mt-1 w-full form-select"
+                            @update:modelValue="
+                                handleCrudUpdate('filter', {
+                                    trashed: form.trashed,
+                                })
+                            "
                         >
                             <option :value="null" />
                             <option value="with">With Closed</option>
@@ -37,6 +52,11 @@
                         <select
                             v-model="form.state"
                             class="mt-1 w-full form-select"
+                            @update:modelValue="
+                                handleCrudUpdate('state', {
+                                    state: form.state,
+                                })
+                            "
                         >
                             <option :value="null" />
                             <option
@@ -52,6 +72,7 @@
             </simple-search-filter>
         </template>
     </gym-revenue-crud>
+
     <confirm
         title="Really Close This Club?"
         v-if="confirmClose"
@@ -89,11 +110,10 @@ import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import LocationPreview from "@/Pages/Locations/Partials/LocationPreview.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
-
+import LocationForm from "@/Pages/Locations/Partials/LocationForm.vue";
 export default defineComponent({
     components: {
         LayoutHeader,
@@ -115,20 +135,35 @@ export default defineComponent({
         "SearchFilter",
         "clientId",
     ],
-    setup(props) {
-        const baseRoute = "locations";
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            baseRoute,
-            {
-                //  preserveState: false,
-            }
-        );
+    setup(props, { emit }) {
+        const form = ref({
+            search: "",
+            trashed: "",
+        });
 
-        const confirmClose = ref(null);
-        const handleClickClose = (id) => {
-            confirmClose.value = id;
+        const locationsCrud = ref(null);
+
+        const handleCrudUpdate = (key, value) => {
+            locationsCrud.value.handleCrudUpdate(key, value);
+        };
+        const clearSearch = () => {
+            form.value.search = "";
+            handleCrudUpdate("filter", {
+                search: "",
+            });
+        };
+        const clearFilters = () => {
+            form.value.trashed = "";
+            handleCrudUpdate("filter", {
+                trashed: "",
+            });
+        };
+        const confirmTrash = ref(null);
+        const handleClickTrash = (id) => {
+            confirmTrash.value = id;
         };
 
+        const confirmClose = ref(null);
         const handleConfirmClose = () => {
             Inertia.delete(route("locations.close", confirmClose.value));
             confirmClose.value = null;
@@ -150,7 +185,6 @@ export default defineComponent({
                 class: "btn-primary",
             },
         };
-
         const confirmReopen = ref(null);
         const handleClickReopen = (id) => {
             confirmReopen.value = id;
@@ -166,7 +200,7 @@ export default defineComponent({
             restore: false,
             close: {
                 label: "Close Club",
-                handler: ({ data }) => handleClickClose(data.id),
+                handler: ({ data }) => emit("close"),
                 shouldRender: ({ data }) => !data.closed_at,
             },
             reopen: {
@@ -177,7 +211,6 @@ export default defineComponent({
         };
 
         return {
-            handleClickClose,
             confirmClose,
             handleConfirmClose,
             handleClickReopen,
@@ -185,7 +218,6 @@ export default defineComponent({
             handleConfirmReopen,
             Inertia,
             form,
-            reset,
             clearFilters,
             clearSearch,
             LocationPreview,
@@ -193,7 +225,10 @@ export default defineComponent({
             handleClickImport,
             importLocation,
             topActions,
+            LocationForm,
             actions,
+            handleCrudUpdate,
+            locationsCrud,
         };
     },
     computed: {

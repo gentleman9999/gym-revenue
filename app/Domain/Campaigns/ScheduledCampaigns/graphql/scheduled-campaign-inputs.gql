@@ -1,0 +1,20 @@
+input CreateScheduledCampaignInput {
+    name: String
+    audience_id: String
+    call_template_id: String
+    email_template_id: String
+    sms_template_id: String
+    campaignType: String
+    send_at: String
+}
+
+input UpdateScheduledCampaignInput {
+    id: ID
+    name: String
+    audience_id: String
+    call_template_id: String
+    email_template_id: String
+    sms_template_id: String
+    campaignType: String
+    send_at: String
+}

@@ -40,13 +40,12 @@
                     class="mt-2"
                 />
             </div>
-            <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
         <template #actions>
             <Button
                 type="button"
-                @click="handleClickCancel"
+                @click="$emit('close')"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -67,8 +66,7 @@
     </jet-form-section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import { usePage } from "@inertiajs/inertia-vue3";
 import { computed, ref } from "vue";
 import { useGymRevForm } from "@/utils";
@@ -79,72 +77,38 @@ import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { Inertia } from "@inertiajs/inertia";
-import { useModal } from "@/Components/InertiaModal";
 
-export default {
-    components: {
-        Button,
-        defineComponent,
-        JetFormSection,
-        JetActionMessage,
-        JetInputError,
-        JetLabel,
-        usePage,
-    },
-    props: {
-        clientId: {
-            type: String,
-            required: true,
-        },
-        reminder: {
-            type: Object,
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
+
+const props = defineProps({
+    reminder: {
+        type: Object,
+        default: {
+            name: "",
+            id: "",
+            description: "",
+            remind_time: 0,
         },
     },
-    setup(props, context) {
-        let reminder = props.reminder;
-        let operation = "Update";
-        if (!reminder) {
-            reminder = {
-                name: "",
-                id: "",
-                client_id: props.clientId,
-                description: "",
-                remind_time: 0,
-            };
-            operation = "Create";
-        }
+});
 
-        const form = useGymRevForm({
-            name: reminder.name,
-            id: reminder.id,
-            description: reminder.description,
-            remind_time: reminder.remind_time,
-            client_id: props.clientId,
-        });
+const emit = defineEmits(["close"]);
 
-        let handleSubmit = () =>
-            form.dirty().put(route("reminders.update", reminder.id));
-        if (operation === "Create") {
-            handleSubmit = () => form.post(route("reminders.store"));
-        }
+const { mutate: createReminder } = useMutation(mutations.reminder.create);
+const { mutate: updateReminder } = useMutation(mutations.reminder.update);
 
-        const modal = useModal();
+const operFn = computed(() => {
+    return props.reminder.id === "" ? createReminder : updateReminder;
+});
 
-        const handleClickCancel = () => {
-            console.log("modal", modal.value);
-            if (modal.value.close) {
-                modal.value.close();
-            } else {
-                Inertia.visit(route("reminders"));
-            }
-        };
+const form = useGymRevForm(props.reminder);
 
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            handleClickCancel,
-        };
-    },
+const handleSubmit = async () => {
+    await operFn.value({
+        ...form,
+    });
+
+    emit("close");
 };
 </script>

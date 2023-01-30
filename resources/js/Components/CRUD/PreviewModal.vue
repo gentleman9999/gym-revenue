@@ -1,25 +1,38 @@
 <template>
     <daisy-modal id="previewModal" ref="previewModal" @close="close">
-        <component
-            v-if="previewData"
-            :is="previewComponent"
-            v-bind="{ [modelKey]: previewData }"
-            :data="previewData"
-        />
+        <ApolloQuery
+            :query="(gql) => queries[modelKey].preview"
+            :variables="previewParam"
+            v-if="previewParam"
+        >
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <div v-if="isLoading">
+                    <spinner />
+                </div>
+                <div v-else-if="error">Error</div>
+                <component
+                    v-else-if="data"
+                    :is="previewComponent"
+                    v-bind="{ ...data }"
+                />
+                <div v-else>No result</div>
+            </template>
+        </ApolloQuery>
     </daisy-modal>
 </template>
 
 <script>
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
-import { usePage } from "@inertiajs/inertia-vue3";
 import {
-    clearPreviewData,
-    previewData,
-} from "@/Components/CRUD/helpers/previewData";
+    previewParam,
+    clearPreviewParam,
+} from "@/Components/CRUD/helpers/gqlData";
+import queries from "@/gql/queries";
+import Spinner from "@/Components/Spinner.vue";
 
 export default {
-    components: { DaisyModal },
+    components: { DaisyModal, Spinner },
     props: {
         previewComponent: {
             required: true,
@@ -34,29 +47,26 @@ export default {
         },
     },
     setup() {
-        const page = usePage();
-        const previewModal = ref();
+        const previewModal = ref(null);
 
         function open() {
             previewModal?.value?.open();
         }
 
         function close() {
-            clearPreviewData();
+            clearPreviewParam();
         }
 
         watchEffect(() => {
-            if (previewData.value) {
+            if (previewParam.value) {
+                console.log("preview");
                 open();
             }
-            // else{
-            //     close();
-            // }
         });
         onUnmounted(() => {
-            clearPreviewData();
+            clearPreviewParam();
         });
-        return { close, previewModal, previewData };
+        return { close, previewModal, previewParam, queries };
     },
 };
 </script>

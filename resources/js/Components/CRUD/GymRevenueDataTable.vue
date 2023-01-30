@@ -17,6 +17,8 @@
                                     :form="form"
                                     :field="header"
                                     v-model="form.sort"
+                                    @update:modelValue="$emit('update')"
+                                    @update:direction="$emit('update')"
                                     v-model:direction="form.dir"
                                 />
                                 <template v-else>
@@ -76,7 +78,7 @@
                         >
                             <div class="tabledata">
                                 No
-                                {{ __modelNamePlural || "Records" }}
+                                {{ modelNamePlural || "Records" }}
                                 found.
                             </div>
                         </td>
@@ -115,13 +117,16 @@ table {
 </style>
 
 <script>
+import { computed } from "vue";
+import { merge } from "lodash";
+
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { isObject } from "lodash";
 import AutoDataRow from "@/Components/CRUD/AutoDataRow.vue";
 import { getFields } from "./helpers/getFields";
-import { getData } from "./helpers/getData";
+import { flattenObj } from "./helpers/getData";
 import SortableHeader from "@/Components/CRUD/SortableHeader.vue";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 
@@ -190,8 +195,10 @@ export default {
     setup(props) {
         const fields = getFields(props);
         const customizedFields = getCustomizedFields(fields, props.modelKey);
-        const data = getData(props);
-        console.log(data);
+        const data = computed(() => {
+            const data = props.resource?.data;
+            return merge(data, data?.map(flattenObj));
+        });
 
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";
         return {

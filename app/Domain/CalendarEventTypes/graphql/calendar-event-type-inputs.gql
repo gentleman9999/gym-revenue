@@ -1,0 +1,13 @@
+input CreateCalendarEventTypeInput {
+    name: String
+    description: String
+    color: String
+    type: String
+}
+
+input UpdateCalendarEventTypeInput {
+    name: String
+    description: String
+    color: String
+    type: String
+}

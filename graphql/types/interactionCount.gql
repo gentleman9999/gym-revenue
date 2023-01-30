@@ -1,0 +1,6 @@
+type InteractionCount {
+    totalCount: Int
+    calledCount: Int
+    emailedCount: Int
+    smsCount: Int
+}

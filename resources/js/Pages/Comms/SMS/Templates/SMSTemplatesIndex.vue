@@ -20,16 +20,21 @@
             </inertia-link>
         </div>
     </LayoutHeader>
-
-    <gym-revenue-crud
-        base-route="mass-comms.sms-templates"
-        model-name="SMS Template"
-        model-key="template"
-        :fields="fields"
-        :resource="templates"
-        :actions="actions"
-        :top-actions="{ create: { label: 'New Template' } }"
-    />
+    <ApolloQuery :query="(gql) => queries['smsTemplates']" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                base-route="smsTemplates"
+                model-name="SmsTemplate"
+                model-key="smsTemplate"
+                :resource="getSmsTemplates(data)"
+                :fields="fields"
+                :actions="actions"
+                :top-actions="{ create: { label: 'New Template' } }"
+                :edit-component="SmsTemplateForm"
+            />
+        </template>
+    </ApolloQuery>
     <confirm
         title="Really Trash?"
         v-if="confirmTrash"
@@ -54,10 +59,12 @@
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
+import queries from "@/gql/queries";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import Confirm from "@/Components/Confirm.vue";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import SmsTemplateForm from "./Partials/SmsTemplateForm.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -99,6 +106,14 @@ export default defineComponent({
                 templateId: "",
                 templateName: "",
             };
+        };
+
+        const param = ref({
+            page: 1,
+        });
+
+        const getSmsTemplates = (data) => {
+            return _.cloneDeep(data.smsTemplates);
         };
 
         const handleOpenSendModal = (data) => {
@@ -166,6 +181,10 @@ export default defineComponent({
             handleCloseTextModal,
             confirmSend,
             sendVars,
+            queries,
+            getSmsTemplates,
+            param,
+            SmsTemplateForm,
         };
     },
 });

@@ -1,0 +1,9 @@
+type CalendarEventType {
+    id: ID!
+    name: String!
+    description: String
+    color: String
+    type: String
+    created_at: DateTime
+    updated_at: DateTime
+}

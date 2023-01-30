@@ -20,22 +20,33 @@
         <div class="w-full grid grid-cols-[0.75fr,0.25fr] gap-4">
             <!-- slectable -->
             <div
-                class="bg-black border-secondary border w-full px-4 rounded-md flex justify-start items-center overflow-x-scroll overflow-y-hidden scroll-smooth"
+                :class="{
+                    'justify-center': isLoadingList,
+                    'justify-start':
+                        !isLoadingList && !modelLoading && !!resources,
+                }"
+                class="bg-black border-secondary border w-full px-4 rounded-md flex items-center overflow-x-scroll overflow-y-hidden scroll-smooth"
                 ref="templateScrollContainer"
             >
-                <TemplatePreview
-                    v-for="t in templates"
-                    :title="t.name"
-                    :temp_id="t.id"
-                    :selected="t.id === selectedTemplate"
-                    :thumbsrc="t.thumbnail?.url"
-                    :template_type="template_type"
-                    :template_item="t"
-                    :permissions="permissions"
-                    @submit="updateSelected"
-                    @edit="handleEditTemplate"
-                    @trash="handleConfirmTrash"
-                />
+                <template v-if="(isLoadingList || modelLoading) && !result">
+                    <Spinner />
+                </template>
+
+                <template v-else-if="!isLoadingList && !!resources">
+                    <TemplatePreview
+                        v-for="t in resources.data"
+                        :title="t.name"
+                        :temp_id="t.id"
+                        :selected="t.id === selectedTemplate"
+                        :thumbsrc="t.thumbnail?.url"
+                        :template_type="template_type"
+                        :template_item="t"
+                        :permissions="permissions"
+                        @submit="updateSelected"
+                        @edit="handleEditTemplate"
+                        @trash="handleConfirmTrash"
+                    />
+                </template>
             </div>
 
             <!-- create new -->
@@ -93,42 +104,136 @@
         </div>
     </template>
 
+    <!-- EMAIL - CREATE -->
     <div
-        v-if="templateBuilderStep && template_type === 'email'"
+        v-if="
+            templateBuilderStep &&
+            template_type === 'email' &&
+            builderOperation === 'create'
+        "
         class="scale-90 bg-neutral border-primary border-2 rounded-md p-4"
     >
         <email-template-form
-            :can-activate="false"
-            :topol-api-key="topolApiKey"
-            :use-inertia="false"
-            :template="editingTemplate"
-            @done="actionDone"
-            @cancel="handleCancel"
+            @done="handleBuilderDone"
+            @cancel="handleCancelBuilder"
         />
     </div>
 
+    <!-- EMAIL - EDIT -->
     <div
-        v-if="templateBuilderStep && template_type === 'sms'"
+        v-if="
+            templateBuilderStep &&
+            template_type === 'email' &&
+            builderOperation === 'edit'
+        "
+        class="scale-90 bg-neutral border-primary border-2 rounded-md p-4"
+    >
+        <ApolloQuery
+            :query="(gql) => queries.emailTemplate[builderOperation]"
+            :variables="editParam"
+        >
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <template v-if="isLoading">
+                    <Spinner />
+                </template>
+
+                <email-template-form
+                    v-if="!isLoading && !!data"
+                    :editParam="editParam"
+                    :template="data['emailTemplate']"
+                    @done="handleBuilderDone"
+                    @cancel="handleCancelBuilder"
+                />
+            </template>
+        </ApolloQuery>
+    </div>
+
+    <!-- SMS - CREATE -->
+    <div
+        v-if="
+            templateBuilderStep &&
+            template_type === 'sms' &&
+            builderOperation === 'create'
+        "
         class="bg-neutral"
     >
         <sms-template-form
-            :can-activate="false"
-            :use-inertia="false"
-            :template="editingTemplate"
-            @done="actionDone"
-            @cancel="handleCancel"
+            @done="handleBuilderDone"
+            @cancel="handleCancelBuilder"
         />
     </div>
 
+    <!-- SMS - EDIT -->
+    <div
+        v-if="
+            templateBuilderStep &&
+            template_type === 'sms' &&
+            builderOperation === 'edit'
+        "
+        class="bg-neutral"
+    >
+        <ApolloQuery
+            :query="(gql) => queries.smsTemplate[builderOperation]"
+            :variables="editParam"
+        >
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <template v-if="isLoading">
+                    <div class="shadow border border-secondary rounded-lg p-6">
+                        <Spinner />
+                    </div>
+                </template>
+
+                <sms-template-form
+                    v-if="!isLoading && !!data"
+                    :editParam="editParam"
+                    :template="data['smsTemplate']"
+                    @done="handleBuilderDone"
+                    @cancel="handleCancelBuilder"
+                />
+            </template>
+        </ApolloQuery>
+    </div>
+
+    <!-- CALL SCRIPT - CREATE -->
     <call-script
-        v-if="templateBuilderStep && template_type === 'call'"
-        :template_item="editingTemplate"
-        @done="actionDone"
-        @cancel="handleCancel"
+        v-if="
+            templateBuilderStep &&
+            template_type === 'call' &&
+            builderOperation === 'create'
+        "
+        @done="handleBuilderDone"
+        @cancel="handleCancelBuilder"
     />
 
-    <!-- <h2 class="text-2xl text-center">Email Template Form</h2> -->
-    <!-- <p class="text-lg font-bold text-center">should be open here</p> -->
+    <!-- CALL SCRIPT - EDIT -->
+    <template
+        v-if="
+            templateBuilderStep &&
+            template_type === 'call' &&
+            builderOperation === 'edit'
+        "
+    >
+        <ApolloQuery
+            :query="(gql) => queries.callTemplate[builderOperation]"
+            :variables="editParam"
+        >
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <template v-if="isLoading">
+                    <div class="shadow border border-secondary rounded-lg p-6">
+                        <Spinner />
+                    </div>
+                </template>
+
+                <call-script
+                    v-if="!isLoading && !!data"
+                    :editParam="editParam"
+                    :template="data['callTemplate']"
+                    @done="handleBuilderDone"
+                    @cancel="handleCancelBuilder"
+                />
+            </template>
+        </ApolloQuery>
+    </template>
 </template>
 
 <style scoped>
@@ -139,7 +244,9 @@
 
 <script setup>
 import axios from "axios";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
+import queries from "@/gql/queries";
+import { useQuery } from "@vue/apollo-composable";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { resolveTemplateType } from "@/Pages/Templates/components/helpers";
@@ -147,6 +254,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { toastSuccess, toastError, toastInfo } from "@/utils/createToast";
 
+import Spinner from "@/Components/Spinner.vue";
 import TemplatePreview from "./Templates/TemplatePreview.vue";
 import EmailTemplateForm from "@/Pages/Comms/Emails/Templates/Partials/EmailTemplateForm.vue";
 import SmsTemplateForm from "@/Pages/Comms/SMS/Templates/Partials/SmsTemplateForm.vue";
@@ -159,23 +267,53 @@ const templateBuilderStep = ref(false);
 
 const props = defineProps({
     selected: {
-        type: [Number, String, null],
+        type: [Number, String, Boolean, null],
         default: null,
     },
-    topolApiKey: {
+    template_type: {
         type: String,
         required: true,
     },
-    templates: {
-        type: Array,
-        default: [],
-    },
-    template_type: {
-        type: [String, undefined],
-        default: undefined,
-    },
 });
 
+const param = ref({
+    page: 1,
+});
+
+const editParam = ref(null);
+const builderOperation = ref(null);
+
+/**
+ * Params for forms to determine their operations
+ */
+
+const isLoadingList = ref(true);
+
+const {
+    result,
+    loading: modelLoading,
+    error,
+    refetch,
+} = useQuery(
+    queries[`${props.template_type}Templates`],
+    props.param ? props.param : param,
+    { throttle: 500 }
+);
+
+const resources = computed(() => {
+    if (result.value && result.value[`${props.template_type}Templates`]) {
+        return _.cloneDeep(result.value[`${props.template_type}Templates`]);
+    } else return null;
+});
+
+watch(modelLoading, (nv, ov) => {
+    console.log("resources:", resources);
+    if (!!resources?.value) {
+        isLoadingList.value = false;
+    }
+});
+
+const templateType = ref(props.template_type);
 const selectedTemplate = ref(props.selected);
 const editingTemplate = ref(null);
 const confirmingTrash = ref(null);
@@ -185,17 +323,22 @@ const updateSelected = (t) => {
 };
 
 const handleNewTemplate = () => {
+    builderOperation.value = "create";
     templateBuilderStep.value = true;
 };
 
 const handleEditTemplate = (templateId) => {
-    let t = props.templates.filter((o) => o.id === templateId)[0];
-    editingTemplate.value = t;
+    builderOperation.value = "edit";
+    editParam.value = {
+        id: templateId,
+    };
     templateBuilderStep.value = true;
 };
 
-const handleCancel = () => {
-    editingTemplate.value = null;
+// when cancel is called from the editor
+const handleCancelBuilder = () => {
+    builderOperation.value = null;
+    editParam.value = null;
     templateBuilderStep.value = false;
 };
 
@@ -207,36 +350,51 @@ const handleCancelConfirmTrash = () => {
     confirmingTrash.value = null;
 };
 
+// when create/edit operation is successful from the builder
+const handleBuilderDone = async (id) => {
+    console.log("builderDone called", id);
+
+    if (typeof id === "object") updateSelected(id?.id);
+    else updateSelected(id);
+
+    templateBuilderStep.value = false;
+    builderOperation.value = null;
+
+    editingTemplate.value = null;
+    isLoadingList.value = true;
+    await refetch();
+};
+
 /**
  * Called when finished editing or creating a new template
  * closes the template builder, shows template selector again
  * and scrolls to the newly created / edited template
  * @param {object} template - new template data received from server
  */
-const actionDone = (template) => {
-    let templateType = resolveTemplateType(template);
-    let refreshProp = templateType?.toLocaleLowerCase() + "_templates";
+// const actionDone = (template) => {
+//     let templateType = resolveTemplateType(template);
+//     let refreshProp = templateType?.toLocaleLowerCase() + "_templates";
 
-    /** email builder takes care of it's own notifications */
-    if (templateType !== "email") {
-        toastSuccess(templateType + " Template Saved!");
-    }
+//     /** email builder takes care of it's own notifications */
+//     if (templateType !== "email") {
+//         toastSuccess(templateType + " Template Saved!");
+//     }
 
-    if (template.reuse) {
-        emit("save", selectedTemplate.value);
-    }
+//     if (template.reuse) {
+//         emit("save", selectedTemplate.value);
+//     }
 
-    Inertia.reload({
-        only: [refreshProp],
-        onFinish: () => {
-            templateBuilderStep.value = false;
-            updateSelected(template.id);
-            document
-                .getElementById(template.id)
-                .scrollIntoView({ block: "center" });
-        },
-    });
-};
+//     // Inertia.reload({
+//     //     only: [refreshProp],
+//     //     onFinish: () => {
+//     //         templateBuilderStep.value = false;
+//     //         updateSelected(template.id);
+//     //         document
+//     //             .getElementById(template.id)
+//     //             .scrollIntoView({ block: "center" });
+//     //     },
+//     // });
+// };
 
 /**
  * Sends a request to trash the template with the passed id to the back end
@@ -247,18 +405,16 @@ const requestTrash = async () => {
     console.log("id", templateId);
 
     try {
-        const ep = "mass-comms." + props.template_type + "-templates.trash";
-        console.log("ep", ep);
-        const res = await axios.delete(route(ep, templateId));
-
-        if (res.status === 200) {
-            toastInfo("Template Trashed");
-            confirmingTrash.value = null;
-
-            Inertia.reload({
-                only: [refreshProp],
-            });
-        }
+        // const ep = "mass-comms." + props.template_type + "-templates.trash";
+        // console.log("ep", ep);
+        // const res = await axios.delete(route(ep, templateId));
+        // if (res.status === 200) {
+        //     toastInfo("Template Trashed");
+        //     confirmingTrash.value = null;
+        //     Inertia.reload({
+        //         only: [refreshProp],
+        //     });
+        // }
     } catch (error) {
         console.log("error", error);
         confirmingTrash.value = null;

@@ -6,7 +6,6 @@
         model-name="Reminder"
         model-key="reminder"
         :fields="fields"
-        :resource="reminders"
         :actions="{
             trash: false,
             restore: false,
@@ -16,6 +15,7 @@
             },
         }"
         :top-actions="false"
+        :edit-component="ReminderForm"
     />
     <confirm
         title="Really Trash Reminder?"
@@ -36,22 +36,21 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm.vue";
 
 export default defineComponent({
     components: {
         LayoutHeader,
-
         GymRevenueCrud,
         Confirm,
         JetBarContainer,
         Button,
         PageToolbarNav,
     },
-    props: ["reminders", "filters"],
+    props: [],
     setup(props) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
-            console.log("click delete", item);
             confirmDelete.value = item;
         };
 
@@ -108,6 +107,7 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
+            ReminderForm,
         };
     },
 });

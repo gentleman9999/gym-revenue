@@ -1,0 +1,9 @@
+extend type Query {
+    positions(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        filter: PositionFilter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [Position!]! @paginate(defaultCount: 10)
+
+    position(id: ID @eq): Position @find
+}

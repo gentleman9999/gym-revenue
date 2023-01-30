@@ -28,11 +28,11 @@
             </slot>
             <slot name="filter">
                 <simple-search-filter
-                    v-model:modelValue="form.search"
-                    class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
-                    @reset="reset"
-                    @clear-filters="clearFilters"
+                    :modelValue="form.search"
+                    @update-search="handleSearch"
                     @clear-search="clearSearch"
+                    @clear-filters="clearFilters"
+                    class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
                 >
                     <div
                         class="block py-2 text-xs text-base-content text-opacity-80"
@@ -41,6 +41,11 @@
                     </div>
                     <select
                         v-model="form.trashed"
+                        @update:modelValue="
+                            handleCrudUpdate('filter', {
+                                trashed: form.trashed,
+                            })
+                        "
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
@@ -54,20 +59,30 @@
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
                 <component
+                    v-if="!isLoading"
                     :is="tableComponent"
                     v-bind="$props"
+                    :resource="resource"
                     :form="form"
                     @open-customizer="openCustomizationModal"
                     :actions="actions"
+                    @update="
+                        handleCrudUpdate('orderBy', [
+                            { column: form.sort, order: form.dir },
+                        ])
+                    "
                 >
                     <template #title>
                         <slot name="title"></slot>
                     </template>
                 </component>
+                <spinner v-else />
             </div>
             <div class="lg:hidden">
                 <component
+                    v-if="!isLoading"
                     :is="cardsComponent"
+                    :resource="resource"
                     v-bind="$props"
                     :form="form"
                     @open-customizer="openCustomizationModal"
@@ -77,6 +92,7 @@
                         <slot name="title"></slot>
                     </template>
                 </component>
+                <spinner v-else />
             </div>
         </template>
         <template v-else>
@@ -86,16 +102,34 @@
                 @open-customizer="openCustomizationModal"
                 :form="form"
                 :actions="actions"
+                :resource="resource"
             />
         </template>
 
         <slot name="pagination">
-            <pagination class="mt-4" :links="resource.links" />
+            <pagination
+                v-if="resource"
+                class="mt-4"
+                :paginatorInfo="resource.paginatorInfo"
+                @update-page="(value) => handleCrudUpdate('page', value)"
+            />
         </slot>
     </jet-bar-container>
     <preview-modal
         v-if="previewComponent"
         :preview-component="previewComponent"
+        :model-name="modelName"
+        :model-key="modelKey"
+    />
+    <edit-modal
+        @refresh="refetch"
+        :edit-component="editComponent"
+        :model-name="modelName"
+        :model-key="modelKey"
+    />
+    <create-modal
+        @refresh="refetch"
+        :create-component="editComponent"
         :model-name="modelName"
         :model-key="modelKey"
     />
@@ -109,7 +143,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
 import Pagination from "@/Components/Pagination.vue";
@@ -118,17 +152,26 @@ import GymRevenueDataTable from "./GymRevenueDataTable.vue";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PreviewModal from "@/Components/CRUD/PreviewModal.vue";
+import EditModal from "@/Components/CRUD/EditModal.vue";
+import CreateModal from "@/Components/CRUD/CreateModal.vue";
 import LeadForm from "@/Pages/Leads/Partials/LeadForm.vue";
 import { useSearchFilter } from "./helpers/useSearchFilter";
+
 import { flattenObj } from "@/Components/CRUD/helpers/getData";
 import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal.vue";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 import { getFields } from "@/Components/CRUD/helpers/getFields";
 import { getActions } from "@/Components/CRUD/helpers/actions";
+import { create } from "@/Components/CRUD/helpers/gqlData";
+import { usePage } from "@inertiajs/inertia-vue3";
+import queries from "@/gql/queries.js";
+import { useQuery } from "@vue/apollo-composable";
+import Spinner from "@/Components/Spinner.vue";
 
 export default defineComponent({
     components: {
         CrudColumnCustomizationModal,
+        Spinner,
         GymRevenueDataCards,
         GymRevenueDataTable,
         Pagination,
@@ -136,13 +179,18 @@ export default defineComponent({
         JetBarContainer,
         LeadForm,
         PreviewModal,
+        EditModal,
+        CreateModal,
     },
     props: {
         fields: {
             type: Array,
         },
-        resource: {
+        param: {
             type: Object,
+        },
+        handleCrudUpdate: {
+            type: Function,
         },
         baseRoute: {
             type: String,
@@ -187,6 +235,9 @@ export default defineComponent({
         previewComponent: {
             type: Object,
         },
+        editComponent: {
+            type: Object,
+        },
         onDoubleClick: {
             type: Function,
         },
@@ -195,11 +246,32 @@ export default defineComponent({
         },
     },
 
-    setup(props) {
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            props.baseRoute
-        );
+    setup(props, { expose }) {
+        const page = usePage();
 
+        const form = ref({
+            search: "",
+            trashed: "",
+            dir: "DESC",
+        });
+        const handleSearch = (value) => {
+            form.value.search = value;
+            handleCrudUpdate("filter", {
+                search: value,
+            });
+        };
+        const clearSearch = () => {
+            form.value.search = "";
+            handleCrudUpdate("filter", {
+                search: "",
+            });
+        };
+        const clearFilters = () => {
+            form.value.trashed = "";
+            handleCrudUpdate("filter", {
+                trashed: "",
+            });
+        };
         const fields = getFields(props);
         const customizedFields = getCustomizedFields(fields, props.modelKey);
 
@@ -273,18 +345,61 @@ export default defineComponent({
             link.click();
         };
 
+        const modelKey = props.modelKey || props.modelName;
+
+        const param = ref({
+            page: 1,
+        });
+        const { result, refetch } = useQuery(
+            queries[modelKey + "s"],
+            props.param ? props.param : param,
+            {
+                throttle: 500,
+            }
+        );
+        const isLoading = computed(() => {
+            return result.isLoading;
+        });
+        const resource = computed(() => {
+            if (result.value && result.value[modelKey + "s"]) {
+                return _.cloneDeep(result.value[modelKey + "s"]);
+            } else {
+                return null;
+            }
+        });
+
+        const handleCrudUpdate = (key, value) => {
+            if (props.handleCrudUpdate) {
+                props.handleCrudUpdate(key, value);
+                return;
+            }
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         const defaultTopActions = {
             create: {
                 label: `Create ${props.modelName}`,
                 handler: () => {
-                    Inertia.visitInModal(route(`${props.baseRoute}.create`));
+                    create(page.props.value.user.id, props.modelName);
                 },
                 class: ["btn-primary"],
             },
             export: {
                 label: "Export",
-                handler: () => exportToCsv(props.resource.data),
-                shouldRender: () => !!props.resource.total,
+                handler: () => exportToCsv(resource.value.data),
+                shouldRender: () => !!resource.value?.paginatorInfo.total,
                 class: ["btn-secondary"],
             },
             exportAll: {
@@ -301,7 +416,7 @@ export default defineComponent({
                     exportToCsv(data);
                 },
                 class: ["btn-secondary"],
-                shouldRender: () => !!props.resource.total,
+                shouldRender: () => !!resource.value?.paginatorInfo.total,
             },
         };
         let topActions = [];
@@ -318,18 +433,24 @@ export default defineComponent({
         const openCustomizationModal = () => customizationModal.value.open();
 
         const actions = getActions(props);
-        console.log({ actions });
-        const modelKey = props.modelKey || props.modelName;
+        expose({
+            handleCrudUpdate,
+            refetch,
+        });
         return {
             form,
             topActions,
-            reset,
             clearFilters,
             clearSearch,
+            handleSearch,
             customizationModal,
             openCustomizationModal,
             actions,
             modelKey,
+            resource,
+            refetch,
+            handleCrudUpdate,
+            isLoading,
         };
     },
 });

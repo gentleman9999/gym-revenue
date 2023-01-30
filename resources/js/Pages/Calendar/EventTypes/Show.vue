@@ -4,9 +4,9 @@
     <gym-revenue-crud
         base-route="calendar.event_types"
         model-name="Event Type"
-        model-key="calendar-event-types"
+        model-key="eventType"
+        :edit-component="CalendarEventTypeForm"
         :fields="fields"
-        :resource="calendarEventTypes"
         :actions="{
             trash: {
                 handler: ({ data }) => handleClickTrash(data),
@@ -33,6 +33,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import CalendarEventTypeForm from "@/Pages/Calendar/EventTypes/Partials/CalendarEventTypeForm.vue";
 
 export default defineComponent({
     components: {
@@ -43,7 +44,7 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["calendarEventTypes", "filters"],
+    props: ["filters"],
     setup(props) {
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -111,6 +112,7 @@ export default defineComponent({
             handleClickTrash,
             Inertia,
             navLinks,
+            CalendarEventTypeForm,
         };
     },
 });

@@ -6,7 +6,6 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
 use App\Enums\SecurityGroupEnum;
 
 use function auth;
@@ -37,7 +36,7 @@ class ImpersonateUser
         ];
     }
 
-    public function handle(): mixed
+    public function handle(): bool
     {
         $results = false;
         $data = request()->all();
@@ -45,10 +44,12 @@ class ImpersonateUser
         $invader = auth()->user();
         if ($invader->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
             $victim = User::withoutGlobalScopes()->findOrFail($data['victimId']);
-            $team = Team::withoutGlobalScopes()->findOrFail(UserDetails::withoutGlobalScopes()->whereUserId($victim->id)->whereField('default_team_id')->first()->value);
+            $team = Team::withoutGlobalScopes()->findOrFail($victim->default_team_id);
         } else {
-            $victim = User::findOrFail($data['victimId']);
-            $team = $victim->getDefaultTeam();
+//            $victim = User::findOrFail($data['victimId']);
+            $victim = User::with('defaultTeam')->findOrFail($data['victimId']);
+            $team = $victim->defaultTeam;
+//            $team = Team::findOrFail($victim->default_team_id);
         }
 
         if ($invader->can('users.impersonate', User::class)) {

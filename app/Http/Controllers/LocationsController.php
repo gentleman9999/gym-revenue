@@ -6,8 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Teams\Models\TeamDetail;
-use App\Enums\LocationTypeEnum;
 use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -49,7 +47,6 @@ class LocationsController extends Controller
         }
 
         return Inertia::render('Locations/Show', [
-            'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'closed'),
@@ -66,9 +63,7 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        return Inertia::render('Locations/Create', [
-            'locationTypes' => LocationTypeEnum::asArray(),
-        ]);
+        return Inertia::render('Locations/Create');
     }
 
     public function edit(Location $location)
@@ -80,27 +75,8 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        $location_details = $location->details ?: [];
-        $poc_first = $poc_last = $poc_phone = '';
-
-        foreach ($location_details as $location_detail) {
-            if ($location_detail['field'] == 'poc_first') {
-                $poc_first = $location_detail['value'];
-            }
-            if ($location_detail['field'] == 'poc_last') {
-                $poc_last = $location_detail['value'];
-            }
-            if ($location_detail['field'] == 'poc_phone') {
-                $poc_phone = $location_detail['value'];
-            }
-        }
-
         return Inertia::render('Locations/Edit', [
-            'location' => $location,
-            'poc_first' => $poc_first,
-            'poc_last' => $poc_last,
-            'poc_phone' => $poc_phone,
-            'locationTypes' => LocationTypeEnum::asArray(),
+            'id' => $location->id,
         ]);
     }
 
@@ -162,17 +138,9 @@ class LocationsController extends Controller
                 $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('field', '=', 'team-location')
-                    ->get();
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
-                    $in_query = [];
-                    // so get the teams listed in team_details
-                    foreach ($team_locations as $team_location) {
-                        $in_query[] = $team_location->value;
-                    }
-
                     $results = new Location();
                 }
             }

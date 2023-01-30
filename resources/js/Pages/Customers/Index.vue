@@ -32,15 +32,17 @@
         <calendar-schedule-table :data="schedule" />
     </div>
     <gym-revenue-crud
-        :resource="customers"
         model-key="customer"
+        base-route="customers"
+        model-name="Customer"
         :fields="fields"
         :base-route="baseRoute"
         :top-actions="{
-            create: { label: 'Add Customer' },
+            create: false,
         }"
         :actions="actions"
         :preview-component="CustomerPreview"
+        :edit-component="CustomerForm"
     >
         <template #filter>
             <customer-filters :base-route="baseRoute" />
@@ -72,11 +74,11 @@
     </confirm>
 </template>
 
-<script>
-import { computed, defineComponent, ref } from "vue";
+<script setup>
+import { computed, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 import { Inertia } from "@inertiajs/inertia";
-import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+
 import Confirm from "@/Components/Confirm.vue";
 
 import Button from "@/Components/Button.vue";
@@ -85,133 +87,115 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import CustomerFilters from "@/Pages/Customers/Partials/CustomerFilters.vue";
+import CustomerForm from "@/Pages/Customers/Partials/CustomerForm.vue";
 import CustomerPreview from "@/Pages/Customers/Partials/CustomerPreview.vue";
 
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
-import usePage from "@/Components/InertiaModal/usePage";
 
-export default defineComponent({
-    components: {
-        CustomerFilters,
-        PageToolbarNav,
-        GymRevenueCrud,
-        LayoutHeader,
-        Confirm,
-        Button,
-        JetBarContainer,
-        CustomerPreview,
-        CalendarGrid,
-        CalendarSummaryCard,
+import queries from "@/gql/queries";
+
+const props = defineProps({
+    customers: {
+        type: [Array, Object],
     },
-    props: [
-        "customers",
-        "routeName",
-        "title",
-        "filters",
-        "grlocations",
-        "user",
-        "nameSearch",
-        "newCustomerCount",
-    ],
-    setup(props) {
-        const fields = [
-            { name: "first_name", label: "First Name" },
-            { name: "last_name", label: "Last Name" },
-            { name: "location.name", label: "Location" },
-            { name: "created_at", label: "Joined" },
-            { name: "updated_at", label: "Updated" },
-        ];
-
-        const page = usePage();
-        const actions = {
-            trash: {
-                handler: ({ data }) => handleClickTrash(data.id),
-            },
-            contact: {
-                label: "Contact Customer",
-                shouldRender: (data) => {
-                    return (
-                        (data?.owner_user_id === page.props.value.user.id &&
-                            !data?.unsubscribed_comms) ||
-                        page.props.value.user.roles.find((role) =>
-                            ["Account Owner"].includes(role.name)
-                        )
-                    );
-                },
-                handler: ({ data }) => {
-                    Inertia.visit(route("data.customers.show", data.id));
-                },
-            },
-        };
-        const trashReason = ref(null);
-
-        const confirmTrash = ref(null);
-        const handleClickTrash = (id) => {
-            confirmTrash.value = id;
-        };
-        handleClickTrash();
-        const handleConfirmTrash = () => {
-            Inertia.delete(route("data.customers.trash", confirmTrash.value), {
-                data: { reason: trashReason.value },
-            });
-            confirmTrash.value = null;
-        };
-        const baseRoute = "data.customers";
-        const navLinks = [
-            {
-                label: "Dashboard",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-            {
-                label: "CalendarEvent",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-            {
-                label: "Customers",
-                href: "#",
-                onClick: comingSoon,
-                active: true,
-            },
-            {
-                label: "Tasks",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-            {
-                label: "Contacts",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-            {
-                label: "Consultants",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-        ];
-
-        return {
-            handleClickTrash,
-            confirmTrash,
-            handleConfirmTrash,
-            fields,
-            actions,
-            Inertia,
-            comingSoon,
-            navLinks,
-            baseRoute,
-            CustomerPreview,
-            trashReason,
-        };
+    routeName: {
+        type: String,
+    },
+    title: {
+        type: String,
+    },
+    filters: {
+        type: [Array, Object, String],
+    },
+    grlocations: {
+        type: [Array, Object],
+    },
+    user: {
+        type: Object,
+    },
+    nameSearch: {
+        type: [String, Object, Array],
+    },
+    newCustomerCount: {
+        type: [String, Number, Object],
     },
 });
+
+const fields = [
+    { name: "first_name", label: "First Name" },
+    { name: "last_name", label: "Last Name" },
+    { name: "home_location.name", label: "Location" },
+    { name: "created_at", label: "Joined" },
+    { name: "updated_at", label: "Updated" },
+];
+
+const actions = {
+    trash: {
+        handler: ({ data }) => handleClickTrash(data.id),
+    },
+    contact: {
+        label: "Contact Customer",
+        shouldRender: (data) => {
+            return true;
+        },
+        handler: ({ data }) => {
+            Inertia.visit(route("data.customers.show", data.id));
+        },
+    },
+};
+const trashReason = ref(null);
+
+const confirmTrash = ref(null);
+const handleClickTrash = (id) => {
+    confirmTrash.value = id;
+};
+handleClickTrash();
+const handleConfirmTrash = () => {
+    Inertia.delete(route("data.customers.trash", confirmTrash.value), {
+        data: { reason: trashReason.value },
+    });
+    confirmTrash.value = null;
+};
+const baseRoute = "data.customers";
+const navLinks = [
+    {
+        label: "Dashboard",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+    {
+        label: "CalendarEvent",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+    {
+        label: "Customers",
+        href: "#",
+        onClick: comingSoon,
+        active: true,
+    },
+    {
+        label: "Tasks",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+    {
+        label: "Contacts",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+    {
+        label: "Consultants",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+];
 </script>
 
 <style scoped></style>

@@ -13,7 +13,7 @@
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
             <div class="col-span-6">
-                <jet-label for="group" value="Security Group" />
+                <!-- <jet-label for="group" value="Security Group" />
                 <select
                     class="block w-full mt-1"
                     id="group"
@@ -22,10 +22,12 @@
                     <option
                         v-for="{ name, value } in securityGroups"
                         :value="value"
+                        :key="value"
                     >
                         {{ name }}
                     </option>
-                </select>
+                </select> -->
+                <SecurityGroupSelect v-model="form.group" />
                 <jet-input-error :message="form.errors.group" class="mt-2" />
             </div>
 
@@ -36,6 +38,7 @@
                 v-for="[groupName, availableAbilities] in Object.entries(
                     groupedAvailableAbilities
                 )"
+                :key="groupName"
             >
                 <div class="grid grid-cols-6">
                     <div class="flex flex-row col-span-6 items-center pb-4">
@@ -64,6 +67,7 @@
                     <div
                         class="flex flex-row items-center gap-4 col-span-6 xl:col-span-3 pb-4"
                         v-for="availableAbility in availableAbilities"
+                        :key="availableAbility"
                     >
                         <input
                             :id="`${availableAbility.name}`"
@@ -102,133 +106,132 @@
                 :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
+import * as _ from "lodash";
+import mutations from "@/gql/mutations";
 import { computed, ref } from "vue";
+import { useMutation } from "@vue/apollo-composable";
 import { useGymRevForm } from "@/utils";
+import { toastSuccess } from "@/utils/createToast";
+import SecurityGroupSelect from "@/Pages/components/SecurityGroupSelect.vue";
 
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
-
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import { Inertia } from "@inertiajs/inertia";
-import { useModal } from "@/Components/InertiaModal";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-
-        JetInputError,
-        JetLabel,
-    },
-    props: {
-        availableAbilities: {
-            type: Array,
-            default: [],
-        },
-        role: {
-            type: Object,
-        },
-        securityGroups: {
-            type: Array,
-            default: [],
+const props = defineProps({
+    role: {
+        type: Object,
+        default: {
+            name: "",
+            id: "",
+            ability_names: [],
+            group: null,
         },
     },
-    setup(props, context) {
-        let role = props.role;
-        let operation = "Update";
-        if (!role) {
-            role = {
-                name: "",
-                id: "",
-                ability_names: [],
-                group: null,
-            };
-            operation = "Create";
-        }
+    availableAbilities: {
+        type: Array,
+    },
+    securityGroups: {
+        type: Array,
+    },
+});
 
-        const form = useGymRevForm({
-            name: role.name,
-            id: role.id,
-            ability_names: getAbilities(),
-            group: role.group,
+const emit = defineEmits(["refresh", "close"]);
+
+let role = _.cloneDeep(props.role);
+
+const operation = computed(() => {
+    return props.role.id === "" ? "Create" : "Update";
+});
+
+const form = useGymRevForm({
+    name: role.name,
+    id: role.id,
+    ability_names: getAbilities(),
+    group: role.group,
+});
+
+function getAbilities() {
+    if (role.abilities) {
+        return role.abilities.map((ability) => ability.name);
+    } else {
+        return role.ability_names.map((ability) => ability.name);
+    }
+}
+const { mutate: createRole } = useMutation(mutations.role.create);
+const { mutate: updateRole } = useMutation(mutations.role.update);
+
+let handleSubmit = async () => {
+    let inputData = {
+        group: ~~form.group,
+        ability_names: form.ability_names,
+        id: form.id,
+        name: form.name,
+    };
+    await updateRole({
+        input: { ...inputData },
+    });
+    emit("refresh");
+    handleClickCancel();
+};
+if (operation.value === "Create") {
+    handleSubmit = async () => {
+        let inputData = {
+            group: ~~form.group,
+            ability_names: form.ability_names,
+            name: form.name,
+        };
+        await createRole({
+            input: { ...inputData },
         });
+        emit("refresh");
+        handleClickCancel();
+    };
+}
 
-        function getAbilities() {
-            if (role.abilities) {
-                return role.abilities.map((ability) => ability.name);
-            } else {
-                return role.ability_names.map((ability) => ability.name);
-            }
+let groupedAvailableAbilities = computed(() => {
+    let grouped = {};
+    props.availableAbilities.forEach((availableAbility) => {
+        let group = availableAbility.name.split(".")[0];
+        if (group === "*") {
+            return;
         }
-
-        let handleSubmit = () =>
-            form.dirty().put(route("roles.update", role.id));
-        if (operation === "Create") {
-            handleSubmit = () => form.post(route("roles.store"));
+        if (grouped[group]) {
+            grouped[group] = [...grouped[group], availableAbility];
+        } else {
+            grouped[group] = [availableAbility];
         }
+    });
+    return grouped;
+});
 
-        let groupedAvailableAbilities = computed(() => {
-            let grouped = {};
-            props.availableAbilities.forEach((availableAbility) => {
-                let group = availableAbility.name.split(".")[0];
-                if (group === "*") {
-                    return;
-                }
-                if (grouped[group]) {
-                    grouped[group] = [...grouped[group], availableAbility];
-                } else {
-                    grouped[group] = [availableAbility];
-                }
-            });
-            return grouped;
-        });
+const selectAll = (group) => {
+    const groupAbilities = groupedAvailableAbilities.value[group].map(
+        (group) => group.name
+    );
+    const merged = new Set([...form.ability_names, ...groupAbilities]);
+    form.ability_names = [...merged];
+};
 
-        const selectAll = (group) => {
-            const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.name
-            );
-            const merged = new Set([...form.ability_names, ...groupAbilities]);
-            form.ability_names = [...merged];
-        };
+const clear = (group) => {
+    const groupAbilities = groupedAvailableAbilities.value[group].map(
+        (group) => group.name
+    );
+    const merged = form.ability_names.filter(
+        (abilityId) => !groupAbilities.includes(abilityId)
+    );
+    form.ability_names = [...merged];
+};
 
-        const clear = (group) => {
-            const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.name
-            );
-            const merged = form.ability_names.filter(
-                (abilityId) => !groupAbilities.includes(abilityId)
-            );
-            form.ability_names = [...merged];
-        };
-
-        const modal = useModal();
-
-        const handleClickCancel = () => {
-            console.log("modal", modal.value);
-            if (modal.value.close) {
-                modal.value.close();
-            } else {
-                Inertia.visit(route("roles"));
-            }
-        };
-
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            groupedAvailableAbilities,
-            selectAll,
-            clear,
-            handleClickCancel,
-        };
-    },
+const handleClickCancel = () => {
+    emit("close");
 };
 </script>

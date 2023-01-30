@@ -4,9 +4,9 @@
     <gym-revenue-crud
         base-route="departments"
         model-name="Department"
-        model-key="departments"
+        model-key="department"
         :fields="fields"
-        :resource="departments"
+        :edit-component="DepartmentForm"
         :actions="{
             trash: {
                 handler: ({ data }) => handleClickTrash(data),
@@ -34,6 +34,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import DepartmentForm from "@/Pages/Departments/Partials/DepartmentForm.vue";
 
 export default defineComponent({
     components: {
@@ -43,8 +44,9 @@ export default defineComponent({
         JetBarContainer,
         Button,
         PageToolbarNav,
+        DepartmentForm,
     },
-    props: ["departments", "filters"],
+    props: ["filters"],
     setup(props) {
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -84,7 +86,6 @@ export default defineComponent({
                 active: false,
             },
         ];
-
         return {
             fields,
             confirmTrash,
@@ -92,6 +93,7 @@ export default defineComponent({
             handleClickTrash,
             Inertia,
             navLinks,
+            DepartmentForm,
         };
     },
 });

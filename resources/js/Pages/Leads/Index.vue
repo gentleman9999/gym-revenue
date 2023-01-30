@@ -30,9 +30,8 @@
         </div>
         <calendar-schedule-table :data="schedule" />
     </div>
-
     <gym-revenue-crud
-        :resource="leads"
+        @update="handleCrudUpdate"
         model-key="lead"
         :fields="fields"
         :base-route="baseRoute"
@@ -41,11 +40,13 @@
         }"
         :actions="actions"
         :preview-component="LeadPreview"
+        :edit-component="LeadForm"
     >
         <template #filter>
-            <leads-filters :base-route="baseRoute" />
+            <leads-filters :handleCrudUpdate="handleCrudUpdate" />
         </template>
     </gym-revenue-crud>
+
     <confirm
         title="Really Trash?"
         v-if="confirmTrash"
@@ -91,6 +92,8 @@ import LeadPreview from "@/Pages/Leads/Partials/LeadPreview.vue";
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
+import queries from "@/gql/queries";
+import LeadForm from "@/Pages/Leads/Partials/LeadForm.vue";
 
 export default defineComponent({
     components: {
@@ -180,7 +183,7 @@ export default defineComponent({
         const fields = [
             { name: "created_at", label: "Created" },
             {
-                name: "opportunity.value",
+                name: "opportunity",
                 label: "Opportunity",
                 component: CrudBadge,
                 props: {
@@ -192,19 +195,7 @@ export default defineComponent({
             },
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },
-            { name: "location.name", label: "Location" },
-            {
-                name: "lead_type.name",
-                label: "Type",
-                component: CrudBadge,
-                props: {
-                    getProps: ({ data: { lead_type } }) => ({
-                        class: badgeClasses(lead_type?.id),
-                        text: lead_type?.name,
-                    }),
-                },
-                // transform: data=>data?.lead_type
-            },
+            { name: "home_location.name", label: "Location" },
             {
                 name: "owner.id",
                 label: "Status",
@@ -295,7 +286,29 @@ export default defineComponent({
                 active: false,
             },
         ];
+        const param = ref({
+            page: 1,
+        });
 
+        const getLeads = (data) => {
+            return _.cloneDeep(data.leads);
+        };
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         return {
             handleClickTrash,
             confirmTrash,
@@ -308,6 +321,11 @@ export default defineComponent({
             baseRoute,
             LeadPreview,
             trashReason,
+            param,
+            queries,
+            getLeads,
+            handleCrudUpdate,
+            LeadForm,
         };
     },
 });

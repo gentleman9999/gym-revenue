@@ -1,0 +1,7 @@
+type Department {
+    id: ID!
+    name: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+    positions: [Position]! @belongsToMany
+}

@@ -2,11 +2,11 @@
     <div class="flex flex-col gap-4">
         <button
             class="flex flex-col hover:border-secondary hover:border-2 rounded flex-grow overflow-hidden"
-            @click="actions.edit?.handler({ ...props, data: template })"
+            @click="actions.edit?.handler({ ...props, data: data })"
         >
             <img
-                :src="template.thumbnail.url"
-                v-if="template?.thumbnail?.url"
+                :src="data?.thumbnail?.url"
+                v-if="data?.thumbnail?.url"
                 alt="thumbnail"
             />
             <div
@@ -22,14 +22,14 @@
 
         <div class="flex flex-row">
             <div class="flex flex-col flex-grow">
-                <span>{{ template.name }}</span>
+                <span>{{ data?.name }}</span>
                 <span>
-                    {{ new Date(template.updated_at).toLocaleDateString() }}
+                    {{ new Date(data?.updated_at).toLocaleDateString() }}
                 </span>
             </div>
             <crud-actions
                 :actions="actions"
-                :data="template"
+                :data="data"
                 :base-route="baseRoute"
                 :has-preview-component="hasPreviewComponent"
                 :model-name="modelName"
@@ -40,22 +40,25 @@
 </template>
 <script setup>
 import CrudActions from "@/Components/CRUD/CrudActions.vue";
+
+import { faImage } from "@fortawesome/pro-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { getActions } from "@/Components/CRUD/helpers/actions";
+
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
     faChevronDoubleLeft,
     faEllipsisH,
 } from "@fortawesome/pro-regular-svg-icons";
-import { faImage } from "@fortawesome/pro-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { getFields } from "@/Components/CRUD/helpers/getFields";
-import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
-import { getActions } from "@/Components/CRUD/helpers/actions";
+
 library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 const props = defineProps({
     template: {
         type: Array,
-        required: true,
+    },
+    data: {
+        type: Object,
     },
     fields: {
         type: Array,
@@ -70,7 +73,6 @@ const props = defineProps({
     },
     baseRoute: {
         type: String,
-        // required: true,
     },
     modelName: {
         type: String,
@@ -82,9 +84,11 @@ const props = defineProps({
     },
     modelNamePlural: {
         type: String,
+        default: "Records",
     },
     titleField: {
         type: String,
+        default: "Record",
     },
     actions: {
         type: [Object, Boolean],
@@ -95,7 +99,5 @@ const props = defineProps({
     },
 });
 
-const fields = getFields(props);
 const actions = getActions(props);
-const customizedFields = getCustomizedFields(fields, props.modelKey);
 </script>

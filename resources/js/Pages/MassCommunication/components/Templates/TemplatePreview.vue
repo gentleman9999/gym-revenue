@@ -1,8 +1,5 @@
 <template>
-    <div
-        class="flex flex-col items-center min-w-[12rem] mx-1 relative"
-        :id="temp_id"
-    >
+    <div class="min-w-[12rem] mx-1 relative inline-block" :id="temp_id">
         <template v-if="template_type === 'email'">
             <p
                 class="max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap"
@@ -71,7 +68,7 @@
         <div class="my-2">
             <button
                 @click="contextMenuOpen = true"
-                class="px-2 border border-transparent hover:border-primary hover:bg-neutral rounded-md transition-all"
+                class="px-2 mx-auto block border border-transparent hover:border-primary hover:bg-neutral rounded-md transition-all"
             >
                 <font-awesome-icon icon="ellipsis-h" size="sm" />
             </button>

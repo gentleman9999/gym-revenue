@@ -1,0 +1,25 @@
+input CreateFileInput @validator {
+    id: ID
+    filename: String
+    original_filename: String
+    extension: String
+    bucket: String
+    key: String
+    size: Int
+    visibility: Boolean
+}
+
+input RenameFileInput @validator {
+    id: ID
+    filename: String
+}
+
+input UpdateFileFolderInput @validator {
+    id: ID
+    folder: ID
+}
+
+input UpdateFilePermissionsInput @validator {
+    id: ID
+    permissions: String
+}

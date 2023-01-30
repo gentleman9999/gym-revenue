@@ -1,0 +1,8 @@
+extend type Mutation {
+    "Creates a Calendar Event"
+    createCalendarEvent(input: CreateCalendarEventInput!): CalendarEvent!
+    @inject(context: "user.client_id", name: "input.client_id")
+    @inject(context: "user.id", name: "input.owner_id")
+
+    updateCalendarEvent(input: PatchCalendarEventInput!): CalendarEvent!
+}

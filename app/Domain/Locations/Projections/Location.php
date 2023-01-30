@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Domain\Locations\Projections;
 
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Teams\Models\Team;
-use App\Enums\LocationTypeEnum;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,8 +44,8 @@ class Location extends GymRevProjection
     }
 
     protected $casts = [
-        'location_type' => LocationTypeEnum::class,
-        'details' => AsCollection::class,
+        'location_type' => LocationType::class,
+        'details' => 'array',
     ];
 
     protected const DELETED_AT = 'closed_at';
@@ -64,6 +63,36 @@ class Location extends GymRevProjection
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function poc_phone_detail(): string | null
+    {
+        return $this->detail['poc_phone'] ?? null;
+    }
+
+    public function pocFirstDetail(): string | null
+    {
+        return $this->detail['poc_first'] ?? null;
+    }
+
+    public function pocLastDetail(): string | null
+    {
+        return $this->detail['poc_last'] ?? null;
+    }
+
+    public function getPocLastAttribute(): string | null
+    {
+        return $this->pocLastDetail() ?? null;
+    }
+
+    public function getPocFirstAttribute(): string | null
+    {
+        return $this->pocFirstDetail() ?? null;
+    }
+
+    public function getPocPhoneAttribute(): string | null
+    {
+        return $this->pocPhoneDetail->value ?? null;
     }
 
     public function scopeFilter($query, array $filters): void

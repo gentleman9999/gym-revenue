@@ -179,6 +179,7 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
         App\Providers\EventSourcingServiceProvider::class,
+        App\Providers\GraphQLServiceProvider::class,
         Johnpaulmedina\Usps\UspsServiceProvider::class,
     ],
 

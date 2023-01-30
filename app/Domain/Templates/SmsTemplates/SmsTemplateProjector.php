@@ -41,7 +41,7 @@ class SmsTemplateProjector extends Projector
             $template->fill($template_data);
             $template->id = $event->aggregateRootUuid();
             $template->client_id = $event->clientId();
-            $template->addOrUpdateDetails('created', $event->createdAt()->toString(), ['msg' => $msg]);
+            $template->details = ['created' => $msg];
             $template->writeable()->save();
         });
     }
@@ -55,8 +55,12 @@ class SmsTemplateProjector extends Projector
                 $user = User::find($event->payload['created_by_user_id']);
             }
             $msg = 'Template was updated by ' . $user->name . ' on ' . $event->createdAt()->format('Y-m-d');
-            $template->addOrUpdateDetails('updated', $event->modifiedBy(), ['msg' => $msg]);
-            $template->writeable()->updateOrFail($event->payload);
+
+            $payload = $event->payload;
+            $payload['details'] = $template->details ?? [];
+            $payload['details']['updated'] = $msg;
+
+            $template->writeable()->updateOrFail($payload);
         });
     }
 

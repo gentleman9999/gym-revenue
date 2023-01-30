@@ -19,13 +19,17 @@ use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\Customer;
 use App\Domain\Users\Models\EndUser;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
+use App\Enums\SecurityGroupEnum;
 use App\Models\DynamicReport;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
+use Bouncer;
 use Database\Factories\RoleFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -57,6 +61,9 @@ class Role extends \Silber\Bouncer\Database\Role
     {
         return match ($group) {
             'users' => User::class,
+            'leads' => Lead::class,
+            'customers' => Customer::class,
+            'members' => Member::class,
             'locations' => Location::class,
             'endusers' => EndUser::class,
             'lead-statuses' => LeadStatus::class,
@@ -80,7 +87,6 @@ class Role extends \Silber\Bouncer\Database\Role
             'dynamic-reports' => DynamicReport::class,
             'chat' => Chat::class,
             'conversation' => ClientConversation::class,
-            'customers' => Customer::class,
             default => null,
         };
     }
@@ -98,6 +104,27 @@ class Role extends \Silber\Bouncer\Database\Role
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
+        });
+    }
+
+    public function abilities()
+    {
+        if (Bouncer::role()->find($this->id)) {
+            return Bouncer::role()->find($this->id)->getAbilities()->toArray();
+        } else {
+            return null;
+        }
+    }
+
+    public function availableAbilities()
+    {
+        return Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']);
+    }
+
+    public function securityGroups()
+    {
+        return collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')->values()->map(function ($s) {
+            return ['value' => $s->value, 'name' => $s->name];
         });
     }
 }

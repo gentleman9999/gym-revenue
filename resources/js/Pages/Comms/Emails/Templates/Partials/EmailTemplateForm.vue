@@ -1,19 +1,23 @@
 <template>
-    <email-builder
-        @onSave="handleOnSave"
-        @onSaveAndClose="handleOnSave"
-        @onClose="handleOnClose"
-        :json="template?.json || null"
-        :title="template?.name || undefined"
-        :api-key="topolApiKey"
-    />
+    <ApolloQuery :query="(gql) => queries.TOPOL_API_KEY">
+        <template v-slot="{ result: { data } }">
+            <email-builder
+                @onSave="handleOnSave"
+                @onSaveAndClose="handleOnSave"
+                @OnClose="handleOnClose"
+                :json="transformJson(template?.json) || {}"
+                :title="template?.name || 'New Email Template'"
+                :api-key="data.topolApiKey"
+            />
+        </template>
+    </ApolloQuery>
     <daisy-modal ref="nameModal">
         <div class="form-control">
             <label for="name" class="label">Name</label>
             <input type="text" v-model="form.name" autofocus id="name" />
             <jet-input-error :message="form.errors.name" class="mt-2" />
         </div>
-        <!--        TODO: we may need to remove subject from email templates. depends on design-->
+
         <div class="form-control">
             <label for="subject" class="label">Subject Line</label>
             <input
@@ -25,190 +29,156 @@
             <jet-input-error :message="form.errors.subject" class="mt-2" />
         </div>
 
-        <!--        <div class="form-control col-span-6 flex flex-row" v-if="canActivate">-->
-        <!--            <input-->
-        <!--                type="checkbox"-->
-        <!--                v-model="form.active"-->
-        <!--                id="active"-->
-        <!--                class="mt-2"-->
-        <!--                :value="true"-->
-        <!--            />-->
-        <!--            <label for="active" class="label ml-4"-->
-        <!--                >Activate (allows assigning to Campaigns)</label-->
-        <!--            >-->
-        <!--            <jet-input-error :message="form.errors.active" class="mt-2" />-->
-        <!--        </div>-->
         <template #actions>
             <div class="flex-grow" />
             <Button
                 class="btn-secondary"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.isDirty || isProcessing"
-                :loading="form.processing || isProcessing"
-                @click="handleSubmit"
+                :class="{ 'opacity-25': isProcessing }"
+                :disabled="isProcessing"
+                :loading="isProcessing"
+                @click="handleOperation"
             >
-                {{ buttonText }}
+                Save
             </Button>
         </template>
     </daisy-modal>
+
+    <template v-if="isProcessing">
+        <daisy-modal :closable="false" :open="true" :showCloseButton="false">
+            <Spinner />
+        </daisy-modal>
+    </template>
 </template>
 
-<script>
-import { ref } from "vue";
+<script setup>
+import { ref, onMounted, computed } from "vue";
 import { useGymRevForm } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
 import Button from "@/Components/Button.vue";
-import JetFormSection from "@/Jetstream/FormSection.vue";
+import Spinner from "@/Components/Spinner.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
-import usePage from "@/Components/InertiaModal/usePage";
-import { useModal } from "@/Components/InertiaModal";
+import queries from "@/gql/queries";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
+import { toastInfo, toastError } from "@/utils/createToast";
 
-export default {
-    components: {
-        EmailBuilder,
-        Button,
-        JetFormSection,
-        JetInputError,
-        DaisyModal,
-    },
-    props: {
-        template: {
-            type: Object,
-        },
-        canActivate: {
-            type: Boolean,
-            required: true,
-        },
-        topolApiKey: {
-            type: String,
-            required: true,
-        },
-        useInertia: {
-            type: Boolean,
-            default: true,
-        },
-    },
-    setup(props, { emit }) {
-        const inertiaModal = useModal();
-        const page = usePage();
-        const nameModal = ref(null);
-        const isProcessing = ref(false);
-        let template = props?.template || {
+const emit = defineEmits(["cancel", "done"]);
+
+const props = defineProps({
+    template: {
+        type: Object,
+        default: {
+            id: null,
             markup: null,
             json: null,
             thumbnail: null,
             name: null,
             subject: null,
-            client_id: page.props.value.user?.client_id,
-        };
-        let operation = "Update";
-        if (!props.template) {
-            operation = "Create";
-        }
-
-        const form = useGymRevForm(template);
-        const closeAfterSave = ref(false);
-
-        let handleSubmit = () => {
-            if (!form.processing) {
-                if (props.useInertia) {
-                    form.dirty().put(
-                        route("mass-comms.email-templates.update", template.id),
-                        {
-                            headers: { "X-Inertia-Modal-Redirect": true },
-                            // headers: { "X-Inertia-Modal-CloseOnSuccess": true },
-                            onFinish: ({ data }) => {
-                                emit("done", data);
-                            },
-                        }
-                    );
-                } else {
-                    isProcessing.value = true;
-                    axios
-                        .put(
-                            route(
-                                "mass-comms.email-templates.update",
-                                template.id
-                            ),
-                            form.dirty().data()
-                        )
-                        .then(({ data }) => {
-                            isProcessing.value = false;
-                            emit("done", data);
-                        });
-                }
-            }
-        };
-        if (operation === "Create") {
-            handleSubmit = () => {
-                if (!form.processing) {
-                    if (props.useInertia) {
-                        form.post(route("mass-comms.email-templates.store"), {
-                            headers: { "X-Inertia-Modal-Redirect": true },
-                            onSuccess: ({ data }) => {
-                                emit("done", data);
-                            },
-                        });
-                    } else {
-                        isProcessing.value = true;
-                        axios
-                            .post(
-                                route("mass-comms.email-templates.store"),
-                                form.data()
-                            )
-                            .then(({ data }) => {
-                                console.log("onSuccess-Create!");
-                                isProcessing.value = false;
-                                emit("done", data);
-                            });
-                    }
-                }
-            };
-        }
-
-        const handleOnSave = ({ html, json }) => {
-            console.log("handleOnSave");
-            form.markup = html;
-            form.json = json;
-            //TODO: generate thumbnail
-            // form.thumbnail = generateThumbnail(html);
-            if (!form.name) {
-                nameModal.value.open();
-                return;
-            }
-            handleSubmit();
-        };
-
-        const handleOnSaveAndClose = ({ html, json }) => {
-            closeAfterSave.value = true;
-            handleOnSave({ html, json });
-        };
-
-        const handleOnClose = (template) => {
-            if (props.useInertia) {
-                if (inertiaModal.value?.close) {
-                    inertiaModal.value?.close();
-                } else {
-                    //go back
-                    Inertia.visit(route("mass-comms.email-templates"));
-                }
-            } else {
-                emit("cancel", template);
-            }
-        };
-
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            nameModal,
-            handleOnSave,
-            handleOnSaveAndClose,
-            handleOnClose,
-            isProcessing,
-        };
+        },
     },
+    emailTemplate: {
+        type: Object,
+        default: {
+            id: null,
+            markup: null,
+            json: null,
+            thumbnail: null,
+            name: null,
+            subject: null,
+        },
+    },
+    editParam: {
+        type: [Object, null],
+        default: null,
+    },
+    data: {
+        type: Object,
+    },
+});
+
+const template = computed(() => {
+    return props?.emailTemplate || props.template;
+});
+
+const { mutate: createEmailTemplate } = useMutation(
+    mutations.emailTemplate.create
+);
+const { mutate: updateEmailTemplate } = useMutation(
+    mutations.emailTemplate.update
+);
+
+const operation = computed(() => {
+    return props.editParam !== null ? "Update" : "Create";
+});
+
+const operFn = computed(() => {
+    return operation.value === "Update"
+        ? updateEmailTemplate
+        : createEmailTemplate;
+});
+
+const nameModal = ref(null); // DOM reference for template name and subject
+const isProcessing = ref(false);
+
+const form = useGymRevForm(template.value);
+
+const transformJson = (data) => {
+    if (!data) return {};
+    return JSON.parse(data);
 };
+
+/** initiates call to the current operation with the right fields and input data in the right format */
+const handleOperation = async () => {
+    try {
+        isProcessing.value = true;
+
+        let rawData = {
+            id: form.id,
+            name: form.name,
+            subject: form.subject,
+            markup: form.markup,
+            json: JSON.stringify(form.json),
+        };
+        if (props.editParam === null) delete rawData.id;
+
+        const { data } = await operFn.value({
+            input: rawData,
+        });
+
+        let savedTemplate =
+            data["createEmailTemplate"] ?? data["updateEmailTemplate"];
+
+        toastInfo("Email Template " + operation.value + "d!");
+        isProcessing.value = false;
+        emit("done", savedTemplate);
+    } catch (error) {
+        toastError("There was a problem updating the data - try again..");
+        isProcessing.value = false;
+        console.log("template operation error:", error);
+    }
+};
+
+const handleOnSave = ({ html, json }) => {
+    form.markup = html;
+    form.json = json;
+    //TODO: generate thumbnail
+    // form.thumbnail = generateThumbnail(html);
+    if (!form.name) {
+        nameModal.value.open();
+        return;
+    }
+
+    handleOperation();
+};
+
+const handleOnClose = (template) => {
+    emit("cancel", template);
+};
+
+//log the props on mount
+onMounted(() => {
+    console.log("props:", props);
+});
 </script>

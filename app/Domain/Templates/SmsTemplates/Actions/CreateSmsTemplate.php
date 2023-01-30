@@ -2,20 +2,17 @@
 
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Templates\SmsTemplates\SmsTemplateAggregate;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateSmsTemplate
+class CreateSmsTemplate extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -30,6 +27,11 @@ class CreateSmsTemplate
         ];
     }
 
+    public function mapArgsToHandle($args): array
+    {
+        return [$args['input']];
+    }
+
     public function handle(array $data): SmsTemplate
     {
         $id = Uuid::new();
@@ -39,11 +41,6 @@ class CreateSmsTemplate
             ->persist();
 
         return SmsTemplate::findOrFail($id);
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool
@@ -56,8 +53,7 @@ class CreateSmsTemplate
     public function asController(ActionRequest $request): SmsTemplate
     {
         return $this->handle(
-            $request->validated(),
-            $request->user()
+            $request->validated()
         );
     }
 

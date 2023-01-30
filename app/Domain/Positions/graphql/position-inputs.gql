@@ -1,0 +1,16 @@
+input PositionFilter {
+    search: String
+    trashed: String
+    state: String
+}
+
+input CreatePositionInput {
+    name: String
+    departments: [ID]
+}
+
+input UpdatePositionInput {
+    id: ID
+    name: String
+    departments: [ID]
+}

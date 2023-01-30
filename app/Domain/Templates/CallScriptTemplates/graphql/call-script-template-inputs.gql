@@ -1,0 +1,16 @@
+# Create Input for Call Templates
+input CreateCallScriptTemplateInput {
+    name: String
+    script: String
+    active: Boolean
+    use_once: Boolean
+}
+
+# Update Input for Call Templates
+input UpdateCallScriptTemplateInput {
+    id: ID!
+    name: String
+    active: Boolean
+    script: String
+    use_once: Boolean
+}

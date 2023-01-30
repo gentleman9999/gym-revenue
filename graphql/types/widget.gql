@@ -1,0 +1,6 @@
+type Widget {
+   title: String
+   value: String
+   type: String
+   icon: String
+}

@@ -1,0 +1,16 @@
+input CreateNoteInput @validator {
+    title: String
+    entity_id: String
+    entity_type: String
+    note: String
+    active: Boolean
+}
+
+input UpdateNoteInput @validator {
+    id: ID
+    title: String
+    entity_id: String
+    entity_type: String
+    note: String
+    active: Boolean
+}

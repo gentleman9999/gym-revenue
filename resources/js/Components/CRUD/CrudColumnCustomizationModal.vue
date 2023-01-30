@@ -12,6 +12,7 @@
             <div
                 class="form-control flex flex-row gap-2"
                 v-for="field in fields"
+                :key="field.name"
             >
                 <input
                     :id="field.name"
@@ -69,10 +70,7 @@ export default defineComponent({
             columns: [...config.value],
         });
 
-        console.log(props.table);
-
         const customizationModal = ref(null);
-        console.log(form["table"]);
         const open = () => customizationModal.value.open();
         const close = () => customizationModal.value.close();
 

@@ -1,0 +1,13 @@
+# Queries SMS Templates
+extend type Query {
+    "Queries SMS Templates according to optional input filters"
+    smsTemplates(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [SmsTemplate!]! @paginate(defaultCount: 10)
+}
+
+extend type Query {
+    "Find a single SMS Template by an identifying attribute."
+    smsTemplate(id: ID @eq): SmsTemplate @find
+}

@@ -24,6 +24,7 @@
             v-if="props.mode === 'list'"
             :folder="folder"
             :handleRename="handleRename"
+            :handleShare="handleShare"
             :handleTrash="handleTrash"
             :handleRestore="handleRestore"
             :handlePermissions="handlePermissions"
@@ -32,6 +33,7 @@
 
         <folder-context-menu
             ref="subMenu"
+            :handleShare="handleShare"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
             :handleRestore="handleRestore"
@@ -63,7 +65,6 @@ import FolderIcon from "./Folder.vue";
 import FolderDetail from "./FolderDetail.vue";
 import FolderContextMenu from "./FolderContextMenu.vue";
 import { useEventsBus } from "@/utils";
-import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     folder: {
@@ -174,9 +175,10 @@ const preventDragDefault = (e) => {
     }
 };
 
+const vueEmit = defineEmits(["browse-folder"]);
 const browseFolder = () => {
     // TODO browse to the folder
-    Inertia.get(route("folders.viewFiles", props.folder.id));
+    vueEmit("browse-folder", props.folder.id);
 };
 
 const showTrash = props.folder.deleted_at ? false : true;

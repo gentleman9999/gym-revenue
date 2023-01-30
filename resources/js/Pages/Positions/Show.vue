@@ -4,15 +4,16 @@
     <gym-revenue-crud
         base-route="positions"
         model-name="Position"
-        model-key="positions"
+        model-key="position"
         :fields="fields"
-        :resource="positions"
+        :edit-component="PositionForm"
         :actions="{
             trash: {
                 handler: ({ data }) => handleClickTrash(data),
             },
         }"
     />
+
     <confirm
         title="Really Trash Position?"
         v-if="confirmTrash"
@@ -34,6 +35,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import PositionForm from "@/Pages/Positions/Partials/PositionForm.vue";
 
 export default defineComponent({
     components: {
@@ -43,8 +45,9 @@ export default defineComponent({
         JetBarContainer,
         Button,
         PageToolbarNav,
+        PositionForm,
     },
-    props: ["positions", "filters"],
+    props: ["filters"],
     setup(props) {
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -84,7 +87,6 @@ export default defineComponent({
                 active: true,
             },
         ];
-
         return {
             fields,
             confirmTrash,
@@ -92,6 +94,7 @@ export default defineComponent({
             handleClickTrash,
             Inertia,
             navLinks,
+            PositionForm,
         };
     },
 });

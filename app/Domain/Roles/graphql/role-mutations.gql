@@ -1,0 +1,10 @@
+extend type Mutation {
+    createRole(input: CreateRoleInput): Role!
+        @inject(context: "user.client_id", name: "input.client_id")
+
+    updateRole(input: UpdateRoleInput): Role!
+        @inject(context: "user.client_id", name: "input.client_id")
+
+    deleteRole(id: ID!): Role!
+        @inject(context: "user.client_id", name: "client_id")
+}

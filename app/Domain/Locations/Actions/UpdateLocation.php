@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Locations\Actions;
 
+use App\Actions\GymRevAction;
+use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
-use App\Enums\LocationTypeEnum;
 use App\Enums\StatesEnum;
-use App\Http\Middleware\InjectClientId;
 use App\Rules\AddressCity;
 use App\Rules\AddressLine;
 use App\Rules\AddressState;
@@ -18,13 +18,10 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateLocation
+class UpdateLocation extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -50,8 +47,7 @@ class UpdateLocation
             'location_no' => ['sometimes', 'max:50', 'exists:locations,location_no'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
-            'location_type' => ['sometimes',  new Enum(LocationTypeEnum::class)],
-            'presale_opened_at' => ['sometimes'],
+            'location_type' => ['sometimes',  new Enum(LocationType::class)],
             'presale_started_at' => ['sometimes'],
             'capacity' => ['sometimes','integer'],
         ];
@@ -79,9 +75,11 @@ class UpdateLocation
         return $location->refresh();
     }
 
-    public function getControllerMiddleware(): array
+    public function mapArgsToHandle($args): array
     {
-        return [InjectClientId::class];
+        $location = $args['location'];
+
+        return [Location::find($location['id']), $location];
     }
 
     public function authorize(ActionRequest $request): bool

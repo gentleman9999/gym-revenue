@@ -1,0 +1,8 @@
+extend type Mutation {
+    "Creates a Position"
+    createPosition(input: CreatePositionInput): Position!
+        @inject(context: "user.client_id", name: "client_id")
+    "Updates a Position"
+    updatePosition(input: UpdatePositionInput): Position!
+        @inject(context: "user.client_id", name: "client_id")
+}

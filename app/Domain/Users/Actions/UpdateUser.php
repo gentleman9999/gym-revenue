@@ -4,50 +4,41 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Actions;
 
+use App\Actions\GymRevAction;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\ValidationRules;
 use App\Enums\UserTypesEnum;
-use App\Http\Middleware\InjectClientId;
 
 use function bcrypt;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateUser implements UpdatesUserProfileInformation
+class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
 {
     use PasswordValidationRules;
-    use AsAction;
 
     private bool $updatingSelf = false;
 
     public function handle(User $user, array $payload): User
     {
-        $previous_type = $this->getPreviousUserType((string)$user->id);
+        $payload['user_type'] = $payload['user_type'] ?? $user->user_type;
         if (array_key_exists('password', $payload)) {
             $payload['password'] = bcrypt($payload['password']);
         }
-        $misc = (new UserDetails())->whereUserId($user->id)->whereField('emergency_contact')->first()?->misc ?: [];
-        $new_ec = [
-            'ec_first_name' => $payload['ec_first_name'] ?? ($misc['ec_first_name'] ?? null),
-            'ec_last_name' => $payload['ec_last_name'] ?? ($misc['ec_last_name'] ?? null),
-            'ec_phone' => $payload['ec_phone'] ?? ($misc['ec_phone'] ?? null),
-        ];
-
-        if (! empty(array_filter($new_ec))) {
-            UserDetails::createOrUpdateRecord((string)$user->id, 'emergency_contact', '', $new_ec, true);
+        if (array_key_exists('home_location_id', $payload)) {
+            $home_location = Location::find($payload['home_location_id']);
+            $payload['home_location_id'] = ! is_null($home_location) ?
+                $home_location->gymrevenue_id : $payload['home_location_id'];
         }
-
         UserAggregate::retrieve((string)$user->id)->update($payload)->persist();
 
         if ($this->updatingSelf) {
@@ -56,81 +47,54 @@ class UpdateUser implements UpdatesUserProfileInformation
             $user = User::findOrFail($user->id);
         }
 
-        ReflectUserData::run($user, $previous_type);
-
         return $user;
     }
 
-    /**
-     * Custom validation based on user_type
-     *
-     * @return array
-     */
-    public function rules(): array
+    public function mapArgsToHandle(array $args): array
     {
-        return ValidationRules::getValidationRules(request()->user_type, false);
+        $user = $args['input'];
+
+        return [User::find($user['id']), $user];
     }
 
-    /**
-     * Validate the address provided using USPS API after main rules
-     * Which also sends back correct address1, city and state
-     *
-     * @return void
-     */
-    public function afterValidator(Validator $validator, ActionRequest $request): void
-    {
-        /**
-         * @TODO: Send the suggestion data back to UI, and display to the User.
-         * They can make a choice (confirm/cancel), and have it update if confirmed
-         */
-        session()->forget('address_validation');
-    }
+    // /**
+    //  * Custom validation based on user_type
+    //  *
+    //  * @return array
+    //  */
+    // public function rules(): array
+    // {
+    //     return ValidationRules::getValidationRules(request()->user_type, false);
+    // }
 
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
-    }
+    // /**
+    //  * Validate the address provided using USPS API after main rules
+    //  * Which also sends back correct address1, city and state
+    //  *
+    //  * @return void
+    //  */
+    // public function afterValidator(Validator $validator, ActionRequest $request): void
+    // {
+    //     /**
+    //      * @TODO: Send the suggestion data back to UI, and display to the User.
+    //      * They can make a choice (confirm/cancel), and have it update if confirmed
+    //      */
+    //     session()->forget('address_validation');
+    // }
 
-    /**
-     * Transform the request object in
-     * preparation for validation
-     *
-     * @param ActionRequest $request
-     */
-    public function prepareForValidation(ActionRequest $request): void
-    {
-        $request = $this->mergeUserTypeToRequest($request);
-
-        if ($request->user_type == UserTypesEnum::LEAD) {
-            /** @TODO: Need to update with what entry_source data should be */
-            $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
-        }
-    }
-
-    /**
-     * Adds the user type to the request object
-     * based on the route name of the request
-     *
-     * @param ActionRequest $request
-     *
-     * @return ActionRequest $request
-     */
-    private function mergeUserTypeToRequest(ActionRequest $request): ActionRequest
-    {
-        $current_route = Route::currentRouteName();
-
-        if ($current_route == 'users.store' || $current_route == 'users.update') {
-            $request->merge(['user_type' => UserTypesEnum::EMPLOYEE]);
-        } elseif ($current_route == 'data.leads.store' || $current_route == 'data.leads.update') {
-            $request->merge(['user_type' => UserTypesEnum::LEAD]);
-        } elseif ($current_route == 'data.members.store' || $current_route == 'data.members.update') {
-            $request->merge(['user_type' => UserTypesEnum::MEMBER]);
-        } else {
-            $request->merge(['user_type' => UserTypesEnum::CUSTOMER]);
-        }
-
-        return $request;
-    }
+    // /**
+    //  * Transform the request object in
+    //  * preparation for validation
+    //  *
+    //  * @param ActionRequest $request
+    //  */
+    // public function prepareForValidation(ActionRequest $request): void
+    // {
+    //     if ($request->user_type == UserTypesEnum::LEAD) {
+    //         /** @TODO: Need to update with what entry_source data should be */
+    //         $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
+    //     }
+    // }
 
     public function authorize(ActionRequest $request): bool
     {
@@ -194,21 +158,21 @@ class UpdateUser implements UpdatesUserProfileInformation
         ];
     }
 
-    protected function getPreviousUserType(string $id): UserTypesEnum
-    {
-        if ($this->updatingSelf) {
-            $user = User::withoutGlobalScopes()->findOrFail($id);
-        } else {
-            $user = User::findOrFail($id);
-        }
+    // protected function getPreviousUserType(string $id): UserTypesEnum
+    // {
+    //     if ($this->updatingSelf) {
+    //         $user = User::withoutGlobalScopes()->findOrFail($id);
+    //     } else {
+    //         $user = User::findOrFail($id);
+    //     }
 
-        return $user->user_type;
-    }
+    //     return $user->user_type;
+    // }
 
-    public function getValidationAttributes(): array
-    {
-        return [
-            'addres1' => 'address line 1',
-        ];
-    }
+    // public function getValidationAttributes(): array
+    // {
+    //     return [
+    //         'addres1' => 'address line 1',
+    //     ];
+    // }
 }

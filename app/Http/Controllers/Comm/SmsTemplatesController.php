@@ -25,8 +25,6 @@ class SmsTemplatesController extends Controller
 
         return Inertia::render('Comms/SMS/Templates/SMSTemplatesIndex', [
             'title' => 'SMS Templates',
-            'filters' => request()->all('search', 'trashed'),
-            'templates' => $templates,
         ]);
     }
 

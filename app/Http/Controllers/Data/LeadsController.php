@@ -8,7 +8,6 @@ use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\EndUser;
@@ -249,8 +248,7 @@ class LeadsController extends Controller
             $team_locations = [];
 
             if ($current_team->id != $client->home_team_id) {
-                $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('field', '=', 'team-location')->get()->pluck('value')->toArray();
+                $team_locations = $current_team->locations();
                 // @todo - we will probably need to do some user-level scoping
                 // example - if there is scoping and this club is not there, don't include it
 
@@ -281,15 +279,9 @@ class LeadsController extends Controller
             $team_locations = [];
 
             if ($current_team->name != $client->home_team_id) {
-                $team_locations_records = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->get();
+                $team_locations = $current_team->locations();
 
-                if (count($team_locations_records) > 0) {
-                    foreach ($team_locations_records as $team_locations_record) {
-                        // @todo - we will probably need to do some user-level scoping
-                        // example - if there is scoping and this club is not there, don't include it
-                        $team_locations[] = $team_locations_record->value;
-                    }
+                if (count($team_locations) > 0) {
                     $results = Lead::whereIn('home_location_id', $team_locations)->whereHas('claimed');
                 }
             } else {
@@ -407,18 +399,10 @@ class LeadsController extends Controller
                 $results = Location::whereClientId($client_id);
             } else {
                 // The active_team is not the current client's default_team
-                $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('field', '=', 'team-location')
-                    ->get();
+                $team_locations = $current_team->locations();
 
                 if (count($team_locations) > 0) {
-                    $in_query = [];
-                    // so get the teams listed in team_details
-                    foreach ($team_locations as $team_location) {
-                        $in_query[] = $team_location->value;
-                    }
-
-                    $results = Location::whereIn('gymrevenue_id', $in_query);
+                    $results = Location::whereIn('gymrevenue_id', $team_locations);
                 }
             }
         } else {
@@ -496,7 +480,7 @@ class LeadsController extends Controller
     public function statuses(Request $request)
     {
         return Inertia::render('Leads/Statuses', [
-//            'statuses' => LeadStatus::get(['id', 'status']),
+        //    'statuses' => LeadStatus::get(['id', 'status']),
         ]);
     }
 

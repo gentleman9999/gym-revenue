@@ -1,0 +1,41 @@
+input UserInput {
+    id: ID
+    first_name: String
+    middle_name: String
+    last_name: String
+    email: String
+    alternate_email: String
+    address1: String
+    address2: String
+    phone: String
+    alternate_phone: String
+    city: String
+    state: String
+    zip: String
+    gender: String
+    contact_preference: String
+    started_at: String
+    ended_at: String
+    terminated_at: String
+    notes: NoteInput
+    team_id: ID
+    role_id: ID
+    external_id: ID
+    home_location_id: ID
+    date_of_birth: DateTime
+    agreement_number: Int
+    manager: String
+    user_type: String
+    departments: [Departments]
+    positions: [ID]
+}
+
+input NoteInput @validator {
+    note: String
+    title: String
+}
+
+input Departments {
+    department: ID
+    position: ID
+}

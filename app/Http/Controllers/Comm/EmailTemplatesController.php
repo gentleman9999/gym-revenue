@@ -27,8 +27,6 @@ class EmailTemplatesController extends Controller
 
         return Inertia::render('Comms/Emails/Templates/EmailTemplatesIndex', [
             'title' => 'Email Templates',
-            'filters' => request()->all('search', 'trashed'),
-            'templates' => $templates,
         ]);
     }
 

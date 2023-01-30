@@ -4,13 +4,14 @@
         @click.prevent.stop="handleClick"
         @dblclick.prevent.stop="handleDoubleClick"
     >
-        <td v-for="(field, index) in fields" class="col-span-3 truncate">
+        <td v-for="field in fields" :key="field.id" class="col-span-3 truncate">
             <div class="tabledata">
                 <render-field
                     :field="field"
                     :data="data"
                     :base-route="modelName"
-                    v-bind="$props"
+                    :modelName="modelName"
+                    :modelKey="modelKey"
                 />
             </div>
         </td>
@@ -51,8 +52,7 @@ import DataCard from "./DataCard.vue";
 import CrudActions from "./CrudActions.vue";
 import { getFields } from "./helpers/getFields";
 import RenderField from "./RenderField.vue";
-import { Inertia } from "@inertiajs/inertia";
-import { preview } from "@/Components/CRUD/helpers/previewData";
+import { preview, edit } from "@/Components/CRUD/helpers/gqlData";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 
 export default defineComponent({
@@ -132,7 +132,7 @@ export default defineComponent({
             if (!props.hasPreviewComponent) {
                 return;
             }
-            preview(props.baseRoute, props.data.id);
+            preview(props.data.id);
         };
         const handleDoubleClick = () => {
             clearTimeout(timer);
@@ -144,9 +144,7 @@ export default defineComponent({
                 props.onDoubleClick({ data: props.data });
                 return;
             }
-            Inertia.visitInModal(
-                route(`${props.baseRoute}.edit`, props.data.id)
-            );
+            edit(props.data.id, props.modelName);
         };
 
         return { fields: customizedFields, handleClick, handleDoubleClick };

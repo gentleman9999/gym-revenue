@@ -21,7 +21,7 @@
                     :close-on-select="false"
                     :create-option="true"
                     :options="
-                        positions.map((position) => ({
+                        positions.data.map((position) => ({
                             label: position.name,
                             value: position.id,
                         }))
@@ -62,11 +62,11 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { useGymRevForm } from "@/utils";
-import { useModal } from "@/Components/InertiaModal";
-import { Inertia } from "@inertiajs/inertia";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
-
+import * as _ from "lodash";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 const props = defineProps({
     clientId: {
         type: String,
@@ -76,38 +76,46 @@ const props = defineProps({
         type: Object,
     },
     positions: {
-        type: Array,
+        type: Object,
     },
 });
 
-let department = props.department;
+const emit = defineEmits(["close"]);
+let department = _.cloneDeep(props.department);
 let operation = "Update";
 if (!department) {
     department = {
         name: "",
         id: null,
-        client_id: props.clientId,
         positions: [],
     };
     operation = "Create";
+} else {
+    department.positions = department.positions.map((pos) => pos.id);
 }
 
 const form = useGymRevForm(department);
 
-let handleSubmit = () => {
+const { mutate: createDepartment } = useMutation(mutations.department.create);
+const { mutate: updateDepartment } = useMutation(mutations.department.update);
+let handleSubmit = async () => {
     if (operation === "Create") {
-        form.post(route("departments.store"));
+        await createDepartment({
+            name: form.name,
+            positions: form.positions,
+        });
+        handleCancel();
     } else {
-        form.put(route("departments.update", department.id));
+        await updateDepartment({
+            id: department.id,
+            name: form.name,
+            positions: form.positions,
+        });
+        handleCancel();
     }
 };
 
-const modal = useModal();
 const handleCancel = () => {
-    if (modal?.value?.close) {
-        modal.value.close();
-        return;
-    }
-    Inertia.visit(route("departments"));
+    emit("close");
 };
 </script>

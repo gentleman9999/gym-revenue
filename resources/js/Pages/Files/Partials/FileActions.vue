@@ -1,12 +1,6 @@
 <template>
     <div class="flex flex-row space-x-4">
-        <Button
-            primary
-            size="sm"
-            @click="Inertia.visitInModal(route('files.upload'))"
-        >
-            Upload
-        </Button>
+        <Button primary size="sm" @click="handleFileUpload"> Upload </Button>
         <Button primary size="sm" @click="addFolder" v-if="!folderName">
             New Folder
         </Button>
@@ -14,30 +8,40 @@
 </template>
 <script setup>
 import Button from "@/Components/Button.vue";
-import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-vue3";
-const page = usePage();
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
+import { toastSuccess } from "@/utils/createToast";
 
+const page = usePage();
 const props = defineProps({
     folderName: {
         type: String,
     },
+    refetch: {
+        type: Function,
+    },
+    uploadModal: {
+        type: Object,
+        required: true,
+    },
 });
 
-const client_id = page.props.value.user.contact_preference.id;
-const addFolder = () => {
-    Inertia.post(
-        route("folders.store"),
-        {
-            name: "New Folder",
-            client_id,
-        },
-        {
-            onSuccess: (response) => {
-                console.log("new folder");
-                console.log(response);
-            },
-        }
-    );
+const { mutate: createFolder } = useMutation(mutations.folder.create);
+const addFolder = async () => {
+    let result = await createFolder({
+        name: "New Folder",
+    });
+    if (result && result.data) {
+        props.refetch();
+        toastSuccess("Folder Created");
+    }
+};
+
+const handleFileUpload = () => {
+    console.log({ uploadModal: props.uploadModal });
+    props.uploadModal.open();
+
+    // Inertia.visitInModal(route('files.upload'))
 };
 </script>

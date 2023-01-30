@@ -1,25 +1,27 @@
 <template>
     <LayoutHeader title="Users" />
-    <!--        security roles not yet implemented - hide for now-->
     <page-toolbar-nav :title="clientName + ' Users'" :links="navLinks" />
     <gym-revenue-crud
+        ref="usersCrud"
         base-route="users"
         model-name="User"
         model-key="user"
         :fields="fields"
-        :resource="users"
         :actions="actions"
         :top-actions="topActions"
         :preview-component="UserPreview"
+        :edit-component="UserForm"
     >
         <template #filter>
             <beefy-search-filter
                 v-model:modelValue="form.search"
+                @update:modelValue="
+                    handleCrudUpdate('filter', {
+                        search: form.search,
+                    })
+                "
                 :filtersActive="filtersActive"
                 class="w-full max-w-md mr-4"
-                @reset="reset"
-                @clear-filters="clearFilters"
-                @clear-search="clearSearch"
             >
                 <div class="form-control" v-if="clubs?.length">
                     <label for="club" class="label label-text py-1 text-xs">
@@ -101,22 +103,22 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
+import * as _ from "lodash";
 import { usePage } from "@inertiajs/inertia-vue3";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm.vue";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import UserPreview from "@/Pages/Users/Partials/UserPreview.vue";
+import UserForm from "@/Pages/Users/Partials/UserForm.vue";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
-
 export default defineComponent({
     components: {
         BeefySearchFilter,
@@ -126,28 +128,19 @@ export default defineComponent({
         SimpleSearchFilter,
         PageToolbarNav,
         UserPreview,
+        UserForm,
         Multiselect,
         DaisyModal,
         FileManager,
     },
-    props: [
-        "users",
-        "filters",
-        "clubs",
-        "teams",
-        "clientName",
-        "potentialRoles",
-    ],
+    props: ["filters", "clubs", "teams", "clientName", "potentialRoles"],
     setup(props) {
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
         const teamId = computed(() => page.props.value.user?.current_team_id);
 
-        const { form, reset, clearFilters, clearSearch, filtersActive } =
-            useSearchFilter("users", {
-                team: null,
-                club: null,
-            });
+        const form = useGymRevForm({});
+
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
             confirmDelete.value = user;
@@ -170,30 +163,35 @@ export default defineComponent({
             "name",
             "email",
             {
-                name: "role",
+                // name: "roles[0].title",
+                name: "roles",
                 label: "Security Role",
+                transform: (roles) => {
+                    return roles[0]?.title;
+                },
             },
             {
                 name: "manager",
                 label: "Manager",
             },
-            "home_team",
+            {
+                name: "home_team.name",
+                label: "Home Team",
+            },
         ];
         if (page.props.value.user.current_team.isClientTeam) {
             fields = [
                 "name",
                 "email",
-                {
-                    name: "home_location.name",
-                    label: "Home Club",
-                    // transform: (data) => data?.home_location?.name,
-                },
                 "role",
                 {
                     name: "manager",
                     label: "Manager",
                 },
-                "home_team",
+                {
+                    name: "home_team.name",
+                    label: "Home Club",
+                },
             ];
         }
 
@@ -263,25 +261,27 @@ export default defineComponent({
                 class: "btn-primary",
             },
         };
-
+        const usersCrud = ref(null);
+        const handleCrudUpdate = (key, value) => {
+            usersCrud.value.handleCrudUpdate(key, value);
+        };
         return {
             confirmDelete,
             fields,
             actions,
             Inertia,
             handleConfirmDelete,
-            form,
-            reset,
-            clearFilters,
-            clearSearch,
             navLinks,
             UserPreview,
+            UserForm,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             topActions,
             handleClickImport,
             importUser,
             closeModals,
-            filtersActive,
+            form,
+            handleCrudUpdate,
+            usersCrud,
         };
     },
 });

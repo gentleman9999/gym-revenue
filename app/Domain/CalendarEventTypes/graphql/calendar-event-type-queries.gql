@@ -1,0 +1,4 @@
+extend type Query {
+    "Queries Calendar Event Types"
+    calendarEventType: [CalendarEventType!]! @all
+}

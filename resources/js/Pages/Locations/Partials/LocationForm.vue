@@ -9,6 +9,7 @@
                     class="block w-full mt-1"
                     v-model="form.name"
                     autofocus
+                    required
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
@@ -19,6 +20,7 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.location_no"
+                    required
                 />
                 <jet-input-error
                     :message="form.errors.location_no"
@@ -32,6 +34,7 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.city"
+                    required
                 />
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
@@ -45,6 +48,7 @@
                     :create-option="true"
                     :options="optionStates"
                     :classes="multiselectClasses"
+                    required
                 />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
@@ -54,6 +58,7 @@
                     id="zip"
                     type="text"
                     class="block w-full mt-1"
+                    required
                     v-model="form.zip"
                 />
                 <jet-input-error :message="form.errors.zip" class="mt-2" />
@@ -65,6 +70,7 @@
                     id="address1"
                     type="text"
                     class="block w-full mt-1"
+                    required
                     v-model="form.address1"
                 />
                 <jet-input-error :message="form.errors.address1" class="mt-2" />
@@ -117,11 +123,11 @@
 
             <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="phone" value="Phone" />
-                <input
+                <phone-input
                     id="phone"
-                    type="text"
                     class="block w-full mt-1"
                     v-model="form.phone"
+                    required
                 />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
@@ -185,11 +191,11 @@
             </div>
             <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="poc_phone" value="POC Phone" />
-                <input
+                <phone-input
                     id="poc_phone"
-                    type="text"
                     class="block w-full mt-1"
                     v-model="form.poc_phone"
+                    required
                 />
                 <jet-input-error
                     :message="form.errors.poc_phone"
@@ -197,15 +203,7 @@
                 />
             </div>
             <div class="col-span-6 md:col-span-2">
-                <jet-label for="location_type" value="Location Types" />
-                <multiselect
-                    id="location_type"
-                    class="mt-1 multiselect"
-                    v-model="form.location_type"
-                    :searchable="true"
-                    :options="optionLocationTypes"
-                    :classes="multiselectClasses"
-                />
+                <LocationTypesSelect v-model="form.location_type" />
                 <jet-input-error
                     :message="form.errors.location_type"
                     class="mt-2"
@@ -256,17 +254,23 @@ import { computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
+import LocationTypesSelect from "./LocationTypesSelect.vue";
 import Button from "@/Components/Button.vue";
+import PhoneInput from "@/Components/PhoneInput.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import { transformDate } from "@/utils/transformDate";
-import { parseLocationTypeDisplayName } from "@/utils/locationTypeEnum";
+import * as _ from "lodash";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
+import {
+    getValidationErrorsFromGqlError,
+    transformGqlValidationErrorsToInertiaStyle,
+} from "@/utils";
 
 export default {
     components: {
@@ -275,28 +279,33 @@ export default {
         JetInputError,
         JetLabel,
         DatePicker,
-        multiselect: Multiselect,
+        PhoneInput,
+        LocationTypesSelect,
     },
-    props: [
-        "clientId",
-        "location",
-        "phone",
-        "poc_first",
-        "poc_last",
-        "poc_phone",
-        "opened_at",
-        "closed_at",
-        "location_no",
-        "locationTypes",
-    ],
-    setup(props, context) {
+    props: ["location"],
+    setup(props, { emit }) {
         const page = usePage();
 
-        let location = props.location;
-        let poc_first = props.poc_first;
-        let poc_last = props.poc_last;
-        let poc_phone = props.poc_phone;
-        let locationTypes = props.locationTypes;
+        const {
+            mutate: createLocation,
+            loading,
+            error,
+            onError,
+        } = useMutation(mutations.location.create);
+        const { mutate: updateLocation } = useMutation(
+            mutations.location.update
+        );
+
+        // onError(({ graphQLErrors, clientErrors, networkError }) => {
+        onError((error) => {
+            const validationErrors = transformGqlValidationErrorsToInertiaStyle(
+                getValidationErrorsFromGqlError(error)
+            );
+            console.log("parsed gql validationErrors,", validationErrors);
+            Object.assign(form.errors, validationErrors);
+        });
+
+        let location = _.cloneDeep(props.location);
 
         let operation = "Update";
         if (!location) {
@@ -314,7 +323,6 @@ export default {
                 opened_at: null,
                 closed_at: null,
                 location_no: "",
-                client_id: props.clientId,
                 location_type: "",
                 latitude: null,
                 longitude: null,
@@ -323,9 +331,9 @@ export default {
             operation = "Create";
         } else {
             location.phone = location.phone;
-            location.poc_first = poc_first;
-            location.poc_last = poc_last;
-            location.poc_phone = poc_phone;
+            location.poc_first = location.poc_first;
+            location.poc_last = location.poc_last;
+            location.poc_phone = location.poc_phone;
             location.opened_at = location.opened_at;
             location.closed_at = location.closed_at;
             location.address1 = location.address1;
@@ -350,15 +358,42 @@ export default {
 
         //
         //    form.put(`/locations/${location.id}`);
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform(transformData)
-                .put(route("locations.update", location.id));
+        let handleSubmit = async () => {
+            const data = transformData(form.data());
+            await updateLocation({
+                location: {
+                    id: data.id,
+                    gymrevenue_id: data.gymrevenue_id,
+                    location_no: data.location_no,
+                    location_type: data.location_type,
+                    name: data.name,
+                    city: data.city,
+                    state: data.state,
+                    active: data.active,
+                    zip: data.zip,
+                    phone: data.phone,
+                    address1: data.address1,
+                    address2: data.address2,
+                    poc_phone: data.poc_phone,
+                    poc_first: data.poc_first,
+                    poc_last: data.poc_last,
+                    opened_at: data.opened_at,
+                    closed_at: data.closed_at,
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                },
+            });
+            emit("close");
+        };
 
         if (operation === "Create") {
-            handleSubmit = () =>
-                form.transform(transformData).post(route("locations.store"));
+            handleSubmit = async () => {
+                form.clearErrors();
+                // form.transform(transformData).post(route("locations.store"));
+                const data = transformData(form.data());
+                const response = await createLocation({ location: data });
+                emit("close");
+            };
         }
 
         let optionsStates = [];
@@ -370,15 +405,9 @@ export default {
             form,
             buttonText: operation,
             handleSubmit,
-            optionStates: optionsStates,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
+            optionsStates,
             isFormValid,
-            optionLocationTypes: locationTypes.map(function (locationType) {
-                return {
-                    value: locationType.value,
-                    label: parseLocationTypeDisplayName(locationType),
-                };
-            }),
+            LocationTypesSelect,
         };
     },
 };

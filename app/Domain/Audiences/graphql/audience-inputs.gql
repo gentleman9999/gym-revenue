@@ -1,0 +1,17 @@
+input CreateAudienceInput {
+    name: String
+    filters: AudienceFiltersInput
+    entity: String
+}
+
+input UpdateAudienceInput {
+    id: ID
+    name: String
+    filters: AudienceFiltersInput
+    entity: String
+}
+
+input AudienceFiltersInput {
+    lead_type_id: [ID]
+    membership_type_id: [ID]
+}

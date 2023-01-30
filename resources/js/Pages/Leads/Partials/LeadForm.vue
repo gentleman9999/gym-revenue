@@ -1,9 +1,6 @@
 <template>
     <div class="col-span-6 flex flex-col items-center gap-4 mb-4">
-        <div
-            class="w-32 h-32 rounded-full overflow-hidden border"
-            :style="borderStyle"
-        >
+        <div class="w-32 h-32 rounded-full overflow-hidden border">
             <img
                 v-if="fileForm.url"
                 :src="fileForm.url"
@@ -93,7 +90,8 @@
 
             <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="gender" value="Gender" />
-                <select class="" v-model="form['gender']" required id="gender">
+                <!--                TODO: create gender dropdown from dynamic data provided by gql  -->
+                <select class="" v-model="form.gender" required id="gender">
                     <option value="">Select a Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -124,7 +122,7 @@
                 <vue-json-pretty
                     :data="lead.misc"
                     id="json_viewer"
-                    class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
+                    class="bg-base-200 border-2 border-base-content border-opacity-10 rounded-lg p-2"
                 />
             </div>
             <div
@@ -143,7 +141,7 @@
 
             <div class="form-divider" />
             <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="club_id" value="Club" />
+                <!-- <jet-label for="club_id" value="Club" />
                 <select
                     class=""
                     v-model="form['home_location_id']"
@@ -152,15 +150,16 @@
                 >
                     <option value="">Select a Club</option>
                     <option
-                        v-for="(name, clubId) in locations"
-                        :key="clubId"
-                        :value="clubId"
+                        v-for="location in locations.data"
+                        :key="location.id"
+                        :value="location.id"
                     >
-                        {{ name }}
+                        {{ location.name }}
                     </option>
-                </select>
+                </select> -->
+                <ClubSelect v-model="form.home_location_id" required />
                 <jet-input-error
-                    :message="form.errors['home_location_id']"
+                    :message="form.errors.home_location_id"
                     class="mt-2"
                 />
             </div>
@@ -175,11 +174,11 @@
                 >
                     <option value="">Select a Lead Owner</option>
                     <option
-                        v-for="(oname, uid) in lead_owners"
-                        :value="uid"
-                        :key="uid"
+                        v-for="{ user } in lead_owners"
+                        :value="user.id"
+                        :key="user.id"
                     >
-                        {{ oname }}
+                        {{ user.name }}
                     </option>
                 </select>
                 <jet-input-error
@@ -322,14 +321,14 @@
                 :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
 </template>
 
-<script>
-import { computed, watchEffect } from "vue";
+<script setup>
+import { computed, watchEffect, onMounted } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
@@ -344,202 +343,216 @@ import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
-import { Inertia } from "@inertiajs/inertia";
+import * as _ from "lodash";
 import { usePage } from "@inertiajs/inertia-vue3";
+import ClubSelect from "@/Pages/Locations/Partials/ClubSelect.vue";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations.js";
 
 library.add(faUserCircle);
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        FontAwesomeIcon,
-        JetInputError,
-        JetLabel,
-        DatePicker,
-        VueJsonPretty,
-        PhoneInput,
+const emit = defineEmits(["done", "cancel"]);
+
+const props = defineProps({
+    userId: {
+        type: [Object, String],
     },
-    props: [
-        "userId",
-        "lead",
-        "locations",
-        "lead_types",
-        "lead_sources",
-        "lead_owners",
-        "lead_statuses",
-        "interactionCount",
-    ],
-    computed: {
-        borderStyle() {
-            let color = "transparent";
-            switch (this.form["opportunity"]) {
-                case "High":
-                    color = "green";
-                    break;
+    lead: {
+        type: Object,
+    },
+    lead_owners: {
+        type: Array,
+    },
+    lead_types: {
+        type: Array,
+    },
+    lead_statuses: {
+        type: Array,
+    },
+    lead_sources: {
+        type: Array,
+    },
+    locations: {
+        type: Array,
+    },
+});
 
-                case "Medium":
-                    color = "yellow";
-                    break;
+const page = usePage();
+function notesExpanded(note) {
+    axios.post(route("note.seen"), {
+        note: note,
+    });
+}
 
-                case "Low":
-                    color = "red";
-                    break;
-            }
-            return {
-                "border-color": color,
-                "border-width": "5px",
-            };
+let lead = _.cloneDeep(props.lead);
+
+onMounted(() => {
+    console.log("LeadForm mounted, lead(props)", props.lead);
+});
+
+let operation = "Update";
+let leadData = null;
+if (!lead) {
+    leadData = {
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        alternate_phone: "",
+        club_id: "",
+        home_location_id: "",
+        lead_type_id: "",
+        lead_source_id: "",
+        profile_picture: "",
+        gender: "",
+        date_of_birth: null,
+        opportunity: "",
+        owner_user_id: page.props.value.user.id,
+        lead_status: "",
+        notes: { title: "", note: "" },
+    };
+    operation = "Create";
+} else {
+    leadData = {
+        first_name: lead.first_name,
+        middle_name: lead.middle_name,
+        last_name: lead.last_name,
+        email: lead.email,
+        phone: lead.phone,
+        alternate_phone: lead.alternate_phone,
+        club_id: lead.club_id,
+        home_location_id: lead?.home_location?.id,
+        lead_type_id: lead.lead_type_id,
+        lead_source_id: lead.lead_source_id,
+        profile_picture: lead.profile_picture,
+        gender: lead.gender,
+        agreement_number: lead.agreement_number,
+        date_of_birth: lead.date_of_birth,
+        opportunity: lead.opportunity,
+        notes: { title: "", note: "" },
+        owner_user_id: lead.owner_user_id,
+        lead_status_id: props.lead?.lead_status?.id || "",
+    };
+}
+const lastUpdated = computed(() =>
+    "last_updated" in lead && lead.last_updated
+        ? `Last Updated by ${lead.last_updated.value} at ${new Date(
+              lead.last_updated.updated_at
+          ).toLocaleDateString("en-US")}`
+        : "This lead has never been updated"
+);
+const form = useGymRevForm(leadData);
+const fileForm = useGymRevForm({ file: null });
+
+const transformFormSubmission = (data) => {
+    data.date_of_birth = transformDate(data.date_of_birth);
+    return data;
+};
+
+const { mutate: createUser } = useMutation(mutations.user.create);
+const { mutate: updateUser } = useMutation(mutations.user.update);
+
+let handleSubmit = async () => {
+    await updateUser({
+        input: {
+            id: props.lead.id,
+            first_name: form.first_name,
+            last_name: form.last_name,
+            email: form.email,
+            alternate_email: form.alternate_email,
+            address1: form.address1,
+            address2: form.address2,
+            phone: form.phone,
+            city: form.city,
+            state: form.state,
+            contact_preference: form.contact_preference,
+            started_at: form.started_at,
+            ended_at: form.ended_at,
+            terminated_at: form.terminated_at,
+            notes: form.notes,
+            team_id: form.team_id,
+            role_id: form.role_id,
+            home_location_id: form.home_location_id,
+            gender: form.gender,
+            manager: null,
         },
-    },
-    setup(props, context) {
-        const page = usePage();
-        function notesExpanded(note) {
-            axios.post(route("note.seen"), {
-                note: note,
-            });
-        }
+    });
 
-        let lead = props.lead;
-        let operation = "Update";
-        let leadData = null;
-        if (!lead) {
-            leadData = {
-                first_name: "",
-                middle_name: "",
-                last_name: "",
-                email: "",
-                phone: "",
-                alternate_phone: "",
-                club_id: "",
-                home_location_id: "",
-                lead_type_id: "",
-                lead_source_id: "",
-                profile_picture: "",
-                gender: "",
-                date_of_birth: null,
-                opportunity: "",
-                owner_user_id: props.userId,
-                lead_status: "",
-                notes: { title: "", note: "" },
-            };
-            operation = "Create";
-        } else {
-            leadData = {
-                first_name: lead.first_name,
-                middle_name: lead.middle_name,
-                last_name: lead.last_name,
-                email: lead.email,
-                phone: lead.phone,
-                alternate_phone: lead.alternate_phone,
-                club_id: lead.club_id,
-                home_location_id: lead.home_location_id,
-                lead_type_id: lead.lead_type_id,
-                lead_source_id: lead.lead_source_id,
-                profile_picture: lead.profile_picture,
-                gender: lead.gender,
-                date_of_birth: lead.date_of_birth,
-                opportunity: lead.opportunity,
-                notes: { title: "", note: "" },
-                owner_user_id: lead.owner_user_id,
-                lead_status_id: props.lead?.lead_status_id || "",
-            };
-        }
-        const lastUpdated = computed(() =>
-            "last_updated" in lead && lead.last_updated
-                ? `Last Updated by ${lead.last_updated.value} at ${new Date(
-                      lead.last_updated.updated_at
-                  ).toLocaleDateString("en-US")}`
-                : "This lead has never been updated"
-        );
-        const form = useGymRevForm(leadData);
-        const fileForm = useGymRevForm({ file: null });
+    emit("done");
+};
 
-        const transformFormSubmission = (data) => {
-            // Was this suppose to be some kind of validation for notes?
-            // if (!data.notes?.title) {
-            //     delete data.notes;
-            // }
-            data.date_of_birth = transformDate(data.date_of_birth);
-            return data;
+if (operation === "Create") {
+    handleSubmit = async () => {
+        await createUser({
+            input: {
+                first_name: form.first_name,
+                last_name: form.last_name,
+                email: form.email,
+                alternate_email: form.alternate_email,
+                address1: form.address1,
+                address2: form.address2,
+                phone: form.phone,
+                city: form.city,
+                state: form.state,
+                contact_preference: form.contact_preference,
+                started_at: form.started_at,
+                ended_at: form.ended_at,
+                terminated_at: form.terminated_at,
+                notes: form.notes,
+                team_id: form.team_id,
+                role_id: form.role_id,
+                home_location_id: form.home_location_id,
+                gender: form.gender,
+                manager: null,
+                departments: [],
+                positions: [],
+            },
+        });
+        emit("done");
+    };
+}
+
+const goBack = useGoBack(route("data.leads"));
+
+watchEffect(async () => {
+    console.log("file Changed!", fileForm.file);
+    if (!fileForm.file) {
+        return;
+    }
+    try {
+        let response = await Vapor.store(fileForm.file, {
+            visibility: "public-read",
+        });
+        fileForm.url = `https://${response.bucket}.s3.amazonaws.com/${response.key}`;
+
+        form.profile_picture = {
+            uuid: response.uuid,
+            key: response.key,
+            extension: response.extension,
+            bucket: response.bucket,
         };
-
-        let handleSubmit = () => {
-            form.dirty()
-                .transform(transformFormSubmission)
-                .put(`/data/leads/${lead.id}`, {
-                    preserveState: false,
-                });
-        };
-
-        if (operation === "Create") {
-            handleSubmit = () =>
-                form
-                    .transform(transformFormSubmission)
-                    .post("/data/leads/create", {
-                        onSuccess: () => (form.notes = { title: "", note: "" }),
-                    });
-        }
-
-        const goBack = useGoBack(route("data.leads"));
-
-        watchEffect(async () => {
-            console.log("file Changed!", fileForm.file);
-            if (!fileForm.file) {
-                return;
-            }
-            try {
-                // uploadProgress.value=0;
-                let response = await Vapor.store(fileForm.file, {
-                    // visibility: form.isPublic ? 'public-read' : null,
-                    visibility: "public-read",
-                    // progress: (progress) => {
-                    //     uploadProgress.value = Math.round(progress * 100);
-                    // },
-                });
-                fileForm.url = `https://${response.bucket}.s3.amazonaws.com/${response.key}`;
-
-                form.profile_picture = {
-                    uuid: response.uuid,
+        let pfpResponse = await axios.post(
+            route("data.leads.upload.profile.picture"),
+            [
+                {
+                    id: response.uuid,
                     key: response.key,
+                    filename: fileForm.file.name,
+                    original_filename: fileForm.file.name,
                     extension: response.extension,
                     bucket: response.bucket,
-                };
-                let pfpResponse = await axios.post(
-                    route("data.leads.upload.profile.picture"),
-                    [
-                        {
-                            id: response.uuid,
-                            key: response.key,
-                            filename: fileForm.file.name,
-                            original_filename: fileForm.file.name,
-                            extension: response.extension,
-                            bucket: response.bucket,
-                            size: fileForm.file.size,
-                            entity_id: lead.id,
-                            /*client_id: page.props.value.user.client_id,*/
-                            user_id: page.props.value.user.id,
-                            url: `https://${response.bucket}.s3.amazonaws.com/${response.key}`,
-                        },
-                    ]
-                );
-            } catch (e) {
-                console.error(e);
-                // uploadProgress.value = -1;
-            }
-        });
-        return {
-            form,
-            fileForm,
-            buttonText: operation,
-            handleSubmit,
-            goBack,
-            lastUpdated,
-            operation,
-            notesExpanded,
-        };
-    },
-};
+                    size: fileForm.file.size,
+                    entity_id: lead.id,
+                    user_id: page.props.value.user.id,
+                    url: `https://${response.bucket}.s3.amazonaws.com/${response.key}`,
+                },
+            ]
+        );
+    } catch (e) {
+        console.error(e);
+    }
+});
 </script>
 
 <style scoped>

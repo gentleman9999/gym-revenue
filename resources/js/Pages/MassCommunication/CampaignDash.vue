@@ -33,19 +33,15 @@
 
         <CampaignBuilder
             v-if="dripV || selectedCampaignType === 'DripCampaign'"
-            campaignType="drip"
+            type="drip"
             @close="handleDone"
-            :topol-api-key="topolApiKey"
-            :precampaign="selectedCampaign"
-            @done="handleDone"
+            :campaign="selectedCampaign"
         />
         <CampaignBuilder
             v-if="scheduleV || selectedCampaignType === 'ScheduledCampaign'"
-            campaignType="scheduled"
+            type="scheduled"
             @close="handleDone"
-            :topol-api-key="topolApiKey"
-            :precampaign="selectedCampaign"
-            @done="handleDone"
+            :campaign="selectedCampaign"
         />
         <div
             class="grid grid-rows-1 grid-cols-1 md:grid-rows-2 lg:grid-rows-1 lg:grid-cols-3 md:grid-flow-col gap-8 py-8"
@@ -138,10 +134,6 @@ const toggleDripBuilder = () => (dripV.value = !dripV.value);
 const toggleScheduleBuilder = () => (scheduleV.value = !scheduleV.value);
 
 const props = defineProps({
-    topolApiKey: {
-        type: String,
-        required: true,
-    },
     campaigns: {
         type: Array,
         required: true,

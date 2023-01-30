@@ -1,0 +1,11 @@
+extend type Query {
+    tasksQuery(
+        param: TaskParam
+        pagination: PaginationInput
+    ): Tasks
+}
+
+input TaskParam {
+    start: String
+    type: String
+}

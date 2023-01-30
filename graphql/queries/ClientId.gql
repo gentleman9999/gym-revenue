@@ -1,0 +1,6 @@
+extend type Query {
+    clientId(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        id: ID
+    ): ID!
+}

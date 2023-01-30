@@ -8,7 +8,7 @@ use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class CreateProfilePicture extends \App\Actions\Clients\Files\CreateFiles
+class CreateProfilePicture extends \App\Domain\Files\Actions\CreateFiles
 {
     use AsAction;
 

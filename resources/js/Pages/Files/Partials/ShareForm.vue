@@ -63,8 +63,9 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import { Inertia } from "@inertiajs/inertia";
 import Multiselect from "@vueform/multiselect";
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
 
 const page = usePage();
 
@@ -88,11 +89,22 @@ const form = useGymRevForm({
     },
 });
 
+const { mutate: updateShare } = useMutation(mutations.folder.share);
+
 let handleSubmit = async () => {
-    await Inertia.put(route("folders.sharing.update", props.item.id), {
-        ...form.sharing,
+    let result = await updateShare({
+        input: {
+            id: props.item.id,
+            user_ids: form.sharing.user_ids,
+            department_ids: form.sharingdepartment_ids,
+            position_ids: form.sharingposition_ids,
+            location_ids: form.sharinglocation_ids,
+            role_ids: form.sharingrole_ids,
+            team_ids: form.sharingteam_ids,
+        },
     });
-    emit("success");
+
+    if (result.data) emit("success");
 };
 
 const options = [

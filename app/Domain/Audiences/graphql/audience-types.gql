@@ -1,0 +1,23 @@
+type Audience {
+    id: ID
+    entity: String
+    name: String
+    filters: AudienceTargets
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
+    editable: Int
+}
+
+type AudienceTargets {
+    lead_type_id: [ID]
+    membership_type_id: [ID]
+}
+
+type Target {
+    id: ID
+    name: String
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
+}

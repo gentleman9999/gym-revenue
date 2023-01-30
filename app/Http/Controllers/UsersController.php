@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\Models\UserDetails;
 use App\Enums\UserTypesEnum;
-use App\Models\Position;
-use App\Models\ReadReceipt;
 use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -33,73 +29,17 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles',];
 
         //Populating Role Filter
-        $team_users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams', 'home_location', 'roles'])->get();
         $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
-            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
-
-            $is_default_team = $client->default_team_id == $current_team->id;
 
             $locations = Location::all();
             $teams = Team::findMany(Client::with('teams')->find($client_id)->teams()->get()->pluck('id'));
             $clientName = $client->name;
-
-            // If the active team is a client's-default team get all members
-            if ($is_default_team) {
-                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams', 'home_location'])
-                    ->filter($request->only($filterKeys))->sort()
-                    ->paginate(10)
-                    ->appends(request()->except('page'));
-            } else {
-                // else - get the members of that team
-                $user_ids = TeamUser::whereTeamId($current_team->id)->get()->pluck('user_id')->toArray();
-                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
-                    ->with('teams', 'home_location', 'defaultTeam', 'defaultTeamDetail')
-                    ->filter($request->only($filterKeys))
-                    ->sort()
-                    ->paginate(10)
-                    ->appends(request()->except('page'));
-            }
-
-            foreach ($users as $idx => $user) {
-                if ($user->getRole()) {
-                    $users[$idx]->role = $user->getRole();
-                }
-                $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
-                $users[$idx]->home_team = $user->getDefaultTeam()->name;
-            }
-        } else {
-            //cb team selected
-            $team = CurrentInfoRetriever::getCurrentTeam();
-            $users = User::with('defaultTeam')->whereUserType(UserTypesEnum::EMPLOYEE)->with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
-                return $query->where('teams.id', '=', $team->id);
-            })->filter($request->only($filterKeys))->sort()
-                ->paginate(10)->appends(request()->except('page'));
-
-            foreach ($users as $idx => $user) {
-                $users[$idx]->role = $user->getRole();
-                $default_team = $user->getDefaultTeam();
-                $users[$idx]->home_team = $default_team->name;
-                $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
-            }
         }
-
-        //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
-        //MUST FIX BY DEMO 6/15/22
-        //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
-        if ($request->get('sort') != '') {
-            if ($request->get('dir') == 'DESC') {
-                $sortedResult = $users->getCollection()->sortByDesc($request->get('sort'))->values();
-            } else {
-                $sortedResult = $users->getCollection()->sortBy($request->get('sort'))->values();
-            }
-            $users->setCollection($sortedResult);
-        }
-
+        //TODO: we should not need to pass anything back but filters maybe?
         return Inertia::render('Users/Show', [
-            'users' => $users,
             'filters' => $request->all($filterKeys),
             'clubs' => $locations,
             'teams' => $teams,
@@ -138,8 +78,6 @@ class UsersController extends Controller
             'roles' => $roles,
             'clientName' => $client_name,
             'locations' => $locations,
-            'availablePositions' => Position::with('departments')->select('id', 'name')->get(),
-            'availableDepartments' => Department::with('positions')->select('id', 'name')->get(),
         ]);
     }
 
@@ -155,7 +93,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files', 'contact_preference', 'emergencyContact');//TODO:get rid of loading all details here.
+        $user->load('notes', 'files', 'contact_preference', 'emergencyContact');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
@@ -167,26 +105,11 @@ class UsersController extends Controller
         if ($user->isClientUser()) {
             $locations = Location::get(['name', 'gymrevenue_id']);
         };
-        //for some reason inertiajs converts "notes" key to empty string.
-        //so we set all_notes
-        $userData = $user->toArray();
-        $userData['all_notes'] = $user->notes->toArray();
-        foreach ($userData['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($userData['all_notes'][$key]['id'])->first()) {
-                $userData['all_notes'][$key]['read'] = true;
-            } else {
-                $userData['all_notes'][$key]['read'] = false;
-            }
-        }
-
-        $userData['role_id'] = $user->role() ? $user->role()->id : null;
 
         return Inertia::render('Users/Edit', [
-            'selectedUser' => $userData,
+            'id' => $user->id,
             'roles' => $roles,
             'locations' => $locations,
-            'availablePositions' => Position::whereClientId($client_id)->with('departments')->select('id', 'name')->get(),
-            'availableDepartments' => Department::whereClientId($client_id)->with('positions')->select('id', 'name')->get(),
             'uploadFileRoute' => 'users.files.store',
         ]);
     }
@@ -199,7 +122,7 @@ class UsersController extends Controller
 
             return Redirect::back();
         }
-        $user->load('details', 'teams', 'files');//TODO: get rid of loading all details here.
+        $user->load('teams', 'files');//TODO: get rid of loading all details here.
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
         $data['role'] = $user->getRole();
@@ -253,7 +176,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->getDefaultTeam()->name;
+                $users[$idx]->home_team = $user->defaultTeam->name;
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
@@ -270,7 +193,7 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $users[$idx]->home_team = $user->getDefaultTeam()->name;
+                $users[$idx]->home_team = $user->defaultTeam->name;
             }
         }
 

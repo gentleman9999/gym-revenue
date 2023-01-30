@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "ext-intl": "*",
+        "bensampo/laravel-enum": "^6.2",
         "cape-and-bay/draftable": "^1.1",
         "cape-and-bay/versionable": "^1.0",
         "doctrine/dbal": "^3.2",
@@ -30,6 +31,9 @@
         "lorisleiva/laravel-actions": "2.4.3",
         "maatwebsite/excel": "^3.1",
         "mailgun/mailgun-php": "^3.5",
+        "overtrue/laravel-versionable": "^4.2",
+        "mll-lab/laravel-graphiql": "^1.0",
+        "nuwave/lighthouse": "^5.61",
         "predis/predis": "^1.1",
         "prologue/alerts": "^1.0.0",
         "protonemedia/laravel-cross-eloquent-search": "^3.0",
@@ -80,7 +84,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan prepare:local-dev-env"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi"

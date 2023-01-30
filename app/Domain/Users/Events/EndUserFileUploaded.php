@@ -2,7 +2,7 @@
 
 namespace App\Domain\Users\Events;
 
-use App\Domain\EndUsers\Projections\EndUser;
+use App\Domain\Users\Models\EndUser;
 use App\StorableEvents\EntityUpdated;
 
 class EndUserFileUploaded extends EntityUpdated

@@ -16,7 +16,7 @@
                 <input
                     type="file"
                     class="hidden"
-                    ref="photo"
+                    ref="photoElement"
                     @change="updatePhotoPreview"
                 />
 
@@ -45,7 +45,7 @@
                 <jet-secondary-button
                     class="mt-2 mr-2"
                     type="button"
-                    @click.prevent="selectNewPhoto"
+                    @click.prevent="() => photoElement.click()"
                 >
                     Select A New Photo
                 </jet-secondary-button>
@@ -178,8 +178,8 @@
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
-                    :options="optionStates"
-                    :classes="multiselectClasses"
+                    :options="validStateSelections"
+                    :classes="getDefaultMultiselectTWClasses()"
                 />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
@@ -235,8 +235,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { computed } from "@vue/reactivity";
+import { ref, watch } from "vue";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 
@@ -246,94 +245,72 @@ import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
-import states from "@/Pages/Comms/States/statesOfUnited";
+import { preformattedForSelect } from "@/utils/formatters/states";
+
 import { useGymRevForm } from "@/utils";
-import { Inertia } from "@inertiajs/inertia";
+
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
 
 const props = defineProps({
     user: {
         type: Object,
+        default: {
+            first_name: "",
+            last_name: "",
+            address1: "",
+            address2: "",
+            city: "",
+            zip: "",
+            job_title: "",
+            email: "",
+            alternate_email: "",
+            phone: "",
+            photo: null,
+        },
     },
 });
 
-const form = useGymRevForm({
-    _method: "PUT",
-    id: props.user.id,
-    first_name: props.user["first_name"] ?? "",
-    last_name: props.user["last_name"],
-    address1: props.user["address1"] ?? "",
-    address2: props.user["address2"] ?? "",
-    city: props.user["city"] ?? "",
-    state: props.user["state"] ?? "",
-    zip: props.user["zip"] ?? "",
-    job_title: props.user["job_title"],
-    email: props.user.email,
-    alternate_email: props.user.alternate_email ?? "",
-    phone: props.user.phone ?? "",
-    photo: null,
-    contact_preference: props.user.contact_preference?.value,
-});
-const photo = ref(null);
+const emit = defineEmits(["close"]);
+
+const { mutate: updateProfile } = useMutation(mutations.profile.update);
+const { mutate: deleteProfilePhoto } = useMutation(
+    mutations.profile_photo.delete
+);
+
+const form = useGymRevForm({ ...props.user });
+
 const photoPreview = ref(null);
-const multiselectClasses = ref(getDefaultMultiselectTWClasses());
+const photoElement = ref(null);
+const validStateSelections = ref(preformattedForSelect);
 
-const optionStates = computed({
-    get() {
-        let optionsStates = [];
-        for (let x in states) {
-            optionsStates.push(states[x].abbreviation);
-        }
+const handleSubmit = async () => {
+    await updateProfile({
+        ...form,
+    });
 
-        return optionsStates;
-    },
+    emit("close");
+};
+
+const handleDeleteProfilePhoto = async () => {
+    await deleteProfilePhoto();
+    photoElement.value = null;
+    photoPreview.value = null;
+    emit("close");
+};
+
+watch(photoElement.value, (nv, ov) => {
+    form.photo = nv.files[0];
 });
 
-function upperCaseF(text) {
-    form.state = text.toUpperCase();
-}
-function updateProfileInformation() {
-    if (photo.value) {
-        form.photo = photo.value.files[0];
-    }
-
-    form.post(route("user-profile-information.update"), {
-        errorBag: "updateProfileInformation",
-        preserveScroll: true,
-        onSuccess: () => clearPhotoFileInput(),
-    });
-}
-
-function selectNewPhoto() {
-    photo.click();
-}
-
-function updatePhotoPreview() {
-    const photo = photo.files[0];
-
-    if (!photo) return;
+const handlePhotoFileInputChange = () => {
+    if (photoElement.files.length === 0) return;
 
     const reader = new FileReader();
-
-    reader.onload = (e) => {
+    reader.onload = (ev) => {
         photoPreview.value = e.target.result;
     };
 
     reader.readAsDataURL(photo);
-}
-
-function deletePhoto() {
-    Inertia.delete(route("current-user-photo.destroy"), {
-        preserveScroll: true,
-        onSuccess: () => {
-            photoPreview.value = null;
-            clearPhotoFileInput();
-        },
-    });
-}
-
-function clearPhotoFileInput() {
-    if (photo?.value) {
-        photo.value = null;
-    }
-}
+};
 </script>

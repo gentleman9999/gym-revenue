@@ -1,0 +1,18 @@
+# Queries Locations
+extend type Query {
+    "Queries locations according to optional input filters"
+    locations(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [Location!]! @paginate(defaultCount: 10)
+}
+
+extend type Query {
+    "Find a single location by ID"
+    location(id: ID @eq): Location @find
+}
+
+extend type Query {
+    "Get Location Types"
+    locationTypes: [Enum!]!
+}

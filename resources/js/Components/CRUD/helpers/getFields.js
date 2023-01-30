@@ -11,7 +11,6 @@ export const getFields = (props) => {
     return computed(() => {
         let fields = props.fields;
         // Main issue
-        console.log(props.table);
         if (!fields) {
             //no fields provided, use keys from data
             fields = Object.keys(props.data || props.resource.data[0]);

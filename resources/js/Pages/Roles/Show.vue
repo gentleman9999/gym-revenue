@@ -6,7 +6,7 @@
         model-name="Role"
         model-key="role"
         :fields="fields"
-        :resource="roles"
+        :edit-component="RoleForm"
         :actions="{
             trash: false,
             restore: false,
@@ -28,7 +28,7 @@
     </confirm>
 </template>
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
@@ -37,6 +37,9 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import RoleForm from "@/Pages/Roles/Partials/RoleForm.vue";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
 export default defineComponent({
     components: {
@@ -46,16 +49,20 @@ export default defineComponent({
         JetBarContainer,
         Button,
         PageToolbarNav,
+        RoleForm,
     },
-    props: ["roles", "filters"],
-    setup(props) {
+    props: ["filters"],
+    setup(props, context) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
             confirmDelete.value = item;
         };
 
-        const handleConfirmDelete = () => {
-            Inertia.delete(route("roles.delete", confirmDelete.value.id));
+        const { mutate: deleteRole } = useMutation(mutations.role.delete);
+        const handleConfirmDelete = async () => {
+            await deleteRole({
+                id: confirmDelete.value.id,
+            });
             confirmDelete.value = null;
         };
 
@@ -95,6 +102,7 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
+            RoleForm,
         };
     },
 });

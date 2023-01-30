@@ -121,7 +121,7 @@
     </confirm>
 </template>
 
-<script>
+<script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
 import SmsFormControl from "@/Components/SmsFormControl.vue";
@@ -134,109 +134,82 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses, getFormObjectFromData } from "@/utils";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        SmsFormControl,
-        JetInputError,
-        Confirm,
-        DatePicker,
-        Multiselect,
+const props = defineProps({
+    dripCampaign: {
+        type: Object,
+        default: {},
     },
-    props: ["dripCampaign", "canActivate", "audiences"],
-    setup(props, context) {
-        const page = usePage();
-        const modal = ref(null);
-
-        const formFields = [
-            "name",
-            "audience_id",
-            "start_at",
-            "end_at",
-            "is_published",
-        ];
-
-        const { operation, object: campaign } = getFormObjectFromData(
-            formFields,
-            props?.dripCampaign
-        );
-
-        if (operation === "Create") {
-            campaign.is_published = false;
-        }
-
-        const form = useForm(campaign);
-
-        onMounted(() => {
-            if (props.dripCampaign && props.dripCampaign.status === "PENDING") {
-                const timeTillLaunch =
-                    new Date(props.dripCampaign.start_at) -
-                    new Date().getTime();
-                console.log({ timeTillLaunch });
-            }
-        });
-        onBeforeUnmount(() => {});
-
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
-
-        const transformData = (data) => {
-            data.start_at = transformDate(data.start_at);
-            data.end_at = transformDate(data.end_at);
-            return data;
-        };
-
-        let handleSubmit = () => {
-            form.transform(transformData).put(
-                route("mass-comms.drip-campaigns.update", props.dripCampaign.id)
-            );
-        };
-        if (operation === "Create") {
-            handleSubmit = () =>
-                form
-                    .transform(transformData)
-                    .post(route("mass-comms.drip-campaigns.store"));
-        }
-
-        const canEditActiveInputs = computed(() => {
-            if (operation === "Create") {
-                return true;
-            }
-            return props.dripCampaign?.can_publish;
-        });
-
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            modal,
-            canEditActiveInputs,
-            availableAudiences: page.props.value.availableAudiences,
-            availableEmailTemplates: page.props.value.availableEmailTemplates,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
-        };
+    canActivate: {
+        type: [Boolean, Number, String],
     },
-    data() {
-        return {
-            modalText: "",
-            showConfirm: false,
-        };
+    audiences: {
+        type: [Array, Object],
     },
-    methods: {
-        submitForm(active) {
-            this.handleSubmit();
-        },
-        closeModal() {
-            this.$refs.modal.close();
-        },
-    },
+});
+
+const page = usePage();
+const modal = ref(null);
+
+const formFields = [
+    "name",
+    "audience_id",
+    "start_at",
+    "end_at",
+    "is_published",
+];
+
+const { operation, object: campaign } = getFormObjectFromData(
+    formFields,
+    props?.dripCampaign
+);
+
+if (operation === "Create") {
+    campaign.is_published = false;
+}
+
+const form = useForm(campaign);
+
+onMounted(() => {
+    if (props.dripCampaign && props.dripCampaign.status === "PENDING") {
+        const timeTillLaunch =
+            new Date(props.dripCampaign.start_at) - new Date().getTime();
+        console.log({ timeTillLaunch });
+    }
+});
+onBeforeUnmount(() => {});
+
+const transformDate = (date) => {
+    if (!date?.toISOString) {
+        return date;
+    }
+
+    return date.toISOString().slice(0, 19).replace("T", " ");
 };
+
+const transformData = (data) => {
+    data.start_at = transformDate(data.start_at);
+    data.end_at = transformDate(data.end_at);
+    return data;
+};
+
+let handleSubmit = () => {
+    form.transform(transformData).put(
+        route("mass-comms.drip-campaigns.update", props.dripCampaign.id)
+    );
+};
+if (operation === "Create") {
+    handleSubmit = () =>
+        form
+            .transform(transformData)
+            .post(route("mass-comms.drip-campaigns.store"));
+}
+
+const canEditActiveInputs = computed(() => {
+    if (operation === "Create") {
+        return true;
+    }
+    return props.dripCampaign?.can_publish;
+});
 </script>
 
 <style scoped></style>

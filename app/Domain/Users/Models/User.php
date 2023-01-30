@@ -4,34 +4,33 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Models;
 
-use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
-use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
+use App\Domain\LocationEmployees\Projections\LocationEmployee;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
 use App\Interfaces\PhoneInterface;
 use App\Models\File;
+use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
 use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -128,6 +127,7 @@ class User extends Authenticatable implements PhoneInterface
         'started_at' => 'datetime',
         'ended_at' => 'datetime',
         'user_type' => UserTypesEnum::class,
+        'details' => 'array',
     ];
 
     /**
@@ -136,7 +136,7 @@ class User extends Authenticatable implements PhoneInterface
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'name',
+        'profile_photo_url', 'name', 'default_team_id',
     ];
 
     /**
@@ -212,34 +212,24 @@ class User extends Authenticatable implements PhoneInterface
         return $this->inSecurityGroup(SecurityGroupEnum::ADMIN);
     }
 
-    public function details(): HasMany
-    {
-        return $this->hasMany('App\Domain\Users\Models\UserDetails', 'user_id', 'id');
-    }
-
-    public function detail(): HasOne
-    {
-        return $this->hasOne('App\Domain\Users\Models\UserDetails', 'user_id', 'id');
-    }
-
     public function twilioClientConversation(): HasMany
     {
         return $this->hasMany(ClientConversation::class, 'user_id', 'id');
     }
 
-    public function contact_preference(): HasOne
+    public function getContactPreferenceAttribute(): ?string
     {
-        return $this->detail()->where('field', '=', 'contact_preference');
+        return $this->details['contact_preference'] ?? null;
     }
 
-    public function emergencyContact(): HasOne
+    public function getEmergencyContactAttribute(): ?array
     {
-        return $this->detail()->where('field', '=', 'emergency_contact');
+        return $this->details['emergency_contact'] ?? null;
     }
 
     public function notes(): HasMany
     {
-        return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
+        return $this->hasMany(Note::class, 'entity_id')->whereEntityType(self::class);
     }
 
     public function teams(): BelongsToMany
@@ -247,29 +237,19 @@ class User extends Authenticatable implements PhoneInterface
         return $this->belongsToMany(Team::class, 'team_user', 'user_id', 'team_id');
     }
 
-    public function defaultTeamDetail(): HasOne
+    public function defaultTeam(): BelongsTo
     {
-        return $this->detail()->where('field', '=', 'default_team_id');
+        return $this->belongsTo(Team::class, 'default_team_id', 'id');
     }
 
-    public function defaultTeam(): HasOne
+    public function getApiTokenAttribute(): ?string
     {
-        return $this->hasOne(Team::class, 'id', $this->default_team_id);
+        return $this->details['api_token'] ?? null;
     }
 
-    public function getDefaultTeam(): Team
+    public function getColumnConfigAttribute(): Collection
     {
-        return Team::find($this->default_team_id);
-    }
-
-    public function api_token(): HasOne
-    {
-        return $this->detail()->where('field', '=', 'api-token');
-    }
-
-    public function column_config(): HasMany
-    {
-        return $this->details()->where('field', '=', 'column-config');
+        return collect($this->details['column_config'] ?? []);
     }
 
     public function scopeFilter($query, array $filters): void
@@ -287,11 +267,6 @@ class User extends Authenticatable implements PhoneInterface
                     ->orWhere('zip', 'like', '%' . $search . '%');
             });
         })->when($filters['club'] ?? null, function ($query, $location_id) {
-            /*$query->whereHas('teams', function ($query) use ($location_id) {
-                return $query->whereHas('detail', function ($query) use ($location_id) {
-                    return $query->whereName('team-location')->whereValue($location_id);
-                });
-            });*/
             //This returns home club location instead of the above clubs a user is a part of.
             $query->where(function ($query) use ($location_id) {
                 $query->where('home_location_id', '=', $location_id);
@@ -315,7 +290,9 @@ class User extends Authenticatable implements PhoneInterface
 
     public function getRole(): Role|string|null
     {
-        return $this->getRoles()[0] ?? null;
+        return $this->roles[0] ?? null;
+//        return Role::find($this->role->id);
+//        return $this->getRoles()[0] ?? null;
 //        if(!$roles || !count($roles)){
 //            return null;
 //        }
@@ -364,12 +341,7 @@ class User extends Authenticatable implements PhoneInterface
 
     public function getDefaultTeamIdAttribute(): ?string
     {
-        $detail = $this->defaultTeamDetail()->first();
-        if ($detail) {
-            return $detail->value;
-        }
-
-        return null;
+        return $this->details['default_team_id'] ?? null;
     }
 
     public function locationEmployees(): BelongsTo
@@ -380,7 +352,7 @@ class User extends Authenticatable implements PhoneInterface
     /**
      * Get all of the teams the user owns or belongs to.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function allTeams(): Collection
     {
@@ -453,31 +425,5 @@ class User extends Authenticatable implements PhoneInterface
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'location_employees', 'user_id', 'department_id')->withoutGlobalScopes()->where('departments.client_id', '=', 'location_employees.client_id');
-    }
-
-    public static function determineUserType(string $user_id): UserTypesEnum
-    {
-        /** Checking if any agreement is of membership category */
-        $has_active_agreements = false;
-        $is_membership_agreement = false;
-
-        $agreements = Agreement::with('categoryById')->whereActive(1)->whereUserId($user_id)->get();
-
-        if (count($agreements)) {
-            $has_active_agreements = true;
-        }
-
-        foreach ($agreements as $agreement) {
-            if ($agreement->categoryById && $agreement->categoryById['name'] === AgreementCategory::NAME_MEMBERSHIP) {
-                $is_membership_agreement = true;
-            }
-        }
-
-        if (! $has_active_agreements) {
-            return UserTypesEnum::LEAD;
-        }
-
-        return $is_membership_agreement ?
-            UserTypesEnum::MEMBER : UserTypesEnum::CUSTOMER;
     }
 }

@@ -1,22 +1,17 @@
 <template>
     <gym-revenue-crud
+        ref="tasksCrud"
         base-route="tasks"
         model-name="Task"
         model-key="task"
         class="border-transparent"
-        :resource="tasks"
         :fields="fields"
+        :param="param"
+        :edit-component="TaskForm"
+        :handleCrudUpdate="handleCrudUpdate"
         :actions="{
-            edit: {
-                label: 'Edit',
-                handler: ({ data }) => editTask(data),
-            },
             trash: false,
             restore: false,
-            // delete: {
-            //     label: 'Delete',
-            //     handler: ({ data }) => handleClickDelete(data),
-            // },
         }"
     >
         <template #top-actions><div></div></template>
@@ -42,30 +37,96 @@
 }
 </style>
 <script setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import queries from "@/gql/queries";
+import { useQuery } from "@vue/apollo-composable";
+import TaskForm from "./TaskForm.vue";
 
 const props = defineProps({
     taskType: {
         type: String,
         required: true,
     },
-    tasks: {
-        type: Object,
-        required: true,
-    },
-    fields: {
-        type: Array,
-        required: true,
+    start: {
+        type: String,
     },
 });
+const fields = [
+    {
+        name: "title",
+        label: "Title",
+    },
+    {
+        name: "start",
+        label: "Due At",
+    },
+    {
+        name: "created_at",
+        label: "Created At",
+    },
+    {
+        name: "event_completion",
+        label: "Completed At",
+    },
+];
 
+const tasksCrud = ref(null);
+const param = ref({
+    param: {
+        type: props.taskType,
+        start: props.start,
+    },
+    pagination: {
+        page: 1,
+    },
+});
+watch(
+    () => props.start,
+    (newValue) => {
+        param.value = {
+            ...param.value,
+            param: {
+                ...param.value.param,
+                start: newValue,
+            },
+        };
+        tasksCrud.value.refetch(param.value);
+    }
+);
+
+watch(props.start, () => {
+    param.value = {
+        ...param.value,
+        param: {
+            ...param.value.param,
+            start: props.start,
+        },
+    };
+    tasksCrud.value.refetch(param.value);
+});
+
+const handleCrudUpdate = (key, value) => {
+    if (key === "page") {
+        param.value = {
+            ...param.value,
+            pagination: {
+                page: value,
+            },
+        };
+    }
+    tasksCrud.value.refetch(param.value);
+};
 const emit = defineEmits(["edit"]);
 
 const headers = {
     incomplete_tasks: "Today",
     overdue_tasks: "Overdue",
     completed_tasks: "Completed",
+};
+
+const getTasks = (data) => {
+    return _.cloneDeep(data.tasks);
 };
 
 const editTask = (item) => {

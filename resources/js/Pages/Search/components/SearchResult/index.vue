@@ -6,7 +6,11 @@
             :key="data.id"
             class="w-full"
         />
-        <pagination class="mt-4" :links="results.links" />
+        <pagination
+            class="mt-4"
+            :paginatorInfo="results.paginatorInfo"
+            @update-page="$emit('update-page', $event)"
+        />
     </div>
 </template>
 <script setup>
