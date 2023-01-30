@@ -81,7 +81,6 @@ import { useGymRevForm } from "@/utils";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
-import { useModal } from "@/Components/InertiaModal";
 import { Inertia } from "@inertiajs/inertia";
 
 export default {
@@ -91,7 +90,7 @@ export default {
         JetInputError,
     },
     props: {
-        template: {
+        callTemplate: {
             type: Object,
         },
         duplicate: {
@@ -103,7 +102,7 @@ export default {
         },
     },
     setup(props, { emit }) {
-        let template = props.template;
+        let template = props.callTemplate;
         let duplicate = props.duplicate;
         console.log(duplicate);
         let operation = "Update";
@@ -114,7 +113,6 @@ export default {
                 active: false,
                 use_once: false,
                 json: [],
-                client_id: props.clientId,
             };
             operation = "Create";
         }
@@ -141,11 +139,8 @@ export default {
                 form.dirty().post(route("mass-comms.call-templates.store"));
         }
 
-        const inertiaModal = useModal();
         const handleCancel = () => {
-            if (inertiaModal?.value?.close) {
-                inertiaModal.value.close();
-            }
+            console.warn('TODO: You need to emite a cancel event, and then close the daisy modal here (Inertia Modal was remove)');
             Inertia.visit(route("mass-comms.call-templates"));
         };
         return { form, buttonText: operation, handleSubmit, handleCancel };
