@@ -52,17 +52,6 @@
             </Button>
             <div class="flex-grow" />
             <Button
-                v-if="useInertia"
-                type="button"
-                class="btn-primary"
-                @click="handleDuplicate"
-                :class="{ 'opacity-25': form.processing }"
-                :loading="form.processing"
-            >
-                Duplicate
-            </Button>
-            <div class="flex-grow" />
-            <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': isProcessing }"
                 :disabled="isProcessing"
@@ -150,36 +139,5 @@ const handleOperation = async () => {
         isProcessing.value = false;
         console.log("template operation error:", error);
     }
-        const inertiaModal = useModal();
-        const handleCancel = () => {
-            if (inertiaModal?.value?.close) {
-                inertiaModal.value.close();
-            }
-            Inertia.visit(route("mass-comms.sms-templates"));
-        };
-        const handleDuplicate = () => {
-            axios
-                .post(
-                    route("mass-comms.sms-templates.duplicate", form.data()),
-                    form.data()
-                )
-                .then(({ data }) => {
-                    if (inertiaModal?.value?.close) {
-                        inertiaModal.value.close();
-                    }
-                    emit("done", data);
-                })
-                .catch((err) => {
-                    emit("error", err);
-                });
-        };
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            handleCancel,
-            handleDuplicate,
-        };
-    },
 };
 </script>
