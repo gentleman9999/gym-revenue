@@ -36,6 +36,7 @@ class EndUser extends User
         return $this->hasOne(MembershipType::class, 'id', $this->membership_type_id);
     }
 
+//    TODO: needs to be reworked to use actual relationships post vlookup detail removal
     public function claimed(): HasMany
     {
         return $this->details['claimed'] ?? null;
