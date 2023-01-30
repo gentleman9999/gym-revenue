@@ -2,8 +2,8 @@
 
 namespace App\Actions\Support;
 
+use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Nuwave\Lighthouse\Console\IdeHelperCommand;
 
 class PrepareLocalDevEnvironment
 {
@@ -13,15 +13,15 @@ class PrepareLocalDevEnvironment
     public string $commandDescription = 'Run scripts to prepare local dev environment';
 
 
-    public function asCommand($command)
+    public function asCommand(Command $command)
     {
         $env = getenv('APP_ENV');
         //exit early if not local
         if($env !== 'local') {
-            $command->getOutput()->writeln('[PrepareLocalDevEnvironment] Exiting, not in local app environment');
+            $command->info('[PrepareLocalDevEnvironment] Exiting, not in local app environment');
             return;
         }
-        $command->getOutput()->writeln('[PrepareLocalDevEnvironment] Calling lighthouse:ide-helper');
+        $command->info('[PrepareLocalDevEnvironment] Calling lighthouse:ide-helper');
         $command->call('lighthouse:ide-helper');
         //TODO: run other IDE helpers or anything else that should only run in local environment
     }
