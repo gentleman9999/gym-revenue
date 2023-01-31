@@ -1,8 +1,0 @@
-extend type Query {
-    endUsers(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [EndUser!]!
-    @paginate(defaultCount: 10)
-        @can(ability: "endusers.read")
-}

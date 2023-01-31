@@ -1,0 +1,4 @@
+#import position-types.gql
+#import position-inputs.gql
+#import position-mutations.gql
+#import position-queries.gql

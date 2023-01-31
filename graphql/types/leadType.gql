@@ -1,4 +1,0 @@
-type LeadType {
-    id: ID!
-    name: String
-}

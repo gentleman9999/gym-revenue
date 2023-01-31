@@ -1,6 +1,0 @@
-extend type Query {
-    isClientUser(
-        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-        id: ID
-    ): Boolean!
-}

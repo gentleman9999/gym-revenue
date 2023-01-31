@@ -1,0 +1,4 @@
+#import folder-types.gql
+#import folder-inputs.gql
+#import folder-mutations.gql
+#import folder-queries.gql

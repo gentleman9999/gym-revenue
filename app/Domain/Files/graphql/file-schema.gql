@@ -1,0 +1,4 @@
+#import file-types.gql
+#import file-inputs.gql
+#import file-mutations.gql
+#import file-queries.gql

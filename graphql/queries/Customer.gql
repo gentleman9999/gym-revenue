@@ -1,7 +1,0 @@
-extend type Query {
-    "Find a single user by an identifying attribute."
-    customer(
-        id: ID @eq
-    ): Customer
-    @find
-}

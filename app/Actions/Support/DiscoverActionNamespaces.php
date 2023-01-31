@@ -11,6 +11,7 @@ class DiscoverActionNamespaces
 {
     use asAction;
 
+//    TODO: refactor using Lody
     public function handle(): array
     {
         $files = (new Finder())->files()->in(app()->path());
