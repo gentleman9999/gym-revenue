@@ -93,3 +93,7 @@ extend type Query {
     securityGroups: [SecurityGroups]!
 
 }
+
+extend type Query {
+    profileQuery: ProfileProps
+}

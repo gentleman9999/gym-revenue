@@ -211,3 +211,16 @@ type SecurityGroups {
     value: String
     name: String
 }
+
+
+type ContactPreference {
+    id: ID!
+    active: Int
+    created_at: DateTime
+    deleted_at: DateTime
+    field: String
+    misc: String
+    updated_at: DateTime
+    user_id: String
+    value: String
+}
