@@ -876,7 +876,7 @@ const POSITION_CREATE = gql`
 
 const EVENT_TYPES = gql`
     query CalendarEventTypes($page: Int, $filter: Filter) {
-        eventTypes: calendar_event_types(page: $page, filter: $filter) {
+        eventTypes: calendarEventTypes(page: $page, filter: $filter) {
             data {
                 id
                 name
@@ -899,15 +899,12 @@ const EVENT_TYPES = gql`
 
 const EVENT_TYPES_EDIT = gql`
     query EventType($id: ID) {
-        eventType: calendar_event_type(id: $id) {
+        eventType: calendarEventType(id: $id) {
             id
             name
             description
             type
             color
-            client {
-                id
-            }
         }
     }
 `;
@@ -1158,9 +1155,6 @@ const DASHBOARD_QUERY = gql`
             teams {
                 id
                 name
-                client {
-                    name
-                }
             }
             announcements {
                 id

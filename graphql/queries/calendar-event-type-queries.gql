@@ -1,0 +1,17 @@
+extend type Query {
+    "Queries Calendar Event Types without pagination"
+    allCalendarEventTypes: [CalendarEventType!]! @all
+
+    "Queries Calendar Event Types"
+    calendarEventTypes(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [CalendarEventType!]!
+    @paginate(defaultCount: 10)
+
+    "Queries Calendar Event Type by ID"
+    calendarEventType(
+        id: ID @eq
+    ): CalendarEventType
+    @find
+}

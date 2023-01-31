@@ -16,7 +16,7 @@ class DiscoverModelNamespaces
     {
         $files = (new Finder())->files()->in(app()->path());
 
-        return collect($files)
+        $namespaces = collect($files)
             ->reject(fn (SplFileInfo $file) => $file->getExtension() !== 'php')
 //            ->reject(fn (SplFileInfo $file) => in_array($file->getPathname(), $this->ignoredFiles))
             ->map(fn (SplFileInfo $file) => $this->fullQualifiedClassNameFromFile($file))
@@ -24,6 +24,9 @@ class DiscoverModelNamespaces
             ->filter(fn (string $class) => (new \ReflectionClass($class))->isInstantiable())
             ->map(fn (string $class) => str($class)->explode('\\')->splice(0, -1)->implode('\\'))
             ->toArray();
+
+//        collect($namespaces)->each(fn (string $namespace) => var_dump($namespace));
+        return $namespaces;
     }
 
     private function fullQualifiedClassNameFromFile(SplFileInfo $file): string

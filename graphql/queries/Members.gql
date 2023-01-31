@@ -1,8 +1,0 @@
-extend type Query {
-    members(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [Member!]!
-    @paginate(defaultCount: 10)
-    @can(ability: "members.read")
-}

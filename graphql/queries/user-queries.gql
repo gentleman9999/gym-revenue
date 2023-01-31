@@ -1,0 +1,99 @@
+extend type Query {
+    users(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [User!]!
+    @paginate(defaultCount: 10)
+        @can(ability: "users.read", model: "App\\Domain\\Users\\Models\\User")
+
+    user(
+        "Find a single user by an identifying attribute."
+        id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+        "Search by email address."
+        email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find
+
+    me: User @auth
+
+    "Find a single user by an identifying attribute."
+    leadOwners: [TeamUser]!
+
+    lead_statuses: [LeadStatus!]! @all
+
+    "Find a single user by an identifying attribute."
+    lead(
+        id: ID @eq
+    ): Lead
+    @find
+
+    leads(filter: Filter @scope, orderBy: [OrderByClause!] @orderBy): [Lead!]!
+    @paginate(defaultCount: 10)
+    # @can(ability: "leads.read")
+
+    lead_types(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [LeadType!]! @all
+
+    lead_sources: [LeadSource!]! @all
+
+    isClientUser(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        id: ID
+    ): Boolean!
+
+
+    customers(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [Customer!]!
+    @paginate(defaultCount: 10)
+    @can(ability: "customers.read")
+
+
+    "Find a single user by an identifying attribute."
+    customer(
+        id: ID @eq
+    ): Customer
+    @find
+
+    endUsers(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [EndUser!]!
+    @paginate(defaultCount: 10)
+    @can(ability: "endusers.read")
+
+    "Find a single user by an identifying attribute."
+    member(
+        id: ID @eq
+    ): Member
+    @find
+
+    members(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [Member!]!
+    @paginate(defaultCount: 10)
+    @can(ability: "members.read")
+
+}
+
+
+#roles bc import issue
+extend type Query {
+    roles(filter: Filter @scope, orderBy: [OrderByClause!] @orderBy): [Role!]!
+    @paginate(defaultCount: 10)
+    # @can(ability: "roles.read", model: "App\\Domain\\Roles\\Role")
+
+    role(id: ID @eq): Role @find
+    availableAbilities: [Ability]!
+
+    securityGroups: [SecurityGroups]!
+
+}
+
+extend type Query {
+    profileQuery: ProfileProps
+}

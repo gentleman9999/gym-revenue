@@ -1,9 +1,0 @@
-extend type Query {
-    roles(filter: Filter @scope, orderBy: [OrderByClause!] @orderBy): [Role!]!
-        @paginate(defaultCount: 10)
-    # @can(ability: "roles.read", model: "App\\Domain\\Roles\\Role")
-}
-
-extend type Query {
-    role(id: ID @eq): Role @find
-}

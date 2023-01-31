@@ -1,6 +1,0 @@
-type LeadStatus {
-    id: ID!
-    status: String
-    order: String
-    active: Boolean
-}

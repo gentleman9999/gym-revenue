@@ -1,7 +1,0 @@
-extend type Query {
-    calendar_event_types(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [CalendarEventType!]!
-    @paginate(defaultCount: 10)
-}

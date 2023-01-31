@@ -4,6 +4,7 @@ type CalendarEvent {
     description: String
     full_day_event: Int
     event_type_id: ID
+    type: CalendarEventType @hasOne
     owner: User!
     owner_id: ID
     start: DateTime

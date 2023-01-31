@@ -22,16 +22,12 @@
 import { computed, ref } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GlobalSearch from "@/Components/GlobalSearch.vue";
-import { Inertia } from "@inertiajs/inertia";
-import Confirm from "@/Components/Confirm.vue";
-import Button from "@/Components/Button.vue";
-import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import SearchResult from "./components/SearchResult/index.vue";
 import { useQuery } from "@vue/apollo-composable";
 import queries from "@/gql/queries";
 
-const term = ref("");
+const term = ref(null);
 const page = ref(1);
 
 const { result } = useQuery(

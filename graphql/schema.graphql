@@ -1,28 +1,16 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
+
+
 #import queries/*.gql
 #import interfaces/*.gql
 #import types/*.gql
 #import inputs/*.gql
 #import mutations/*.gql
 
-#import ../App/Domain/*/graphql/*
-#import ../App/Domain/*/*/graphql/*
-
-type Query {
-    me: User @auth
-}
-
 input Filter {
     search: String
     trashed: String
     state: String
-}
-
-#TODO: this should be colocated in domain, not here
-type Mutation {
-    "Assigns EndUser to Current User"
-    assignEndUserToRep(endUser: ID!): EndUser!
-    @inject(context: "user.id", name: "user")
 }

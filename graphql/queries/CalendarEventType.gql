@@ -1,6 +1,0 @@
-extend type Query {
-    calendar_event_type(
-        id: ID @eq
-    ): CalendarEventType
-    @find
-}

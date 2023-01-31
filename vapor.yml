@@ -19,6 +19,7 @@ environments:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer require fakerphp/faker -n'
             - 'php artisan event:cache'
+#            - 'php artisan lighthouse:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'php artisan sidecar:deploy'
             - 'npm set-script prepare ""'
@@ -43,6 +44,7 @@ environments:
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
+#            - 'php artisan lighthouse:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'php artisan sidecar:deploy'
             - 'npm set-script prepare ""'
@@ -67,6 +69,7 @@ environments:
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
+#            - 'php artisan lighthouse:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'php artisan sidecar:deploy'
             - 'npm set-script prepare ""'

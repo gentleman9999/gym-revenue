@@ -39,3 +39,19 @@ input Departments {
     department: ID
     position: ID
 }
+
+
+
+#roles bc import issue
+input CreateRoleInput {
+    name: String
+    ability_names: [String]
+    group: Int
+}
+
+input UpdateRoleInput {
+    id: ID
+    name: String
+    ability_names: [String]
+    group: Int
+}

@@ -1,6 +1,0 @@
-extend type Query {
-    lead_types(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [LeadType!]! @all
-}

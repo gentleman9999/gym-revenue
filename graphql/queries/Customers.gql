@@ -1,8 +1,0 @@
-extend type Query {
-    customers(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [Customer!]!
-    @paginate(defaultCount: 10)
-    @can(ability: "customers.read")
-}
