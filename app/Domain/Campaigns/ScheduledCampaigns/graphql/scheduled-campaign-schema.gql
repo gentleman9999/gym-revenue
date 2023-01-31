@@ -1,0 +1,4 @@
+#import scheduled-campaign-types.gql
+#import scheduled-campaign-inputs.gql
+#import scheduled-campaign-mutations.gql
+#import scheduled-campaign-queries.gql
