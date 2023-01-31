@@ -1,4 +1,0 @@
-#import department-types.gql
-#import department-inputs.gql
-#import department-mutations.gql
-#import department-queries.gql

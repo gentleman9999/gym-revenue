@@ -1,4 +1,0 @@
-#import location-types.gql
-#import location-inputs.gql
-#import location-mutations.gql
-#import location-queries.gql

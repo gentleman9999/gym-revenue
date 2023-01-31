@@ -1,4 +1,0 @@
-#import drip-campaign-types.gql
-#import drip-campaign-inputs.gql
-#import drip-campaign-mutations.gql
-#import drip-campaign-queries.gql

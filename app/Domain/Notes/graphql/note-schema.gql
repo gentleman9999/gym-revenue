@@ -1,4 +1,0 @@
-#import note-types.gql
-#import note-inputs.gql
-#import note-mutations.gql
-#import note-queries.gql

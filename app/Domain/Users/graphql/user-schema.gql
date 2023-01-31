@@ -1,4 +1,0 @@
-#import user-types.gql
-#import user-inputs.gql
-#import user-mutations.gql
-#import user-queries.gql

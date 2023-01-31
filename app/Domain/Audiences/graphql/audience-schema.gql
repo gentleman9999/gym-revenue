@@ -1,4 +1,0 @@
-#import audience-types.gql
-#import audience-inputs.gql
-#import audience-mutations.gql
-#import audience-queries.gql

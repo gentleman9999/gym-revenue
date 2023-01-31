@@ -1,4 +1,0 @@
-#import email-template-types.gql
-#import email-template-inputs.gql
-#import email-template-mutations.gql
-#import email-template-queries.gql

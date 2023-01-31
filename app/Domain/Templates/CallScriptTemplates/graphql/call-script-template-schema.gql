@@ -1,4 +1,0 @@
-#import call-script-template-types.gql
-#import call-script-template-inputs.gql
-#import call-script-template-mutations.gql
-#import call-script-template-queries.gql

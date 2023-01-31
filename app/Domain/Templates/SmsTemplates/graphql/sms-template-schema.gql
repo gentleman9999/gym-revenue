@@ -1,4 +1,0 @@
-#import sms-template-types.gql
-#import sms-template-inputs.gql
-#import sms-template-mutations.gql
-#import sms-template-queries.gql

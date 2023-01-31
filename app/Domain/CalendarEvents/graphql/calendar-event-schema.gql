@@ -1,4 +1,0 @@
-#import calendar-event-types.gql
-#import calendar-event-inputs.gql
-#import calendar-event-mutations.gql
-#import calendar-event-queries.gql
