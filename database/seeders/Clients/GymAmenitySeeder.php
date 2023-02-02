@@ -4,8 +4,8 @@ namespace Database\Seeders\Clients;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\GymAmenities\Actions\CreateGymAmenity;
+use App\Services\Process;
 use Illuminate\Database\Seeder;
-use Symfony\Component\VarDumper\VarDumper;
 
 class GymAmenitySeeder extends Seeder
 {
@@ -29,17 +29,20 @@ class GymAmenitySeeder extends Seeder
             ],
         ];
 
+        $process = Process::allocate(5);
         $clients = Client::with('locations')->get();
 
         foreach ($clients as $client) {
-            VarDumper::dump("Creating Gym Amenities for client {$client['name']}");
+            echo("Creating Gym Amenities for client {$client['name']}\n");
             foreach ($client->locations as $location) {
                 foreach ($gym_amenities as $gym_amenity) {
                     $gym_amenity['client_id'] = $client->id;
                     $gym_amenity['location_id'] = $location->id;
-                    CreateGymAmenity::run($gym_amenity);
+                    $process->queue([CreateGymAmenity::class, 'run'], $gym_amenity);
                 }
             }
         }
+
+        $process->run();
     }
 }

@@ -20,17 +20,25 @@ class ClientBouncerRolesSeeder extends Seeder
     public function run()
     {
         $clients = Client::all();
+        $groups = SecurityGroupEnum::cases();
         foreach ($clients as $client) {
             Bouncer::scope()->to($client->id);
-            collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')
-                ->each(function ($enum) use ($client) {
-                    Role::create([
-                        'name' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE),
-                        'scope' => $client->id ?? null,
-                        'group' => $enum->value,
-                ])->update(['title' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE)]);
-                });
+
+            foreach ($groups as $role) {
+                if ($role === SecurityGroupEnum::ADMIN) {
+                    continue;
+                }
+
+                $roles[] = [
+                    'name' => $name = mb_convert_case(str_replace('_', ' ', $role->name), MB_CASE_TITLE),
+                    'group' => $role->value,
+                    'scope' => $client->id,
+                    'title' => $name
+                ];
+            }
         }
+
+        Role::upsert($roles, ['name', 'group']);
         Bouncer::scope()->to(null);
     }
 }

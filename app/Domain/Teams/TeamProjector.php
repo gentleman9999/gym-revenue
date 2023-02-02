@@ -12,7 +12,6 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamInvitation;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
-use Laravel\Jetstream\Jetstream;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class TeamProjector extends Projector
@@ -73,12 +72,7 @@ class TeamProjector extends Projector
 
     public function onTeamMemberAdded(TeamMemberAdded $event): void
     {
-        $newTeamMember = Jetstream::findUserByEmailOrFail($event->email);
-
-        Team::findOrFail($event->aggregateRootUuid())->users()->attach(
-            $newTeamMember,
-//            ['role' => $role]
-        );
+        Team::findOrFail($event->aggregateRootUuid())->users()->attach($event->user_id);
     }
 
     public function onTeamMemberRemoved(TeamMemberRemoved $event): void

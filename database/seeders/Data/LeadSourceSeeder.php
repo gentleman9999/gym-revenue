@@ -5,7 +5,6 @@ namespace Database\Seeders\Data;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\LeadSources\Actions\CreateLeadSource;
 use Illuminate\Database\Seeder;
-use Symfony\Component\VarDumper\VarDumper;
 
 class LeadSourceSeeder extends Seeder
 {
@@ -36,7 +35,7 @@ class LeadSourceSeeder extends Seeder
                 ]);
 
 
-                VarDumper::dump("Adding lead source {$readable_source}");
+                echo("Adding lead source {$readable_source}\n");
             }
         }
     }

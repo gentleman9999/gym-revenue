@@ -26,7 +26,6 @@ use Database\Seeders\Data\CalendarEventTypeSeeder;
 use Database\Seeders\Data\ContractGatesSeeder;
 use Database\Seeders\Data\EndUserSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
-use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
 use Database\Seeders\Data\NicknameSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
@@ -36,7 +35,6 @@ use Database\Seeders\Users\CapeAndBayUserSeeder;
 use Database\Seeders\Users\ClientUserSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Cache;
-use Symfony\Component\VarDumper\VarDumper;
 
 class DatabaseSeeder extends Seeder
 {
@@ -47,72 +45,77 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $time = microtime(true);
         Cache::put('is_seeding', true);
         // This is where App State Records like Simulation Mode and Deployment Announcements Go
-        VarDumper::dump('Setting the initial app state');
+        echo "Setting the initial app state\n";
         $this->call(AppStateSeeder::class);
 
+
         // There are several types of Providers defined here
-        VarDumper::dump('Creating Provider Types');
+        echo "Creating Provider Types\n";
         $this->call(ProviderTypeSeeder::class);
 
         // Gateway Providers are the Services that do that the Provider Types are
         // example, sms, email, payment, crm, etc
-        VarDumper::dump('Creating Gateways Providers');
+        echo "Creating Gateways Providers\n";
         $this->call(GatewayProviderSeeder::class);
 
+
         // Details on variables required for code-level integrations are defined here
-        VarDumper::dump('Adding Gateway Provider Details');
+        echo "Adding Gateway Provider Details\n";
         $this->call(GatewayProviderDetailsSeeder::class);
 
         // This is where the admin role goes
-        VarDumper::dump('Adding Bouncer Roles');
+        echo "Adding Bouncer Roles\n";
         $this->call(CapeAndBayBouncerRolesSeeder::class);
 
         // Cape & Bay / GymRevenue Users Go Here
-        VarDumper::dump('Creating Cape & Bay Users');
+        echo "Creating Cape & Bay Users\n";
         $this->call(CapeAndBayUserSeeder::class);
 
         // This Seeder here will onboard a Client entity including various other tasks like creating the default team
-        VarDumper::dump('Running Client Seeder');
+        echo "Running Client Seeder\n";
         $this->call(ClientSeeder::class);
 
         // This is where the client roles go
-        VarDumper::dump('Adding Bouncer Roles');
+        echo "Adding Bouncer Roles\n";
         $this->call(ClientBouncerRolesSeeder::class);
 
         // This is where the abilities linked to the roles go
-        VarDumper::dump('Adding Bouncer Abilities');
+        echo "Adding Bouncer Abilities\n";
         $this->call(BouncerAbilitiesSeeder::class);
 
-        VarDumper::dump('Adding Department and Positions w/ Syncing');
+
+        echo "Adding Department and Positions w/ Syncing\n";
         $this->call(DepartmentSeeder::class);
         $this->call(PositionSeeder::class);
         $this->call(PositionDepartmentSync::class);
 
         // New clubs for clients are generated here
-        VarDumper::dump('Running Client Location Seeder');
+        echo "Running Client Location Seeder\n";
         $this->call(LocationSeeder::class);
 
         // Create Location Vendor categories
-        VarDumper::dump('Running Location Vendor Category Seeder');
+        echo "Running Location Vendor Category Seeder\n";
         $this->call(LocationVendorCategorySeeder::class);
 
         // New vendors for different location are created here
-        VarDumper::dump('Running Location Vendor Seeder');
+        echo "Running Location Vendor Seeder\n";
         $this->call(LocationVendorSeeder::class);
 
+
         // New Gym Amenities for different location are created here
-        VarDumper::dump('Running Location Vendor Seeder');
+        echo "Running Location Vendor Seeder\n";
         $this->call(GymAmenitySeeder::class);
 
         // Secondary Teams linked to each client's account owner are defined here.
         // There is a team for each location, along with various sales teams
-        VarDumper::dump('Running Client Secondary Teams Seeder');
+        echo "Running Client Secondary Teams Seeder\n";
         $this->call(SecondaryTeamsSeeder::class);
 
         // Default Lead Types for each client are seeded here.
-        VarDumper::dump('Running Lead Type Seeder');
+        echo "Running Lead Type Seeder\n";
         $this->call(LeadTypeSeeder::class);
 
 //        // Default Membership Types for each client are seeded here.
@@ -120,81 +123,89 @@ class DatabaseSeeder extends Seeder
 //        $this->call(MembershipTypeSeeder::class);
 //
 //        // Default Trial Membership Types for each client are seeded here.
-//        VarDumper::dump('Trial Membership Type Seeder');
+//        echo "Trial Membership Type Seeder\n";
 //        $this->call(TrialMembershipTypeSeeder::class);
 
         // Default Lead Sources for each client are seeded here.
-        VarDumper::dump('Running Lead Source Seeder');
+        echo "Running Lead Source Seeder\n";
         $this->call(LeadSourceSeeder::class);
+
 //
 //        // Default Lead Statuses for each client are seeded here.
-//        VarDumper::dump('Running Lead Status Seeder');
+//        echo "Running Lead Status Seeder\n";
 //        $this->call(LeadStatusSeeder::class);
 
         // This seeder assigns locations to teams
-        VarDumper::dump('Running Client Team/Location Assignments Seeder');
+        echo "Running Client Team/Location Assignments Seeder\n";
         $this->call(TeamLocationsSeeder::class);
 
+
         // Regional Managers, Location Managers, Sales Reps and Employees are seeded here
-        VarDumper::dump('Running Client Users Seeder');
+        echo "Running Client Users Seeder\n";
         $this->call(ClientUserSeeder::class);
 
+
         // This seeder generates dummy End Users for each client
-        VarDumper::dump('Running End Users Dummy Data Seeder');
+        echo "Running End Users Dummy Data Seeder\n";
         $this->call(EndUserSeeder::class);
 
-        VarDumper::dump('Running Billing Schedule Data Seeder');
+        echo "Running Billing Schedule Data Seeder\n";
         $this->call(BillingScheduleSeeder::class);
 
-        VarDumper::dump('Running Client Contract PDF Data Seeder');
+
+        echo "Running Client Contract PDF Data Seeder\n";
         $this->call(ClientContractSeeder::class);
 
-        VarDumper::dump('Running Agreement Templates Data Seeder');
+        echo "Running Agreement Templates Data Seeder\n";
         $this->call(AgreementTemplatesSeeder::class);
 
-        VarDumper::dump('Running Agreements Data Seeder');
+        echo "Running Agreements Data Seeder\n";
         $this->call(AgreementsSeeder::class);
 
         // This seeder generates dummy members for each client
-        VarDumper::dump('Running Contract Gate Dummy Data Seeder');
+        echo "Running Contract Gate Dummy Data Seeder\n";
         $this->call(ContractGatesSeeder::class);
 
         // Baby's First Email Templates are Seeded for each client
-        VarDumper::dump('Running Email Template  Seeder');
+        echo "Running Email Template  Seeder\n";
         $this->call(EmailTemplateSeeder::class);
 
         // Baby's First SMS Templates are Seeded for each client
-        VarDumper::dump('Running SMS Template  Seeder');
+        echo "Running SMS Template  Seeder\n";
         $this->call(SMSTemplateSeeder::class);
 
+
         // Baby's First SMS Templates are Seeded for each client
-        VarDumper::dump('Running Call Script Template  Seeder');
+        echo "Running Call Script Template  Seeder\n";
         $this->call(CallScriptTemplateSeeder::class);
 
+
         // CalendarEventType Seeder
-        VarDumper::dump('Running Calender Event Type Seeder');
+        echo "Running Calender Event Type Seeder\n";
         $this->call(CalendarEventTypeSeeder::class);
 
         // CalendarEvent Seeder
         if (env('SEED_CALENDAR_EVENTS', false) === true) {
-            VarDumper::dump('Running Calender Event Seeder');
+            echo "Running Calender Event Seeder\n";
             $this->call(CalendarEventSeeder::class);
         }
 
         if (env('SEED_CALENDAR_EVENTS', false) === true) {
-            VarDumper::dump('Running Scheduled Campaign Seeder');
+            echo "Running Scheduled Campaign Seeder\n";
             $this->call(ScheduledCampaignSeeder::class);
         }
 
         if (env('SEED_CALENDAR_EVENTS', false) === true) {
-            VarDumper::dump('Running Drip Campaign Seeder');
+            echo "Running Drip Campaign Seeder\n";
             $this->call(DripCampaignSeeder::class);
         }
 
         // Nickname Seeder
-        VarDumper::dump('Nickname Seeder');
+        echo "Nickname Seeder\n";
         $this->call(NicknameSeeder::class);
 
         Cache::put('is_seeding', false);
+
+        dump(microtime(true) - $time);
     }
 }
