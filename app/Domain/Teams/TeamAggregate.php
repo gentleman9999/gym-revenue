@@ -58,10 +58,9 @@ class TeamAggregate extends AggregateRoot
         return $this;
     }
 
-    //TODO: should be id not email
-    public function addMember(string $email): static
+    public function addMember(string $user_id): static
     {
-        $this->recordThat(new TeamMemberAdded($email));
+        $this->recordThat(new TeamMemberAdded($user_id));
 
         return $this;
     }

@@ -36,7 +36,7 @@ class AddTeamMembers
 
         $users_added = [];
         foreach ($users as $user) {
-            $users_added[] = AddTeamMember::run($team, $user);
+            $users_added[] = AddTeamMember::run($team->id, $user->id);
         }
 
         $team->refresh();

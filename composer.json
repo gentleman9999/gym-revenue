@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "ext-intl": "*",
+        "amphp/parallel": "*",
         "bensampo/laravel-enum": "^6.2",
         "cape-and-bay/draftable": "^1.1",
         "cape-and-bay/versionable": "^1.0",

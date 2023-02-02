@@ -4,9 +4,7 @@ namespace Database\Seeders\Comm;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Templates\CallScriptTemplates\Actions\CreateCallScriptTemplate;
-use App\Domain\Templates\CallScriptTemplates\Actions\UpdateCallScriptTemplate;
 use Illuminate\Database\Seeder;
-use Symfony\Component\VarDumper\VarDumper;
 
 class CallScriptTemplateSeeder extends Seeder
 {
@@ -18,22 +16,17 @@ class CallScriptTemplateSeeder extends Seeder
     public function run()
     {
         $default_markup = "Hi this is a call script for a client at GymRevenue!  -GymmieBot";
-
-        $clients = Client::whereActive(1)->get();
         // For each client
-        foreach ($clients as $client) {
-            VarDumper::dump('Default Call Script template for '.$client->name);
+        foreach (Client::whereActive(1)->get() as $client) {
+            echo("Default Call Script template for {$client->name}\n");
             // Create an email template record
-            $template = CreateCallScriptTemplate::run([
-                'name' => $client->name."'s First Call Script Template (;",
+            CreateCallScriptTemplate::run([
+                'name'      => $client->name . "'s First Call Script Template (;",
                 'client_id' => $client->id,
-                'active' => 1,
-                'script' => $default_markup,
-                'json' => '',
+                'active'    => 1,
+                'script'    => $default_markup,
+                'json'      => '',
             ]);
-
-            //$template->active = 1;
-            //UpdateCallScriptTemplate::run($template, $template->toArray());
         }
     }
 }

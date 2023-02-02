@@ -2,15 +2,20 @@
 
 namespace App\Domain\Clients\Projections;
 
+use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Agreements\Projections\Agreement;
+use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
+use App\Domain\Audiences\Audience;
 use App\Domain\Clients\Models\ClientGatewayIntegration;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Conversations\Twilio\Actions\AddConversationAgent;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
+use App\Domain\Departments\Department;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
+use App\Domain\Roles\Role;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\Customer;
 use App\Domain\Users\Models\Employee;
@@ -106,6 +111,11 @@ class Client extends GymRevProjection
         return $this->hasMany(Team::class);
     }
 
+    public function departments(): HasMany
+    {
+        return $this->hasMany(Department::class);
+    }
+
     public function allUsers(): HasMany
     {
         return $this->hasMany(User::class);
@@ -129,6 +139,11 @@ class Client extends GymRevProjection
     public function members(): HasMany
     {
         return $this->hasMany(Member::class);
+    }
+
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class, 'scope');
     }
 
     public function customers(): HasMany
@@ -168,6 +183,21 @@ class Client extends GymRevProjection
     public function agreements(): HasMany
     {
         return $this->hasMany(Agreement::class);
+    }
+
+    public function agreementCategories(): HasMany
+    {
+        return $this->hasMany(AgreementCategory::class);
+    }
+
+    public function agreementTemplates(): HasMany
+    {
+        return $this->hasMany(AgreementTemplate::class);
+    }
+
+    public function audiences(): HasMany
+    {
+        return $this->hasMany(Audience::class);
     }
 
     public function getNamedGatewaySettings(): array

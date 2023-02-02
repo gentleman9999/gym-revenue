@@ -17,6 +17,9 @@ class PositionSeeder extends Seeder
     public function run()
     {
         $clients = Client::whereActive(1)->get();
+        if (count($clients) === 0) {
+            return;
+        }
 
         $items = [
             'Front Desk',
@@ -32,16 +35,18 @@ class PositionSeeder extends Seeder
             'Sales Director',
             'Fitness Sales Rep',
         ];
-        if (count($clients) > 0) {
-            foreach ($clients as $client) {
-                foreach ($items as $i) {
-                    Position::create([
-                        'id' => Uuid::new(),
-                        'client_id' => $client->id,
-                        'name' => $i,
-                    ]);
-                }
+
+        $data = [];
+        foreach ($clients as $client) {
+            foreach ($items as $i) {
+                $data[] = [
+                    'id'        => Uuid::new(),
+                    'client_id' => $client->id,
+                    'name'      => $i,
+                ];
             }
         }
+
+        Position::insert($data);
     }
 }

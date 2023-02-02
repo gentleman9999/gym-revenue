@@ -17,11 +17,14 @@ class CapeAndBayBouncerRolesSeeder extends Seeder
      */
     public function run()
     {
-        collect(SecurityGroupEnum::cases())->keyBy('name')->only(['ADMIN'])->each(function ($enum) {
-            Role::create([
-                'name' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE),
-                'group' => $enum->value,
-            ])->update(['title' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE)]);
-        });
+        $roles = [];
+        foreach (SecurityGroupEnum::cases() as $role) {
+            $roles[] = [
+                'name'  => $name = mb_convert_case(str_replace('_', ' ', $role->name), MB_CASE_TITLE),
+                'group' => $role->value,
+                'title' => $name,
+            ];
+        }
+        Role::upsert($roles, ['name']);
     }
 }

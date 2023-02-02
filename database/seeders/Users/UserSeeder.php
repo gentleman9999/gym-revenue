@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Users;
 
-use App\Domain\Users\Models\User;
+use App\Domain\Teams\Actions\CreateTeam;
+use App\Services\Process;
 use Illuminate\Database\Seeder;
-use Symfony\Component\VarDumper\VarDumper;
 
 abstract class UserSeeder extends Seeder
 {
@@ -15,16 +15,19 @@ abstract class UserSeeder extends Seeder
      */
     public function run()
     {
-        VarDumper::dump("Adding {$this->type} Users...");
+        $process = Process::allocate(3);
+        $team_id = CreateTeam::run([
+            'client_id' => null,
+            'name' => 'Cape & Bay Admin Team',
+            'home_team' => 1,
+        ])->id;
 
-        foreach ($this->getUsersToAdd() as $idx => $user) {
-            $user_record = User::whereEmail($user['email'])->first();
-            if (is_null($user_record)) {
-                VarDumper::dump("Adding {$user['first_name']} {$user['last_name']}");
-                $this->addUser($user);
-            } else {
-                VarDumper::dump("Skipping {$user['first_name']} {$user['last_name']}!");
-            }
+
+        foreach ($this->getUsersToAdd() as $user) {
+            // \Database\Seeders\Users\CapeAndBayUserSeeder::addUser
+            $process->queue([static::class, 'addUser'], $user, $team_id);
         }
+
+        $process->run();
     }
 }

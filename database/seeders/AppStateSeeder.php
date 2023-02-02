@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Utility\AppState;
+use App\Support\Uuid;
 use Illuminate\Database\Seeder;
 
 class AppStateSeeder extends Seeder
@@ -14,22 +15,25 @@ class AppStateSeeder extends Seeder
      */
     public function run()
     {
-        AppState::firstOrCreate([
-            'name' => 'Simulation Mode',
-            'slug' => 'is-simulation-mode',
-            'desc' => 'When this mode is enabled, affected parts such as mass communications are not actually transmitted, but are logged and invoiced as if they did',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Simulation Mode',
+            'slug'  => 'is-simulation-mode',
+            'desc'  => 'When this mode is enabled, affected parts such as mass communications are not actually transmitted, but are logged and invoiced as if they did',
             'value' => 1,
-        ]);
+            'misc'  => null,
+        ];
         // @todo - aggy, set the slug with the value and auto as the setter.
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 01-26-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 01-26-2022',
             'value' => '2022-01-26',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220126',
                 'version' => '0.8.20',
-                'notes' => [
+                'notes'   => [
                     'Fixed a bug in the dummy data seeder where clubs were missing City and State Data',
                     'City and States show up in the Club/Locations List View',
                     'There is now a State-level filter in Clubs/Locations',
@@ -43,18 +47,19 @@ class AppStateSeeder extends Seeder
                     'Added a browser-tab set of day and night icons.',
                     'Updated the static content of the footer and Copyright Year as well as a copyright c before the year',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 02-02-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 02-02-2022',
             'value' => '2022-02-02',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220202',
                 'version' => '0.9.22',
-                'notes' => [
+                'notes'   => [
                     'Create Users and provide the basic info for their account in Account Management',
                     'You can assign a role to the user you are creating.',
                     'You can see how many times A Lead\'s free trial pass was used.',
@@ -64,18 +69,19 @@ class AppStateSeeder extends Seeder
                     'Lead Sources Management Page was created and is accessible in the Leads List View in the toolbar',
                     'Free Trial management is available in the settings menu inside of any client.',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 02-06-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 02-06-2022',
             'value' => '2022-02-06',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220206',
                 'version' => '0.10.23',
-                'notes' => [
+                'notes'   => [
                     'Added Middle name columns to Create and Update',
                     'The lead’s First, Middle & Last show up below the avatar in real time.',
                     'Added Opportunity dropdowns to Leads Create and Update',
@@ -98,18 +104,19 @@ class AppStateSeeder extends Seeder
                     'You can Update Locations',
                     'New Location fields in Create & Edit - Phone, Open Date, Closed Date, PoC First, Last  Phone, and an Arbitrary Location No',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 02-11-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 02-11-2022',
             'value' => '2022-02-11',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220211',
                 'version' => '0.10.25',
-                'notes' => [
+                'notes'   => [
                     'Backend - New Clubs have a GymRevenue ID auto generated',
                     'Phone # is now a field in Create and Edit Users',
                     'Employee is now a new Role for making Security role templates',
@@ -136,18 +143,19 @@ class AppStateSeeder extends Seeder
                     'Lead Statuses UI is now available from the Leads Dashboard',
                     'Individual First & Last Name in User Management Create and Update',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 02-23-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 02-23-2022',
             'value' => '2022-02-23',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220223',
                 'version' => '0.12.30',
-                'notes' => [
+                'notes'   => [
                     'Dashboard Placeholder UI Refresh',
                     '* - The active team is visible from the dashboard',
                     '* - Cape & Bay teams are now known as GymRevenue teams. The names have not changed though.',
@@ -192,17 +200,18 @@ class AppStateSeeder extends Seeder
                     '* - The mode is available in the upper right hand menu dropdown with your name on it.',
                     'Some backend optimizations in the dummy data seeder',
                 ],
-            ],
-        ]);
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 03-02-2022',
+            ]),
+        ];
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 03-02-2022',
             'value' => '2022-03-02',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220302',
                 'version' => '0.13.31',
-                'notes' => [
+                'notes'   => [
                     'Mass Comm - You can now send yourself a test Text message of SMS Templates when inside of a GymRevenue team.',
                     'Mass Comm - You can now send yourself a test Email message of Email Templates when inside of a GymRevenue team.',
                     'User Mgnt - New Filters - ',
@@ -232,17 +241,18 @@ class AppStateSeeder extends Seeder
                     'Misc - Event Tracking Optimizations',
                     'Misc - Switch Team Dropdown is now scrollable',
                 ],
-            ],
-        ]);
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 03-09-2022',
+            ]),
+        ];
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 03-09-2022',
             'value' => '2022-03-09',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220309',
                 'version' => '0.14.35',
-                'notes' => [
+                'notes'   => [
                     'Users Mgnt - Can upload documentation connected to a User',
                     'Leads Mgnt - A Lead Preview is now available',
                     'Leads Mgnt - Added Opportunity-driven color-coded border around the Avatar in Edit and Sales Rep views',
@@ -253,18 +263,19 @@ class AppStateSeeder extends Seeder
                     'Misc - State field in Users,Locations  and Profile Management CRUDs use a Dropdown instead of typing in the stateA',
                     'Misc - Added Sami’s last name to her account.',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 04-06-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 04-06-2022',
             'value' => '2022-04-06',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220406',
                 'version' => '0.15.35',
-                'notes' => [
+                'notes'   => [
                     'All List Views - Click to Preview, Double Click to Edit',
                     'All List Views - Customizable columns. No new columns at this time, but they are not able to be shown/hidden on a per user basis.',
                     'All List Views - Sortable Columns.  This does not work on all columns yet.',
@@ -279,18 +290,19 @@ class AppStateSeeder extends Seeder
                     'Security Roles - Huge Refactor. Super solid and scalable now.',
 
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 04-20-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 04-20-2022',
             'value' => '2022-04-20',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220420',
                 'version' => '0.16.01',
-                'notes' => [
+                'notes'   => [
                     'Calendar - Week View is now default instead of Month',
                     'Calendar - Files can now be attached to events',
                     'Calendar - Attendees are send an invitation on being added to an event.',
@@ -301,35 +313,37 @@ class AppStateSeeder extends Seeder
                     'Internal (Authenticated URL Shortener) - currently being used in calendar invite emails, but built to support systems in the future.',
                     'Internal (Tasks/ToDo Scaffolding) - basic back-end work to support tasks. UI and Calendar integration forthcoming',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 05-05-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 05-05-2022',
             'value' => '2022-05-05',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220505',
                 'version' => '0.17.01',
-                'notes' => [
+                'notes'   => [
                     'Notes - Read/Unread indicators added to notes fields.',
                     'Notes - Notes now have titles!',
                     'Calendar - Reminder Management: You can now manage your calendar reminder settings when your an attendee of the event your editing.',
                     'Internal (Mass Communications) Mass Communications Controller refactor to work with billing/logging.',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 05-19-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 05-19-2022',
             'value' => '2022-05-19',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220519',
                 'version' => '0.18.01',
-                'notes' => [
+                'notes'   => [
                     'UI - User Login User Interface modified to match art designs.',
                     'UI - User Management User Interface modified to match art designs.',
                     'UI - Lead/Member User Interface modified to clean up white spacing - modeling from user profiles designs as reference.',
@@ -338,19 +352,20 @@ class AppStateSeeder extends Seeder
                     'Calendar/Tasks - Association Logic between tasks and calendar events established.',
                     'BUG - Calendar drag & drop was breaking when update event was moved.',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 06-15-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 06-15-2022',
             'value' => '2022-06-15',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220615',
                 'version' => '0.20.01',
-                'notes' => [
+                'notes'   => [
                     'API - Implement Token Authorization for API Routes.',
                     'API - Test Create/Update/Upsert for Lead & Member endpoints.',
                     'API - Create Upsert Actions for Lead/Members.',
@@ -368,18 +383,19 @@ class AppStateSeeder extends Seeder
                     'Technical Debt - Select Boxes Through Out the application are now white on white.',
                     'UPGRADE - Upgraded to Laravel 9.',
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 06-29-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 06-29-2022',
             'value' => '2022-06-29',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220629',
                 'version' => '0.21.01',
-                'notes' => [
+                'notes'   => [
                     'Calendar - Start and End fields should auto-populate.',
                     'Calendar - Member Attendees for Calendar Events / Tasks.',
                     'Profile - Change "Settings" to "Client Settings".',
@@ -411,18 +427,19 @@ class AppStateSeeder extends Seeder
                     'Cleanup - SIDENAV, Bodies By Brett Team, Impersonation Mode Bugs/Fixes.',
 
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 07-13-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 07-13-2022',
             'value' => '2022-07-13',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220713',
                 'version' => '0.22.01',
-                'notes' => [
+                'notes'   => [
                     'Client - Client Settings Overhaul',
                     'Reminders - List view RUD Created',
                     'Notes - List view CRUD Created',
@@ -439,18 +456,19 @@ class AppStateSeeder extends Seeder
                     'BUG - Roles/create - resolved',
 
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 08-02-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 08-02-2022',
             'value' => '2022-08-02',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '20220802',
                 'version' => '0.23.01',
-                'notes' => [
+                'notes'   => [
                     'Impersonation - Moved Teams Dropdown to impersonation window.',
                     'Impersonation User List - Sort.',
                     'Calendar - Layout - Editing event.',
@@ -465,18 +483,19 @@ class AppStateSeeder extends Seeder
                     'BUG - Lead Statuses Empty Field WIll Not Update.',
 
                 ],
-            ],
-        ]);
+            ]),
+        ];
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 08-11-2022',
+        $data[] = [
+            'id'    => Uuid::get(),
+            'name'  => 'Deployment Log Record',
+            'slug'  => 'deployment-log-record',
+            'desc'  => 'This is a record of code deployed on 08-11-2022',
             'value' => '2022-08-11',
-            'misc' => [
+            'misc'  => json_encode([
                 'buildno' => '202208011',
                 'version' => '0.24.01',
-                'notes' => [
+                'notes'   => [
                     'Settings - Client Communication Preferences',
                     'Bug - Edit Columns Form Will Not Save If Empty',
                     'GR MailGun - make owner developers@capeandbay.com',
@@ -486,7 +505,9 @@ class AppStateSeeder extends Seeder
                     'Bug - Leads Form Needs Primary Phone Validation',
 
                 ],
-            ],
-        ]);
+            ]),
+        ];
+
+        AppState::insert($data, ['slug']);
     }
 }

@@ -7,7 +7,6 @@ use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Users\Models\User;
 use Illuminate\Database\Seeder;
-use Symfony\Component\VarDumper\VarDumper;
 
 class SecondaryTeamsSeeder extends Seeder
 {
@@ -18,14 +17,14 @@ class SecondaryTeamsSeeder extends Seeder
      */
     public function run()
     {
-        VarDumper::dump('Creating Cape & Bay Team(s)');
+        echo("Creating Cape & Bay Team(s)\n");
 
         $cnb_teams = [
             [
                 'client_id' => null,
-                'name' => 'Cape & Bay Developers',
+                'name'      => 'Cape & Bay Developers',
                 'home_team' => 0,
-                'members' => [
+                'members'   => [
                     'shivam@capeandbay.com',
                     'philip@capeandbay.com',
                     'sterling@capeandbay.com',
@@ -34,120 +33,104 @@ class SecondaryTeamsSeeder extends Seeder
                     'adam@capeandbay.com',
                     'david@capeandbay.com',
                     'clayton@capeandbay.com',
+                    'chrys@capeandbay.com',
                 ],
             ],
         ];
 
         foreach ($cnb_teams as $team) {
-            VarDumper::dump($team['name']);
             $members = $team['members'];
             unset($team['members']);
+
             $new_team = CreateTeam::run($team);
-
-            if (count($members) > 0) {
-                foreach ($members as $idx => $email) {
-                    AddTeamMember::run($new_team, User::whereClientId(null)->whereEmail($email)->firstOrFail());
-
-//                    $user = User::whereEmail($email)->first();
-//                    $new_team->users()->attach($user);
-//                    UserAggregate::retrieve($user->id)
-//                        ->addToTeam($new_team->id, $new_team->name)
-//                        ->persist();
-                }
+            foreach (User::whereIn('email', $members)->get() as $user) {
+                AddTeamMember::run($new_team->id, $user->id);
             }
         }
 
         if (env('RAPID_SEED') === true) {
-            $kalamazoo_owner = User::whereEmail('giraffe@kalamazoo.com')->first();
-            $clients = Client::all()->keyBy('name');
+            $clients      = Client::all()->keyBy('name');
             $client_teams = [
                 // The Kalamazoo
                 [
-                    'name' => 'Zoo Sales Team',
+                    'name'      => 'Zoo Sales Team',
                     'home_team' => 0,
                     'client_id' => $clients['The Kalamazoo']->id,
                 ],
-                ];
+            ];
         } else {
-            $kalamazoo_owner = User::whereEmail('giraffe@kalamazoo.com')->first();
-            $truth_owner = User::whereEmail('monyahanb@clubtruth.com')->first();
-            $theZ_owner = User::whereEmail('malaki@thezclubs.com')->first();
-            $stencils_owner = User::whereEmail('bsmith@stencils.net')->first();
-            $scifi_owner = User::whereEmail('agabla@scifipurplegyms.com')->first();
-            $ifit_owner = User::whereEmail('sherri@ifit.com')->first();
-
             $clients = Client::all()->keyBy('name');
 
             $client_teams = [
                 // Fitness Truth
                 [
-                    'name' => 'FitnessTruth Texas South',
+                    'name'      => 'FitnessTruth Texas South',
                     'home_team' => 0,
                     'client_id' => $clients['FitnessTruth']->id,
                 ],
 
                 // The Z
                 [
-                    'name' => 'Big Island Team',
+                    'name'      => 'Big Island Team',
                     'home_team' => 0,
                     'client_id' => $clients['The Z']->id,
                 ],
                 [
-                    'name' => 'Oahu Team',
+                    'name'      => 'Oahu Team',
                     'home_team' => 0,
                     'client_id' => $clients['The Z']->id,
                 ],
                 [
-                    'name' => 'Big Island Boating & CrossFit Club',
+                    'name'      => 'Big Island Boating & CrossFit Club',
                     'home_team' => 0,
                     'client_id' => $clients['The Z']->id,
                 ],
 
                 // Stencils
                 [
-                    'name' => 'Stencils Seattle',
+                    'name'      => 'Stencils Seattle',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name' => 'Stencils San Andreas',
+                    'name'      => 'Stencils San Andreas',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name' => 'Stencils Portland',
+                    'name'      => 'Stencils Portland',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name' => 'Stencils LA',
+                    'name'      => 'Stencils LA',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name' => 'Stencils San Diego',
+                    'name'      => 'Stencils San Diego',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name' => 'Stencils San Jose',
+                    'name'      => 'Stencils San Jose',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name' => 'Stencils Portland 2',
+                    'name'      => 'Stencils Portland 2',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
 
                 // SciFi Purple Gyms
                 [
-                    'name' => 'SciFi NC',
+                    'name'      => 'SciFi NC',
                     'home_team' => 0,
                     'client_id' => $clients['Sci-Fi Purple Gyms']->id,
                 ],
                 [
-                    'name' => 'Purple FL',
+                    'name'      => 'Purple FL',
                     'home_team' => 0,
                     'client_id' => $clients['Sci-Fi Purple Gyms']->id,
                 ],
@@ -156,7 +139,7 @@ class SecondaryTeamsSeeder extends Seeder
         }
 
         foreach ($client_teams as $team) {
-            VarDumper::dump($team['name']);
+            echo($team['name'] . PHP_EOL);
             CreateTeam::run($team);
         }
     }
