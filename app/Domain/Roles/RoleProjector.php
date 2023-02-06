@@ -41,6 +41,6 @@ class RoleProjector extends Projector
 
     public function onRoleDeleted(RoleDeleted $event): void
     {
-        Role::findOrFail($event->aggregateRootUuid())->deleteOrFail();
+        Role::whereId($event->aggregateRootUuid())->delete();
     }
 }

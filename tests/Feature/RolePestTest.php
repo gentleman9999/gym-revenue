@@ -32,10 +32,16 @@ it('role created stored event should be created', function () {
 
 it('should delete a Role', function () {
     $role = \createRole();
-
+    $test = Bouncer::role()->find($role->id)->getAbilities()->toArray();
     $initialCount = DB::table('roles')->count();
-
+    if (Bouncer::role()->find($role->id)) {
+        $test1 = Bouncer::role()->find($role->id)->getAbilities()->toArray();
+    } else {
+        $test1 = null;
+    }
+    $storedEvents = DB::table('stored_events')->get()->toArray();  // Delete before finishing
     $this->assertEquals(1, $initialCount);
+    //The Following fails because the DeleteRole doesn't find the role when retrieving from the DB
     DeleteRole::run($role);
     $finalCount = DB::table('roles')->count();
 
@@ -45,6 +51,7 @@ it('should delete a Role', function () {
 it('should have a delete role event', function () {
     $role = \createRole();
 
+    //The Following fails because the DeleteRole doesn't find the role when retrieving from the DB
     DeleteRole::run($role);
     $storedEvents = DB::table('stored_events')->get()->toArray();
 
@@ -182,6 +189,7 @@ it('should return 302 on route routes.delete', function () {
     $initialCount = DB::table('roles')->count();
 
     $this->assertEquals($initialCount, 2);
+    //The Following fails because the DeleteRole doesn't find the role when retrieving from the DB
     $response = $this->delete('roles/' . $role->id);
 
     $finalCount = DB::table('roles')->count();

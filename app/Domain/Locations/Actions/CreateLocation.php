@@ -9,8 +9,6 @@ use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\StatesEnum;
-use App\Rules\Zip;
-use App\Http\Middleware\InjectClientId;
 use App\Rules\AddressCity;
 use App\Rules\AddressLine;
 use App\Rules\AddressState;
@@ -37,10 +35,8 @@ class CreateLocation extends GymRevAction
             'city' => ['required', 'max:30', new AddressCity()],
             'state' => ['required', 'size:2', new Enum(StatesEnum::class), new AddressState()],
             'client_id' => ['required', 'exists:clients,id'],
-            'address1' => ['required','max:200'],
-            'address2' => ['sometimes', 'nullable','max:200'],
             'address1' => ['required','max:200', new AddressLine()],
-            'address2' => [],
+            'address2' => ['sometimes', 'nullable','max:200'],
             'latitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
             'longitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
             'zip' => ['required', 'size:5', new AddressZip()],

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Agreements\Events\AgreementSigned;
 use App\Domain\Clients\Actions\CreateClient;
@@ -10,6 +12,10 @@ use App\Enums\UserTypesEnum;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\Feature\Utilities\UserUtility;
+
+beforeEach(function () {
+    //
+});
 
 it('should do make engagement events from creating end users', function () {
     $role = UserUtility::createRole(['name' => 'Admin']);
@@ -146,7 +152,7 @@ it('should make engagement events from AssignEndUserToRep', function () {
         'user_type' => UserTypesEnum::LEAD,
         'opportunity' => rand(0, 3),
     ]);
-    $this->put("data/leads/assign/".$endU->id, []);
+    $this->put("data/leads/assign/".$endU->id);
     $storedEvents = DB::table('stored_events')->get()->toArray();
 
     $ee = EngagementEvents::all()->toArray();

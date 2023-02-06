@@ -79,7 +79,7 @@ class UserUtility
     {
         return CreateRole::run($attributes + Role::factory()->raw() + [
             'group' => rand(1, 10),
-            'ability_names' => ['update.users', 'read.users', 'create.users', 'delete.users'],
+            'ability_names' => ['users.update', 'users.read', 'users.create', 'users.delete'],
         ]);
     }
 

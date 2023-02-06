@@ -105,8 +105,8 @@ class CreateCalendarEvent
 
         if (! empty($data['member_attendees'])) {
             $data['member_attendees'] = array_values(array_unique($data['member_attendees'])); //This will dupe check and then re-index the array.
-            foreach ($data['member_attendees'] as $member) {
-                $member = Member::whereId($member)->select('id', 'first_name', 'last_name', 'email')->first();
+            foreach ($data['member_attendees'] as $member_id) {
+                $member = Member::whereId($member_id)->select('id', 'first_name', 'last_name', 'email')->first();
                 if ($member) {
                     AddCalendarAttendee::run([
                         'client_id' => $data['client_id'],

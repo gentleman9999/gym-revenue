@@ -261,8 +261,7 @@ it('should return 200 on route impersonation/users', function () {
     $role = UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();
     $team = Team::all()->first();
-
-    UserUtility::createUser(['team_id' => $team->id], 3);
+    UserUtility::createUser(['team_id' => $team->id, 'client_id' => $team->client_id], 3);
 
     Bouncer::allow($role->name)->everything();
     $this->actingAs($user);
@@ -277,7 +276,7 @@ it('should return return array of users on route impersonation/users', function 
     $user = UserUtility::createUserWithTeam();
     $team = Team::all()->first();
 
-    [$user1, $user2] = UserUtility::createUser(['team_id' => $team->id], 2);
+    [$user1, $user2] = UserUtility::createUser(['team_id' => $team->id, 'client_id' => $team->client_id], 2);
 
     Bouncer::allow($role->name)->everything();
     $this->actingAs($user);
