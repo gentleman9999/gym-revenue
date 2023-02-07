@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Data;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\LeadSources\LeadSource;
-use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\EndUser;
@@ -15,11 +13,11 @@ use App\Domain\Users\Models\Lead;
 use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
-use App\Models\File;
 use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use App\Support\CurrentInfoRetriever;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -29,7 +27,7 @@ use Prologue\Alerts\Facades\Alert;
 
 class LeadsController extends Controller
 {
-    public function index(Request $request): InertiaResponse
+    public function index(Request $request): InertiaResponse|RedirectResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.read', EndUser::class)) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\AccessControl;
 
 use App\Domain\Clients\Projections\Client;
@@ -75,236 +77,253 @@ class BouncerAbilitiesSeeder extends Seeder
 
         $process = Process::allocate(5);
         $clients = Client::all();
+
+        $impersonate           = ['users'];
+        $account_owner_read    = [
+            'users',
+            'locations',
+            'endusers',
+            'lead-statuses',
+            'lead-sources',
+            'files',
+            'teams',
+            'calendar',
+            'roles',
+            'classifications',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'email-templates',
+            'sms-templates',
+            'call-templates',
+            'departments',
+            'positions',
+            'notes',
+            'folders',
+            'dynamic-reports',
+            'searches',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $account_owner_edit    = [
+            'users',
+            'locations',
+            'endusers',
+            'lead-statuses',
+            'lead-sources',
+            'files',
+            'teams',
+            'calendar',
+            'roles',
+            'classifications',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'email-templates',
+            'sms-templates',
+            'call-templates',
+            'departments',
+            'positions',
+            'notes',
+            'folders',
+            'dynamic-reports',
+            'searches',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $regional_admin_read   = [
+            'users',
+            'locations',
+            'endusers',
+            'files',
+            'teams',
+            'calendar',
+            'roles',
+            'classifications',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'email-templates',
+            'sms-templates',
+            'searches',
+            'folders',
+            'call-templates',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $regional_admin_edit   = [
+            'users',
+            'locations',
+            'endusers',
+            'files',
+            'teams',
+            'calendar',
+            'roles',
+            'classifications',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'email-templates',
+            'sms-templates',
+            'folders',
+            'call-templates',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $location_manager_read = [
+            'users',
+            'locations',
+            'endusers',
+            'teams',
+            'tasks',
+            'calendar',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'positions',
+            'departments',
+            'reminders',
+            'searches',
+            'email-templates',
+            'sms-templates',
+            'folders',
+            'files',
+            'call-templates',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $location_manager_edit = [
+            'users',
+            'endusers',
+            'teams',
+            'tasks',
+            'calendar',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'positions',
+            'departments',
+            'reminders',
+            'folders',
+            'files',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $sale_rep_read         = [
+            'users',
+            'locations',
+            'endusers',
+            'teams',
+            'tasks',
+            'calendar',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'reminders',
+            'folders',
+            'searches',
+            'files',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $sale_rep_edit         = [
+            'endusers',
+            'tasks',
+            'calendar',
+            'reminders',
+            'files',
+            'folders',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $employee_read         = [
+            'users',
+            'locations',
+            'endusers',
+            'teams',
+            'tasks',
+            'calendar',
+            'reminders',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $employee_edit         = [
+            'endusers',
+            'tasks',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $contact_user          = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
+
+        $read_callback        = [self::class, 'allowReadInGroup'];
+        $edit_callback        = [self::class, 'allowEditInGroup'];
+        $impersonate_callback = [self::class, 'allowImpersonationInGroup'];
+
         foreach ($clients as $client) {
-            Bouncer::scope()->to($client->id);
-            echo("Bouncer scoping to {$client->name}\n");
-
             /** Account Owner */
-            $process->queue([self::class, 'allowReadInGroup'], [
-                'users',
-                'locations',
-                'endusers',
-                'lead-statuses',
-                'lead-sources',
-                'files',
-                'teams',
-                'calendar',
-                'roles',
-                'classifications',
-                'access_tokens',
-                'drip-campaigns',
-                'scheduled-campaigns',
-                'email-templates',
-                'sms-templates',
-                'call-templates',
-                'departments',
-                'positions',
-                'notes',
-                'folders',
-                'dynamic-reports',
-                'searches',
-                'chat',
-                'customers',
-                'leads',
-                'members',
-                'employees',
-            ], 'Account Owner');
-            $process->queue([self::class, 'allowEditInGroup'], [
-                'users',
-                'locations',
-                'endusers',
-                'lead-statuses',
-                'lead-sources',
-                'files',
-                'teams',
-                'calendar',
-                'roles',
-                'classifications',
-                'access_tokens',
-                'drip-campaigns',
-                'scheduled-campaigns',
-                'email-templates',
-                'sms-templates',
-                'call-templates',
-                'departments',
-                'positions',
-                'notes',
-                'folders',
-                'dynamic-reports',
-                'searches',
-                'chat',
-                'customers',
-                'leads',
-                'members',
-                'employees',
-            ], 'Account Owner');
+            $process->queue($read_callback, $account_owner_read, 'Account Owner', $client->id);
+            $process->queue($edit_callback, $account_owner_edit, 'Account Owner', $client->id);
 
-            $process->queue([self::class, 'allowImpersonationInGroup'], ['users'], 'Account Owner');
+            $process->queue($impersonate_callback, $impersonate, 'Account Owner', $client->id);
 
             /** Regional Admin */
-            $process->queue([self::class, 'allowReadInGroup'], [
-                    'users',
-                    'locations',
-                    'endusers',
-                    'files',
-                    'teams',
-                    'calendar',
-                    'roles',
-                    'classifications',
-                    'access_tokens',
-                    'drip-campaigns',
-                    'scheduled-campaigns',
-                    'email-templates',
-                    'sms-templates',
-                    'searches',
-                    'folders',
-                    'call-templates',
-                    'chat',
-                    'customers',
-                    'leads',
-                    'members',
-                    'employees'
-                ], 'Regional Admin');
-            $process->queue([self::class, 'allowEditInGroup'], [
-                    'users',
-                    'locations',
-                    'endusers',
-                    'files',
-                    'teams',
-                    'calendar',
-                    'roles',
-                    'classifications',
-                    'access_tokens',
-                    'drip-campaigns',
-                    'scheduled-campaigns',
-                    'email-templates',
-                    'sms-templates',
-                    'folders',
-                    'call-templates',
-                    'chat',
-                    'customers',
-                    'leads',
-                    'members',
-                    'employees',
-                ], 'Regional Admin');
-            $process->queue([self::class, 'allowImpersonationInGroup'], ['users'], 'Regional Admin');
+            $process->queue($read_callback, $regional_admin_read, 'Regional Admin', $client->id);
+            $process->queue($edit_callback, $regional_admin_edit, 'Regional Admin', $client->id);
+            $process->queue($impersonate_callback, $impersonate, 'Regional Admin', $client->id);
 
             /** Location Manager */
-            $process->queue([self::class, 'allowReadInGroup'], [
-                'users',
-                'locations',
-                'endusers',
-                'teams',
-                'tasks',
-                'calendar',
-                'access_tokens',
-                'drip-campaigns',
-                'scheduled-campaigns',
-                'positions',
-                'departments',
-                'reminders',
-                'searches',
-                'email-templates',
-                'sms-templates',
-                'folders',
-                'files',
-                'call-templates',
-                'chat',
-                'customers',
-                'leads',
-                'members',
-                'employees',
-            ], 'Location Manager');
-            $process->queue([self::class, 'allowEditInGroup'], [
-                'users',
-                'endusers',
-                'teams',
-                'tasks',
-                'calendar',
-                'access_tokens',
-                'drip-campaigns',
-                'scheduled-campaigns',
-                'positions',
-                'departments',
-                'reminders',
-                'folders',
-                'files',
-                'chat',
-                'customers',
-                'leads',
-                'members',
-                'employees',
-            ], 'Location Manager');
-            $process->queue([self::class, 'allowImpersonationInGroup'], ['users'], 'Location Manager');
+            $process->queue($read_callback, $location_manager_read, 'Location Manager', $client->id);
+            $process->queue($edit_callback, $location_manager_edit, 'Location Manager', $client->id);
+            $process->queue($impersonate_callback, $impersonate, 'Location Manager', $client->id);
 
             /** Sales Rep */
-            $process->queue([self::class, 'allowReadInGroup'], [
-                'users',
-                'locations',
-                'endusers',
-                'teams',
-                'tasks',
-                'calendar',
-                'drip-campaigns',
-                'scheduled-campaigns',
-                'reminders',
-                'folders',
-                'searches',
-                'files',
-                'chat',
-                'customers',
-                'leads',
-                'members',
-                'employees',
-            ], 'Sales Rep');
-            $process->queue([self::class, 'allowEditInGroup'], [
-                'endusers',
-                'tasks',
-                'calendar',
-                'reminders',
-                'files',
-                'folders',
-                'chat',
-                'customers',
-                'leads',
-                'members',
-                'employees',
-            ], 'Sales Rep');
+            $process->queue($read_callback, $sale_rep_read, 'Sales Rep', $client->id);
+            $process->queue($edit_callback, $sale_rep_edit, 'Sales Rep', $client->id);
 
             /** Employee */
-            $process->queue([self::class, 'allowReadInGroup'], [
-                'users',
-                'locations',
-                'endusers',
-                'teams',
-                'tasks',
-                'calendar',
-                'reminders',
-                'chat',
-                'customers',
-                'leads',
-                'members',
-                'employees',
-            ], 'Employee');
-            $process->queue([self::class, 'allowEditInGroup'], [
-                'endusers',
-                'tasks',
-                'chat',
-                'customers',
-                'leads',
-                'members',
-                'employees',
-            ], 'Employee');
+            $process->queue($read_callback, $employee_read, 'Employee', $client->id);
+            $process->queue($edit_callback, $employee_edit, 'Employee', $client->id);
 
-            $process->queue([self::class, 'contactUser'], ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee']);
+            $process->queue([self::class, 'contactUser'], $contact_user, $client->id);
         }
 
         $process->run();
         Bouncer::scope()->to(null);
     }
 
-    public static function contactUser(array $groups): void
+    public static function contactUser(array $groups, string $client_id): void
     {
+        Bouncer::scope()->to($client_id);
+
         foreach ($groups as $role) {
             echo("Allowing $role to contact endusers for teams\n");
             Bouncer::allow($role)->to('endusers.contact', EndUser::class);
@@ -312,8 +331,9 @@ class BouncerAbilitiesSeeder extends Seeder
         Bouncer::allow('Account Owner')->to('manage-client-settings');
     }
 
-    public static function allowReadInGroup(array $groups, string $role): void
+    public static function allowReadInGroup(array $groups, string $role, string $client_id): void
     {
+        Bouncer::scope()->to($client_id);
         echo("Allowing $role read access\n");
         foreach ($groups as $group) {
             // Create and get the abilities for all the groups
@@ -325,8 +345,9 @@ class BouncerAbilitiesSeeder extends Seeder
         }
     }
 
-    public static function allowEditInGroup(array $groups, string $role): void
+    public static function allowEditInGroup(array $groups, string $role, string $client_id): void
     {
+        Bouncer::scope()->to($client_id);
         echo("Allowing $role write access\n");
 
         // Convert the $group array into a Collection
@@ -343,8 +364,9 @@ class BouncerAbilitiesSeeder extends Seeder
         }
     }
 
-    public static function allowImpersonationInGroup(array $groups, string $role): void
+    public static function allowImpersonationInGroup(array $groups, string $role, string $client_id): void
     {
+        Bouncer::scope()->to($client_id);
         echo("Allowing $role impersonate access\n");
 
         foreach ($groups as $group) {
