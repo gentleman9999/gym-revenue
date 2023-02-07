@@ -9,6 +9,7 @@ use App\Domain\Locations\Actions\CreateLocation;
 use App\Domain\Locations\Actions\ImportLocations;
 use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Locations\Projections\Location;
+use App\Services\Process;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
@@ -222,63 +223,67 @@ class LocationSeeder extends Seeder
             ];
         }
 
+        $clients = [];
+        $min_opened_at = Carbon::now()->subDays(3650)->timestamp;
+        $max_opened_at = Carbon::now()->subDays(365)->timestamp;
+        $min = Carbon::now()->subDays(365)->timestamp;
+        $temp_data = Location::factory()->count(count($locations))->make()->toArray();
+        $process = Process::allocate(5);
+
         foreach ($locations as $idx => $location) {
-            $client = Client::whereName($location['client'])->first();
+            $client = $clients[$location['client']] ?? $clients[$location['client']] = Client::whereName($location['client'])->first();
 
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
 
-            $min_opened_at = Carbon::now()->subDays(3650)->timestamp;
-            $max_opened_at = Carbon::now()->subDays(365)->timestamp;
+
             $val_opened_at = rand($min_opened_at, $max_opened_at);
             $opened_at = date('Y-m-d H:i:s', $val_opened_at);
             $location['opened_at'] = $opened_at;
 
-            $date_opened_at = \DateTime::createFromFormat("Y-m-d H:i:s", $opened_at);
-            $min_presale_opened_at = Carbon::create($date_opened_at->format("Y"), $date_opened_at->format("m"), $date_opened_at->format("d"))->timestamp;
+            $date_opened_at = \DateTime::createFromFormat('Y-m-d H:i:s', $opened_at);
+            $min_presale_opened_at = Carbon::create($date_opened_at->format('Y'), $date_opened_at->format('m'), $date_opened_at->format('d'))->timestamp;
             $val_presale_opened_at = rand($min_presale_opened_at, $max_opened_at);
             $presale_opened_at = date('Y-m-d H:i:s', $val_presale_opened_at);
             $location['presale_opened_at'] = $presale_opened_at;
 
-            $min = Carbon::now()->subDays(365)->timestamp;
             $max = Carbon::now()->timestamp;
             $val = rand($min, $max);
             $presale_started_at = date('Y-m-d H:i:s', $val);
             $location['presale_started_at'] = $presale_started_at;
 
             unset($location['client']);
-//            $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
-//            $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
-
-            $temp_data = Location::factory()
-                ->count(1)
-                ->make()[0];
-            $finalData = array_merge($temp_data->toArray(), $location);
+            $finalData = array_merge($temp_data[$idx], $location);
             $finalData['shouldCreateTeam'] = true;
 
-//            if (is_null($loc_record)) {
-            VarDumper::dump("Adding {$location['name']}");
+            echo("Adding {$location['name']}\n");
             CreateLocation::run($finalData);
-//            } else {
-//                VarDumper::dump("Skipping {$location['name']}!");
-//            }
         }
 
         if (! App::environment(['production', 'staging']) && ! env('RAPID_SEED', false)) {
+            $trufit_client_id = Client::whereName('TruFit Athletic Clubs')->first()->id;
             ///now do trufit csv import
             VarDumper::dump("Adding TruFit Locations from CSV");
             $key = 'tmp_data/trufit-clubs';
-            $csv = file_get_contents(realpath(__DIR__."/../../../database/data/trufit-clubs.csv"));
-            Storage::disk('s3')->put($key, $csv);
-            $file = Storage::disk('s3')->get($key);
 
-            ImportLocations::run([
-                [
-                    'key' => $key,
-                    'extension' => 'csv',
-                    'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
-                ],
-            ]);
+            $process->queue([self::class, 'uploadToS3'], $key, $trufit_client_id);
         }
+
+        $process->run();
+    }
+
+    public static function uploadToS3(string $key, string $trufit_client_id)
+    {
+        $csv = file_get_contents(realpath(__DIR__."/../../../database/data/trufit-clubs.csv"));
+        Storage::disk('s3')->put($key, $csv);
+        Storage::disk('s3')->get($key);
+
+        ImportLocations::run([
+            [
+                'key' => $key,
+                'extension' => 'csv',
+                'client_id' => $trufit_client_id,
+            ],
+        ]);
     }
 }

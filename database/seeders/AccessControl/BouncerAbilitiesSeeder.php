@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\AccessControl;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Roles\Role;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
+use App\Services\Process;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\BouncerFacade as Bouncer;
-use Symfony\Component\VarDumper\VarDumper;
 
 class BouncerAbilitiesSeeder extends Seeder
 {
@@ -21,156 +23,354 @@ class BouncerAbilitiesSeeder extends Seeder
     {
         /** Admin */
         Bouncer::allow('Admin')->everything(); // I mean....right?
-        $crud_models = collect([
-            'users', 'locations', 'endusers', 'lead-statuses', 'lead-sources',
-            'files', 'teams', 'tasks', 'calendar', 'roles', 'access_tokens', 'departments',
-            'positions', 'email-templates', 'sms-templates', 'scheduled-campaigns', 'drip-campaigns',
-            'reminders', 'notes', 'folders', 'searches', 'dynamic-reports', 'call-templates', 'conversation', 'chat', 'customers',
-        ]);
-        $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
+        $crud_models = [
+            'users',
+            'locations',
+            'endusers',
+            'lead-statuses',
+            'lead-sources',
+            'files',
+            'teams',
+            'tasks',
+            'calendar',
+            'roles',
+            'access_tokens',
+            'departments',
+            'positions',
+            'email-templates',
+            'sms-templates',
+            'scheduled-campaigns',
+            'drip-campaigns',
+            'reminders',
+            'notes',
+            'folders',
+            'searches',
+            'dynamic-reports',
+            'call-templates',
+            'conversation',
+            'chat',
+            'customers',
+        ];
+        $operations  = ['create', 'read', 'update', 'trash', 'restore', 'delete'];
 
         // Create the Full Unrestricted Abilities
-        $crud_models->each(function ($crud_model) use ($operations) {
-            $operations->each(function ($operation) use ($crud_model) {
-                $entity = Role::getEntityFromGroup($crud_model);
-                $title = ucwords("$operation $crud_model");
-                Bouncer::ability()->firstOrCreate([
-                    'name' => "$crud_model.$operation",
-                    'title' => $title,
-                    'entity_type' => $entity,
-                ]);
-            });
-        });
+
+        $bouncers = [];
+        foreach ($crud_models as $crud_model) {
+            foreach ($operations as $operation) {
+                $bouncers[] = [
+                    'name'        => "{$crud_model}.{$operation}",
+                    'title'       => ucwords("{$operation} {$crud_model}"),
+                    'entity_type' => Role::getEntityFromGroup($crud_model),
+                ];
+            }
+        }
+
+        Bouncer::ability()->upsert($bouncers, ['name']);
 
         // Create user impersonation ability. It only applies to users.
         Bouncer::ability()->firstOrCreate([
-            'name' => "users.impersonate",
-            'title' => 'Impersonate Users',
+            'name'        => 'users.impersonate',
+            'title'       => 'Impersonate Users',
             'entity_type' => User::class,
         ]);
 
+        $process = Process::allocate(5);
         $clients = Client::all();
+
+        $impersonate           = ['users'];
+        $account_owner_read    = [
+            'users',
+            'locations',
+            'endusers',
+            'lead-statuses',
+            'lead-sources',
+            'files',
+            'teams',
+            'calendar',
+            'roles',
+            'classifications',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'email-templates',
+            'sms-templates',
+            'call-templates',
+            'departments',
+            'positions',
+            'notes',
+            'folders',
+            'dynamic-reports',
+            'searches',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $account_owner_edit    = [
+            'users',
+            'locations',
+            'endusers',
+            'lead-statuses',
+            'lead-sources',
+            'files',
+            'teams',
+            'calendar',
+            'roles',
+            'classifications',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'email-templates',
+            'sms-templates',
+            'call-templates',
+            'departments',
+            'positions',
+            'notes',
+            'folders',
+            'dynamic-reports',
+            'searches',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $regional_admin_read   = [
+            'users',
+            'locations',
+            'endusers',
+            'files',
+            'teams',
+            'calendar',
+            'roles',
+            'classifications',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'email-templates',
+            'sms-templates',
+            'searches',
+            'folders',
+            'call-templates',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $regional_admin_edit   = [
+            'users',
+            'locations',
+            'endusers',
+            'files',
+            'teams',
+            'calendar',
+            'roles',
+            'classifications',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'email-templates',
+            'sms-templates',
+            'folders',
+            'call-templates',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $location_manager_read = [
+            'users',
+            'locations',
+            'endusers',
+            'teams',
+            'tasks',
+            'calendar',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'positions',
+            'departments',
+            'reminders',
+            'searches',
+            'email-templates',
+            'sms-templates',
+            'folders',
+            'files',
+            'call-templates',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $location_manager_edit = [
+            'users',
+            'endusers',
+            'teams',
+            'tasks',
+            'calendar',
+            'access_tokens',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'positions',
+            'departments',
+            'reminders',
+            'folders',
+            'files',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $sale_rep_read         = [
+            'users',
+            'locations',
+            'endusers',
+            'teams',
+            'tasks',
+            'calendar',
+            'drip-campaigns',
+            'scheduled-campaigns',
+            'reminders',
+            'folders',
+            'searches',
+            'files',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $sale_rep_edit         = [
+            'endusers',
+            'tasks',
+            'calendar',
+            'reminders',
+            'files',
+            'folders',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $employee_read         = [
+            'users',
+            'locations',
+            'endusers',
+            'teams',
+            'tasks',
+            'calendar',
+            'reminders',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $employee_edit         = [
+            'endusers',
+            'tasks',
+            'chat',
+            'customers',
+            'leads',
+            'members',
+            'employees',
+        ];
+        $contact_user          = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
+
+        $read_callback        = [self::class, 'allowReadInGroup'];
+        $edit_callback        = [self::class, 'allowEditInGroup'];
+        $impersonate_callback = [self::class, 'allowImpersonationInGroup'];
+
         foreach ($clients as $client) {
-            Bouncer::scope()->to($client->id);
-            VarDumper::dump("Bouncer scoping to $client->name");
-
             /** Account Owner */
-            $this->allowReadInGroup([
-                'users', 'locations', 'endusers', 'lead-statuses', 'lead-sources', 'files', 'teams',
-                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
-                'email-templates', 'sms-templates', 'call-templates', 'departments', 'positions', 'notes', 'folders',
-                'dynamic-reports', 'searches', 'chat', 'customers', 'leads', 'members', 'employees',
-            ], 'Account Owner', $client);
-            $this->allowEditInGroup([
-                'users', 'locations', 'endusers', 'lead-statuses', 'lead-sources', 'files', 'teams',
-                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
-                'email-templates', 'sms-templates', 'call-templates', 'departments', 'positions', 'notes', 'folders',
-                'dynamic-reports', 'searches', 'chat', 'customers', 'leads', 'members', 'employees',
-            ], 'Account Owner', $client);
+            $process->queue($read_callback, $account_owner_read, 'Account Owner', $client->id);
+            $process->queue($edit_callback, $account_owner_edit, 'Account Owner', $client->id);
 
-            $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
+            $process->queue($impersonate_callback, $impersonate, 'Account Owner', $client->id);
 
             /** Regional Admin */
-            $this->allowReadInGroup(
-                ['users', 'locations', 'endusers', 'files', 'teams', 'calendar', 'roles',
-                    'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'email-templates',
-                    'sms-templates', 'searches', 'folders', 'call-templates', 'chat', 'customers', 'leads', 'members', 'employees'],
-                'Regional Admin',
-                $client
-            );
-            $this->allowEditInGroup(
-                ['users', 'locations', 'endusers', 'files', 'teams', 'calendar', 'roles',
-                    'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'email-templates',
-                    'sms-templates', 'folders', 'call-templates', 'chat', 'customers', 'leads', 'members', 'employees',],
-                'Regional Admin',
-                $client
-            );
-            $this->allowImpersonationInGroup(['users'], 'Regional Admin', $client);
+            $process->queue($read_callback, $regional_admin_read, 'Regional Admin', $client->id);
+            $process->queue($edit_callback, $regional_admin_edit, 'Regional Admin', $client->id);
+            $process->queue($impersonate_callback, $impersonate, 'Regional Admin', $client->id);
 
             /** Location Manager */
-            $this->allowReadInGroup(['users', 'locations', 'endusers', 'teams', 'tasks', 'calendar', 'access_tokens',
-                'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders', 'searches', 'email-templates',
-                'sms-templates', 'folders', 'files', 'call-templates', 'chat', 'customers', 'leads', 'members', 'employees',], 'Location Manager', $client);
-            $this->allowEditInGroup(['users', 'endusers', 'teams', 'tasks', 'calendar', 'access_tokens', 'drip-campaigns',
-                'scheduled-campaigns', 'positions', 'departments', 'reminders', 'folders', 'files', 'chat', 'customers', 'leads', 'members', 'employees',], 'Location Manager', $client);
-            $this->allowImpersonationInGroup(['users'], 'Location Manager', $client);
+            $process->queue($read_callback, $location_manager_read, 'Location Manager', $client->id);
+            $process->queue($edit_callback, $location_manager_edit, 'Location Manager', $client->id);
+            $process->queue($impersonate_callback, $impersonate, 'Location Manager', $client->id);
 
             /** Sales Rep */
-            $this->allowReadInGroup(['users', 'locations', 'endusers', 'teams', 'tasks', 'calendar', 'drip-campaigns',
-                'scheduled-campaigns', 'reminders', 'folders', 'searches', 'files', 'chat', 'customers', 'leads', 'members', 'employees',
-            ], 'Sales Rep', $client);
-            $this->allowEditInGroup(['endusers', 'tasks', 'calendar', 'reminders', 'files', 'folders', 'chat', 'customers', 'leads', 'members', 'employees',], 'Sales Rep', $client);
+            $process->queue($read_callback, $sale_rep_read, 'Sales Rep', $client->id);
+            $process->queue($edit_callback, $sale_rep_edit, 'Sales Rep', $client->id);
 
             /** Employee */
-            $this->allowReadInGroup(['users', 'locations', 'endusers', 'teams', 'tasks', 'calendar', 'reminders', 'chat', 'customers', 'leads', 'members', 'employees',], 'Employee', $client);
-            $this->allowEditInGroup(['endusers', 'tasks', 'chat', 'customers', 'leads', 'members', 'employees',], 'Employee', $client);
+            $process->queue($read_callback, $employee_read, 'Employee', $client->id);
+            $process->queue($edit_callback, $employee_edit, 'Employee', $client->id);
 
-            $roles_allowed_to_contact_endusers = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
-            foreach ($roles_allowed_to_contact_endusers as $role) {
-                VarDumper::dump("Allowing $role to contact endusers for teams");
-                Bouncer::allow($role)->to('endusers.contact', EndUser::class);
-            }
-            Bouncer::allow('Account Owner')->to('manage-client-settings');
+            $process->queue([self::class, 'contactUser'], $contact_user, $client->id);
         }
+
+        $process->run();
         Bouncer::scope()->to(null);
     }
 
-    protected function allowReadInGroup($group, $role, $client)
+    public static function contactUser(array $groups, string $client_id): void
     {
-        VarDumper::dump("Allowing $role read access");
-        // Convert the $group array into a Collection
-        $groups = collect($group);
+        Bouncer::scope()->to($client_id);
 
-        // Collection version of foreach item group and use the role
-        $groups->each(function ($group) use ($role, $client) {
+        foreach ($groups as $role) {
+            echo("Allowing $role to contact endusers for teams\n");
+            Bouncer::allow($role)->to('endusers.contact', EndUser::class);
+        }
+        Bouncer::allow('Account Owner')->to('manage-client-settings');
+    }
+
+    public static function allowReadInGroup(array $groups, string $role, string $client_id): void
+    {
+        Bouncer::scope()->to($client_id);
+        echo("Allowing $role read access\n");
+        foreach ($groups as $group) {
             // Create and get the abilities for all the groups
             $entity = Role::getEntityFromGroup($group);
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if ($entity) {
-                Bouncer::allow($role)->to("$group.read", $entity);
+                Bouncer::allow($role)->to("{$group}.read", $entity);
             }
-        });
+        }
     }
 
-    protected function allowEditInGroup($group, $role, $client)
+    public static function allowEditInGroup(array $groups, string $role, string $client_id): void
     {
-        VarDumper::dump("Allowing $role write access");
+        Bouncer::scope()->to($client_id);
+        echo("Allowing $role write access\n");
 
         // Convert the $group array into a Collection
-        $groups = collect($group);
-
-        // Collection version of foreach item group and use the role
-        $groups->each(function ($group) use ($role, $client) {
+        foreach ($groups as $group) {
             $entity = Role::getEntityFromGroup($group);
-
             // Allow the role to inherit the not Ability in full, but scoped to the team
-            if ($entity) {
-                Bouncer::allow($role)->to("$group.create", $entity);
-                Bouncer::allow($role)->to("$group.update", $entity);
-                Bouncer::allow($role)->to("$group.trash", $entity);
-                Bouncer::allow($role)->to("$group.restore", $entity);
-                Bouncer::allow($role)->to("$group.delete", $entity);
+            if ($entity !== null) {
+                Bouncer::allow($role)->to("{$group}.create", $entity);
+                Bouncer::allow($role)->to("{$group}.update", $entity);
+                Bouncer::allow($role)->to("{$group}.trash", $entity);
+                Bouncer::allow($role)->to("{$group}.restore", $entity);
+                Bouncer::allow($role)->to("{$group}.delete", $entity);
             }
-        });
+        }
     }
 
-    protected function allowImpersonationInGroup($group, $role, $client)
+    public static function allowImpersonationInGroup(array $groups, string $role, string $client_id): void
     {
-        VarDumper::dump("Allowing $role impersonate access");
+        Bouncer::scope()->to($client_id);
+        echo("Allowing $role impersonate access\n");
 
-        $groups = collect($group);
-        $groups->each(function ($group) use ($role, $client) {
-            switch ($group) {
-                case 'users':
-                default:
-                    $entity = User::class;
-
-                    break;
-            }
-            // Allow the role to inherit the not Ability in full, but scoped to the team
-            if ($entity) {
-                Bouncer::allow($role)->to("$group.impersonate", $entity);
-            }
-        });
+        foreach ($groups as $group) {
+            Bouncer::allow($role)->to("{$group}.impersonate", User::class);
+        }
     }
 }

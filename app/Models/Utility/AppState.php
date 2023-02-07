@@ -2,7 +2,7 @@
 
 namespace App\Models\Utility;
 
-use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -11,7 +11,7 @@ class AppState extends Model
 {
     use Notifiable;
     use SoftDeletes;
-    use Uuid;
+    use HasUuids;
 
     protected $primaryKey = 'id';
 

@@ -16,33 +16,30 @@ class ClientSeeder extends Seeder
      */
     public function run()
     {
-        if (env('RAPID_SEED') === true) {
-            $clients = [
-                'The Kalamazoo' => 1,
-                ];
+        if ($rapid_seed = (env('RAPID_SEED', false) === true)) {
+            $clients = ['The Kalamazoo' => 1];
         } else {
             $clients = [
-                'Stencils' => 1,
-                'The Z' => 1,
+                'Stencils'           => 1,
+                'The Z'              => 1,
                 'Sci-Fi Purple Gyms' => 1,
-                'FitnessTruth' => 1,
+                'FitnessTruth'       => 1,
             ];
         }
 
 
-        if (! App::environment(['production', 'staging']) && ! env('RAPID_SEED', false)) {
+        if (! App::environment(['production', 'staging']) && ! $rapid_seed) {
             $clients['TruFit Athletic Clubs'] = 1;
         }
 
 
+        $services = array_column(ClientServiceEnum::cases(), 'name');
         foreach ($clients as $name => $active) {
-            $client = CreateClient::run(
-                [
-                    'name' => $name,
-                    'active' => $active,
-                    'services' => collect(ClientServiceEnum::cases())->map(fn ($e) => $e->name),
-                ]
-            );
+            CreateClient::run([
+                'name'     => $name,
+                'active'   => $active,
+                'services' => $services,
+            ]);
         }
     }
 }

@@ -26,17 +26,4 @@ class GatewayProviderType extends Model
     protected $casts = [
         'misc' => 'array',
     ];
-
-    public static function getAllTypesAsArray()
-    {
-        $results = [];
-
-        $records = self::whereActive(1)->get();
-
-        foreach ($records as $record) {
-            $results[$record->name] = $record->toArray();
-        }
-
-        return $results;
-    }
 }

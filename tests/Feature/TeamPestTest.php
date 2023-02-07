@@ -456,7 +456,7 @@ it('should add member to team using AddTeamMember action', function () {
     //create new user
     $user = UserUtility::createUserWithoutTeam();
 
-    AddTeamMember::run($team, $user);
+    AddTeamMember::run($team->id, $user->id);
     $teamuser = TeamUser::where('team_id', $team->id)->first();
 
     $this->assertTrue($teamuser->user_id == $user->id);

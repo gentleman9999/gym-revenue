@@ -23,11 +23,6 @@ class GetUsersToImpersonate
         __invoke as protected invokeFromLaravelActions;
     }
 
-    public function __invoke()
-    {
-        // ...
-    }
-
     public function rules(): array
     {
         return [

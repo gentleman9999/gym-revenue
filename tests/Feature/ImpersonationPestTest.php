@@ -28,7 +28,7 @@ it('should should return status of 200 on route impersonation/users', function (
 
 it('should return a list of users that can be impersonated', function () {
     /** @var Role $role */
-    $role = Role::factory()->create();
+    $role = UserUtility::createRole(['name' => 'Admin']);
     [$user, $user1, $user2, $user3] = UserUtility::createUserWithTeam(4);
 
     /** Admin is allowed to create*/
