@@ -12,13 +12,13 @@ class PrepareLocalDevEnvironment
     public string $commandSignature = 'prepare:local-dev-env';
     public string $commandDescription = 'Run scripts to prepare local dev environment';
 
-
     public function asCommand(Command $command)
     {
         $env = getenv('APP_ENV');
         //exit early if not local
-        if($env !== 'local') {
+        if ($env !== 'local') {
             $command->info('[PrepareLocalDevEnvironment] Exiting, not in local app environment');
+
             return;
         }
         $command->info('[PrepareLocalDevEnvironment] Calling lighthouse:ide-helper');

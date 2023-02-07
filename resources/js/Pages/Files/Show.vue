@@ -29,7 +29,7 @@
         </div>
         <file-contents
             :folders="{ ...(data?.folder?.id ? [] : data?.folders) }"
-            :files="{ ...( data?.folder?.files || data?.files)}"
+            :files="{ ...(data?.folder?.files || data?.files) }"
             :displayMode="displayMode"
             :handleRename="handleRename"
             :handlePermissions="handlePermissions"
@@ -78,7 +78,7 @@
         />
     </daisy-modal>
     <daisy-modal ref="uploadModal" id="uploadModal">
-        <Upload/>
+        <Upload />
     </daisy-modal>
 </template>
 

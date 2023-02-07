@@ -23,14 +23,14 @@ final class CalendarEvents
         $client_id = request()->user()->client_id;
         $arg_param_exists = array_key_exists('param', $args);
 
-        if ( $arg_param_exists && ! key_exists('start', $args['param'])) {
+        if ($arg_param_exists && ! key_exists('start', $args['param'])) {
             $args['param']['start'] = date('Y-m-d H:i:s', strtotime('-1 week monday 00:00:00'));
             $args['param']['end'] = date('Y-m-d H:i:s', strtotime('sunday 23:59:59'));
         }
 
         $events = CalendarEvent::whereClientId($client_id)
             ->with('type', 'attendees', 'files')
-            ->when($arg_param_exists,  function($query) use ($args) {
+            ->when($arg_param_exists,  function ($query) use ($args) {
                 $query->filter($args['param']);
             })
             ->get();

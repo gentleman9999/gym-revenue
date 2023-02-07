@@ -350,9 +350,9 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        console.log('gym-revenue-crud', {modelKey});
+        console.log("gym-revenue-crud", { modelKey });
         const foundQuery = queries[modelKey] ?? false;
-        if(!foundQuery) {
+        if (!foundQuery) {
             const error = `No query in queries.js found for model-key: '${modelKey}'`;
             console.error(error);
             throw new Error(error);
@@ -365,21 +365,21 @@ export default defineComponent({
             }
         );
         const isLoading = computed(() => {
-            console.log({result});
-            if(!result?.value){
+            console.log({ result });
+            if (!result?.value) {
                 return true;
             }
             let key = modelKey;
-            if(result.value[key + 's']){
-                key = key + 's';
+            if (result.value[key + "s"]) {
+                key = key + "s";
             }
-            console.log({key, result: !!result?.value[key]?.data});
+            console.log({ key, result: !!result?.value[key]?.data });
             return !result?.value[key]?.data;
         });
         const resource = computed(() => {
             if (result.value && result.value[modelKey + "s"]) {
                 return _.cloneDeep(result.value[modelKey + "s"]);
-            } else if(result.value && result.value[modelKey]){
+            } else if (result.value && result.value[modelKey]) {
                 return _.cloneDeep(result.value[modelKey]);
             } else {
                 return null;

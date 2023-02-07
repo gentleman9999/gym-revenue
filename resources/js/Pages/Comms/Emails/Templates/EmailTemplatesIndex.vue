@@ -61,7 +61,10 @@ import Confirm from "@/Components/Confirm.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faChevronDoubleLeft, faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
+import {
+    faChevronDoubleLeft,
+    faEllipsisH,
+} from "@fortawesome/pro-regular-svg-icons";
 import { faImage } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail.vue";
@@ -71,18 +74,19 @@ import EmailTemplateForm from "./Partials/EmailTemplateForm.vue";
 library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 const props = defineProps({
-        title: {
-            type: String,
-            required: true
-        },
-        filters: {
-            type: Object, required: true
-        },
-        templates: {
-            type: Object, required: true
-        },
-    }
-);
+    title: {
+        type: String,
+        required: true,
+    },
+    filters: {
+        type: Object,
+        required: true,
+    },
+    templates: {
+        type: Object,
+        required: true,
+    },
+});
 
 const confirmTrash = ref(null);
 const handleClickTrash = (id) => {
@@ -96,14 +100,14 @@ const handleConfirmTrash = () => {
 };
 
 const param = ref({
-    page: 1
+    page: 1,
 });
 
 const confirmSend = ref(null);
 const sendVars = () => {
     return {
         templateId: "",
-        templateName: ""
+        templateName: "",
     };
 };
 
@@ -163,18 +167,18 @@ const fields = [
     "created_by_user_id",
     "creator.id",
     "created_at",
-    "updated_at"
+    "updated_at",
 ];
 
 const actions = computed(() => {
     return {
         selfSend: {
             label: "Send You a Test Email",
-            handler: ({ data }) => handleOpenSendModal(data)
+            handler: ({ data }) => handleOpenSendModal(data),
         },
         trash: {
-            handler: ({ data }) => handleClickTrash(data.id)
-        }
+            handler: ({ data }) => handleClickTrash(data.id),
+        },
     };
 });
 </script>

@@ -9,7 +9,6 @@ use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\StatesEnum;
-use App\Rules\Zip;
 use App\Rules\AddressCity;
 use App\Rules\AddressLine;
 use App\Rules\AddressState;

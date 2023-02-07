@@ -140,7 +140,9 @@ export default {
         }
 
         const handleCancel = () => {
-            console.warn('TODO: You need to emite a cancel event, and then close the daisy modal here (Inertia Modal was remove)');
+            console.warn(
+                "TODO: You need to emite a cancel event, and then close the daisy modal here (Inertia Modal was remove)"
+            );
             Inertia.visit(route("mass-comms.call-templates"));
         };
         return { form, buttonText: operation, handleSubmit, handleCancel };

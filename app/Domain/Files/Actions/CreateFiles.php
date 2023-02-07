@@ -12,7 +12,6 @@ use Prologue\Alerts\Facades\Alert;
 
 class CreateFiles extends GymRevAction
 {
-
     /**
      * Get the validation rules that apply to the action.
      *

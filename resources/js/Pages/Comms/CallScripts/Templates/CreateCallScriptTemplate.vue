@@ -23,15 +23,14 @@ import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import CallScriptTemplateForm from "./Partials/CallScriptTemplateForm.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 
-
 const props = defineProps({
     duplicate: {
-        type: Object
-    }
+        type: Object,
+    },
 });
 
 const modalRef = ref(null);
-const closeModal =  () => {
+const closeModal = () => {
     modalRef.value?.close();
-}
+};
 </script>

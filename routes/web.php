@@ -334,6 +334,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-comms')->group(fun
         Route::get('/export', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@export')->name('mass-comms.sms-templates.export');
         Route::get('/{smsTemplate}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@edit')->name('mass-comms.sms-templates.edit');
         Route::post('/', \App\Domain\Templates\SmsTemplates\Actions\CreateSmsTemplate::class)->name('mass-comms.sms-templates.store');
+        Route::post('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\DuplicateSmsTemplate::class)->name('mass-comms.sms-templates.duplicate');
         Route::put('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\UpdateSmsTemplate::class)->name('mass-comms.sms-templates.update');
         Route::delete('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\TrashSmsTemplate::class)->name('mass-comms.sms-templates.trash');
         Route::post('/{smsTemplate}/restore', \App\Domain\Templates\SmsTemplates\Actions\RestoreSmsTemplate::class)->withTrashed()->name('mass-comms.sms-templates.restore');

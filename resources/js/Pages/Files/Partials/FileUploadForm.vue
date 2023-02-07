@@ -123,7 +123,7 @@ const { mutate: createFile } = useMutation(mutations.file.create);
 
 const handleSubmit = async () => {
     try {
-        console.log('file', props.file)
+        console.log("file", props.file);
         uploadProgress.value = 0;
         let response = await Vapor.store(props.file, {
             // visibility: form.isPublic ? 'public-read' : null,

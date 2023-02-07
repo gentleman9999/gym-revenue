@@ -11,10 +11,10 @@
                 :href="route('mass-comms.dashboard')"
             >
                 <span
-                ><font-awesome-icon
-                    :icon="['far', 'chevron-double-left']"
-                    size="sm"
-                />
+                    ><font-awesome-icon
+                        :icon="['far', 'chevron-double-left']"
+                        size="sm"
+                    />
                     Back</span
                 >
             </inertia-link>
@@ -60,33 +60,38 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import SmsTemplateForm from "./Partials/SmsTemplateForm.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faChevronDoubleLeft, faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
+import {
+    faChevronDoubleLeft,
+    faEllipsisH,
+} from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faChevronDoubleLeft, faEllipsisH);
 
 const props = defineProps({
-        title: {
-            type: String,
-            required: true
-        },
-        filters: {
-            type: Object, required: true
-        },
-        templates: {
-            type: Object, required: true
-        }
-    }
-);
+    title: {
+        type: String,
+        required: true,
+    },
+    filters: {
+        type: Object,
+        required: true,
+    },
+    templates: {
+        type: Object,
+        required: true,
+    },
+});
 
 const confirmTrash = ref(null);
 const handleClickTrash = (id) => {
     confirmTrash.value = id;
 };
+const handleClickDuplicate = (id) => {
+    Inertia.post(route("mass-comms.sms-templates.duplicate", id));
+};
 const handleConfirmTrash = () => {
-    Inertia.delete(
-        route("mass-comms.sms-templates.trash", confirmTrash.value)
-    );
+    Inertia.delete(route("mass-comms.sms-templates.trash", confirmTrash.value));
     confirmTrash.value = null;
 };
 
@@ -94,12 +99,12 @@ const confirmSend = ref(null);
 const sendVars = () => {
     return {
         templateId: "",
-        templateName: ""
+        templateName: "",
     };
 };
 
 const param = ref({
-    page: 1
+    page: 1,
 });
 
 const getSmsTemplates = (data) => {
@@ -131,17 +136,17 @@ const fields = computed(() => {
                 getProps: ({ data }) =>
                     !!data.active
                         ? { text: "Active", class: "badge-success" }
-                        : { text: "Draft", class: "badge-warning" }
+                        : { text: "Draft", class: "badge-warning" },
             },
-            export: (active) => (active ? "Active" : "Draft")
+            export: (active) => (active ? "Active" : "Draft"),
         },
         { name: "type", transform: () => "Regular" },
         { name: "updated_at", label: "date updated" },
         {
             name: "creator.name",
             label: "updated by",
-            transform: (creator) => creator || "Auto Generated"
-        }
+            transform: (creator) => creator || "Auto Generated",
+        },
     ];
 });
 
@@ -149,11 +154,11 @@ const actions = computed(() => {
     return {
         selfSend: {
             label: "Send You a Test Msg",
-            handler: ({ data }) => handleOpenSendModal(data)
+            handler: ({ data }) => handleOpenSendModal(data),
         },
         trash: {
-            handler: ({ data }) => handleClickTrash(data.id)
-        }
+            handler: ({ data }) => handleClickTrash(data.id),
+        },
     };
 });
 </script>

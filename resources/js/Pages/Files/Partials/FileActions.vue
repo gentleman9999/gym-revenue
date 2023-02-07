@@ -1,12 +1,6 @@
 <template>
     <div class="flex flex-row space-x-4">
-        <Button
-            primary
-            size="sm"
-            @click="handleFileUpload"
-        >
-            Upload
-        </Button>
+        <Button primary size="sm" @click="handleFileUpload"> Upload </Button>
         <Button primary size="sm" @click="addFolder" v-if="!folderName">
             New Folder
         </Button>
@@ -27,10 +21,10 @@ const props = defineProps({
     refetch: {
         type: Function,
     },
-    uploadModal:{
+    uploadModal: {
         type: Object,
         required: true,
-    }
+    },
 });
 
 const { mutate: createFolder } = useMutation(mutations.folder.create);
@@ -45,9 +39,9 @@ const addFolder = async () => {
 };
 
 const handleFileUpload = () => {
-    console.log({uploadModal: props.uploadModal});
+    console.log({ uploadModal: props.uploadModal });
     props.uploadModal.open();
 
     // Inertia.visitInModal(route('files.upload'))
-}
+};
 </script>

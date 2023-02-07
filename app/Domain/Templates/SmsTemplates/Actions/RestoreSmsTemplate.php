@@ -2,7 +2,7 @@
 
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
-use App\Domain\Campaigns\DripCampaigns\SmsTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Templates\SmsTemplates\SmsTemplateAggregate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

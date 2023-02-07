@@ -1,5 +1,5 @@
 <template>
-    <LayoutHeader title="File Manager"/>
+    <LayoutHeader title="File Manager" />
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <section class="col-span-6 overflow-hidden">
