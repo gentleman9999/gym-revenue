@@ -58,7 +58,7 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
 
         if (isset($payload['password'])) {
             $payload['password'] = Hash::make($payload['password']);
-        } elseif ($payload['password_hashed']) {
+        } elseif (isset($payload['password_hashed'])) {
             $payload['password'] = $payload['password_hashed'];
             unset($payload['password_hashed']);
         }
