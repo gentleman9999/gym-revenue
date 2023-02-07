@@ -19,10 +19,10 @@ class SMSTemplateSeeder extends Seeder
         // For Cape & Bay
         echo('Default sms template for Cape & Bay' . PHP_EOL);
         CreateSmsTemplate::run([
-            'name'               => "Baby's First SMS Template (;",
-            'active'             => 1,
+            'name' => "Baby's First SMS Template (;",
+            'active' => 1,
             'created_by_user_id' => 'auto',
-            'markup'             => $default_markup,
+            'markup' => $default_markup,
         ]);
 
         // For each client
@@ -30,11 +30,11 @@ class SMSTemplateSeeder extends Seeder
             echo("Default SMS template for {$client->name}\n");
             // Create an email template record
             CreateSmsTemplate::run([
-                'name'               => "{$client->name}'s First SMS Template (;",
-                'client_id'          => $client->id,
-                'active'             => 1,
+                'name' => "{$client->name}'s First SMS Template (;",
+                'client_id' => $client->id,
+                'active' => 1,
                 'created_by_user_id' => 'auto',
-                'markup'             => $default_markup,
+                'markup' => $default_markup,
             ]);
         }
     }

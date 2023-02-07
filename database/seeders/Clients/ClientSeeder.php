@@ -20,10 +20,10 @@ class ClientSeeder extends Seeder
             $clients = ['The Kalamazoo' => 1];
         } else {
             $clients = [
-                'Stencils'           => 1,
-                'The Z'              => 1,
+                'Stencils' => 1,
+                'The Z' => 1,
                 'Sci-Fi Purple Gyms' => 1,
-                'FitnessTruth'       => 1,
+                'FitnessTruth' => 1,
             ];
         }
 
@@ -36,8 +36,8 @@ class ClientSeeder extends Seeder
         $services = array_column(ClientServiceEnum::cases(), 'name');
         foreach ($clients as $name => $active) {
             CreateClient::run([
-                'name'     => $name,
-                'active'   => $active,
+                'name' => $name,
+                'active' => $active,
                 'services' => $services,
             ]);
         }

@@ -50,11 +50,11 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
 
     public function handle(array $payload): User
     {
-        $payload['user_type']          ??= UserTypesEnum::LEAD;
+        $payload['user_type'] ??= UserTypesEnum::LEAD;
         $payload['unsubscribed_email'] ??= false;
-        $payload['unsubscribed_sms']   ??= false;
-        $payload['is_previous']        ??= false;
-        $payload['client_id']          ??= CurrentInfoRetriever::getCurrentClientID();
+        $payload['unsubscribed_sms'] ??= false;
+        $payload['is_previous'] ??= false;
+        $payload['client_id'] ??= CurrentInfoRetriever::getCurrentClientID();
 
         if (isset($payload['password'])) {
             $payload['password'] = Hash::make($payload['password']);
@@ -183,9 +183,9 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
     public function asCommand(Command $command): void
     {
         $this->command = $command;
-        $payload       = $this->constructPayloadForRunningCommand();
-        $role          = $payload['rold_id'] ?? 'enduser';
-        $user_type     = $this->getUserTypeFromPayload(null, $payload)->value;
+        $payload = $this->constructPayloadForRunningCommand();
+        $role = $payload['rold_id'] ?? 'enduser';
+        $user_type = $this->getUserTypeFromPayload(null, $payload)->value;
 
         $this->command->warn("Creating new {$role} {$payload['first_name']}
             @{$payload['email']} for client_id {$payload['client_id']} as {$user_type}");
@@ -200,13 +200,13 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
      */
     private function constructPayloadForRunningCommand(): array
     {
-        $payload               = ['password' => 'Hello123!'];
+        $payload = ['password' => 'Hello123!'];
         $payload['first_name'] = $this->getFirstname();
-        $payload['client_id']  = $this->getClient($payload['first_name']);
-        $payload['email']      = $this->getEmail($payload['first_name']);
-        $payload['last_name']  = $this->getLastname();
-        $payload['home_club']  = $this->getHomeLocation($payload['first_name'], $payload['client_id']);
-        $payload['user_type']  = $this->getUserType();
+        $payload['client_id'] = $this->getClient($payload['first_name']);
+        $payload['email'] = $this->getEmail($payload['first_name']);
+        $payload['last_name'] = $this->getLastname();
+        $payload['home_club'] = $this->getHomeLocation($payload['first_name'], $payload['client_id']);
+        $payload['user_type'] = $this->getUserType();
 
         if ($payload['user_type'] === UserTypesEnum::EMPLOYEE) {
             $payload['role_id'] = $this->getRole($payload['first_name'], $payload['client_id']);
@@ -264,12 +264,12 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
             }
         }
 
-        $clients    = ['Cape & Bay'];
+        $clients = ['Cape & Bay'];
         $client_ids = [];
         $db_clients = Client::whereActive(1)->get();
 
         foreach ($db_clients as $idx => $client) {
-            $clients[$idx + 1]    = $client->name;
+            $clients[$idx + 1] = $client->name;
             $client_ids[$idx + 1] = $client->id;
         }
 
@@ -299,7 +299,7 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
             foreach ($roles as $idx => $role) {
                 $this->command->warn("[{$idx}] {$role}");
             }
-            $role_choice   = $this->command->ask("Which Role should {$user_name} be assigned?");
+            $role_choice = $this->command->ask("Which Role should {$user_name} be assigned?");
             $selected_role = Role::whereScope($client_choice)->whereName($roles[$role_choice])->first()->id;
         }
 
@@ -312,9 +312,9 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
 
         if (is_null($selected_home_location) && $client_choice) {
             $all_locations = Location::get(['name', 'gymrevenue_id']);
-            $locations     = $all_locations->pluck('name')->toArray();
+            $locations = $all_locations->pluck('name')->toArray();
 
-            $location_choice        = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);
+            $location_choice = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);
             $selected_home_location = $all_locations->keyBy('name')[$location_choice]->gymrevenue_id;
         }
 
@@ -323,7 +323,7 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
 
     private function getUserType(): string
     {
-        $types     = array_column(UserTypesEnum::cases(), 'value');
+        $types = array_column(UserTypesEnum::cases(), 'value');
         $user_type = $this->command->option('type');
         if (! in_array($user_type, $types)) {
             return UserTypesEnum::EMPLOYEE;

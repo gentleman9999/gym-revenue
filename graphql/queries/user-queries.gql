@@ -36,7 +36,7 @@ extend type Query {
         orderBy: [OrderByClause!] @orderBy
     ): [LeadType!]! @all
 
-    lead_sources: [LeadSource!]! @all
+    entry_sources: [EntrySource!]! @all
 
     isClientUser(
         "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."

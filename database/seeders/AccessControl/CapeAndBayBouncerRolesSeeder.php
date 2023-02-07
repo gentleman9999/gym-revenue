@@ -20,7 +20,7 @@ class CapeAndBayBouncerRolesSeeder extends Seeder
         $roles = [];
         foreach (SecurityGroupEnum::cases() as $role) {
             $roles[] = [
-                'name'  => $name = mb_convert_case(str_replace('_', ' ', $role->name), MB_CASE_TITLE),
+                'name' => $name = mb_convert_case(str_replace('_', ' ', $role->name), MB_CASE_TITLE),
                 'group' => $role->value,
                 'title' => $name,
             ];

@@ -20,7 +20,7 @@ class LeadStatusProjector extends Projector
 
     public function onLeadStatusUpdated(LeadStatusUpdated $event): void
     {
-        $leadSource = LeadStatus::findOrFail($event->aggregateRootUuid())->writeable();
-        $leadSource->updateOrFail($event->payload);
+        $lead_status = LeadStatus::findOrFail($event->aggregateRootUuid())->writeable();
+        $lead_status->updateOrFail($event->payload);
     }
 }

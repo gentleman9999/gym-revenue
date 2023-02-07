@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use function Amp\call;
+
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\Environment;
 use Amp\Parallel\Worker\Pool;
 use Amp\Parallel\Worker\Task;
 use Amp\Parallel\Worker\TaskFailureError;
 use Amp\Promise;
+
+use function Amp\Promise\any;
+use function Amp\Promise\wait;
+
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\Log;
 use Throwable;
-use function Amp\call;
-use function Amp\Promise\any;
-use function Amp\Promise\wait;
 
 /**
  * @method self queue(callable $callable, ...$args)
@@ -29,11 +32,13 @@ class Process implements Task
      * @param callable $callable Callable will be serialized.
      * @param mixed    $args Arguments to pass to the function. Must be serializable.
      */
-    public function __construct(private $callable, private array $args = []) {}
+    public function __construct(private $callable, private array $args = [])
+    {
+    }
 
     public function run(Environment $environment)
     {
-        if (!$environment->exists(__CLASS__)) {
+        if (! $environment->exists(__CLASS__)) {
             $app = require_once __DIR__ . '/../../bootstrap/app.php';
             $app->make(Kernel::class)->bootstrap();
             $environment->set(__CLASS__, true);
@@ -47,12 +52,13 @@ class Process implements Task
      */
     public static function allocate(int $max_workers_count = Pool::DEFAULT_MAX_SIZE): object
     {
-        return new class($max_workers_count) {
+        return new class ($max_workers_count) {
             /** @var Promise[] */
             private array $promises = [];
             private DefaultPool $pool;
 
-            public function __construct(int $max_workers_count) {
+            public function __construct(int $max_workers_count)
+            {
                 $this->pool = new DefaultPool($max_workers_count);
             }
 
@@ -102,7 +108,6 @@ class Process implements Task
                         } else {
                             Log::error($error);
                         }
-
                     }, $exceptions);
                 }
 

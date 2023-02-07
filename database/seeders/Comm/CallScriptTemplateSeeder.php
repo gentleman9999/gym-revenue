@@ -21,11 +21,11 @@ class CallScriptTemplateSeeder extends Seeder
             echo("Default Call Script template for {$client->name}\n");
             // Create an email template record
             CreateCallScriptTemplate::run([
-                'name'      => $client->name . "'s First Call Script Template (;",
+                'name' => $client->name . "'s First Call Script Template (;",
                 'client_id' => $client->id,
-                'active'    => 1,
-                'script'    => $default_markup,
-                'json'      => '',
+                'active' => 1,
+                'script' => $default_markup,
+                'json' => '',
             ]);
         }
     }

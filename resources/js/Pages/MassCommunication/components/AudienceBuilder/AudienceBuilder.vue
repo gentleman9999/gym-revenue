@@ -250,7 +250,7 @@ const setupTypes = () => {
     let filters = resource?.value?.filters;
     if (!filters) return;
 
-    let leadSources = filters?.lead_type_id;
+    let entrySources = filters?.lead_type_id;
     let memberSources = filters?.membership_type_id;
 
     if (filters?.membership_type_id instanceof Array) {

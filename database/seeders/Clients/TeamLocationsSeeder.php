@@ -21,13 +21,13 @@ class TeamLocationsSeeder extends Seeder
                 // The Kalamazoo
                 [
                     'team_id' => Team::fetchTeamIDFromName('Zoo Sales Team'),
-                    'name'    => 'team-location',
-                    'value'   => 'TKH001',
+                    'name' => 'team-location',
+                    'value' => 'TKH001',
                 ],
                 [
                     'team_id' => Team::fetchTeamIDFromName('The Kalamazoo 1 HQ'),
-                    'name'    => 'team-location',
-                    'value'   => 'TKH001',
+                    'name' => 'team-location',
+                    'value' => 'TKH001',
                 ],
             ];
         } else {
@@ -35,48 +35,50 @@ class TeamLocationsSeeder extends Seeder
                 // The Z
                 [
                     'team_id' => Team::fetchTeamIDFromName('Big Island Team'),
-                    'name'    => 'team-location',
-                    'value'   => 'TZ04',
+                    'name' => 'team-location',
+                    'value' => 'TZ04',
                 ],
                 [
                     'team_id' => Team::fetchTeamIDFromName('Oahu Team'),
-                    'name'    => 'team-location',
-                    'value'   => 'TZ01',
+                    'name' => 'team-location',
+                    'value' => 'TZ01',
                 ],
                 [
                     'team_id' => Team::fetchTeamIDFromName('Oahu Team'),
-                    'name'    => 'team-location',
-                    'value'   => 'TZ01',
+                    'name' => 'team-location',
+                    'value' => 'TZ01',
                 ],
                 [
                     'team_id' => Team::fetchTeamIDFromName('Big Island Boating & CrossFit Club'),
-                    'name'    => 'team-location',
-                    'value'   => 'TZ01',
+                    'name' => 'team-location',
+                    'value' => 'TZ01',
                 ],
                 // Stencils
                 [
                     'team_id' => Team::fetchTeamIDFromName('Stencils Portland'),
-                    'name'    => 'team-location',
-                    'value'   => Location::whereLocationNo('ST01')->first()->gymrevenue_id,
+                    'name' => 'team-location',
+                    'value' => Location::whereLocationNo('ST01')->first()->gymrevenue_id,
                 ],
                 // SciFi Purple Gyms
                 [
                     'team_id' => Team::fetchTeamIDFromName('SciFi NC'),
-                    'name'    => 'team-location',
-                    'value'   => Location::whereLocationNo('PF01')->first()->gymrevenue_id,
+                    'name' => 'team-location',
+                    'value' => Location::whereLocationNo('PF01')->first()->gymrevenue_id,
                 ],
                 [
                     'team_id' => Team::fetchTeamIDFromName('Purple FL'),
-                    'name'    => 'team-location',
-                    'value'   => Location::whereLocationNo('PF01')->first()->gymrevenue_id,
+                    'name' => 'team-location',
+                    'value' => Location::whereLocationNo('PF01')->first()->gymrevenue_id,
                 ],
 
             ];
         }
         foreach ($client_teams as $client_team) {
             echo("{$client_team['value']}: {$client_team['team_id']}\n");
-            UpdateTeam::run(Team::withoutGlobalScopes()->findOrFail(
-                $client_team['team_id']),
+            UpdateTeam::run(
+                Team::withoutGlobalScopes()->findOrFail(
+                    $client_team['team_id']
+                ),
                 ['locations' => [$client_team['value']]]
             );
         }

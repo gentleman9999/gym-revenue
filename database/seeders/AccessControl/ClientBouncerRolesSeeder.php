@@ -33,7 +33,7 @@ class ClientBouncerRolesSeeder extends Seeder
                     'name' => $name = mb_convert_case(str_replace('_', ' ', $role->name), MB_CASE_TITLE),
                     'group' => $role->value,
                     'scope' => $client->id,
-                    'title' => $name
+                    'title' => $name,
                 ];
             }
         }

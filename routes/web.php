@@ -56,39 +56,70 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function () {
     Route::prefix('leads')->group(function () {
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
-        Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
-        Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
+        Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')
+            ->name('data.leads.claimed');
+        Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')
+            ->name('data.leads.create');
         Route::post('/create', \App\Domain\Users\Actions\CreateUser::class)->name('data.leads.store');
-        Route::get('/show/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
-        Route::get('/edit/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
+        Route::get('/show/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@show')
+            ->name('data.leads.show');
+        Route::get('/edit/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@edit')
+            ->name('data.leads.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.leads.update');
-        Route::put('/assign/{end_user}', \App\Domain\Users\Actions\AssignEndUserToRep::class)->name('data.leads.assign');
-        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
-        Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
-        Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
-        Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
-        Route::post('/statuses/update', \App\Domain\LeadStatuses\Actions\UpdateLeadStatuses::class)->name('data.leads.statuses.update');
-        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)->name('data.leads.terminate');
-        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()->name('data.leads.reinstate');
-        Route::get('/view/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
-        Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
+        Route::put('/assign/{end_user}', \App\Domain\Users\Actions\AssignEndUserToRep::class)
+            ->name('data.leads.assign');
+        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\LeadsController::class . '@contact')
+            ->name('data.leads.contact');
+        Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')
+            ->name('data.entry.sources');
+        Route::get('/sourceCategories', \App\Http\Controllers\EntrySourceCategoryController::class . '@index')
+            ->name('data.entry.source.categories');
+        Route::post('/sources/update', \App\Domain\EntrySources\Actions\UpdateEntrySources::class)
+            ->name('data.entry.sources.update');
+        Route::post(
+            '/sourceCategories/update',
+            \App\Domain\EntrySourceCategories\Actions\UpdateEntrySourceCategory::class
+        )
+            ->name('data.entry.source.category.update');
+        Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')
+            ->name('data.leads.statuses');
+        Route::post('/statuses/update', \App\Domain\LeadStatuses\Actions\UpdateLeadStatuses::class)
+            ->name('data.leads.statuses.update');
+        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)
+            ->name('data.leads.terminate');
+        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()
+            ->name('data.leads.reinstate');
+        Route::get('/view/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@view')
+            ->name('data.leads.view');
+        Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')
+            ->name('data.leads.export');
         Route::post('/upload', \App\Domain\Users\Actions\CreateFiles::class)->name('data.leads.upload');
-        Route::post('/upload', \App\Domain\Users\Actions\CreateProfilePicture::class)->name('data.leads.upload.profile.picture');
+        Route::post('/upload', \App\Domain\Users\Actions\CreateProfilePicture::class)
+            ->name('data.leads.upload.profile.picture');
     });
 
     Route::prefix('members')->group(function () {
         Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
-        Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
+        Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')
+            ->name('data.members.create');
         // Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.members.store');
-        Route::get('/show/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
-        Route::get('/edit/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
+        Route::get('/show/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@show')
+            ->name('data.members.show');
+        Route::get('/edit/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@edit')
+            ->name('data.members.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.members.update');
-        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
-        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)->name('data.members.terminate');
-        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()->name('data.members.reinstate');
-        Route::get('/view/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
-        Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
-        Route::post('/upload', \App\Domain\Users\Actions\CreateProfilePicture::class)->name('data.members.upload.profile.picture');
+        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\MembersController::class . '@contact')
+            ->name('data.members.contact');
+        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)
+            ->name('data.members.terminate');
+        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()
+            ->name('data.members.reinstate');
+        Route::get('/view/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@view')
+            ->name('data.members.view');
+        Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')
+            ->name('data.members.export');
+        Route::post('/upload', \App\Domain\Users\Actions\CreateProfilePicture::class)
+            ->name('data.members.upload.profile.picture');
     });
 
     Route::prefix('customers')->group(function () {
@@ -98,13 +129,32 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/show/{end_user}', \App\Domain\Users\Actions\ShowCustomer::class)->name('data.customers.show');
         Route::get('/edit/{end_user}', \App\Domain\Users\Actions\EditCustomer::class)->name('data.customers.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.customers.update');
-        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)->name('data.customers.terminate');
-        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()->name('data.customers.reinstate');
+        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)
+            ->name('data.customers.terminate');
+        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()
+            ->name('data.customers.reinstate');
         Route::get('/view/{end_user}', \App\Domain\Users\Actions\ViewCustomer::class)->name('data.customers.view');
         Route::get('/export', \App\Domain\Users\Actions\ExportCustomer::class)->name('data.customers.export');
     });
 
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class . '@index')->name('data.conversions');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('entry-source-categories')->group(function () {
+    Route::get('/', \App\Http\Controllers\EntrySourceCategoryController::class . '@index')
+        ->name('entry-source-categories');
+    Route::post('/', \App\Domain\EntrySourceCategories\Actions\CreateEntrySourceCategory::class)
+        ->name('entry-source-categories.store');
+    Route::get('/edit/{esc_id}', \App\Http\Controllers\EntrySourceCategoryController::class . '@edit')
+        ->name('entry-source-categories.edit');
+    Route::put('/{esc_id}', \App\Domain\EntrySourceCategories\Actions\UpdateEntrySourceCategory::class)
+        ->name('entry-source-categories.update');
+    Route::delete('/{esc_id}', \App\Domain\EntrySourceCategories\Actions\TrashEntrySourceCategory::class)
+        ->name('entry-source-categories.trash');
+    Route::delete('/{esc_id}/force', \App\Domain\EntrySourceCategories\Actions\DeleteEntrySourceCategory::class)
+        ->name('entry-source-categories.delete');
+    Route::post('/{esc_id}/restore', \App\Domain\EntrySourceCategories\Actions\RestoreEntrySourceCategory::class)
+        ->name('entry-source-categories.restore');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function () {
@@ -124,9 +174,11 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(function () {
     Route::get('/', \App\Http\Controllers\FoldersController::class . '@index')->name('folders');
     Route::post('/', \App\Domain\Folders\Actions\CreateFolder::class)->name('folders.store');
-    Route::get('/viewFiles/{folder}', \App\Http\Controllers\FoldersController::class . '@viewFiles')->name('folders.viewFiles');
+    Route::get('/viewFiles/{folder}', \App\Http\Controllers\FoldersController::class . '@viewFiles')
+        ->name('folders.viewFiles');
     Route::put('/{folder}', \App\Domain\Folders\Actions\UpdateFolder::class)->name('folders.update');
-    Route::put('/sharing/{folder}', \App\Domain\Folders\Actions\UpdateFolderSharing::class)->name('folders.sharing.update');
+    Route::put('/sharing/{folder}', \App\Domain\Folders\Actions\UpdateFolderSharing::class)
+        ->name('folders.sharing.update');
     Route::delete('/{folder}/trash', \App\Domain\Folders\Actions\TrashFolder::class)->name('folders.trash');
     Route::delete('/{folder}', \App\Domain\Folders\Actions\DeleteFolder::class)->name('folders.delete');
     Route::post('/{id}/restore', \App\Domain\Folders\Actions\RestoreFolder::class)->name('folders.restore');
@@ -164,22 +216,41 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('searches')->group(funct
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
     Route::get('/mycalendar', \App\Http\Controllers\CalendarController::class . '@myCalendar')->name('calendar.mine');
-    Route::get('/quickview', \App\Http\Controllers\CalendarController::class . '@quickView')->name('calendar.quickview');
+    Route::get('/quickview', \App\Http\Controllers\CalendarController::class . '@quickView')
+        ->name('calendar.quickview');
     Route::post('/', \App\Domain\CalendarEvents\Actions\CreateCalendarEvent::class)->name('calendar.event.store');
-    Route::put('/{calendarEvent}', \App\Domain\CalendarEvents\Actions\UpdateCalendarEvent::class)->name('calendar.event.update');
-    Route::delete('/reminder/delete/{id}', \App\Domain\Reminders\Actions\DeleteReminder::class)->name('calendar.reminder.delete');
-    Route::put('/reminder/create/{id}', \App\Domain\Reminders\Actions\CreateReminderFromCalendarEvent::class)->name('calendar.reminder.create');
-    Route::put('/complete_task/{id}', \App\Actions\Clients\Tasks\MarkTaskComplete::class)->name('calendar.complete_event');
-    Route::post('/upload', \App\Domain\CalendarEvents\Actions\UploadFileToCalendarEvent::class)->name('calendar.upload');
+    Route::put('/{calendarEvent}', \App\Domain\CalendarEvents\Actions\UpdateCalendarEvent::class)
+        ->name('calendar.event.update');
+    Route::delete('/reminder/delete/{id}', \App\Domain\Reminders\Actions\DeleteReminder::class)
+        ->name('calendar.reminder.delete');
+    Route::put('/reminder/create/{id}', \App\Domain\Reminders\Actions\CreateReminderFromCalendarEvent::class)
+        ->name('calendar.reminder.create');
+    Route::put('/complete_task/{id}', \App\Actions\Clients\Tasks\MarkTaskComplete::class)
+        ->name('calendar.complete_event');
+    Route::post('/upload', \App\Domain\CalendarEvents\Actions\UploadFileToCalendarEvent::class)
+        ->name('calendar.upload');
     Route::prefix('event_types')->group(function () {
         Route::get('/', \App\Http\Controllers\CalendarController::class . '@eventTypes')->name('calendar.event_types');
-        Route::get('/create', \App\Http\Controllers\CalendarController::class . '@createEventType')->name('calendar.event_types.create');
-        Route::post('/', \App\Domain\CalendarEventTypes\Actions\CreateCalendarEventType::class)->name('calendar.event_types.store');
-        Route::get('/edit/{calendarEventType}', \App\Http\Controllers\CalendarController::class . '@editEventType')->name('calendar.event_types.edit');
-        Route::put('/{calendarEventType}', \App\Domain\CalendarEventTypes\Actions\UpdateCalendarEventType::class)->name('calendar.event_types.update');
-        Route::delete('/{calendarEventType}', \App\Domain\CalendarEventTypes\Actions\TrashCalendarEventType::class)->name('calendar.event_types.trash');
-        Route::delete('/{calendarEventType}/force', \App\Domain\CalendarEventTypes\Actions\DeleteCalendarEventType::class)->name('calendar.event_types.delete');
-        Route::post('/{calendarEventType}/restore', \App\Domain\CalendarEventTypes\Actions\RestoreCalendarEventType::class)->withTrashed()->name('calendar.event_types.restore');
+        Route::get('/create', \App\Http\Controllers\CalendarController::class . '@createEventType')
+            ->name('calendar.event_types.create');
+        Route::post('/', \App\Domain\CalendarEventTypes\Actions\CreateCalendarEventType::class)
+            ->name('calendar.event_types.store');
+        Route::get('/edit/{calendarEventType}', \App\Http\Controllers\CalendarController::class . '@editEventType')
+        ->name('calendar.event_types.edit');
+        Route::put('/{calendarEventType}', \App\Domain\CalendarEventTypes\Actions\UpdateCalendarEventType::class)
+            ->name('calendar.event_types.update');
+        Route::delete('/{calendarEventType}', \App\Domain\CalendarEventTypes\Actions\TrashCalendarEventType::class)
+            ->name('calendar.event_types.trash');
+        Route::delete(
+            '/{calendarEventType}/force',
+            \App\Domain\CalendarEventTypes\Actions\DeleteCalendarEventType::class
+        )
+            ->name('calendar.event_types.delete');
+        Route::post(
+            '/{calendarEventType}/restore',
+            \App\Domain\CalendarEventTypes\Actions\RestoreCalendarEventType::class
+        )->withTrashed()
+            ->name('calendar.event_types.restore');
     });
 });
 
@@ -220,6 +291,17 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
     Route::post('/logo', \App\Domain\Clients\Actions\UploadLogo::class)->name('settings.logo.upload');
     Route::delete('/logo', \App\Domain\Clients\Actions\DeleteLogo::class)->name('settings.logo.delete');
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
+    Route::post('/entry-source', \App\Domain\EntrySources\Actions\UpdateEntrySource::class)
+        ->name('settings.client-entry-sources.update');
+    Route::put('/entry-source-categories', \App\Domain\EntrySourceCategories\Actions\UpdateEntrySourceCategory::class)
+        ->name('settings.client-entry-source-categories.update');
+    Route::post(
+        '/entry-source-categories/create',
+        \App\Domain\EntrySourceCategories\Actions\CreateEntrySourceCategory::class
+    )
+        ->name('settings.client-entry-source-categories.store');
+    Route::delete('/{id}', \App\Domain\EntrySourceCategories\Actions\TrashEntrySourceCategory::class)
+        ->name('settings.client-entry-source-categories.delete');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('roles')->group(function () {

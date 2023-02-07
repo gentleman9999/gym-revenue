@@ -104,7 +104,8 @@ const form = useGymRevForm({
 });
 
 function handleSubmit() {
-    form.post(route("settings.client-comms-prefs.update"));
+    form.post(route("settings.twilio-comms-prefs.update"));
+    // "settings.client-comms-prefs.update"));
 }
 
 function preventSelection(value) {

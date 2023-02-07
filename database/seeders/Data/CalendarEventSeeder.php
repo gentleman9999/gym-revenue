@@ -19,15 +19,15 @@ class CalendarEventSeeder extends Seeder
     public function run()
     {
         $amount_of_events = env('QUICK_SEED') ? 2 : 5;
-        $process          = Process::allocate(5);
+        $process = Process::allocate(5);
         /** Modify the below date range to change when the calendar events will populate for testing since time doesn't stand still. */
-        $datestart      = strtotime('2022-08-01');
-        $dateend        = strtotime('2022-09-31');
-        $daystep        = 86400;
-        $clients        = Client::with('users')->whereActive(1)->get();
-        $locations      = Location::all()->toArray();
+        $datestart = strtotime('2022-08-01');
+        $dateend = strtotime('2022-09-31');
+        $daystep = 86400;
+        $clients = Client::with('users')->whereActive(1)->get();
+        $locations = Location::all()->toArray();
         $location_count = count($locations);
-        $event_types    = CalendarEventType::whereIn('client_id', $clients->pluck('id')->toArray())
+        $event_types = CalendarEventType::whereIn('client_id', $clients->pluck('id')->toArray())
             ->get()
             ->groupBy('client_id');
 

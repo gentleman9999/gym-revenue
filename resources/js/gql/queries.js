@@ -251,7 +251,7 @@ const LEAD_CREATE = gql`
         #            id
         #            status
         #        }
-        #        lead_sources {
+        #        entry_sources {
         #            id
         #            name
         #        }
@@ -283,7 +283,7 @@ const LEAD_EDIT = gql`
             home_location {
                 id
             }
-            #            leadSource {
+            #            entrySource {
             #                id
             #            }
             #            leadType {
@@ -322,7 +322,7 @@ const LEAD_EDIT = gql`
             id
             name
         }
-        lead_sources {
+        entry_sources {
             id
             name
         }

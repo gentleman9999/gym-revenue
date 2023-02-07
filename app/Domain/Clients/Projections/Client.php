@@ -12,7 +12,8 @@ use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Conversations\Twilio\Actions\AddConversationAgent;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
-use App\Domain\LeadSources\LeadSource;
+use App\Domain\EntrySourceCategories\EntrySourceCategory;
+use App\Domain\EntrySources\EntrySource;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Roles\Role;
@@ -86,9 +87,14 @@ class Client extends GymRevProjection
         return $this->hasMany(LeadType::class);
     }
 
-    public function lead_sources(): HasMany
+    public function entrySources(): HasMany
     {
-        return $this->hasMany(LeadSource::class);
+        return $this->hasMany(EntrySource::class);
+    }
+
+    public function entrySourceCategories(): HasMany
+    {
+        return $this->hasMany(EntrySourceCategory::class);
     }
 
     public function membership_types(): HasMany

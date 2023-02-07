@@ -62,11 +62,11 @@ class EndUserFactory extends Factory
         });
     }
 
-    public function lead_source_id(string $lead_source_id)
+    public function entrySourceId(string $entry_source_id)
     {
-        return $this->state(function (array $attrs) use ($lead_source_id) {
+        return $this->state(function () use ($entry_source_id) {
             return [
-                'lead_source_id' => $lead_source_id,
+                'entry_source_id' => $entry_source_id,
             ];
         });
     }

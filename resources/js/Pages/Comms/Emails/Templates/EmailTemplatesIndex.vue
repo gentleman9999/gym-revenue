@@ -70,6 +70,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail.vue";
 import EmailTemplateCard from "./Partials/EmailTemplateCard.vue";
 import EmailTemplateForm from "./Partials/EmailTemplateForm.vue";
+import queries from "@/gql/queries";
 
 library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 

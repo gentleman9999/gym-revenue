@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Data;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\LeadSources\LeadSource;
+use App\Domain\EntrySources\EntrySource;
+use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Aggregates\UserAggregate;
@@ -47,7 +48,7 @@ class LeadsController extends Controller
             $prospects = $prospects_model
                 ->with('location')
                 ->with('membershipType')
-                //->with('leadSource')
+                //->with('entrySource')
                 ->with('notes')
                 ->filter($request->only(
                     'search',
@@ -55,7 +56,7 @@ class LeadsController extends Controller
                     'typeoflead',
                     'createdat',
                     'grlocation',
-                    //'leadsource',
+                    //'entrysource',
                     'claimed',
                     'opportunity',
                     'claimed',
@@ -120,7 +121,7 @@ class LeadsController extends Controller
                 'typeoflead',
                 'createdat',
                 'grlocation',
-                'leadsource',
+                'entrysource',
                 'claimed',
                 'opportunity',
                 'claimed',
@@ -132,7 +133,7 @@ class LeadsController extends Controller
             ),
             'owners' => $available_lead_owners,
             'grlocations' => Location::all(),
-            'leadsources' => LeadSource::all(),
+            'entrysources' => EntrySource::all(),
             'opportunities' => array_values($opportunities->toArray()),
             'newLeadCount' => $newLeadCount,
             'lead_types' => LeadType::all(),
@@ -149,16 +150,16 @@ class LeadsController extends Controller
         $prospects_model = $this->setUpLeadsObjectclaimed($client_id);
 
         $locations = Location::all();
-        $leadsource = LeadSource::all();
+        $entry_source = EntrySource::all();
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
                 ->with('location')
                 ->with('leadType')
                 ->with('membershipType')
-                ->with('leadSource')
+                ->with('entrySource')
                 ->with('detailsDesc')
-                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'))
+                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'entrysource'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count)
                 ->appends(request()->except('page'));
@@ -168,10 +169,10 @@ class LeadsController extends Controller
             'leads' => $prospects,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'),
+            'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'entrysource'),
             'lead_types' => LeadType::all(),
             'grlocations' => $locations,
-            'leadsources' => $leadsource,
+            'entrysources' => $entry_source,
 
         ]);
     }
@@ -203,7 +204,7 @@ class LeadsController extends Controller
         }
 
         //$lead_types = LeadType::all();
-        $lead_sources = LeadSource::all();
+        $entry_sources = EntrySource::all();
         //$lead_statuses = LeadStatus::all();
 
 
@@ -221,7 +222,7 @@ class LeadsController extends Controller
             'user_id' => $user->id,
             'locations' => $locations,
             //'lead_types' => $lead_types,
-            'lead_sources' => $lead_sources,
+            'entry_sources' => $entry_sources,
             //'lead_statuses' => $lead_statuses,
             'lead_owners' => $available_lead_owners,
         ]);
@@ -471,7 +472,7 @@ class LeadsController extends Controller
     public function sources(Request $request)
     {
         return Inertia::render('Leads/Sources', [
-            'sources' => LeadSource::get(['id', 'name']),
+            'sources' => EntrySource::get(['id', 'name']),
         ]);
     }
 
@@ -521,7 +522,7 @@ class LeadsController extends Controller
                 ->with('location')
                 ->with('leadType')
                 ->with('membershipType')
-                ->with('leadSource')
+                ->with('entrydSource')
                 ->with('claimed')
                 ->with('detailsDesc')
                 ->filter($request->only(
@@ -530,7 +531,7 @@ class LeadsController extends Controller
                     'typeoflead',
                     'createdat',
                     'grlocation',
-                    'leadsource',
+                    'entrysource',
                     'opportunity',
                     'claimed',
                     'date_of_birth',

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Domain\LeadSources\Actions;
+declare(strict_types=1);
 
-use App\Domain\LeadSources\LeadSource;
+namespace App\Domain\EntrySources\Actions;
+
+use App\Domain\EntrySources\EntrySource;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -10,7 +12,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateLeadSources
+class UpdateEntrySources
 {
     use AsAction;
 
@@ -29,7 +31,7 @@ class UpdateLeadSources
         ];
     }
 
-    public function handle(array $data): LeadSource
+    public function handle(array $data): array
     {
         $sources = $data['sources'];
         $sourcesToUpdate = collect($sources)->filter(function ($s) {
@@ -42,13 +44,13 @@ class UpdateLeadSources
         $changed_sources = [];
 
         foreach ($sourcesToUpdate as $sourceToUpdate) {
-            $changed_sources[] = UpdateLeadSource::run($sourceToUpdate['id'], [
+            $changed_sources[] = UpdateEntrySource::run($sourceToUpdate['id'], [
                 'source' => $sourceToUpdate['name'],
                 'name' => $sourceToUpdate['name'],
             ]);
         }
         foreach ($sourcesToCreate as $sourceToCreate) {
-            $changed_sources[] = CreateLeadSource::run([
+            $changed_sources[] = CreateEntrySource::run([
                 'source' => $sourceToCreate['name'],
                 'name' => $sourceToCreate['name'],
                 'client_id' => $data['client_id'],
@@ -67,20 +69,20 @@ class UpdateLeadSources
     {
         $current_user = $request->user();
 
-        return $current_user->can('lead-sources.create', LeadSource::class);
+        return $current_user->can('lead-sources.create', EntrySource::class);
     }
 
-    public function asController(ActionRequest $request): LeadSource
+    public function asController(ActionRequest $request): array
     {
         return $this->handle(
             $request->validated(),
         );
     }
 
-    public function htmlResponse(array $leadSources): RedirectResponse
+    public function htmlResponse(array $entry_sources): RedirectResponse
     {
-        $leadSourcesCount = count($leadSources);
-        Alert::success("{$leadSourcesCount} Lead Sources updated.")->flash();
+        $entry_source_count = count($entry_sources);
+        Alert::success("$entry_source_count Entry Sources updated.")->flash();
 
         return Redirect::back();
     }

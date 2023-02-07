@@ -42,17 +42,17 @@ class LocationVendorSeeder extends Seeder
     public function run()
     {
         $locations = Location::all();
-        $proccess  = Process::allocate(5);
+        $proccess = Process::allocate(5);
 
         foreach ($locations as $location) {
             //$vendor_categories = LocationVendorCategory::all()->toArray();
-            $location_vendor['name']               = $this->faker->name;
-            $location_vendor['client_id']          = $location->client_id;
+            $location_vendor['name'] = $this->faker->name;
+            $location_vendor['client_id'] = $location->client_id;
             $location_vendor['vendor_category_id'] = Uuid::new(); //$vendor_categories[array_rand($vendor_categories, 1)]['id'];
-            $location_vendor['location_id']        = $location->id;
-            $location_vendor['poc_name']           = $location->name . 'Vendor';
-            $location_vendor['poc_email']          = $this->faker->email;
-            $location_vendor['poc_phone']          = '';
+            $location_vendor['location_id'] = $location->id;
+            $location_vendor['poc_name'] = $location->name . 'Vendor';
+            $location_vendor['poc_email'] = $this->faker->email;
+            $location_vendor['poc_phone'] = '';
 
             echo("Adding {$location_vendor['name']}\n");
             $proccess->queue([CreateLocationVendor::class, 'run'], $location_vendor);
