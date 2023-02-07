@@ -3,3 +3,4 @@
 
 node_modules/.bin/lint-staged
 #./vendor/bin/pest --filter Pest
+. "$(dirname "$0")/bin/phpcs.sh"
