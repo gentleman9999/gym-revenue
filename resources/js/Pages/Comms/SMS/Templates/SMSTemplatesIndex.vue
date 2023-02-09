@@ -159,6 +159,10 @@ const actions = computed(() => {
         trash: {
             handler: ({ data }) => handleClickTrash(data.id),
         },
+        duplicate: {
+            label: "Duplicate",
+            handler: ({ data }) => handleClickDuplicate(data.id),
+        },
     };
 });
 </script>
