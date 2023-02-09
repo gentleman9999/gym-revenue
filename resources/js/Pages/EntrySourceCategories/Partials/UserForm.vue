@@ -553,7 +553,6 @@ import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager.vue";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
-import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
@@ -752,8 +751,6 @@ export default {
             }
             return data;
         };
-
-        const modal = useModal();
 
         let handleSubmit = () =>
             form
