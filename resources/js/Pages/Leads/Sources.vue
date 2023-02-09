@@ -1,8 +1,8 @@
 <template>
-    <LayoutHeader title="Lead Sources">
-        <h2 class="font-semibold text-xl leading-tight">Lead Sources</h2>
+    <LayoutHeader title="Entry Sources">
+        <h2 class="font-semibold text-xl leading-tight">Entry Sources</h2>
     </LayoutHeader>
-    <page-toolbar-nav title="Lead Sources" :links="navLinks" />
+    <page-toolbar-nav title="Entry Sources" :links="navLinks" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div class="max-w-md space-y-2">
@@ -97,7 +97,7 @@ export default defineComponent({
 
         const submitForm = () => {
             console.log("submitform", form.data());
-            form.post(route("data.leads.sources.update"));
+            form.post(route("data.entry.sources.update"));
         };
 
         const navLinks = [
@@ -137,8 +137,8 @@ export default defineComponent({
                 active: false,
             },
             {
-                label: "Lead Sources",
-                href: route("data.leads.sources"),
+                label: "Entry Sources",
+                href: route("data.entry.sources"),
                 onClick: null,
                 active: true,
             },

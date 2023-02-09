@@ -35,7 +35,7 @@ const props = defineProps({
     lead_types: {
         type: Array,
     },
-    lead_sources: {
+    entry_sources: {
         type: Array,
     },
     available_services: {

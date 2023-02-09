@@ -25,7 +25,9 @@ use Database\Seeders\Data\CalendarEventSeeder;
 use Database\Seeders\Data\CalendarEventTypeSeeder;
 use Database\Seeders\Data\ContractGatesSeeder;
 use Database\Seeders\Data\EndUserSeeder;
-use Database\Seeders\Data\LeadSourceSeeder;
+use Database\Seeders\Data\EntrySourceCategorySeeder;
+use Database\Seeders\Data\EntrySourceSeeder;
+use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
 use Database\Seeders\Data\NicknameSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
@@ -126,10 +128,13 @@ class DatabaseSeeder extends Seeder
 //        echo "Trial Membership Type Seeder\n";
 //        $this->call(TrialMembershipTypeSeeder::class);
 
-        // Default Lead Sources for each client are seeded here.
-        echo "Running Lead Source Seeder\n";
-        $this->call(LeadSourceSeeder::class);
+        // Default Entry Source Categories for each client are seeded here.
+        echo "Running Entry Source Category Seeder\n";
+        $this->call(EntrySourceCategorySeeder::class);
 
+        // Default Entry Sources for each client are seeded here.
+        echo "Running Entry Source Seeder\n";
+        $this->call(EntrySourceSeeder::class);
 //
 //        // Default Lead Statuses for each client are seeded here.
 //        echo "Running Lead Status Seeder\n";

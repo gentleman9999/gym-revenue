@@ -34,9 +34,9 @@ class DepartmentSeeder extends Seeder
         foreach ($clients as $client) {
             foreach ($items as $i) {
                 $data[] = [
-                    'id'        => Uuid::new(),
+                    'id' => Uuid::new(),
                     'client_id' => $client->id,
-                    'name'      => $i,
+                    'name' => $i,
                 ];
             }
         }

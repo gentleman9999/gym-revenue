@@ -369,7 +369,7 @@ const props = defineProps({
     lead_statuses: {
         type: Array,
     },
-    lead_sources: {
+    entry_sources: {
         type: Array,
     },
     locations: {
@@ -403,7 +403,7 @@ if (!lead) {
         club_id: "",
         home_location_id: "",
         lead_type_id: "",
-        lead_source_id: "",
+        entry_source_id: "",
         profile_picture: "",
         gender: "",
         date_of_birth: null,
@@ -424,7 +424,7 @@ if (!lead) {
         club_id: lead.club_id,
         home_location_id: lead?.home_location?.id,
         lead_type_id: lead.lead_type_id,
-        lead_source_id: lead.lead_source_id,
+        entry_source_id: lead.entry_source_id,
         profile_picture: lead.profile_picture,
         gender: lead.gender,
         agreement_number: lead.agreement_number,

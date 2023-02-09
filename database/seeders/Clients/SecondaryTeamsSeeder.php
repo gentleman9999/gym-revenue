@@ -22,9 +22,9 @@ class SecondaryTeamsSeeder extends Seeder
         $cnb_teams = [
             [
                 'client_id' => null,
-                'name'      => 'Cape & Bay Developers',
+                'name' => 'Cape & Bay Developers',
                 'home_team' => 0,
-                'members'   => [
+                'members' => [
                     'shivam@capeandbay.com',
                     'philip@capeandbay.com',
                     'sterling@capeandbay.com',
@@ -49,11 +49,11 @@ class SecondaryTeamsSeeder extends Seeder
         }
 
         if (env('RAPID_SEED') === true) {
-            $clients      = Client::all()->keyBy('name');
+            $clients = Client::all()->keyBy('name');
             $client_teams = [
                 // The Kalamazoo
                 [
-                    'name'      => 'Zoo Sales Team',
+                    'name' => 'Zoo Sales Team',
                     'home_team' => 0,
                     'client_id' => $clients['The Kalamazoo']->id,
                 ],
@@ -64,73 +64,73 @@ class SecondaryTeamsSeeder extends Seeder
             $client_teams = [
                 // Fitness Truth
                 [
-                    'name'      => 'FitnessTruth Texas South',
+                    'name' => 'FitnessTruth Texas South',
                     'home_team' => 0,
                     'client_id' => $clients['FitnessTruth']->id,
                 ],
 
                 // The Z
                 [
-                    'name'      => 'Big Island Team',
+                    'name' => 'Big Island Team',
                     'home_team' => 0,
                     'client_id' => $clients['The Z']->id,
                 ],
                 [
-                    'name'      => 'Oahu Team',
+                    'name' => 'Oahu Team',
                     'home_team' => 0,
                     'client_id' => $clients['The Z']->id,
                 ],
                 [
-                    'name'      => 'Big Island Boating & CrossFit Club',
+                    'name' => 'Big Island Boating & CrossFit Club',
                     'home_team' => 0,
                     'client_id' => $clients['The Z']->id,
                 ],
 
                 // Stencils
                 [
-                    'name'      => 'Stencils Seattle',
+                    'name' => 'Stencils Seattle',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name'      => 'Stencils San Andreas',
+                    'name' => 'Stencils San Andreas',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name'      => 'Stencils Portland',
+                    'name' => 'Stencils Portland',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name'      => 'Stencils LA',
+                    'name' => 'Stencils LA',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name'      => 'Stencils San Diego',
+                    'name' => 'Stencils San Diego',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name'      => 'Stencils San Jose',
+                    'name' => 'Stencils San Jose',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
                 [
-                    'name'      => 'Stencils Portland 2',
+                    'name' => 'Stencils Portland 2',
                     'home_team' => 0,
                     'client_id' => $clients['Stencils']->id,
                 ],
 
                 // SciFi Purple Gyms
                 [
-                    'name'      => 'SciFi NC',
+                    'name' => 'SciFi NC',
                     'home_team' => 0,
                     'client_id' => $clients['Sci-Fi Purple Gyms']->id,
                 ],
                 [
-                    'name'      => 'Purple FL',
+                    'name' => 'Purple FL',
                     'home_team' => 0,
                     'client_id' => $clients['Sci-Fi Purple Gyms']->id,
                 ],

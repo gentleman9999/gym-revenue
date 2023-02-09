@@ -125,18 +125,18 @@
         </div>
 
         <div class="form-control">
-            <label for="lead_source" class="py-1 text-xs"> Source: </label>
+            <label for="entry_source" class="py-1 text-xs"> Source: </label>
             <multiselect
-                v-model="form.leadsource"
+                v-model="form.entrysource"
                 class="py-2"
-                id="lead_source"
+                id="entry_source"
                 mode="tags"
                 :close-on-select="false"
                 :create-option="true"
                 :options="
-                    this.$page.props.leadsources.map((leadsource) => ({
-                        label: leadsource.name,
-                        value: leadsource.id,
+                    this.$page.props.entrysources.map((entrysource) => ({
+                        label: entrysource.name,
+                        value: entrysource.id,
                     }))
                 "
                 :classes="multiselectClasses"

@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Clients\Enums\SocialMediaEnum;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\EntrySourceCategories\EntrySourceCategory;
+use App\Domain\EntrySources\EntrySource;
 use App\Enums\ClientServiceEnum;
 use App\Models\ClientCommunicationPreference;
 use Illuminate\Support\Facades\Redirect;
@@ -36,8 +40,9 @@ class ClientSettingsController extends Controller
             'availableCommPreferences' => ClientCommunicationPreference::COMMUNICATION_TYPES,
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
+            'entrySources' => EntrySource::all(),
+            'entrySourceCategories' => EntrySourceCategory::all(),
             'locations' => $client->locations ?? [],
-//            'socialMedias' => ClientSocialMedia::all(),
             'socialMedias' => $client->getSocialMedia(),
             'availableSocialMedias' => collect(SocialMediaEnum::cases())->map(fn (SocialMediaEnum $enum) => ['name' => $enum->name, 'value' => $enum->value]),
             'gateways' => ClientGatewaySetting::all(),

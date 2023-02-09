@@ -19,7 +19,7 @@ class ClientContractSeeder extends Seeder
     {
         foreach (Client::with('agreementCategories')->get() as $client) {
             echo("Creating Contracts for client {$client->name}\n");
-            
+
             //TODO:should iterate over AgreementTemplateCategory
             foreach ($client->agreementCategories as $category) {
                 CreateContract::run([

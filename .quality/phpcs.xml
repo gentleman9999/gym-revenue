@@ -1,16 +1,30 @@
 <?xml version="1.0"?>
 <ruleset name="gym-revenue">
-<!--    <file>./../</file>-->
+    <!--    <file>./../</file>-->
+    <exclude-pattern>*/.quality/*</exclude-pattern>
+    <exclude-pattern>*/.husky/*</exclude-pattern>
+    <exclude-pattern>*/.github/*</exclude-pattern>
+    <exclude-pattern>*/.git/*</exclude-pattern>
     <exclude-pattern>*/tests/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
-    <exclude-pattern>*/.quality/*</exclude-pattern>
+    <exclude-pattern>*/routes/*</exclude-pattern>
 
     <!-- relative path from PHPCS source location -->
     <config name="installed_paths" value="../vendor/slevomat/coding-standard"/>
+    <config name="ignore_errors_on_exit" value="0"/>
+    <config name="ignore_warnings_on_exit" value="0"/>
+    <config name="show_warnings" value="1"/>
+    <config name="report_width" value="200"/>
 
     <!-- include all sniffs in the PSR12 standard -->
     <rule ref="PSR12"/>
-    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Whitespaces/DuplicateSpacesSniff.php"/>
+    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Whitespaces/DuplicateSpacesSniff.php">
+        <properties>
+            <property name="ignoreSpacesInAnnotation" value="1"/>
+            <property name="ignoreSpacesInComment" value="1"/>
+            <property name="ignoreSpacesInMatch" value="1"/>
+        </properties>
+    </rule>
 
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Classes/ClassStructureSniff.php">
         <properties>

@@ -141,8 +141,8 @@ export default defineComponent({
                 active: false,
             },
             {
-                label: "Lead Sources",
-                href: route("data.leads.sources"),
+                label: "Entry Sources",
+                href: route("data.entry.sources"),
                 onClick: null,
                 active: false,
             },

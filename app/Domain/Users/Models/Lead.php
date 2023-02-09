@@ -26,8 +26,8 @@ class Lead extends EndUser
         })->when($filters['grlocation'] ?? null, function ($query, $grlocation) {
             $query->whereIn('home_location_id',  $grlocation);
             /* Filter for EndUser Sources */
-        })->when($filters['leadsource'] ?? null, function ($query, $leadsource) {
-            $query->whereIn('lead_source_id',  $leadsource);
+        })->when($filters['entrysource'] ?? null, function ($query, $entry_source) {
+            $query->whereIn('entry_source_id', $entry_source);
             /* Filter for EndUser Sources */
         });
     }

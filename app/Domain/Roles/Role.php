@@ -9,7 +9,8 @@ use App\Domain\Chat\Models\Chat;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
-use App\Domain\LeadSources\LeadSource;
+use App\Domain\EntrySourceCategories\EntrySourceCategory;
+use App\Domain\EntrySources\EntrySource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
@@ -67,7 +68,7 @@ class Role extends \Silber\Bouncer\Database\Role
             'locations' => Location::class,
             'endusers' => EndUser::class,
             'lead-statuses' => LeadStatus::class,
-            'lead-sources' => LeadSource::class,
+            'lead-sources' => EntrySource::class,
             'teams' => Team::class,
             'files' => File::class,
             'calendar' => CalendarEvent::class,
@@ -87,6 +88,8 @@ class Role extends \Silber\Bouncer\Database\Role
             'dynamic-reports' => DynamicReport::class,
             'chat' => Chat::class,
             'conversation' => ClientConversation::class,
+            'customers' => Customer::class,
+            'entry-source-category' => EntrySourceCategory::class,
             default => null,
         };
     }

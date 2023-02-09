@@ -27,6 +27,28 @@
             </div>
 
             <div>
+                <entry-source-form
+                    :user="$page.props.user"
+                    :entry-sources="entrySources"
+                    :available-entry-sources="availableEntrySources"
+                />
+
+                <jet-section-border />
+            </div>
+
+            <div>
+                <entry-source-category-form
+                    :user="$page.props.user"
+                    :entry-source-categories="entrySourceCategories"
+                    :available-entry-source-categories="
+                        availableEntrySourceCategories
+                    "
+                />
+
+                <jet-section-border />
+            </div>
+
+            <div>
                 <social-media-form
                     :user="$page.props.user"
                     :social-medias="socialMedias"
@@ -55,6 +77,8 @@ import CommPrefForm from "./Partials/CommPrefForm.vue";
 import SocialMediaForm from "./Partials/SocialMediaForm.vue";
 import FileManager from "./Partials/FileManager.vue";
 import GatewayForm from "@/Pages/ClientSettings/Partials/GatewayForm.vue";
+import EntrySourceForm from "./Partials/EntrySourceForm.vue";
+import EntrySourceCategoryForm from "./Partials/EntrySourceCategoryForm.vue";
 
 export default defineComponent({
     components: {
@@ -65,6 +89,8 @@ export default defineComponent({
         CommPrefForm,
         SocialMediaForm,
         FileManager,
+        EntrySourceForm,
+        EntrySourceCategoryForm,
     },
     props: {
         services: {
@@ -93,6 +119,22 @@ export default defineComponent({
         },
         socialMedias: {
             type: Array,
+            required: true,
+        },
+        entrySources: {
+            type: Array,
+            required: true,
+        },
+        availableEntrySources: {
+            type: Object,
+            required: true,
+        },
+        entrySourceCategories: {
+            type: Array,
+            required: true,
+        },
+        availableEntrySourceCategories: {
+            type: Object,
             required: true,
         },
         availableSocialMedias: {

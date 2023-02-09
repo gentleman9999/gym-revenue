@@ -22,27 +22,26 @@ class DripCampaignSeeder extends Seeder
     public function run()
     {
         $num_of_events_to_create = env('QUICK_SEED') ? 2 : 5;
-        $clients                 = Client::with('audiences')->whereActive(1)->get();
-        $word                    = new NumberFormatter("en", NumberFormatter::ORDINAL);
-        $status                  = CampaignStatusEnum::cases();
-        $process                 = Process::allocate(5);
+        $clients = Client::with('audiences')->whereActive(1)->get();
+        $word = new NumberFormatter("en", NumberFormatter::ORDINAL);
+        $status = CampaignStatusEnum::cases();
+        $process = Process::allocate(5);
 
         // For each client
         foreach ($clients as $client) {
             $email_t = EmailTemplate::whereClientId($client['id'])->first()->id;
-            $sms_t   = SmsTemplate::whereClientId($client['id'])->first()->id;
-            $call_t  = CallScriptTemplate::whereClientId($client['id'])->whereUseOnce(false)->first()->id;
+            $sms_t = SmsTemplate::whereClientId($client['id'])->first()->id;
+            $call_t = CallScriptTemplate::whereClientId($client['id'])->whereUseOnce(false)->first()->id;
 
             foreach ($client->audiences as $audience) {
-
                 for ($i = 1; $i <= $num_of_events_to_create; $i++) {
                     $drip_days = rand(0, 6);
-                    $days[0]  = [
+                    $days[0] = [
                         'day_in_campaign' => 0,
-                        'email'           => $email_t,
-                        'sms'             => $sms_t,
-                        'call'            => $call_t,
-                        'date'            => false,
+                        'email' => $email_t,
+                        'sms' => $sms_t,
+                        'call' => $call_t,
+                        'date' => false,
                     ];
 
                     for ($d = 1; $d <= $drip_days; $d++) {
@@ -63,12 +62,12 @@ class DripCampaignSeeder extends Seeder
                                 $call_template = "";
                             }
 
-                            $day      = [
+                            $day = [
                                 'day_in_campaign' => $d,
-                                'email'           => $email_template,
-                                'sms'             => $sms_template,
-                                'call'            => $call_template,
-                                'date'            => false,
+                                'email' => $email_template,
+                                'sms' => $sms_template,
+                                'call' => $call_template,
+                                'date' => false,
                             ];
                             $days[$d] = $day;
                         }
@@ -76,11 +75,11 @@ class DripCampaignSeeder extends Seeder
 
                     $random = rand(0, 3);
                     $process->queue([CreateDripCampaign::class, 'run'], [
-                        'name'        => "{$client->name}'s {$word->format($i)} {$audience['name']} Drip Campaign (;",
-                        'client_id'   => $client->id,
+                        'name' => "{$client->name}'s {$word->format($i)} {$audience['name']} Drip Campaign (;",
+                        'client_id' => $client->id,
                         'audience_id' => $audience['id'],
-                        'status'      => $status[$random]->name,
-                        'days'        => $days,
+                        'status' => $status[$random]->name,
+                        'days' => $days,
                     ]);
                 }
             }

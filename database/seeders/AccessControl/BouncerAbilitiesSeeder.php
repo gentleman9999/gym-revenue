@@ -34,6 +34,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'tasks',
             'calendar',
             'roles',
+            'classifications',
             'access_tokens',
             'departments',
             'positions',
@@ -50,8 +51,11 @@ class BouncerAbilitiesSeeder extends Seeder
             'conversation',
             'chat',
             'customers',
-        ];
-        $operations  = ['create', 'read', 'update', 'trash', 'restore', 'delete'];
+            'leads',
+            'members',
+            'employees',
+            'entry-source-category',];
+        $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
         // Create the Full Unrestricted Abilities
 
@@ -59,8 +63,8 @@ class BouncerAbilitiesSeeder extends Seeder
         foreach ($crud_models as $crud_model) {
             foreach ($operations as $operation) {
                 $bouncers[] = [
-                    'name'        => "{$crud_model}.{$operation}",
-                    'title'       => ucwords("{$operation} {$crud_model}"),
+                    'name' => "{$crud_model}.{$operation}",
+                    'title' => ucwords("{$operation} {$crud_model}"),
                     'entity_type' => Role::getEntityFromGroup($crud_model),
                 ];
             }
@@ -70,16 +74,16 @@ class BouncerAbilitiesSeeder extends Seeder
 
         // Create user impersonation ability. It only applies to users.
         Bouncer::ability()->firstOrCreate([
-            'name'        => 'users.impersonate',
-            'title'       => 'Impersonate Users',
+            'name' => 'users.impersonate',
+            'title' => 'Impersonate Users',
             'entity_type' => User::class,
         ]);
 
         $process = Process::allocate(5);
         $clients = Client::all();
 
-        $impersonate           = ['users'];
-        $account_owner_read    = [
+        $impersonate = ['users'];
+        $account_owner_read = [
             'users',
             'locations',
             'endusers',
@@ -108,7 +112,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'members',
             'employees',
         ];
-        $account_owner_edit    = [
+        $account_owner_edit = [
             'users',
             'locations',
             'endusers',
@@ -137,7 +141,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'members',
             'employees',
         ];
-        $regional_admin_read   = [
+        $regional_admin_read = [
             'users',
             'locations',
             'endusers',
@@ -160,7 +164,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'members',
             'employees',
         ];
-        $regional_admin_edit   = [
+        $regional_admin_edit = [
             'users',
             'locations',
             'endusers',
@@ -227,7 +231,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'members',
             'employees',
         ];
-        $sale_rep_read         = [
+        $sale_rep_read = [
             'users',
             'locations',
             'endusers',
@@ -246,7 +250,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'members',
             'employees',
         ];
-        $sale_rep_edit         = [
+        $sale_rep_edit = [
             'endusers',
             'tasks',
             'calendar',
@@ -259,7 +263,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'members',
             'employees',
         ];
-        $employee_read         = [
+        $employee_read = [
             'users',
             'locations',
             'endusers',
@@ -273,7 +277,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'members',
             'employees',
         ];
-        $employee_edit         = [
+        $employee_edit = [
             'endusers',
             'tasks',
             'chat',
@@ -282,10 +286,10 @@ class BouncerAbilitiesSeeder extends Seeder
             'members',
             'employees',
         ];
-        $contact_user          = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
+        $contact_user = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
 
-        $read_callback        = [self::class, 'allowReadInGroup'];
-        $edit_callback        = [self::class, 'allowEditInGroup'];
+        $read_callback = [self::class, 'allowReadInGroup'];
+        $edit_callback = [self::class, 'allowEditInGroup'];
         $impersonate_callback = [self::class, 'allowImpersonationInGroup'];
 
         foreach ($clients as $client) {

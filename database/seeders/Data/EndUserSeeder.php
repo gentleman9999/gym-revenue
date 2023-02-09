@@ -53,10 +53,10 @@ class EndUserSeeder extends Seeder
                         continue;
                     }
 
-                    $end_user_data['client_id']        = $client['id'];
+                    $end_user_data['client_id'] = $client['id'];
                     $end_user_data['home_location_id'] = $location['gymrevenue_id'];
-                    $end_user_data['user_type']        = $user_type;
-                    $end_user_data['password_hashed']  = '$2y$10$S9YUvKwjvgTuj8K5wXlqTOBUDJ0hOEk/dhBoVAm/vYVchKS/taQt2'; // Hello123!
+                    $end_user_data['user_type'] = $user_type;
+                    $end_user_data['password_hashed'] = '$2y$10$S9YUvKwjvgTuj8K5wXlqTOBUDJ0hOEk/dhBoVAm/vYVchKS/taQt2'; // Hello123!
 
                     if ($user_type == 'lead') {
                         $end_user_data['opportunity'] = rand(0, 3);

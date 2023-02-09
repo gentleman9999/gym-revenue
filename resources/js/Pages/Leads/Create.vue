@@ -8,7 +8,7 @@
         :locations="locations"
         :lead_types="lead_types"
         :lead_statuses="lead_statuses"
-        :lead_sources="lead_sources"
+        :entry_sources="entry_sources"
         :lead_owners="lead_owners"
         :available_services="available_services"
     />
@@ -28,7 +28,7 @@ const props = defineProps({
     lead_types: {
         type: Array,
     },
-    lead_sources: {
+    entry_sources: {
         type: Array,
     },
     available_services: {
