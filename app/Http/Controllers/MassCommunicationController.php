@@ -27,23 +27,23 @@ class MassCommunicationController extends Controller
             return Redirect::route('dashboard');
         }
 
-        $user = auth()->user();
+//        $user = auth()->user();
         $team = CurrentInfoRetriever::getCurrentTeam();
         $campaignType = null;
         if ($type === 'scheduled') {
-            $campaignType = new ScheduledCampaign();
+//            $campaignType = new ScheduledCampaign();
         } elseif ($type === 'drip') {
-            $campaignType = new DripCampaign();
+//            $campaignType = new DripCampaign();
         } else {
             abort(404, "Unknown campaign type: $campaignType");
         }
-        $data = $this->getDashData($campaignType);
-        $data['teamName'] = $team->name;
+//        $data = $this->getDashData($campaignType);
+//        $data['teamName'] = $team->name;
 
         if (! is_null($team->client)) {
             return Inertia::render(
                 'MassCommunication/Show',
-                $data
+//                $data
             );
         } else {
             abort(403);
