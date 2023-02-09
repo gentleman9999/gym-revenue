@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\Audiences\Audience;
@@ -27,27 +29,60 @@ class MassCommunicationController extends Controller
             return Redirect::route('dashboard');
         }
 
-//        $user = auth()->user();
+        $user = auth()->user();
         $team = CurrentInfoRetriever::getCurrentTeam();
         $campaignType = null;
         if ($type === 'scheduled') {
-//            $campaignType = new ScheduledCampaign();
+            $campaignType = new ScheduledCampaign();
         } elseif ($type === 'drip') {
-//            $campaignType = new DripCampaign();
+            $campaignType = new DripCampaign();
         } else {
             abort(404, "Unknown campaign type: $campaignType");
         }
-//        $data = $this->getDashData($campaignType);
-//        $data['teamName'] = $team->name;
+        $data = $this->getDashData($campaignType);
+        $data['teamName'] = $team->name;
 
         if (! is_null($team->client)) {
             return Inertia::render(
                 'MassCommunication/Show',
-//                $data
+                $data
             );
         } else {
             abort(403);
         }
+    }
+
+    public function campaignDash(string $type = "scheduled")
+    {
+        $client_id = request()->user()->client_id;
+        if (! $client_id) {
+            return Redirect::route('dashboard');
+        }
+
+        $campaignType = null;
+        if ($type === 'scheduled') {
+            $campaignType = new ScheduledCampaign();
+        } elseif ($type === 'drip') {
+            $campaignType = new DripCampaign();
+        } else {
+            abort(404, "Unknown campaign type: $campaignType");
+        }
+        $data = $this->getDashData($campaignType);
+
+        return Inertia::render(
+            "MassCommunication/CampaignDash",
+            $data
+        );
+    }
+
+    public function getDripCampaign(DripCampaign $dripCampaign)
+    {
+        return $dripCampaign->load('days');
+    }
+
+    public function getScheduledCampaign(ScheduledCampaign $scheduledCampaign)
+    {
+        return $scheduledCampaign;
     }
 
     protected function getDashData(DripCampaign | ScheduledCampaign $model): array
@@ -90,38 +125,5 @@ class MassCommunicationController extends Controller
                 'campaigns' => $campaigns,
                 'type' => (new ReflectionClass($model))->getShortName(),
             ];
-    }
-
-    public function campaignDash(string $type = "scheduled")
-    {
-        $client_id = request()->user()->client_id;
-        if (! $client_id) {
-            return Redirect::route('dashboard');
-        }
-
-        $campaignType = null;
-        if ($type === 'scheduled') {
-            $campaignType = new ScheduledCampaign();
-        } elseif ($type === 'drip') {
-            $campaignType = new DripCampaign();
-        } else {
-            abort(404, "Unknown campaign type: $campaignType");
-        }
-        $data = $this->getDashData($campaignType);
-
-        return Inertia::render(
-            "MassCommunication/CampaignDash",
-            $data
-        );
-    }
-
-    public function getDripCampaign(DripCampaign $dripCampaign)
-    {
-        return $dripCampaign->load('days');
-    }
-
-    public function getScheduledCampaign(ScheduledCampaign $scheduledCampaign)
-    {
-        return $scheduledCampaign;
     }
 }
