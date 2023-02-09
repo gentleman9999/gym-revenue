@@ -32,13 +32,12 @@
         "lorisleiva/laravel-actions": "2.4.3",
         "maatwebsite/excel": "^3.1",
         "mailgun/mailgun-php": "^3.5",
+        "overtrue/laravel-versionable": "^4.2",
         "mll-lab/laravel-graphiql": "^1.0",
         "nuwave/lighthouse": "^5.61",
-        "overtrue/laravel-versionable": "^4.2",
         "predis/predis": "^1.1",
         "prologue/alerts": "^1.0.0",
         "protonemedia/laravel-cross-eloquent-search": "^3.0",
-        "psr/http-factory-implementation": "*",
         "psr/simple-cache": "^2.0",
         "pusher/pusher-php-server": "^7.0",
         "sendgrid/sendgrid": "^8.0",
@@ -112,8 +111,7 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "php-http/discovery": true
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
     "minimum-stability": "dev",
