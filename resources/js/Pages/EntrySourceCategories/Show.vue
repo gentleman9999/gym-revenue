@@ -112,12 +112,10 @@ import Confirm from "@/Components/Confirm.vue";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-// import UserPreview from "@/Pages/Users/Partials/UserPreview.vue";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
-import FileManager from "./Partials/FileManager.vue";
 
 export default defineComponent({
     components: {
@@ -127,10 +125,8 @@ export default defineComponent({
         Confirm,
         SimpleSearchFilter,
         PageToolbarNav,
-        // UserPreview,
         Multiselect,
         DaisyModal,
-        FileManager,
     },
     props: ["entrySourceCategories", "filters", "clientName"],
     setup(props) {
