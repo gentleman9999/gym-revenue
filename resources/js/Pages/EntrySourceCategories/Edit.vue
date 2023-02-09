@@ -36,8 +36,6 @@ import JetLabel from "@/Jetstream/Label.vue";
 
 import UserForm from "@/Pages/Users/Partials/UserForm.vue";
 
-import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
-
 export default defineComponent({
     components: {
         LayoutHeader,
@@ -46,8 +44,6 @@ export default defineComponent({
         JetInputError,
         JetLabel,
         UserForm,
-        ModalableWrapper,
-        ModalSlot,
     },
     props: {
         selectedUser: {
