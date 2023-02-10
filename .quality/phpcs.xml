@@ -24,6 +24,8 @@
     <config name="ignore_warnings_on_exit" value="0"/>
     <config name="show_warnings" value="1"/>
     <config name="report_width" value="200"/>
+    <config name="colors" value="true"/>
+    <config name="encoding" value="utf-8"/>
 
     <!-- include all sniffs in the PSR12 standard -->
     <rule ref="PSR12"/>
