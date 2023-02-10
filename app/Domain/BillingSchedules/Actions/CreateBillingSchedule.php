@@ -31,7 +31,7 @@ class CreateBillingSchedule
     public function handle(array $data): BillingSchedule
     {
         $id = Uuid::new();
-        BillingScheduleAggregate::retrieve((string)$id)->create($data)->persist();
+        BillingScheduleAggregate::retrieve((string) $id)->create($data)->persist();
 
 
         return BillingSchedule::findOrFail($id);

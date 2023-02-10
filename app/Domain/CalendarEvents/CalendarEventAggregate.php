@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEvents;
 
 use App\Domain\CalendarEvents\Events\CalendarEventCreated;

@@ -26,24 +26,24 @@ class LocationVendor extends GymRevProjection
     use SoftDeletes;
     use Sortable;
 
+    /** @var array<string>  */
     protected $fillable = [
         'name', 'vendor_category_id', 'location_id', 'poc_name', 'poc_email', 'poc_phone',
     ];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
 
     public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class);
     }
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
+    }
+
     /**
      * Create a new factory instance for the model.
      *
-     * @return Factory
      */
     protected static function newFactory(): Factory
     {

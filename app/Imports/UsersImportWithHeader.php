@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Imports;
 
 use App\Domain\Departments\Department;
@@ -21,7 +23,7 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
         $this->client_id = $client;
     }
 
-    public function collection(Collection|\Illuminate\Support\Collection $rows)
+    public function collection(Collection|\Illuminate\Support\Collection $rows): void
     {
         $roles = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
 
@@ -88,8 +90,8 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 'city' => array_key_exists('city', $arrayRow) ? $row['city'] : null,
                 'state' => array_key_exists('state', $arrayRow) ? $row['state'] : null,
                 'zip' => array_key_exists('zip', $arrayRow) ? $row['zip'] : null,
-                'positions' => is_null($position_ids) ? null : $position_ids,
-                'departments' => is_null($department_ids) ? null : $department_ids,
+                'positions' => $position_ids === null ? null : $position_ids,
+                'departments' => $department_ids === null ? null : $department_ids,
                 'client_id' => $this->client_id,
             ]);
         }

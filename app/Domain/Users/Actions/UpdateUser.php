@@ -10,17 +10,14 @@ use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
-use App\Domain\Users\ValidationRules;
 use App\Enums\UserTypesEnum;
-
-use function bcrypt;
-
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Validator;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
+
+use function bcrypt;
 
 class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
 {
@@ -35,11 +32,11 @@ class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
             $payload['password'] = bcrypt($payload['password']);
         }
         if (array_key_exists('home_location_id', $payload)) {
-            $home_location = Location::find($payload['home_location_id']);
-            $payload['home_location_id'] = ! is_null($home_location) ?
+            $home_location               = Location::find($payload['home_location_id']);
+            $payload['home_location_id'] = $home_location !== null ?
                 $home_location->gymrevenue_id : $payload['home_location_id'];
         }
-        UserAggregate::retrieve((string)$user->id)->update($payload)->persist();
+        UserAggregate::retrieve((string) $user->id)->update($payload)->persist();
 
         if ($this->updatingSelf) {
             $user = User::withoutGlobalScopes()->findOrFail($user->id);
@@ -50,6 +47,11 @@ class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
         return $user;
     }
 
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
     public function mapArgsToHandle(array $args): array
     {
         $user = $args['input'];
@@ -133,15 +135,13 @@ class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
     /**
      * Validate and update the given user's profile information.
      *
-     * @param mixed $user
-     * @param array $input
-     * @return void
+     * @param array<string, mixed> $input
      */
-    public function update($user, array $input)
+    public function update(mixed $user, array $input): void
     {
         $this->updatingSelf = true;
         $input['client_id'] = $user->client_id;
-        $input['id'] = $user->id;
+        $input['id']        = $user->id;
         $this->handle($user, $input);
     }
 
@@ -150,7 +150,7 @@ class UpdateUser extends GymRevAction implements UpdatesUserProfileInformation
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'zip.required' => 'A Zip code is required',

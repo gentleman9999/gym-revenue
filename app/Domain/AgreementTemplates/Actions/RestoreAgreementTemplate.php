@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\AgreementTemplates\Actions;
 
 use App\Domain\AgreementTemplates\AgreementTemplateAggregate;
@@ -12,7 +14,7 @@ class RestoreAgreementTemplate
 {
     use AsAction;
 
-    public string $commandSignature = 'audience:restore {id}';
+    public string $commandSignature   = 'audience:restore {id}';
     public string $commandDescription = 'Restores the audience';
 
     public function handle(AgreementTemplate $agreement): AgreementTemplate

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\ClientSettingsAggregate;
@@ -31,6 +33,9 @@ class DeleteLogo
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

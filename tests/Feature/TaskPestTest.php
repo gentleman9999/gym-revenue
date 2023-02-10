@@ -15,7 +15,6 @@ use App\Domain\CalendarEventTypes\Actions\CreateCalendarEventType;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Clients\Actions\CreateClient;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\Locations\Actions\CreateLocation;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Actions\CreateReminderFromCalendarEvent;
 use App\Domain\Reminders\Actions\DeleteReminder;
@@ -213,7 +212,7 @@ it('should create task with leads, members and users', function () {
     $location = createLocation(['address1' => fake()->unique()->streetName,'client_id' => $clientId]);
     $title = fake()->word();
     $description = fake()->paragraph();
-    $endUsers = [];
+    $end_users = [];
     $users = [];
     $members = [];
 
@@ -226,7 +225,7 @@ it('should create task with leads, members and users', function () {
             'opportunity' => rand(0, 3),
         ]);
 
-        $endUsers[] = $endU->id;
+        $end_users[] = $endU->id;
     }
 
     for ($c = 0;$c < rand(1, 15);$c++) {
@@ -237,15 +236,15 @@ it('should create task with leads, members and users', function () {
     $agreementTemplate = agreementTemplate($client, $location);
     $agreementCategory = AgreementCategory::where('client_id', $client->id)->first()->toArray();
 
-    for ($c = 0;$c < sizeof($endUsers);$c++) {
+    for ($c = 0;$c < sizeof($end_users);$c++) {
         if ($c % 2 == 0) {
-            $members[] = $endUsers[$c];
+            $members[] = $end_users[$c];
             makeAgreement([
                 'client_id' => $client->id,
                 'agreement_category_id' => $agreementCategory['id'],
                 'gr_location_id' => $location->gymrevenue_id,
                 'created_by' => $user->id,
-                'end_user_id' => $endUsers[$c],
+                'end_user_id' => $end_users[$c],
                 'agreement_template_id' => $agreementTemplate->id,
             ]);
         }
@@ -259,7 +258,7 @@ it('should create task with leads, members and users', function () {
         "end" => $todaysDate,
         "event_type_id" => $taskEventId,
         "user_attendees" => $users,
-        "lead_attendees" => $endUsers,
+        "lead_attendees" => $end_users,
         "member_attendees" => $members,
         "location_id" => $location->id,
         "client_id" => $clientId,
@@ -274,9 +273,9 @@ it('should create task with leads, members and users', function () {
 
     $specificAttendees = true;
 
-    $this->assertEquals(count($endUsers) + 1 + count($users), count($calendarAttendeeArray));
+    $this->assertEquals(count($end_users) + 1 + count($users), count($calendarAttendeeArray));
     for ($c = 0;$c < sizeof($calendarAttendeeArray);$c++) {
-        if (! (in_array($calendarAttendeeArray[$c]['entity_data']['id'], $endUsers))) {
+        if (! (in_array($calendarAttendeeArray[$c]['entity_data']['id'], $end_users))) {
             if (! $user->id == $calendarAttendeeArray[$c]['entity_data']['id']) {
                 $specificAttendees = false;
             }
@@ -468,7 +467,7 @@ it('should create task with members only', function () {
     $location = createLocation(['address1' => fake()->unique()->streetName,'client_id' => $clientId]);
     $title = fake()->word();
     $description = fake()->paragraph();
-    $endUsers = [];
+    $end_users = [];
     $users = [];
 
     for ($c = 0;$c < rand(1, 15);$c++) {
@@ -478,24 +477,24 @@ it('should create task with members only', function () {
             'user_type' => UserTypesEnum::LEAD,
             'opportunity' => rand(0, 3),
         ]);
-        $endUsers[] = $endU->id;
+        $end_users[] = $endU->id;
     }
 
     $agreementTemplate = agreementTemplate($client, $location);
     $agreementCategory = AgreementCategory::where('client_id', $client->id)->first()->toArray();
 
-    for ($c = 0;$c < sizeof($endUsers);$c++) {
+    for ($c = 0;$c < sizeof($end_users);$c++) {
         $agreement = makeAgreement([
             'client_id' => $client->id,
             'agreement_category_id' => $agreementCategory['id'],
             'gr_location_id' => $location->gymrevenue_id,
             'created_by' => $user->id,
-            'end_user_id' => $endUsers[$c],
+            'end_user_id' => $end_users[$c],
             'agreement_template_id' => $agreementTemplate->id,
         ]);
         signedAgreement([
             'id' => $agreement->id,
-            'end_user_id' => $endUsers[$c],
+            'end_user_id' => $end_users[$c],
         ]);
     }
     $data = [
@@ -507,14 +506,14 @@ it('should create task with members only', function () {
         "event_type_id" => $taskEventId,
         "user_attendees" => [],
         "lead_attendees" => [],
-        "member_attendees" => $endUsers,
+        "member_attendees" => $end_users,
         "location_id" => $location->id,
         "client_id" => $clientId,
     ];
 
 
     $calendarEvent = CreateCalendarEvent::run($data, $user);
-    foreach ($endUsers as $member_id) {
+    foreach ($end_users as $member_id) {
         $test = \App\Domain\Users\Models\Lead::find($member_id);
         $member = User::find($member_id);
         if ($member) {
@@ -533,9 +532,9 @@ it('should create task with members only', function () {
 
     $specificAttendees = true;
     // The following fails because the CreateCalendarEvent function doesn't find the Member ID's
-    $this->assertEquals(count($endUsers) + 1 + count($users), count($calendarAttendeeArray));
+    $this->assertEquals(count($end_users) + 1 + count($users), count($calendarAttendeeArray));
     for ($c = 0;$c < sizeof($calendarAttendeeArray);$c++) {
-        if (! (in_array($calendarAttendeeArray[$c]['entity_data']['id'], $endUsers))) {
+        if (! (in_array($calendarAttendeeArray[$c]['entity_data']['id'], $end_users))) {
             if (! $user->id == $calendarAttendeeArray[$c]['entity_data']['id']) {
                 $specificAttendees = false;
             }
@@ -570,7 +569,7 @@ it('should create task with leads only', function () {
     $location = createLocation(['address1' => fake()->unique()->streetName,'client_id' => $clientId]);
     $title = fake()->word();
     $description = fake()->paragraph();
-    $endUsers = [];
+    $end_users = [];
     $users = [];
 
     for ($c = 0;$c < rand(1, 15);$c++) {
@@ -581,7 +580,7 @@ it('should create task with leads only', function () {
             'opportunity' => rand(0, 3),
         ]);
 
-        $endUsers[] = $endU->id;
+        $end_users[] = $endU->id;
     }
 
     $data = [
@@ -592,7 +591,7 @@ it('should create task with leads only', function () {
         "end" => $todaysDate,
         "event_type_id" => $taskEventId,
         "user_attendees" => $users,
-        "lead_attendees" => $endUsers,
+        "lead_attendees" => $end_users,
         "member_attendees" => [],
         "location_id" => $location->id,
         "client_id" => $clientId,
@@ -605,9 +604,9 @@ it('should create task with leads only', function () {
 
     $specificAttendees = true;
 
-    $this->assertEquals(count($endUsers) + 1 + count($users), count($calendarAttendeeArray));
+    $this->assertEquals(count($end_users) + 1 + count($users), count($calendarAttendeeArray));
     for ($c = 0;$c < sizeof($calendarAttendeeArray);$c++) {
-        if (! (in_array($calendarAttendeeArray[$c]['entity_data']['id'], $endUsers))) {
+        if (! (in_array($calendarAttendeeArray[$c]['entity_data']['id'], $end_users))) {
             if (! $user->id == $calendarAttendeeArray[$c]['entity_data']['id']) {
                 $specificAttendees = false;
             }
@@ -641,7 +640,7 @@ it('should create task with users only', function () {
     $location = createLocation(['address1' => fake()->unique()->streetName,'client_id' => $clientId]);
     $title = fake()->word();
     $description = fake()->paragraph();
-    $endUsers = [];
+    $end_users = [];
     $users = [];
 
     for ($c = 0;$c < rand(1, 15);$c++) {
@@ -657,7 +656,7 @@ it('should create task with users only', function () {
         "end" => $todaysDate,
         "event_type_id" => $taskEventId,
         "user_attendees" => $users,
-        "lead_attendees" => $endUsers,
+        "lead_attendees" => $end_users,
         "member_attendees" => [],
         "location_id" => $location->id,
         "client_id" => $clientId,
@@ -670,7 +669,7 @@ it('should create task with users only', function () {
 
     $specificAttendees = true;
 
-    $this->assertEquals(count($endUsers) + 1 + count($users), count($calendarAttendeeArray));
+    $this->assertEquals(count($end_users) + 1 + count($users), count($calendarAttendeeArray));
     for ($c = 0;$c < sizeof($calendarAttendeeArray);$c++) {
         if (! (in_array($calendarAttendeeArray[$c]['entity_data']['id'], $users))) {
             if (! $user->id == $calendarAttendeeArray[$c]['entity_data']['id']) {

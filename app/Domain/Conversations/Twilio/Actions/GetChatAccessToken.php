@@ -22,7 +22,7 @@ class GetChatAccessToken
      */
     public function handle(User $user): array
     {
-        $client = $user->client;
+        $client         = $user->client;
         $twilio_service = $client->getTwilioService();
         // https://www.twilio.com/docs/iam/access-tokens#create-an-access-token-for-conversations
         $chat_grant = new ChatGrant();
@@ -32,7 +32,6 @@ class GetChatAccessToken
     }
 
     /**
-     * @param ActionRequest $request
      *
      * @return array
      * @throws ConfigurationException

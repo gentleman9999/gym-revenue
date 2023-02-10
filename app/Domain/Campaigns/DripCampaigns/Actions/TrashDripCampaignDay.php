@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
 use App\Domain\Campaigns\DripCampaigns\DripCampaignDay;
@@ -22,6 +24,9 @@ class TrashDripCampaignDay
         return $dripCampaignDay->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

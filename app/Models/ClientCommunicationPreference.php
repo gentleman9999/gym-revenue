@@ -17,9 +17,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ClientCommunicationPreference extends GymRevProjection
 {
     use HasFactory;
-    public const COMMUNICATION_TYPES_VOICE = 'voice';
-    public const COMMUNICATION_TYPES_SMS = 'sms';
-    public const COMMUNICATION_TYPES_EMAIL = 'email';
+
+    public const COMMUNICATION_TYPES_VOICE        = 'voice';
+    public const COMMUNICATION_TYPES_SMS          = 'sms';
+    public const COMMUNICATION_TYPES_EMAIL        = 'email';
     public const COMMUNICATION_TYPES_CONVERSATION = 'conversation';
 
     public const COMMUNICATION_TYPES = [
@@ -29,6 +30,7 @@ class ClientCommunicationPreference extends GymRevProjection
         self::COMMUNICATION_TYPES_CONVERSATION => 'Conversation',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         self::COMMUNICATION_TYPES_VOICE => 'bool',
         self::COMMUNICATION_TYPES_SMS => 'bool',
@@ -36,6 +38,7 @@ class ClientCommunicationPreference extends GymRevProjection
         self::COMMUNICATION_TYPES_CONVERSATION => 'bool',
     ];
 
+    /** @var array<string> */
     protected $fillable = [
         self::COMMUNICATION_TYPES_VOICE,
         self::COMMUNICATION_TYPES_SMS,
@@ -43,6 +46,7 @@ class ClientCommunicationPreference extends GymRevProjection
         self::COMMUNICATION_TYPES_CONVERSATION,
     ];
 
+    /** @var array<string> */
     protected $hidden = [
         'client_id',
     ];

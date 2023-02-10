@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Audiences\Actions;
 
 use App\Actions\GymRevAction;
@@ -24,7 +26,12 @@ class UpdateAudience extends GymRevAction
         return $audience->refresh();
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         $audience = $args['input'];
 

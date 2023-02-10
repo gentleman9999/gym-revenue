@@ -14,17 +14,17 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 class AddConversationAgent
 {
     use AsAction;
-    public const CHAT_CONVERSATION_ABILITY_NAME = 'conversation.read';
 
-    public string $commandSignature = 'conversation:agent {user?*}';
-    public string $commandDescription = 'Add user to conversation agents.';
+    public const CHAT_CONVERSATION_ABILITY_NAME = 'conversation.read';
+    public string $commandSignature             = 'conversation:agent {user?*}';
+    public string $commandDescription           = 'Add user to conversation agents.';
 
     public function handle(User $user): void
     {
         Bouncer::allow($user)->to(self::CHAT_CONVERSATION_ABILITY_NAME, ClientConversation::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): void
     {
     }
 

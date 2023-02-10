@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\SMS\Actions;
 
 use App\Domain\SMS\SmsAggregate;
@@ -11,9 +13,14 @@ class TwilioStatusCallback
 {
     use AsAction;
 
-    public function handle(array $payload)
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return array<string, mixed>
+     */
+    public function handle(array $payload): array
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
         SmsAggregate::retrieve($id)->twilioTrack($payload)->persist();
 
         return $payload;
@@ -29,16 +36,16 @@ class TwilioStatusCallback
     public function jsonResponse($result)
     {
         $results = ['success' => false, 'message' => 'Server Error. Message not sent'];
-        $code = 500;
+        $code    = 500;
 
         if ($result) {
             if (is_string($result)) {
                 $results['message'] = $result;
-                $code = 401;
+                $code               = 401;
             } else {
                 $results['success'] = true;
                 $results['message'] = 'Success';
-                $code = 200;
+                $code               = 200;
             }
         }
 

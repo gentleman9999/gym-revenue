@@ -17,16 +17,14 @@ use Mailgun\Model\Message\SendResponse;
 class MailgunSend extends Action
 {
     use AsAction;
+
     public string $commandSignature = 'email-test {email}';
 
     /**
      * Execute the action and return a result.
      *
      * @param User[] $recipients
-     * @param string $subject
-     * @param string $markup
      *
-     * @return SendResponse
      */
     public function handle(array $recipients, string $subject, string $markup): SendResponse
     {
@@ -34,10 +32,10 @@ class MailgunSend extends Action
             throw new InvalidArgumentException('recipients should not be an associate array.');
         }
 
-        $list = [];
-        $parser = new TemplateParserService($markup);
+        $list    = [];
+        $parser  = new TemplateParserService($markup);
         $mailgun = $recipients[0]->client->getMailGunService();
-        $is_dev = AppState::isSimuationMode();
+        $is_dev  = AppState::isSimuationMode();
 
         // The maximum number of recipients allowed for Batch Sending is 1,000.
         foreach (array_chunk($recipients, 1000) as $users) {
@@ -59,7 +57,7 @@ class MailgunSend extends Action
             }
 
             // mail gun delimiter is '%'
-            $markup = preg_replace('~{{\s*(.*?)\s*}}~', '%recipient.$1%', $markup);
+            $markup     = preg_replace('~{{\s*(.*?)\s*}}~', '%recipient.$1%', $markup);
             $parameters = [
                 'to' => $recipients,
                 'subject' => $subject,

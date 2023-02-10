@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\DynamicReports\Actions;
 
 use App\Domain\Users\Models\Lead;
@@ -16,12 +18,9 @@ class CreateLeadReport
 
     public function handle($data): Collection
     {
-        $report = QueryBuilder::for(Lead::class)
+        return QueryBuilder::for(Lead::class)
             ->allowedFilters(['first_name', 'last_name', 'email'])
                    ->get();
-
-
-        return $report;
     }
 
     public function asController(ActionRequest $request)

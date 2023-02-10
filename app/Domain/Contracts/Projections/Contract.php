@@ -22,15 +22,16 @@ class Contract extends GymRevProjection
     use Uuid;
 
 
+    /** @var array<string>  */
     protected $fillable = ['client_id', 'name'];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
 
     public function client(): HasOne
     {
         return $this->hasOne(Client::class, 'id', 'client_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

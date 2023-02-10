@@ -29,6 +29,10 @@ class CreateGymAmenity
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): GymAmenity
     {
         $id = Uuid::get();//we should use uuid here

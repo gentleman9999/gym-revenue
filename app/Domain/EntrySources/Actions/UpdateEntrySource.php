@@ -33,7 +33,7 @@ class UpdateEntrySource
 
     public function asController(ActionRequest $request): Client
     {
-        $payload = [];
+        $payload                            = [];
         $payload['is_default_entry_source'] = true;
         $this->handle($request->default_entry_source_id, $payload);
 

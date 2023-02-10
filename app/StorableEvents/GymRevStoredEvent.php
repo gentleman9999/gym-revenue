@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents;
 
 use App\Domain\Clients\Projections\Client;
@@ -14,64 +16,6 @@ use Spatie\EventSourcing\StoredEvents\Models\EloquentStoredEvent;
 
 class GymRevStoredEvent extends EloquentStoredEvent
 {
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function (GymRevStoredEvent $storedEvent) {
-            if (! Projectionist::isReplaying()) {
-                $user_id = null;
-                if (session('user_id')) {
-                    $user_id = auth()->user()->id;
-                }
-                $client_id = CurrentInfoRetriever::getCurrentClientID();
-                $access_token = request()->bearerToken() ?? null;
-                $ip = request()->ip() ?? null;
-                $api_user = $access_token !== null ? User::whereAccessToken($access_token)->first() : null;
-                $api_user_id = $api_user->id ?? null;
-                if (! $client_id && $api_user && $api_user->client_id) {
-                    $client_id = $api_user->client_id;
-                }
-                if (! $client_id) {
-                    if (array_key_exists('client', $storedEvent->event_properties)) {
-                        $client_id = $storedEvent->event_properties['client'];
-                    } elseif (array_key_exists('payload', $storedEvent->event_properties) && array_key_exists('client_id', $storedEvent->event_properties['payload'])) {
-                        $client_id = $storedEvent->event_properties['payload']['client_id'];
-                    }
-                }
-
-                $impersonatorUserId = app('impersonate')->getImpersonatorId();
-                $storedEvent->meta_data['impersonator_user_id'] = $impersonatorUserId;
-
-
-                $auto_generated = $user_id === null && $access_token === null;
-
-                $storedEvent->meta_data['client_id'] = $client_id;
-                $storedEvent->meta_data['user_id'] = $user_id;
-                $storedEvent->meta_data['api_user_id'] = $api_user_id;
-                $storedEvent->meta_data['access_token'] = $access_token;
-                $storedEvent->meta_data['auto-generated'] = $auto_generated;
-                $storedEvent->meta_data['ip-address'] = $ip;
-            }
-        });
-        static::created(function (GymRevStoredEvent $storedEvent) {
-            if ($storedEvent->clientId() && $storedEvent->entity()) {
-                (new ClientActivity())->writeable()->create([
-                    'stored_event_id' => $storedEvent->id,
-                    'client_id' => $storedEvent->clientId(),
-                    'entity' => $storedEvent->entity(),
-                    'entity_id' => $storedEvent->entityId(),
-                    'operation' => $storedEvent->operation(),
-                    'user_id' => $storedEvent->userId(),
-                    'api_user_id' => $storedEvent->accessToken() ? $storedEvent->apiUser()->id : null,
-                    'access_token' => $storedEvent->accessToken(),
-                    'ip_address' => $storedEvent->ipAddress(),
-                    'created_at' => $storedEvent->createdAt(),
-                ]);
-            }
-        });
-    }
-
     public function operation(): ?string
     {
         return $this->meta_data['operation'] ?? null;
@@ -167,5 +111,63 @@ class GymRevStoredEvent extends EloquentStoredEvent
         }
 
         return User::withoutGlobalScopes()->whereAccessToken($accessToken)->first();
+    }
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function (GymRevStoredEvent $storedEvent): void {
+            if (! Projectionist::isReplaying()) {
+                $user_id = null;
+                if (session('user_id')) {
+                    $user_id = auth()->user()->id;
+                }
+                $client_id    = CurrentInfoRetriever::getCurrentClientID();
+                $access_token = request()->bearerToken() ?? null;
+                $ip           = request()->ip() ?? null;
+                $api_user     = $access_token !== null ? User::whereAccessToken($access_token)->first() : null;
+                $api_user_id  = $api_user->id ?? null;
+                if (! $client_id && $api_user && $api_user->client_id) {
+                    $client_id = $api_user->client_id;
+                }
+                if (! $client_id) {
+                    if (array_key_exists('client', $storedEvent->event_properties)) {
+                        $client_id = $storedEvent->event_properties['client'];
+                    } elseif (array_key_exists('payload', $storedEvent->event_properties) && array_key_exists('client_id', $storedEvent->event_properties['payload'])) {
+                        $client_id = $storedEvent->event_properties['payload']['client_id'];
+                    }
+                }
+
+                $impersonatorUserId                             = app('impersonate')->getImpersonatorId();
+                $storedEvent->meta_data['impersonator_user_id'] = $impersonatorUserId;
+
+
+                $auto_generated = $user_id === null && $access_token === null;
+
+                $storedEvent->meta_data['client_id']      = $client_id;
+                $storedEvent->meta_data['user_id']        = $user_id;
+                $storedEvent->meta_data['api_user_id']    = $api_user_id;
+                $storedEvent->meta_data['access_token']   = $access_token;
+                $storedEvent->meta_data['auto-generated'] = $auto_generated;
+                $storedEvent->meta_data['ip-address']     = $ip;
+            }
+        });
+        static::created(function (GymRevStoredEvent $storedEvent): void {
+            if ($storedEvent->clientId() && $storedEvent->entity()) {
+                (new ClientActivity())->writeable()->create([
+                    'stored_event_id' => $storedEvent->id,
+                    'client_id' => $storedEvent->clientId(),
+                    'entity' => $storedEvent->entity(),
+                    'entity_id' => $storedEvent->entityId(),
+                    'operation' => $storedEvent->operation(),
+                    'user_id' => $storedEvent->userId(),
+                    'api_user_id' => $storedEvent->accessToken() ? $storedEvent->apiUser()->id : null,
+                    'access_token' => $storedEvent->accessToken(),
+                    'ip_address' => $storedEvent->ipAddress(),
+                    'created_at' => $storedEvent->createdAt(),
+                ]);
+            }
+        });
     }
 }

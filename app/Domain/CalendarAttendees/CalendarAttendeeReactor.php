@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarAttendees;
 
 use App\Domain\CalendarAttendees\Actions\InviteAttendee;
@@ -14,7 +16,9 @@ use App\Domain\Reminders\Actions\DeleteReminder;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\Models\User;
 use App\Models\Utility\AppState;
+
 use function env;
+
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Mailgun\Mailgun;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;

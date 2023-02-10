@@ -6,6 +6,6 @@ namespace App\Enums;
 
 enum MemberGroupTypeEnum: string
 {
-    case FAMILY = 'Family';
+    case FAMILY    = 'Family';
     case CORPORATE = 'Corporate';
 }

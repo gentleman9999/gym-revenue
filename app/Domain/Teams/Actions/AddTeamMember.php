@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -42,6 +44,9 @@ class AddTeamMember implements AddsTeamMembers
         TeamAggregate::retrieve($team_id)->addMember($user_id)->persist();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -55,7 +60,7 @@ class AddTeamMember implements AddsTeamMembers
     public function asController(ActionRequest $request, Team $team, $teamMemberId): User
     {
         $this->team = $team;
-        $user = User::findOrFail($teamMemberId);
+        $user       = User::findOrFail($teamMemberId);
         $this->handle($team->id, $user->id);
 
         return $user;
@@ -71,13 +76,8 @@ class AddTeamMember implements AddsTeamMembers
     /**
      * Add a new team member to the given team.
      *
-     * @param  mixed  $user
-     * @param  mixed  $team
-     * @param  string  $email
-     * @param  string|null  $role
-     * @return void
      */
-    public function add($user, $team, string $email, string $role = null)
+    public function add(mixed $user, mixed $team, string $email, ?string $role = null): void
     {
         $this->handle($team->id, User::whereEmail($email)->firstOrFail()->id);
     }

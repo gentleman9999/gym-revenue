@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Tasks;
 
 use App\Aggregates\Users\UserAggregate;
@@ -19,7 +21,7 @@ class RestoreTask
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             //no rules since we only accept an id route param, which is validated in the route definition

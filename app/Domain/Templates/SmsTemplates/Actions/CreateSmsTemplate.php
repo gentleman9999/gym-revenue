@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
 use App\Actions\GymRevAction;
@@ -27,14 +29,23 @@ class CreateSmsTemplate extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['input']];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): SmsTemplate
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         SmsTemplateAggregate::retrieve($id)
             ->create($data)

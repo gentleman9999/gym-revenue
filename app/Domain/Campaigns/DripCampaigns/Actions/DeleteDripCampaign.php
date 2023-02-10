@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
@@ -11,7 +13,7 @@ class DeleteDripCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'drip-campaign:delete {id}';
+    public string $commandSignature   = 'drip-campaign:delete {id}';
     public string $commandDescription = 'Permanently deletes the DripCampaign';
 
     public function handle(DripCampaign $dripCampaign): DripCampaign

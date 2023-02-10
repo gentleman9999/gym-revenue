@@ -33,10 +33,7 @@ class CreateParticipant
     }
 
     /**
-     * @param Chat $chat
-     * @param User $user
      *
-     * @return ChatParticipant
      */
     public function handle(Chat $chat, User $user): ChatParticipant
     {
@@ -57,6 +54,9 @@ class CreateParticipant
         return $participant;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

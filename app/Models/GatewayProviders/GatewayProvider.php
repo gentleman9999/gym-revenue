@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\GatewayProviders;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -15,17 +17,22 @@ class GatewayProvider extends Model
     use Notifiable;
     use SoftDeletes;
     use Uuid;
-    public const PROVIDER_SLUG_TWILIO_VOICE = 'twilio-voice';
-    public const PROVIDER_SLUG_TWILIO_SMS = 'twilio-sms';
+
+    public const PROVIDER_SLUG_TWILIO_VOICE      = 'twilio-voice';
+    public const PROVIDER_SLUG_TWILIO_SMS        = 'twilio-sms';
     public const PROVIDER_SLUG_TWILIO_CONVERSION = 'twilio-conversation';
-    public const PROVIDER_SLUG_MAILGUN = 'mailgun';
+    public const PROVIDER_SLUG_MAILGUN           = 'mailgun';
 
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
+    /** @var bool */
     public $incrementing = false;
 
+    /** @var string */
+    protected $primaryKey = 'id';
+
+    /** @var string */
+    protected $keyType = 'string';
+
+    /** @var array<string> */
     protected $fillable = [
         'name',
         'slug',
@@ -41,12 +48,16 @@ class GatewayProvider extends Model
         'misc',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'details' => 'array',
         'misc' => 'array',
     ];
 
-    public static function getAllProvidersAsArray()
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function getAllProvidersAsArray(): array
     {
         $results = [];
 

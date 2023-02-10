@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients;
 
 use App\Domain\Clients\Events\ClientGatewaySet;

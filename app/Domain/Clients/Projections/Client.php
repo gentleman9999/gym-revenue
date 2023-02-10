@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Projections;
 
 use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
@@ -56,15 +58,17 @@ class Client extends GymRevProjection
     use SoftDeletes;
     use HasFactory;
 
+    /** @var array<string> */
     protected $fillable = [
         'name',
         'active',
         'details',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'services' => 'array',
-        'details' => 'array',
+        'details'  => 'array',
     ];
 
     /**
@@ -159,7 +163,7 @@ class Client extends GymRevProjection
 
     public function socialMedia(): HasMany
     {
-        return $this->hasMany(ClientSocialMedia::class, );
+        return $this->hasMany(ClientSocialMedia::class,);
     }
 
     public function accountOwners(): Collection
@@ -173,12 +177,12 @@ class Client extends GymRevProjection
     {
         $file = File::whereType('logo')->first();
 
-        return is_null($file) ? null : $file->url;
+        return $file?->url;
     }
 
     public function getSocialMedia(): Collection
     {
-        return $this->socialMedia->keyBy('name')->map(fn ($s) => $s->value);
+        return $this->socialMedia->keyBy('name')->map(fn($s) => $s->value);
     }
 
     public function gatewaySettings(): HasMany
@@ -213,14 +217,7 @@ class Client extends GymRevProjection
 
     public function gatewayIntegration(): HasManyThrough
     {
-        return $this->hasOneThrough(
-            GatewayProvider::class,
-            ClientGatewayIntegration::class,
-            'client_id',
-            'id',
-            'id',
-            'gateway_id',
-        );
+        return $this->hasOneThrough(GatewayProvider::class, ClientGatewayIntegration::class, 'client_id', 'id', 'id', 'gateway_id',);
     }
 
     /**
@@ -262,27 +259,29 @@ class Client extends GymRevProjection
     }
 
     /**
-     * @param array       $permission_names
-     * @param string|null $entity_type
+     * @param array<string> $permission_names
+     * @param string|null   $entity_type
      *
      * @return Collection
      */
     public function getUsersWithPermissionQuery(array $permission_names, ?string $entity_type = null): Collection
     {
-        return $this->users->filter(static fn (User $user) => $user->canAny($permission_names, $entity_type));
+        return $this->users->filter(static fn(User $user) => $user->canAny($permission_names, $entity_type));
     }
 
     public function getGatewayProviderBySlug(string $slug): GatewayProvider
     {
         // IF YOU RUN INTO THIS ERROR: TRY RUNNING "artisan client:create-gateway"
-        return $this->gatewayIntegration()->where(['slug' => $slug])->first() ?: throw new RuntimeException(
-            "No client integration configured for provider '{$slug}'"
-        );
+        return $this->gatewayIntegration()
+            ->where(['slug' => $slug])
+            ->first() ?: throw new RuntimeException("No client integration configured for provider '{$slug}'");
     }
 
     public function hasTwilioConversationEnabled(): bool
     {
-        return $this->gatewayIntegration()->where(['slug' => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION])->exists();
+        return $this->gatewayIntegration()
+            ->where(['slug' => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION])
+            ->exists();
     }
 
     public function files(): MorphMany
@@ -290,6 +289,9 @@ class Client extends GymRevProjection
         return $this->morphMany(File::class, 'fileable');
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getDetailsAttribute(): array
     {
         return $this->details ?? [];

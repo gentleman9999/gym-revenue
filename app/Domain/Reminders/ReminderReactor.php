@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Reminders;
 
 use App\Domain\Notifications\Actions\CreateNotification;
@@ -16,7 +18,7 @@ class ReminderReactor extends Reactor implements ShouldQueue
 //        dd($event);
 //        Logger::debug($event);
         $reminder = Reminder::findOrFail($event->id);
-        $entity = null;
+        $entity   = null;
         if ($reminder->entity_type) {
             $entity = $reminder->entity_type::findOrFail($reminder->entity_id);
         }

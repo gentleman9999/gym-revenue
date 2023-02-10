@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Folders\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Domain\Folders\FolderAggregate;
 use App\Models\Folder;
 use Illuminate\Http\RedirectResponse;
@@ -13,9 +14,13 @@ use Prologue\Alerts\Facades\Alert;
 
 class DeleteFolder extends GymRevAction
 {
-    public function handle($data): Folder
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
+    public function handle(array $data): Folder
     {
-        $id = $data['id'];
+        $id     = $data['id'];
         $folder = Folder::findOrFail($id);
 
         FolderAggregate::retrieve($id)->delete()->persist();
@@ -23,7 +28,12 @@ class DeleteFolder extends GymRevAction
         return $folder;
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array<string, mixed>>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args];
     }

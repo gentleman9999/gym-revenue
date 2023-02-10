@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\Users\Actions;
+declare(strict_types=1);
 
-use function __;
+namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
@@ -16,6 +16,8 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
+use function __;
+
 class UpdateUserPassword implements UpdatesUserPasswords
 {
     use PasswordValidationRules;
@@ -27,7 +29,7 @@ class UpdateUserPassword implements UpdatesUserPasswords
         Validator::make($data, [
             'current_password' => ['required', 'string'],
             'password' => $this->passwordRules(),
-        ])->after(function ($validator) use ($user, $data) {
+        ])->after(function ($validator) use ($user, $data): void {
             if (! isset($data['current_password']) || ! Hash::check($data['current_password'], $user->password)) {
                 $validator->errors()->add('current_password', __('The provided password does not match your current password.'));
             }
@@ -65,11 +67,9 @@ class UpdateUserPassword implements UpdatesUserPasswords
     /**
      * Validate and update the user's password.
      *
-     * @param  mixed  $user
-     * @param  array  $input
-     * @return void
+     * @param  array<string, mixed>  $input
      */
-    public function update($user, array $input)
+    public function update(mixed $user, array $input): void
     {
         $this->handle($user, $input);
     }

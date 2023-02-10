@@ -20,10 +20,7 @@ class UpdateConversation
     }
 
     /**
-     * @param ActionRequest $request
-     * @param string        $conversation_id
      *
-     * @return void
      */
     public function asController(ActionRequest $request, string $conversation_id): void
     {

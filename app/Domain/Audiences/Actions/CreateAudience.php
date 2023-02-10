@@ -1,30 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Audiences\Actions;
 
 use App\Actions\GymRevAction;
 use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
-//use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Clients\Projections\Client;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
 
+//use App\Domain\Campaigns\DripCampaigns\DripCampaign;
+
 class CreateAudience extends GymRevAction
 {
-    public string $commandSignature = 'audience:create';
+    public string $commandSignature   = 'audience:create';
     public string $commandDescription = 'Creates a Audience with the given name.';
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): Audience
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         AudienceAggregate::retrieve($id)->create($data)->persist();
 
         return Audience::findOrFail($id);
     }
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function rules(): array
     {
         return [
@@ -35,7 +45,12 @@ class CreateAudience extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['input']];
     }
@@ -67,12 +82,12 @@ class CreateAudience extends GymRevAction
 
     private function getClient($command): ?string
     {
-        $clients = [];
+        $clients    = [];
         $client_ids = [];
         $db_clients = Client::whereActive(1)->get();
 
         foreach ($db_clients as $idx => $client) {
-            $clients[$idx + 1] = $client->name;
+            $clients[$idx + 1]    = $client->name;
             $client_ids[$idx + 1] = $client->id;
         }
 

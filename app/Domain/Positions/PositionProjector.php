@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Positions;
 
 use App\Domain\Positions\Events\PositionCreated;
@@ -16,7 +18,7 @@ class PositionProjector extends Projector
     {
         $position = (new Position());
         $position->fill($event->payload);
-        $position->id = $event->aggregateRootUuid();
+        $position->id        = $event->aggregateRootUuid();
         $position->client_id = $event->clientId();
         $position->save();
 

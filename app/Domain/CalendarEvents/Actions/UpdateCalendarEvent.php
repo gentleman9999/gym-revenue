@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEvents\Actions;
 
 use App\Domain\CalendarAttendees\Actions\AddCalendarAttendee;
@@ -49,9 +51,9 @@ class UpdateCalendarEvent
 
     public function handle(CalendarEvent $calendarEvent, array $data): CalendarEvent
     {
-        $event_type_id = $data['event_type_id'] ?? $calendarEvent->event_type_id;
+        $event_type_id     = $data['event_type_id'] ?? $calendarEvent->event_type_id;
         $calendarEventType = CalendarEventType::whereId($event_type_id)->select('type')->first();
-        $is_task = $calendarEventType->type === 'Task' ?? false;
+        $is_task           = $calendarEventType->type === 'Task' ?? false;
         //Pulling eventType color for this table because that's how fullCalender.IO wants it
         if (array_key_exists('event_type_id', $data)) {
             $data['color'] = $calendarEventType->color;
@@ -60,7 +62,7 @@ class UpdateCalendarEvent
             ->update($data)
             ->persist();
         if (array_key_exists('my_reminder', $data)) {
-            $reminderData = Reminder::whereEntityType(CalendarEvent::class)
+            $reminderData              = Reminder::whereEntityType(CalendarEvent::class)
                 ->whereEntityId($calendarEvent->id)
                 ->whereUserId(auth()->user()->id)
                 ->first();
@@ -68,10 +70,10 @@ class UpdateCalendarEvent
             UserAggregate::retrieve(auth()->user()->id)->updateReminder($reminderData->toArray())->persist();
         }
 
-        $userAttendeeIDs = [];
-        $leadAttendeeIDs = [];
+        $userAttendeeIDs   = [];
+        $leadAttendeeIDs   = [];
         $memberAttendeeIDs = [];
-        $currentAttendees = CalendarAttendee::whereCalendarEventId($calendarEvent->id)->get()->toArray();
+        $currentAttendees  = CalendarAttendee::whereCalendarEventId($calendarEvent->id)->get()->toArray();
         foreach ($currentAttendees as $item) {
             if ($item['entity_type'] == User::class) {
                 $userAttendeeIDs[] = $item['entity_id'];
@@ -195,15 +197,9 @@ class UpdateCalendarEvent
         return $calendarEvent->refresh();
     }
 
-    public function __invoke($_, array $args): CalendarEvent
-    {
-        $event = CalendarEvent::find($args['input']['id']);
-        $args['input']['start'] = CarbonImmutable::create($args['input']['start']);
-        $args['input']['end'] = CarbonImmutable::create($args['input']['end']);
-
-        return $this->handle($event, $args['input']);
-    }
-
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -231,5 +227,19 @@ class UpdateCalendarEvent
         Alert::success("Calendar Event '{$calendarEvent->title}' was updated")->flash();
 
         return Redirect::back();
+    }
+
+    /**
+     * @param       $_
+     * @param array<string, mixed> $args
+     *
+     */
+    public function __invoke($_, array $args): CalendarEvent
+    {
+        $event                  = CalendarEvent::find($args['input']['id']);
+        $args['input']['start'] = CarbonImmutable::create($args['input']['start']);
+        $args['input']['end']   = CarbonImmutable::create($args['input']['end']);
+
+        return $this->handle($event, $args['input']);
     }
 }

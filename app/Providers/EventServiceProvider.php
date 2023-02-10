@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
@@ -14,7 +16,7 @@ class EventServiceProvider extends ServiceProvider
     /**
      * The event listener mappings for the application.
      *
-     * @var array
+     * @var array<string, array<string>>
      */
     protected $listen = [
         Registered::class => [
@@ -25,21 +27,20 @@ class EventServiceProvider extends ServiceProvider
     /**
      * Register any events for your application.
      *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //----Fix for Laravel 9 + Impersonate + Sanctum causing instant logout
         //https://github.com/404labfr/laravel-impersonate/issues/134
         //TODO:whenever laravel-impersonate is updated, try removing this block to
         //TODO:see if this fix is still needed.
-        Event::listen(function (TakeImpersonation $event) {
+        Event::listen(function (TakeImpersonation $event): void {
             session()->put([
                 'password_hash_sanctum' => $event->impersonated->getAuthPassword(),
             ]);
         });
 
-        Event::listen(function (LeaveImpersonation $event) {
+        Event::listen(function (LeaveImpersonation $event): void {
             session()->put([
                 'password_hash_sanctum' => $event->impersonator->getAuthPassword(),
             ]);

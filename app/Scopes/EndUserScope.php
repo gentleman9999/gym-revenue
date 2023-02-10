@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Scope;
 
 class EndUserScope implements Scope
 {
-    public function apply(Builder $builder, Model $model)
+    public function apply(Builder $builder, Model $_): void
     {
         $builder->where('user_type', '!=', UserTypesEnum::EMPLOYEE);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Clients;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,14 @@ class ClientBillableActivity extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['client_id',
-        'desc', 'entity_type', 'entity_id', 'units', 'misc', 'triggered_by_user_id',
+    /** @var array<string> */
+    protected $fillable = [
+        'client_id',
+        'desc',
+        'entity_type',
+        'entity_id',
+        'units',
+        'misc',
+        'triggered_by_user_id',
     ];
 }

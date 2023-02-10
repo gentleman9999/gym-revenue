@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -34,14 +36,14 @@ class AddOrInviteTeamMembers
 
     public function handle(Team $team, array $emails): array
     {
-        $this->team = $team;
+        $this->team      = $team;
         $this->operation = Features::sendsTeamInvitations() ? "invited" : "added";
 
         $operation = $this->operation;
 
         $users_added_or_invited = [];
         if ($operation === 'added') {
-            $users = User::whereIn('email', $emails)->get();
+            $users                  = User::whereIn('email', $emails)->get();
             $users_added_or_invited = AddTeamMembers::run($team, $users);
         } elseif ($operation === 'invited') {
             $users_added_or_invited = InviteTeamMembers::run($team, $emails);
@@ -52,6 +54,9 @@ class AddOrInviteTeamMembers
         return $users_added_or_invited;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

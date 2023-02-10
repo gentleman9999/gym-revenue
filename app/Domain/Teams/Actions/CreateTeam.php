@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Actions\GymRevAction;
@@ -15,18 +17,17 @@ use Prologue\Alerts\Facades\Alert;
 
 class CreateTeam extends GymRevAction implements CreatesTeams
 {
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): Team
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         TeamAggregate::retrieve($id)->create($payload)->persist();
 
         return Team::findOrFail($id);
-    }
-
-    public function __invoke($_, array $args): Team
-    {
-        return $this->handle($args);
     }
 
     /**
@@ -68,5 +69,15 @@ class CreateTeam extends GymRevAction implements CreatesTeams
     public function create($user, array $input): Team
     {
         return $this->handle($input);
+    }
+
+    /**
+     * @param null $_
+     * @param array<string, mixed> $args
+     *
+     */
+    public function __invoke($_, array $args): Team
+    {
+        return $this->handle($args);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Reminders;
 
 use App\Domain\Reminders\Events\ReminderCreated;
@@ -12,7 +14,7 @@ class ReminderProjector extends Projector
 {
     public function onReminderCreated(ReminderCreated $event): void
     {
-        $reminder = (new Reminder())->writeable();
+        $reminder     = (new Reminder())->writeable();
         $reminder->id = $event->payload['id'];
         $reminder->fill($event->payload);
         $reminder->save();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
 use App\Actions\GymRevAction;
@@ -18,34 +20,41 @@ use Prologue\Alerts\Facades\Alert;
 
 class CreateDripCampaign extends GymRevAction
 {
-    public string $commandSignature = 'drip-campaign:create';
+    public string $commandSignature   = 'drip-campaign:create';
     public string $commandDescription = 'Creates a DripCampaign with the given name.';
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): DripCampaign
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         $aggy = DripCampaignAggregate::retrieve($id);
 
         //NEEDED FOR LIVE REPORTING
-        $location = Location::whereClientId($payload['client_id'])->first();
+        $location                 = Location::whereClientId($payload['client_id'])->first();
         $payload['gymrevenue_id'] = $location->gymrevenue_id;
 
         $aggy->create($payload)->persist();
 
         $dripCampaign = DripCampaign::findOrFail($id);
         foreach ($payload['days'] as $day) {
-            $insertDay['drip_campaign_id'] = $dripCampaign->id;
-            $insertDay['day_of_campaign'] = $day['day_in_campaign'];
+            $insertDay['drip_campaign_id']  = $dripCampaign->id;
+            $insertDay['day_of_campaign']   = $day['day_in_campaign'];
             $insertDay['email_template_id'] = $day['email'];
-            $insertDay['sms_template_id'] = $day['sms'];
-            $insertDay['call_template_id'] = $day['call'];
+            $insertDay['sms_template_id']   = $day['sms'];
+            $insertDay['call_template_id']  = $day['call'];
             CreateDripCampaignDay::run($insertDay);
         }
 
         return $dripCampaign;
     }
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function rules(): array
     {
         return [
@@ -60,7 +69,12 @@ class CreateDripCampaign extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<string>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['campaign']];
     }
@@ -89,13 +103,13 @@ class CreateDripCampaign extends GymRevAction
     public function asCommand(Command $command): void
     {
         $client_id = $this->getClient($command);
-        $name = $command->ask("Enter DripCampaign Name");
+        $name      = $command->ask("Enter DripCampaign Name");
 
         $audience_id = $this->getAudience($command, $client_id);
 
         $start_at = CarbonImmutable::now();
 
-        $payload = compact('name', 'client_id', 'audience_id', 'start_at');
+        $payload      = compact('name', 'client_id', 'audience_id', 'start_at');
         $dripCampaign = $this->handle($payload);
 
         $command->info('Created DripCampaign ' . $dripCampaign->name);
@@ -103,12 +117,12 @@ class CreateDripCampaign extends GymRevAction
 
     private function getClient(Command $command): ?string
     {
-        $clients = [];
+        $clients    = [];
         $client_ids = [];
         $db_clients = Client::whereActive(1)->get();
 
         foreach ($db_clients as $idx => $client) {
-            $clients[$idx + 1] = $client->name;
+            $clients[$idx + 1]    = $client->name;
             $client_ids[$idx + 1] = $client->id;
         }
 
@@ -128,12 +142,12 @@ class CreateDripCampaign extends GymRevAction
 
     private function getAudience(Command $command, string $client_id): ?string
     {
-        $audiences = [];
+        $audiences    = [];
         $audience_ids = [];
         $db_audiences = Audience::whereClientId($client_id)->get();
 
         foreach ($db_audiences as $idx => $audience) {
-            $audiences[$idx + 1] = $audience->name;
+            $audiences[$idx + 1]    = $audience->name;
             $audience_ids[$idx + 1] = $audience->id;
         }
 

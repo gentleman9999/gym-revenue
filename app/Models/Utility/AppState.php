@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Utility;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -13,27 +15,38 @@ class AppState extends Model
     use SoftDeletes;
     use HasUuids;
 
-    protected $primaryKey = 'id';
+    public int $name = 22;
 
-    protected $keyType = 'string';
-
+    /** @var bool */
     public $incrementing = false;
 
+    /** @var string */
+    protected $primaryKey = 'id';
+
+    /** @var string */
+    protected $keyType = 'string';
+
+    /** @var array<string> */
     protected $fillable = [
-        'name', 'slug', 'desc', 'value', 'misc',
+        'name',
+        'slug',
+        'desc',
+        'value',
+        'misc',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'misc' => 'array',
     ];
 
-    public static function isSimuationMode()
+    public static function isSimuationMode(): bool
     {
         $results = true;
 
         $record = self::whereSlug('is-simulation-mode')->first();
 
-        if (! is_null($record)) {
+        if ($record !== null) {
             $results = ($record->value == '1');
         }
 

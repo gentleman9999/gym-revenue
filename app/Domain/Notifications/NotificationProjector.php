@@ -12,8 +12,8 @@ class NotificationProjector extends Projector
 {
     public function onNotificationCreated(NotificationCreated $event): void
     {
-        $notification = (new Notification())->writeable();
-        $notification->id = $event->payload['id'];
+        $notification          = (new Notification())->writeable();
+        $notification->id      = $event->payload['id'];
         $notification->user_id = $event->aggregateRootUuid();
         $notification->fill($event->payload);
         $notification->save();

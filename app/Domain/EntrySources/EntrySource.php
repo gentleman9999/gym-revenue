@@ -17,21 +17,24 @@ class EntrySource extends GymRevProjection
     use SoftDeletes;
 
 
+    /** @var array<string> */
     protected $fillable = ['name', 'source', 'ui', 'active', 'misc', 'is_default_entry_source'];
 
+    /** @var array<string, string> */
     protected $casts = [
         'misc' => 'array',
     ];
 
+    /** @var array<string> */
     protected $hidden = ['client_id'];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

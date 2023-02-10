@@ -8,12 +8,9 @@ use App\Domain\Users\Models\Member;
 
 class MemberReflection extends Member
 {
-    /**
-     * Define the table name
-     *
-     * @var string
-     */
+    /** @var string  */
     protected $table = 'members';
 
+    /** @var array<string>  */
     protected $guarded = [];
 }

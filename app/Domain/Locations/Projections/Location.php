@@ -30,95 +30,115 @@ class Location extends GymRevProjection
     use SoftDeletes;
     use Sortable;
 
+    protected const DELETED_AT = 'closed_at';
+
+    /** @var array<string> */
     protected $fillable = [
-        'name', 'address1', 'address2', 'city', 'state', 'zip',
-        'active', 'location_no', 'gymrevenue_id',
-        'opened_at', 'closed_at', 'phone', 'default_team_id',
-        'location_type', 'latitude', 'longitude','capacity',
-        'presale_started_at', 'presale_opened_at', 'details',
+        'name',
+        'address1',
+        'address2',
+        'city',
+        'state',
+        'zip',
+        'active',
+        'location_no',
+        'gymrevenue_id',
+        'opened_at',
+        'closed_at',
+        'phone',
+        'default_team_id',
+        'location_type',
+        'latitude',
+        'longitude',
+        'capacity',
+        'presale_started_at',
+        'presale_opened_at',
+        'details',
     ];
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
-
+    /** @var array<string, string> */
     protected $casts = [
         'location_type' => LocationType::class,
         'details' => 'array',
     ];
-
-    protected const DELETED_AT = 'closed_at';
-
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return Factory
-     */
-    protected static function newFactory(): Factory
-    {
-        return LocationFactory::new();
-    }
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-    public function poc_phone_detail(): string | null
+    public function poc_phone_detail(): string|null
     {
         return $this->detail['poc_phone'] ?? null;
     }
 
-    public function pocFirstDetail(): string | null
+    public function pocFirstDetail(): string|null
     {
         return $this->detail['poc_first'] ?? null;
     }
 
-    public function pocLastDetail(): string | null
+    public function pocLastDetail(): string|null
     {
         return $this->detail['poc_last'] ?? null;
     }
 
-    public function getPocLastAttribute(): string | null
+    public function getPocLastAttribute(): string|null
     {
         return $this->pocLastDetail() ?? null;
     }
 
-    public function getPocFirstAttribute(): string | null
+    public function getPocFirstAttribute(): string|null
     {
         return $this->pocFirstDetail() ?? null;
     }
 
-    public function getPocPhoneAttribute(): string | null
+    public function getPocPhoneAttribute(): string|null
     {
         return $this->pocPhoneDetail->value ?? null;
     }
 
-    public function scopeFilter($query, array $filters): void
+    /**
+     * @param array<string, mixed> $filters
+     *
+     */
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('city', 'like', '%' . $search . '%')
                     ->orWhere('state', 'like', '%' . $search . '%')
                     ->orWhere('name', 'like', '%' . $search . '%')
-                    ->orWhereHas('client', function ($query) use ($search) {
-                        $query->where('name', 'like', '%'.$search.'%');
+                    ->orWhereHas('client', function ($query) use ($search): void {
+                        $query->where('name', 'like', '%' . $search . '%');
                     });
             });
-        })->when($filters['closed'] ?? null, function ($query, $closed) {
+        })->when($filters['closed'] ?? null, function ($query, $closed): void {
             if ($closed === 'with') {
                 $query->withTrashed();
             } elseif ($closed === 'only') {
                 $query->onlyTrashed();
             }
-        })->when($filters['state'] ?? null, function ($query, $state) {
-            $query->where('state', 'like', '%'.$state.'%');
+        })->when($filters['state'] ?? null, function ($query, $state): void {
+            $query->where('state', 'like', '%' . $state . '%');
         });
     }
 
     public function defaultTeam(): HasOne
     {
         return $this->hasOne(Team::class, 'id', 'default_team_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     */
+    protected static function newFactory(): Factory
+    {
+        return LocationFactory::new();
     }
 }

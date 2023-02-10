@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Folders\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Folder;
@@ -15,9 +16,13 @@ use Prologue\Alerts\Facades\Alert;
 
 class CreateFolder extends GymRevAction
 {
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): Folder
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         FolderAggregate::retrieve($id)->create($payload)->persist();
 
@@ -37,11 +42,19 @@ class CreateFolder extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

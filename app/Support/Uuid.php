@@ -10,6 +10,11 @@ class Uuid
     {
     }
 
+    public static function get(): string
+    {
+        return self::new()->uuid;
+    }
+
     public static function make(string $uuid): self
     {
         return new self($uuid);
@@ -18,11 +23,6 @@ class Uuid
     public static function new(): self
     {
         return new self(\Ramsey\Uuid\Uuid::uuid4()->toString());
-    }
-
-    public static function get(): string
-    {
-        return self::new()->uuid;
     }
 
     public function __toString(): string

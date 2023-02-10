@@ -14,7 +14,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class LocationVendorCategoryProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         LocationVendorCategory::truncate();
     }
@@ -28,8 +28,8 @@ class LocationVendorCategoryProjector extends Projector
             return in_array($key, $vendor_category_rows);
         }, ARRAY_FILTER_USE_KEY);
 
-        $location_vendor_category = new LocationVendorCategory();
-        $location_vendor_category->id = $event->aggregateRootUuid();
+        $location_vendor_category            = new LocationVendorCategory();
+        $location_vendor_category->id        = $event->aggregateRootUuid();
         $location_vendor_category->client_id = $event->clientId();
 
         $location_vendor_category->fill(

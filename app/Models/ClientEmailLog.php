@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Scopes\ClientScope;
@@ -13,9 +15,24 @@ class ClientEmailLog extends GymRevProjection
     use SoftDeletes;
     use HasFactory;
 
-    protected $fillable = ['id','client_id','gateway_id','message_id','campaign_id','email_template_id',
-        'recipient_type','recipient_id','recipient_email','initiated_at','accepted_at','sent_at',
-        'delivered_at','opened_at','failed_at',];
+    /** @var array<string> */
+    protected $fillable = [
+        'id',
+        'client_id',
+        'gateway_id',
+        'message_id',
+        'campaign_id',
+        'email_template_id',
+        'recipient_type',
+        'recipient_id',
+        'recipient_email',
+        'initiated_at',
+        'accepted_at',
+        'sent_at',
+        'delivered_at',
+        'opened_at',
+        'failed_at',
+    ];
 
     protected static function booted(): void
     {

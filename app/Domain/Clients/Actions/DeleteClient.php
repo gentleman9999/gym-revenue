@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -11,7 +13,7 @@ class DeleteClient
 {
     use AsAction;
 
-    public string $commandSignature = 'client:delete {id}';
+    public string $commandSignature   = 'client:delete {id}';
     public string $commandDescription = 'Permanently deletes the client';
 
     public function handle(string $id): Client

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Support\GymRevDiscoverEventHandlers;
@@ -9,7 +11,7 @@ use Spatie\EventSourcing\Support\Composer;
 
 class EventSourcingServiceProvider extends ServiceProvider
 {
-    public function register()
+    public function register(): void
     {
         // you can also add multiple projectors in one go
 //        Projectionist::addProjectors([
@@ -19,13 +21,13 @@ class EventSourcingServiceProvider extends ServiceProvider
         $this->discoverEventHandlers();
     }
 
-    protected function discoverEventHandlers()
+    protected function discoverEventHandlers(): void
     {
         $projectionist = app(Projectionist::class);
 
         $cachedEventHandlers = $this->getCachedEventHandlers();
 
-        if (! is_null($cachedEventHandlers)) {
+        if ($cachedEventHandlers !== null) {
             $projectionist->addEventHandlers($cachedEventHandlers);
 
             return;
@@ -41,7 +43,7 @@ class EventSourcingServiceProvider extends ServiceProvider
 
     protected function getCachedEventHandlers(): ?array
     {
-        $cachedEventHandlersPath = config('event-sourcing.cache_path').'/event-handlers.php';
+        $cachedEventHandlersPath = config('event-sourcing.cache_path') . '/event-handlers.php';
 
         if (! file_exists($cachedEventHandlersPath)) {
             return null;

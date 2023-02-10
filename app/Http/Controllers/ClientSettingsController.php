@@ -12,20 +12,23 @@ use App\Domain\EntrySourceCategories\EntrySourceCategory;
 use App\Domain\EntrySources\EntrySource;
 use App\Enums\ClientServiceEnum;
 use App\Models\ClientCommunicationPreference;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Prologue\Alerts\Facades\Alert;
 
 class ClientSettingsController extends Controller
 {
-    public function index()
+    public function index(): InertiaResponse|RedirectResponse
     {
-        $client_id = request()->user()->client_id;
-        if (! $client_id) {
+        $client_id = ($user = request()->user())->client_id;
+        if ($client_id === null) {
             return Redirect::route('dashboard');
         }
 
-        if (request()->user()->cannot('manage-client-settings')) {
+        if ($user->cannot('manage-client-settings')) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -33,9 +36,9 @@ class ClientSettingsController extends Controller
         $client = Client::with(['trial_membership_types', 'locations'])->find($client_id);
 
         return Inertia::render('ClientSettings/Index', [
-            'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(function ($s) {
-                return ['value' => $s->value, 'name' => $s->name];
-            }),
+            'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(
+                fn ($s) => ['value' => $s->value, 'name' => $s->name]
+            ),
             'commPreferences' => ClientCommunicationPreference::first(),
             'availableCommPreferences' => ClientCommunicationPreference::COMMUNICATION_TYPES,
             'services' => $client->services ?? [],
@@ -44,14 +47,16 @@ class ClientSettingsController extends Controller
             'entrySourceCategories' => EntrySourceCategory::all(),
             'locations' => $client->locations ?? [],
             'socialMedias' => $client->getSocialMedia(),
-            'availableSocialMedias' => collect(SocialMediaEnum::cases())->map(fn (SocialMediaEnum $enum) => ['name' => $enum->name, 'value' => $enum->value]),
+            'availableSocialMedias' => collect(SocialMediaEnum::cases())->map(
+                fn (SocialMediaEnum $enum) => ['name' => $enum->name, 'value' => $enum->value]
+            ),
             'gateways' => ClientGatewaySetting::all(),
             'logoUrl' => Client::findOrFail($client_id)->logo_url(),
         ]);
     }
 
     //TODO:update to action
-    public function updateTrialMembershipTypes()
+    public function updateTrialMembershipTypes(Request $request): RedirectResponse
     {
         $data = request()->validate([
             'trialMembershipTypes' => ['sometimes', 'array'],
@@ -60,20 +65,20 @@ class ClientSettingsController extends Controller
             'trialMembershipTypes.*.trial_length' => ['required'],
         ]);
         if (array_key_exists('trialMembershipTypes', $data) && is_array($data['trialMembershipTypes'])) {
-            $trialMembershipTypesToUpdate = collect($data['trialMembershipTypes'])->filter(function ($t) {
+            $trial_membership_types_to_update = collect($data['trialMembershipTypes'])->filter(function ($t) {
                 return $t['id'] !== null;
             });
-            $trialMembershipTypesToCreate = collect($data['trialMembershipTypes'])->filter(function ($t) {
+            $trial_membership_type_to_create  = collect($data['trialMembershipTypes'])->filter(function ($t) {
                 return $t['id'] === null;
             });
 
             $client_aggy = ClientAggregate::retrieve($request->user()->client_id);
 
-            foreach ($trialMembershipTypesToUpdate as $trialMembershipTypeData) {
-                $client_aggy->updateTrialMembershipType($trialMembershipTypeData, request()->user()->id);
+            foreach ($trial_membership_types_to_update as $trial_membership_type_data) {
+                $client_aggy->updateTrialMembershipType($trial_membership_type_data, request()->user()->id);
             }
-            foreach ($trialMembershipTypesToCreate as $trialMembershipTypeData) {
-                $client_aggy->createTrialMembershipType($trialMembershipTypeData, request()->user()->id);
+            foreach ($trial_membership_type_to_create as $trial_membership_type_data) {
+                $client_aggy->createTrialMembershipType($trial_membership_type_data, request()->user()->id);
             }
             $client_aggy->persist();
         }

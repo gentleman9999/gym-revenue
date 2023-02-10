@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -27,7 +29,7 @@ class AddTeamMembers
         return [
             'emails' => ['required', 'array', 'min:1'],
             'emails.*' => ['required', 'email'],
-            ];
+        ];
     }
 
     public function handle(Team $team, Collection | array $users): array
@@ -45,6 +47,9 @@ class AddTeamMembers
         return $users_added;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

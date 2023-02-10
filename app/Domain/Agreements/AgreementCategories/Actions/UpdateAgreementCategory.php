@@ -29,6 +29,9 @@ class UpdateAgreementCategory
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

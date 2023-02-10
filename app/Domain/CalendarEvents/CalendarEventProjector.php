@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEvents;
 
 use App\Domain\CalendarAttendees\CalendarAttendee;
@@ -17,7 +19,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class CalendarEventProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         CalendarEvent::truncate();
         CalendarEventType::truncate();
@@ -62,10 +64,10 @@ class CalendarEventProjector extends Projector
         CreateNotification::run([
             'user_id' => $event->payload['owner_id'],
             'state' => 'warning',
-            'text' => "Task ".$event->payload['title']." Overdue!",
+            'text' => "Task " . $event->payload['title'] . " Overdue!",
             'entity_type' => CalendarEvent::class,
             'entity_id' => $event->payload['id'],
-            'entity' => ['start' => $event->payload['start'], 'title' => 'Task '.$event->payload['title'].' Overdue', 'type' => 'TASK_OVERDUE'],
+            'entity' => ['start' => $event->payload['start'], 'title' => 'Task ' . $event->payload['title'] . ' Overdue', 'type' => 'TASK_OVERDUE'],
             'type' => 'TASK_OVERDUE',
             'misc' => [
                 'remind_time' => 1,

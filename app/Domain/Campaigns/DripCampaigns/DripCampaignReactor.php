@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns;
 
 use App\Domain\Campaigns\DripCampaigns\Actions\PublishDripCampaign;
@@ -28,9 +30,6 @@ class DripCampaignReactor extends Reactor
     /**
      * Fires off a PublishDripCampaign or UnpublishDripCampaign action
      * if necessary.
-     * @param DripCampaign $dripCampaign
-     * @param DripCampaignCreated|DripCampaignUpdated $event
-     * @return void
      */
     protected function maybePublishOrUnpublish(DripCampaign $dripCampaign, DripCampaignCreated|DripCampaignUpdated $event): void
     {

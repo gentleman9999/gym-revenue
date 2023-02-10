@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Models\EndUser;
@@ -10,6 +12,9 @@ class BaseEndUserAction
 {
     use AsAction;
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -18,7 +23,7 @@ class BaseEndUserAction
     /**
      * GraphQL Invoke
      * @param  null  $_
-     * @param  array{}  $args
+     * @param array<mixed>  $args
      */
     public function __invoke($_, array $args): EndUser
     {

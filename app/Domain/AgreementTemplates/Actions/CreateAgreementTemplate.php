@@ -20,7 +20,7 @@ class CreateAgreementTemplate
     /**
      * Get the validation rules that apply to the action.
      *
-     * @return array
+     * @return array<string, array<string>>
      */
     public function rules(): array
     {
@@ -34,11 +34,18 @@ class CreateAgreementTemplate
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): AgreementTemplate
     {
         $id = Uuid::get();
@@ -49,6 +56,6 @@ class CreateAgreementTemplate
 
     public function asController(ActionRequest $request): AgreementTemplate
     {
-        return ($this->handle($request->validated()));
+        return $this->handle($request->validated());
     }
 }

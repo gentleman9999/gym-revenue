@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
-use function app;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
 use App\Http\Middleware\InjectClientId;
@@ -13,6 +14,8 @@ use Laravel\Jetstream\Contracts\DeletesTeams;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+
+use function app;
 use function request;
 
 class DeleteTeam implements DeletesTeams
@@ -26,6 +29,9 @@ class DeleteTeam implements DeletesTeams
         return $team;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -60,10 +66,9 @@ class DeleteTeam implements DeletesTeams
     /**
      * Delete the given team.
      *
-     * @param mixed $team
      * @return void
      */
-    public function delete($team): Team
+    public function delete(mixed $team): Team
     {
 //        $team->purge();
         return $this->handle($team);

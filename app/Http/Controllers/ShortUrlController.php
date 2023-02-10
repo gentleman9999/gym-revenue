@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\ShortUrl;
+use Illuminate\Http\RedirectResponse;
 
 class ShortUrlController extends Controller
 {
-    public function index($external_url)
+    public function index(string $external_url): RedirectResponse
     {
-        $urlData = ShortUrl::whereExternalUrl($external_url)->firstOrFail();
-
-        return redirect($urlData->route);
+        return redirect(ShortUrl::whereExternalUrl($external_url)->firstOrFail()->route);
     }
 }

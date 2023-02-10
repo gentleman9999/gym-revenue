@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -18,14 +20,14 @@ class FireOffSmsCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'sms-campaigns:fire {sms_campaign_id}';
+    public string $commandSignature   = 'sms-campaigns:fire {sms_campaign_id}';
     public string $commandDescription = 'Fires off the SMS for a given sms_campaign_id.';
 
     protected $tokens = ['name'];
 
-    public function handle(string $sms_campaign_id)
+    public function handle(string $sms_campaign_id): void
     {
-        $gateway = null;
+        $gateway  = null;
         $campaign = SmsCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])
             ->findOrFail($sms_campaign_id);
         foreach ($campaign->assigned_template as $assigned_template) {
@@ -33,7 +35,7 @@ class FireOffSmsCampaign
         }
         foreach ($templates as $template) {
             $gatewayIntegrations[] = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
-            $markups[] = $template->markup;
+            $markups[]             = $template->markup;
         }
         foreach ($gatewayIntegrations as $gatewayIntegration) {
             $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
@@ -49,7 +51,7 @@ class FireOffSmsCampaign
         foreach ($audience_members as $audience_member_breakdown) {
             foreach ($audience_member_breakdown as $audience_member) {
                 $sent_to = [];
-                $entity = null;
+                $entity  = null;
                 switch ($audience_member->entity_type) {
                     case 'user':
                         $entity = User::with('phone')->find($audience_member->entity_id);
@@ -80,16 +82,6 @@ class FireOffSmsCampaign
         $client_aggy->completeSmsCampaign($sms_campaign_id, Carbon::now())->persist();
     }
 
-    protected function transform($string, $data)
-    {
-        foreach ($this->tokens as $token) {
-            $string = str_replace("%{$token}%", $data[$token] ?? 'UNKNOWN_TOKEN', $string);
-        }
-
-        return $string;
-    }
-
-    //command for ez development testing
     public function asCommand(Command $command): void
     {
         $this->handle(
@@ -101,4 +93,14 @@ class FireOffSmsCampaign
             $command->info('SMS Sent!');
         }
     }
+
+
+    protected function transform($string, $data)
+    {
+        foreach ($this->tokens as $token) {
+            $string = str_replace("%{$token}%", $data[$token] ?? 'UNKNOWN_TOKEN', $string);
+        }
+
+        return $string;
+    }//command for ez development testing
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Audiences\Actions;
 
 use App\Domain\Audiences\Audience;
@@ -11,7 +13,7 @@ class DeleteAudience
 {
     use AsAction;
 
-    public string $commandSignature = 'audience:delete {id}';
+    public string $commandSignature   = 'audience:delete {id}';
     public string $commandDescription = 'Permanently deletes the Audience';
 
     public function handle(string $id): Audience

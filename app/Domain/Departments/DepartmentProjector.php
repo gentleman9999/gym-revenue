@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Departments;
 
 use App\Domain\Departments\Events\DepartmentCreated;
@@ -15,7 +17,7 @@ class DepartmentProjector extends Projector
     {
         $dept = (new Department());
         $dept->fill($event->payload);
-        $dept->id = $event->aggregateRootUuid();
+        $dept->id        = $event->aggregateRootUuid();
         $dept->client_id = $event->clientId();
         $dept->save();
 

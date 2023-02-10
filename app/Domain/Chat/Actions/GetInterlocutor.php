@@ -22,6 +22,9 @@ class GetInterlocutor
             ->filter(static fn (User $u) => $u->id !== $user->id);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -44,7 +47,6 @@ class GetInterlocutor
     /**
      * @param Collection<User> $collection
      *
-     * @return JsonResponse
      */
     public function jsonResponse(Collection $collection): JsonResponse
     {

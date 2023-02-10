@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\LeadStatuses;
 
 use App\Models\GymRevProjection;
@@ -12,8 +14,10 @@ class LeadStatus extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
+    /** @var array<string> */
     protected $fillable = ['status', 'order', 'active'];
 
+    /** @var array<string> */
     protected $hidden = ['client_id'];
 
     protected static function booted(): void

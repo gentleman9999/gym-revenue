@@ -16,13 +16,13 @@ abstract class GymRevEnum extends Enum
      */
     public static function asOptionsArray(): array
     {
-        $array = static::asArray();
+        $array       = static::asArray();
         $selectArray = [];
 
         foreach ($array as $value) {
-            $enum = [];
-            $enum['value'] = $value;
-            $enum['label'] = static::getFriendlyName($value);
+            $enum                = [];
+            $enum['value']       = $value;
+            $enum['label']       = static::getFriendlyName($value);
             $enum['description'] = static::getDescription($value);
 
             $selectArray[] = $enum;

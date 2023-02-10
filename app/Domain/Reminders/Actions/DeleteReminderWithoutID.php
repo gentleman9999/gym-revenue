@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
@@ -19,7 +21,7 @@ class DeleteReminderWithoutID
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'event_id' => ['string', 'required'],
@@ -30,12 +32,12 @@ class DeleteReminderWithoutID
 
     public function handle($data, $current_user = null)
     {
-        if (! is_null($current_user)) {
+        if ($current_user !== null) {
             $data['client_id'] = $current_user->client_id;
         }
 
         $reminder = Reminder::whereEntityType($data['entity_type'])->whereEntityId($data['entity_id'])->whereUserId($data['user_id'])->first();
-        if (is_null($reminder)) {
+        if ($reminder === null) {
             return true;
         } else {
             $id = $reminder->id;
@@ -46,6 +48,9 @@ class DeleteReminderWithoutID
         }
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -31,9 +31,13 @@ class CreateLocationVendorCategory
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): LocationVendorCategory
     {
-        $id = (string)Uuid::new();//we should use uuid here
+        $id = (string) Uuid::new();//we should use uuid here
         LocationVendorCategoryAggregate::retrieve($id)->create($data)->persist();
 
         return LocationVendorCategory::findOrFail($id);

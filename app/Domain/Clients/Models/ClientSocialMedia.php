@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Models;
 
 use App\Models\GymRevProjection;
@@ -10,8 +12,10 @@ class ClientSocialMedia extends GymRevProjection
 {
     use HasFactory;
 
+    /** @var array<string>  */
     protected $fillable = ['name', 'value'];
 
+    /** @var array<string>  */
     protected $hidden = ['client_id'];
 
     protected static function booted(): void

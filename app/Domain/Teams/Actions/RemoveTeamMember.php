@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -39,6 +41,9 @@ class RemoveTeamMember implements RemovesTeamMembers
 //        }
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -65,12 +70,8 @@ class RemoveTeamMember implements RemovesTeamMembers
     /**
      * Remove the team member from the given team.
      *
-     * @param mixed $user
-     * @param mixed $team
-     * @param mixed $teamMember
-     * @return void
      */
-    public function remove($user, $team, $teamMember)
+    public function remove(mixed $user, mixed $team, mixed $teamMember): void
     {
         $this->handle($team, $teamMember->email);
     }

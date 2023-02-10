@@ -24,6 +24,9 @@ class DeleteUserMemberGroup
         return true;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -16,13 +16,13 @@ class OldEndUserProfilePictureDeleted extends GymRevCrudEvent
         $this->file = $file;
     }
 
-    protected function getOperation(): string
-    {
-        return self::OPERATION;
-    }
-
     public function getEntity(): string
     {
         return EndUser::class;
+    }
+
+    protected function getOperation(): string
+    {
+        return self::OPERATION;
     }
 }

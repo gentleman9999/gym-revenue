@@ -42,8 +42,8 @@ class UpdateEntrySourceCategory
     {
         $payload = [];
         foreach (json_decode($request->getContent())->entrySourceCategories as $key => $value) {
-            $payload['id'] = $key;
-            $payload['name'] = $value;
+            $payload['id']    = $key;
+            $payload['name']  = $value;
             $payload['value'] = str()->slug($value);
             $this->handle($payload);
         }

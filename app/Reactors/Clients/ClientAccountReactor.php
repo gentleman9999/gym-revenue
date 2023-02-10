@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reactors\Clients;
 
 use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
@@ -21,7 +23,7 @@ use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientAccountReactor extends Reactor implements ShouldQueue
 {
-    public function onEmailCampaignLaunched(EmailCampaignLaunched $event)
+    public function onEmailCampaignLaunched(EmailCampaignLaunched $event): void
     {
         if (strtotime($event->date) <= strtotime('now')) {
             //launch campaign
@@ -32,7 +34,7 @@ class ClientAccountReactor extends Reactor implements ShouldQueue
         }
     }
 
-    public function onSmsCampaignLaunched(SmsCampaignLaunched $event)
+    public function onSmsCampaignLaunched(SmsCampaignLaunched $event): void
     {
         if (strtotime($event->date) <= strtotime('now')) {
             //launch campaign
@@ -43,11 +45,11 @@ class ClientAccountReactor extends Reactor implements ShouldQueue
         }
     }
 
-    public function onSmsSent(SmsSent $event)
+    public function onSmsSent(SmsSent $event): void
     {
         if ($event->isCampaign) {
             if ($event->sentTo['entity_type'] == User::class) {
-                $user_aggy = UserAggregate::retrieve($event->sentTo['entity_id']);
+                $user_aggy       = UserAggregate::retrieve($event->sentTo['entity_id']);
                 $gateway_service = new SMSGatewayProviderService(SmsTemplate::find($event->campaign));
                 $gateway_service->initSMSGateway($event->sentTo['entity_id']);
                 $response = $gateway_service->fire($user_aggy->getPhoneNumber());
@@ -59,11 +61,11 @@ class ClientAccountReactor extends Reactor implements ShouldQueue
         }
     }
 
-    public function onEmailSent(EmailSent $event)
+    public function onEmailSent(EmailSent $event): void
     {
         if ($event->isCampaign) {
             if ($event->sentTo['entity_type'] == User::class) {
-                $user_aggy = UserAggregate::retrieve($event->sentTo['entity_id']);
+                $user_aggy       = UserAggregate::retrieve($event->sentTo['entity_id']);
                 $gateway_service = new EmailGatewayProviderService(EmailTemplate::find($event->campaign));
                 $gateway_service->initEmailGateway($event->sentTo['entity_id']);
                 $response = $gateway_service->fire($user_aggy->getEmailAddress());

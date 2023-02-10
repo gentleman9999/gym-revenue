@@ -6,7 +6,9 @@ namespace App\Domain\VoiceCalls\Actions;
 
 use App\Domain\Users\Models\User;
 use App\Services\GatewayProviders\Voice\VoiceGatewayProviderService;
+
 use function auth;
+
 use Illuminate\Console\Command;
 use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\ActionRequest;
@@ -17,7 +19,7 @@ class GetStatus
 {
     use AsAction;
 
-    public string $commandSignature = 'call:get_call {caller_id} {sid}';
+    public string $commandSignature   = 'call:get_call {caller_id} {sid}';
     public string $commandDescription = 'Gets a call status for specified sid';
 
     public function handle(User $caller, string $sid): CallInstance

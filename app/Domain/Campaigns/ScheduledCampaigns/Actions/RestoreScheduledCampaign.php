@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
@@ -15,7 +17,7 @@ class RestoreScheduledCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'scheduled-campaign:restore {id}';
+    public string $commandSignature   = 'scheduled-campaign:restore {id}';
     public string $commandDescription = 'Restores the audience';
 
     public function handle(ScheduledCampaign $scheduledCampaign): ScheduledCampaign

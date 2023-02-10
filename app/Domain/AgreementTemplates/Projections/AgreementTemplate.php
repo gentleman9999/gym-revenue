@@ -18,15 +18,21 @@ class AgreementTemplate extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_name', 'agreement_json', 'is_not_billable', 'availability', 'billing_schedule_id', 'contract_id'];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
+    /** @var array<string> */
+    protected $fillable = [
+        'client_id',
+        'gr_location_id',
+        'created_by',
+        'agreement_name',
+        'agreement_json',
+        'is_not_billable',
+        'availability',
+        'billing_schedule_id',
+        'contract_id',
+    ];
 
     protected $casts = [
-      'agreement_availability' => AgreementAvailabilityEnum::class,
+        'agreement_availability' => AgreementAvailabilityEnum::class,
     ];
 
     public function client(): HasOne
@@ -37,5 +43,10 @@ class AgreementTemplate extends GymRevProjection
     public function location(): HasOne
     {
         return $this->hasOne(Location::class, 'gymrevenue_id', 'gr_location_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

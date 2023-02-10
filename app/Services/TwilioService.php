@@ -16,6 +16,7 @@ use Twilio\Exceptions\ConfigurationException;
 use Twilio\Exceptions\RestException;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Jwt\AccessToken;
+use Twilio\Jwt\Grants\Grant;
 use Twilio\Rest\Api\V2010\Account\MessageInstance;
 use Twilio\Rest\Client as TwilioClient;
 use Twilio\Rest\Conversations\V1\Conversation\ParticipantInstance;
@@ -29,18 +30,17 @@ use TypeError;
 class TwilioService extends AbstractInstanceCache
 {
     public readonly TwilioClient $twilio;
-    public readonly string       $sid;
-    public readonly string       $token;
-    public readonly string       $number;
-    public readonly ?string      $api_key;
-    public readonly ?string      $api_secret;
-    public readonly ?string      $conversation_service_sid;
-    public readonly ?string      $messenger_id;
+    public readonly string $sid;
+    public readonly string $token;
+    public readonly string $number;
+    public readonly ?string $api_key;
+    public readonly ?string $api_secret;
+    public readonly ?string $conversation_service_sid;
+    public readonly ?string $messenger_id;
 
     /**
      * Creates Twilio client instance from gateway config.
      *
-     * @param Client $client
      *
      * @throws ConfigurationException
      */
@@ -53,27 +53,25 @@ class TwilioService extends AbstractInstanceCache
             isset($settings['twilioToken']) || throw new InvalidArgumentException('"twilioToken" is required');
             isset($settings['twilioNumber']) || throw new InvalidArgumentException('"twilioNumber" is required');
         } else {
-            $settings['twilioSID'] = env('TWILIO_SID');
-            $settings['twilioToken'] = env('TWILIO_TOKEN');
-            $settings['twilioNumber'] = env('TWILIO_NO');
-            $settings['twilioApiKey'] = env('TWILIO_API_KEY');
+            $settings['twilioSID']       = env('TWILIO_SID');
+            $settings['twilioToken']     = env('TWILIO_TOKEN');
+            $settings['twilioNumber']    = env('TWILIO_NO');
+            $settings['twilioApiKey']    = env('TWILIO_API_KEY');
             $settings['twilioApiSecret'] = env('TWILIO_API_SECRET');
         }
-        $this->client = $client;
-        $this->twilio = new TwilioClient($this->sid = $settings['twilioSID'], $this->token = $settings['twilioToken']);
-        $this->number = $settings[ClientGatewaySetting::NAME_TWILIO_NUMBER];
-        $this->api_key = $settings[ClientGatewaySetting::NAME_TWILIO_API_KEY];
-        $this->api_secret = $settings[ClientGatewaySetting::NAME_TWILIO_API_SECRET];
+        $this->client                   = $client;
+        $this->twilio                   = new TwilioClient($this->sid = $settings['twilioSID'], $this->token = $settings['twilioToken']);
+        $this->number                   = $settings[ClientGatewaySetting::NAME_TWILIO_NUMBER];
+        $this->api_key                  = $settings[ClientGatewaySetting::NAME_TWILIO_API_KEY];
+        $this->api_secret               = $settings[ClientGatewaySetting::NAME_TWILIO_API_SECRET];
         $this->conversation_service_sid = $settings[ClientGatewaySetting::NAME_TWILIO_CONVERSATION_SERVICES_ID] ?? null;
-        $this->messenger_id = $settings[ClientGatewaySetting::NAME_TWILIO_MESSENGER_ID] ?? null;
+        $this->messenger_id             = $settings[ClientGatewaySetting::NAME_TWILIO_MESSENGER_ID] ?? null;
     }
 
     /**
      * Get a front-end access token for specified grants
      *
-     * @param User  $user
-     * @param array $grants
-     * @param int   $ttl
+     * @param array<Grant> $grants
      *
      * @return array
      * @example getAccessToken($user, [(new ChatGrant())->setServiceSid(serviceSid), ...])
@@ -81,7 +79,7 @@ class TwilioService extends AbstractInstanceCache
     public function getAccessToken(User $user, array $grants, int $ttl = 3600): array
     {
         $identity = $user->name;
-        $token = new AccessToken($this->sid, $this->api_key, $this->api_secret, $ttl, $identity);
+        $token    = new AccessToken($this->sid, $this->api_key, $this->api_secret, $ttl, $identity);
         array_map([$token, 'addGrant'], $grants);
 
         return ['token' => $token->toJWT(), 'identity' => $identity];
@@ -91,16 +89,15 @@ class TwilioService extends AbstractInstanceCache
      *
      * @param string|null $messenger_id Facebook messenger ID
      *
-     * @return void
      * @throws TwilioException
      */
     public function createConversationForClient(?string $messenger_id): void
     {
         $conversation = $this->twilio->conversations->v1;
-        $message = $this->twilio->messaging->v1;
-        $client_id = $this->client->id;
-        $host = Env::get('EXPOSED_APP_URL', Env::get('APP_URL'));
-        $endpoint = "{$host}/api/twilio/conversation/{$client_id}";
+        $message      = $this->twilio->messaging->v1;
+        $client_id    = $this->client->id;
+        $host         = Env::get('EXPOSED_APP_URL', Env::get('APP_URL'));
+        $endpoint     = "{$host}/api/twilio/conversation/{$client_id}";
 
         // Delete existing address configurations for sms and messenger
         // https://www.twilio.com/docs/conversations/api/address-configuration-resource?code-sample=code-delete-address-configuration&code-language=PHP&code-sdk-version=6.x
@@ -116,7 +113,7 @@ class TwilioService extends AbstractInstanceCache
         // https://www.twilio.com/docs/conversations/api/service-resource#create-a-service-resource
         $conversation_sid ??= $conversation->services->create('conversation-service')->sid;
 
-        $message_sid = null;
+        $message_sid          = null;
         $message_service_name = 'conversation-message-service';
         // Check if message service exist
         foreach ($message->services->read() as $record) {
@@ -151,17 +148,14 @@ class TwilioService extends AbstractInstanceCache
     /**
      * Adds a user to a conversation
      *
-     * @param string $conversation_sid
-     * @param User   $user
      *
-     * @return ParticipantInstance
      * @throws TwilioException
      */
     public function addParticipantToConversation(string $conversation_sid, User $user): ParticipantInstance
     {
         $conversation = $this->twilio->conversations->v1;
-        $role_name = 'conversation-agent';
-        $role = null;
+        $role_name    = 'conversation-agent';
+        $role         = null;
 
         // check if we already have this role.
         foreach ($conversation->roles->read() as $role_instance) {
@@ -199,7 +193,7 @@ class TwilioService extends AbstractInstanceCache
         ]);
     }
 
-    public function setIdentityForParticipant(string $identity, string $participant_sid, string $conversation_sid)
+    public function setIdentityForParticipant(string $identity, string $participant_sid, string $conversation_sid): void
     {
         $this->twilio->conversations->v1->conversations($conversation_sid)
             ->participants($participant_sid)
@@ -209,6 +203,20 @@ class TwilioService extends AbstractInstanceCache
     public function formatNumber(string $number, string $country_code = 'US'): string
     {
         return $this->twilio->lookups->v1->phoneNumbers($number)->fetch(['countryCode' => $country_code])->phoneNumber;
+    }
+
+    /**
+     * @param User   $user
+     *
+     * @throws TwilioException
+     */
+    public function sendMessage(PhoneInterface $user, string $message): MessageInstance
+    {
+        return $this->twilio->messages->create($this->formatNumber($user->getPhoneNumber()), [
+            'from' => $this->number,
+            'body' => $message,
+            'statusCallBack' => env('TWILIO_STATUS_CALLBACK_DOMAIN') . '/api/twilio/statusCallBack',
+        ]);
     }
 
     private function formatMessengerId(?string $id): ?string
@@ -222,19 +230,15 @@ class TwilioService extends AbstractInstanceCache
      * @param string      $type    Type of Address, value can be whatsapp, messenger or sms.
      * @param string|null $address The unique address to be configured. The address can be a
      *                             whatsapp address or phone number
-     * @param string      $name
-     * @param string      $conversation_sid
-     * @param string      $endpoint
      *
-     * @return void
      * @throws TwilioException
      */
     private function updateOrCreateAddressConfig(
-        string  $type,
+        string $type,
         ?string $address,
-        string  $name,
-        string  $conversation_sid,
-        string  $endpoint
+        string $name,
+        string $conversation_sid,
+        string $endpoint
     ): void {
         if ($address === null) {
             return;
@@ -244,7 +248,7 @@ class TwilioService extends AbstractInstanceCache
 
         try {
             $sid = $conversation->addressConfigurations($address)->fetch()->sid;
-        } catch (RestException|TypeError) {
+        } catch (RestException | TypeError) {
             $sid = $conversation->addressConfigurations->create($type, $address)->sid;
         }
 
@@ -259,22 +263,6 @@ class TwilioService extends AbstractInstanceCache
             'autoCreationWebhookUrl' => $endpoint,
             'autoCreationWebhookMethod' => 'POST',
             'autoCreationWebhookFilters' => ['onParticipantAdded', 'onMessageAdded'],
-        ]);
-    }
-
-    /**
-     * @param User   $user
-     * @param string $message
-     *
-     * @return MessageInstance
-     * @throws TwilioException
-     */
-    public function sendMessage(PhoneInterface $user, string $message): MessageInstance
-    {
-        return $this->twilio->messages->create($this->formatNumber($user->getPhoneNumber()), [
-            'from' => $this->number,
-            'body' => $message,
-            'statusCallBack' => env('TWILIO_STATUS_CALLBACK_DOMAIN') . '/api/twilio/statusCallBack',
         ]);
     }
 }

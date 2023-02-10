@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEvents\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEvents\CalendarEventAggregate;
 use App\Domain\Files\Actions\CreateFiles;
+use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -31,17 +34,26 @@ class UploadFileToCalendarEvent extends CreateFiles
         ];
     }
 
-    public function handle($data, $current_user = null): array
+    /**
+     * @param array<string, mixed> $data
+     * @param User|null            $_
+     *
+     * @return array<CalendarEventAggregate>
+     */
+    public function handle(array $data, ?User $_ = null): array
     {
         $files = [];
 
-        foreach ($data as $key => $file) {
+        foreach ($data as $file) {
             $files[] = CalendarEventAggregate::retrieve($file['entity_id'])->upload($file)->persist();
         }
 
         return $files;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -15,11 +15,11 @@ class AgreementController extends Controller
 {
     public function viewAgreementPDF(Request $request): Response
     {
-        $is_signed = false;
+        $is_signed    = false;
         $agreement_id = $request->agreement_id;
-        $agreement = Agreement::find($agreement_id);
-        $user_name = $agreement->user->name;
-        $file = File::whereFileableId($agreement_id)->whereType('signed')->first();
+        $agreement    = Agreement::find($agreement_id);
+        $user_name    = $agreement->user->name;
+        $file         = File::whereFileableId($agreement_id)->whereType('signed')->first();
 
         if ($file) {
             $is_signed = true;
@@ -28,7 +28,7 @@ class AgreementController extends Controller
         }
 
         $file_name = $file->original_filename;
-        $url = Storage::disk('s3')->temporaryUrl($file->key, now()->addMinutes(10));
+        $url       = Storage::disk('s3')->temporaryUrl($file->key, now()->addMinutes(10));
 
         return Inertia::render('Agreements/ViewPDF', [
             'pdfUrl' => $url,

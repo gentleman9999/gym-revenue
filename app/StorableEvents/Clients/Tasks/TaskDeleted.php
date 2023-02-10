@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents\Clients\Tasks;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
@@ -13,7 +15,7 @@ class TaskDeleted extends ShouldBeStored
     public function __construct(string $client, string $user, string $id)
     {
         $this->client = $client;
-        $this->user = $user;
-        $this->id = $id;
+        $this->user   = $user;
+        $this->id     = $id;
     }
 }

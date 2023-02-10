@@ -27,9 +27,9 @@ class AgreementReactor extends Reactor implements ShouldQueue
 {
     public function onAgreementCreated(AgreementCreated $event): void
     {
-        $agreement = Agreement::findOrFail($event->aggregateRootUuid());
+        $agreement          = Agreement::findOrFail($event->aggregateRootUuid());
         $template_locations = json_decode($agreement->template->agreement_json);
-        $location = [];
+        $location           = [];
         if (isset($template_locations->locations)) {
             foreach ($template_locations->locations as $template_location) {
                 $location[] = $template_location->address1 . ', ' . $template_location->address2 . ' ' . $template_location->city . ', ' . $template_location->state . '' . $template_location->zip;
@@ -74,7 +74,7 @@ class AgreementReactor extends Reactor implements ShouldQueue
 
     protected function updateUserStatus(AgreementSigned|AgreementUpdated $event): void
     {
-        $agreement = Agreement::findOrFail($event->aggregateRootUuid());
+        $agreement            = Agreement::findOrFail($event->aggregateRootUuid());
         $agreement->signed_at = $event->createdAt();
 
         if (isset($event->payload['signatureFile'])) {
@@ -85,24 +85,24 @@ class AgreementReactor extends Reactor implements ShouldQueue
 
             for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
                 $template = $pdf->importPage($pageNo);
-                $size = $pdf->getTemplateSize($template);
+                $size     = $pdf->getTemplateSize($template);
                 $pdf->AddPage();
                 $pdf->useTemplate($template, null, null, $size['width'], $size['height'], true);
                 if ($pageNo == $pageCount) {
                     $signature_file_extension = (explode('/', mime_content_type($event->payload['signatureFile']))[1]);
-                    $temp_file_name = 'new'.$agreement->id;
-                    $temp_image_path = public_path('temp/'.$temp_file_name.'.'.$signature_file_extension);
+                    $temp_file_name           = 'new' . $agreement->id;
+                    $temp_image_path          = public_path('temp/' . $temp_file_name . '.' . $signature_file_extension);
                     fopen($temp_image_path, "wb");
                     file_put_contents($temp_image_path, file_get_contents($event->payload['signatureFile']));
                     $pdf->Image($temp_image_path, 45, $size['height'] - 50);
                 }
             }
 
-            $temp_pdf_path = public_path('/temp/'.$temp_file_name.'.pdf');
+            $temp_pdf_path = public_path('/temp/' . $temp_file_name . '.pdf');
             $pdf->Output('F', $temp_pdf_path);
-            $pdf_key = $agreement->client->id.'/Agreement/Signed/'.$event->payload['fileName'].'.pdf';
+            $pdf_key       = $agreement->client->id . '/Agreement/Signed/' . $event->payload['fileName'] . '.pdf';
             $upload_status = Storage::disk('s3')->put($pdf_key, file_get_contents($temp_pdf_path));
-            $file_size = Storage::disk('s3')->size($pdf_key);
+            $file_size     = Storage::disk('s3')->size($pdf_key);
 
             //To save signed PDF details in file table
             if ($upload_status) {
@@ -111,20 +111,20 @@ class AgreementReactor extends Reactor implements ShouldQueue
                     $file->delete();
                 }
 
-                $file_table_data['id'] = Uuid::get();
-                $file_table_data['client_id'] = $agreement->client->id;
-                $file_table_data['user_id'] = $agreement->user->id;
-                $file_table_data['filename'] = $event->payload['fileName'];
+                $file_table_data['id']                = Uuid::get();
+                $file_table_data['client_id']         = $agreement->client->id;
+                $file_table_data['user_id']           = $agreement->user->id;
+                $file_table_data['filename']          = $event->payload['fileName'];
                 $file_table_data['original_filename'] = $event->payload['fileName'];
-                $file_table_data['extension'] = 'pdf';
-                $file_table_data['url'] = '';
-                $file_table_data['key'] = $pdf_key;
-                $file_table_data['size'] = $file_size;
-                $file_table_data['bucket'] = 's3';
-                $file_table_data['fileable_type'] = Agreement::class;
-                $file_table_data['fileable_id'] = $agreement->id;
-                $file_table_data['hidden'] = false;
-                $file_table_data['type'] = 'signed';
+                $file_table_data['extension']         = 'pdf';
+                $file_table_data['url']               = '';
+                $file_table_data['key']               = $pdf_key;
+                $file_table_data['size']              = $file_size;
+                $file_table_data['bucket']            = 's3';
+                $file_table_data['fileable_type']     = Agreement::class;
+                $file_table_data['fileable_id']       = $agreement->id;
+                $file_table_data['hidden']            = false;
+                $file_table_data['type']              = 'signed';
                 File::create($file_table_data);
             }
             unlink($temp_pdf_path);

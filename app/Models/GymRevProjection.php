@@ -15,12 +15,12 @@ use Spatie\EventSourcing\Projections\Projection;
  */
 abstract class GymRevProjection extends Projection
 {
-    public function getKeyName()
+    public function getKeyName(): string
     {
         return 'id';
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'id';
     }

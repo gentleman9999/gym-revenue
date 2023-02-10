@@ -1,4 +1,8 @@
 <?xml version="1.0"?>
+<!--    https://github.com/squizlabs/PHP_CodeSniffer/wiki/Customisable-Sniff-Properties#genericarraysarrayindent-->
+<!--    https://github.com/sirbrillig/phpcs-variable-analysis -->
+<!--    https://github.com/slevomat/coding-standard -->
+<!--    https://edorian.github.io/php-coding-standard-generator/#phpcs -->
 <ruleset name="gym-revenue">
     <!--    <file>./../</file>-->
     <exclude-pattern>*/.quality/*</exclude-pattern>
@@ -8,6 +12,11 @@
     <exclude-pattern>*/tests/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*/routes/*</exclude-pattern>
+
+    <arg name="extensions" value="php,inc" />
+    <arg name="encoding" value="utf-8"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
 
     <!-- relative path from PHPCS source location -->
     <config name="installed_paths" value="../vendor/slevomat/coding-standard"/>
@@ -20,6 +29,7 @@
     <rule ref="PSR12"/>
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Whitespaces/DuplicateSpacesSniff.php">
         <properties>
+            <property name="ignoreSpacesBeforeAssignment" value="1"/>
             <property name="ignoreSpacesInAnnotation" value="1"/>
             <property name="ignoreSpacesInComment" value="1"/>
             <property name="ignoreSpacesInMatch" value="1"/>
@@ -29,40 +39,33 @@
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Classes/ClassStructureSniff.php">
         <properties>
             <property name="groups" type="array">
-                <element value="enum cases"/>
-                <element value="public constants"/>
-                <element value="protected constants"/>
-                <element value="private constants"/>
-                <element value="public properties"/>
-                <element value="protected properties"/>
-                <element value="private properties"/>
-                <element value="public static properties"/>
-                <element value="protected static properties"/>
-                <element value="private static properties"/>
-                <element value="public abstract methods, public static abstract methods"/>
-                <element value="protected abstract methods, protected static abstract methods"/>
                 <element value="uses"/>
+
+                <element value="enum cases"/>
+
+                <!-- Public constants are first but you don't care about the order of protected or private constants -->
+                <element value="public constants"/>
+                <element value="constants"/>
+
+                <!-- You don't care about the order among the properties. The same can be done with "properties" shortcut -->
+                <element value="public properties, protected properties, private properties"/>
+                <element value="public static properties, protected static properties, private static properties"/>
+
+                <!-- Constructor is first, then all public methods, then protected/private methods and magic methods are last -->
                 <element value="constructor"/>
-                <element value="static constructors"/>
-                <element value="destructor"/>
-                <element value="final methods"/>
-                <element value="public methods"/>
-                <element value="public static methods"/>
-                <element value="protected methods"/>
-                <element value="protected static methods"/>
-                <element value="private methods"/>
-                <element value="private static methods"/>
+                <element value="all public methods"/>
+                <element value="methods"/>
                 <element value="magic methods"/>
             </property>
         </properties>
     </rule>
 
+    <!-- Class -->
+    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Classes/PropertyDeclarationSniff.php"/>
 
     <!-- Functions -->
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Functions/UselessParameterDefaultValueSniff.php"/>
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Functions/UnusedInheritedVariablePassedToClosureSniff.php"/>
-    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Functions/UnusedParameterSniff.php"/>
-
 
     <!-- PHP -->
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/PHP/DisallowDirectMagicInvokeCallSniff.php"/>
@@ -91,10 +94,38 @@
     <!-- TypeHints -->
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/NullableTypeForNullDefaultValueSniff.php"/>
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/NullTypeHintOnLastPositionSniff.php"/>
-    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/ParameterTypeHintSniff.php"/>
+    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/ParameterTypeHintSniff.php">
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessAnnotation" />
+        <properties>
+            <property name="enableNativeTypeHint" value="false" />
+            <property name="enableMixedTypeHint" value="false" />
+            <property name="enableUnionTypeHint" value="false" />
+            <property name="enableIntersectionTypeHint" value="false" />
+            <property name="enableStandaloneNullTrueFalseTypeHints" value="false" />
+        </properties>
+    </rule>
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/ParameterTypeHintSpacingSniff.php"/>
-    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/PropertyTypeHintSniff.php"/>
-    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/ReturnTypeHintSniff.php"/>
+    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/PropertyTypeHintSniff.php">
+        <properties>
+            <property name="enableNativeTypeHint" value="false" />
+            <property name="enableMixedTypeHint" value="false" />
+            <property name="enableUnionTypeHint" value="false" />
+            <property name="enableIntersectionTypeHint" value="false" />
+            <property name="enableStandaloneNullTrueFalseTypeHints" value="false" />
+        </properties>
+    </rule>
+    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/ReturnTypeHintSniff.php">
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessAnnotation" />
+        <properties>
+            <property name="enableObjectTypeHint" value="false" />
+            <property name="enableStaticTypeHint" value="false" />
+            <property name="enableMixedTypeHint" value="false" />
+            <property name="enableUnionTypeHint" value="false" />
+            <property name="enableIntersectionTypeHint" value="false" />
+            <property name="enableNeverTypeHint" value="false" />
+            <property name="enableStandaloneNullTrueFalseTypeHints" value="false" />
+        </properties>
+    </rule>
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/ReturnTypeHintSpacingSniff.php"/>
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/UselessConstantTypeHintSniff.php"/>
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/TypeHints/DeclareStrictTypesSniff.php">
@@ -105,10 +136,29 @@
         </properties>
     </rule>
 
+    <rule ref="vendor/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Sniffs/CodeAnalysis/VariableAnalysisSniff.php">
+        <properties>
+            <property name="ignoreUnusedRegexp" value="/^_/"/>
+            <property name="allowUnusedParametersBeforeUsed" value="false"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120" />
+            <property name="ignoreComments" value="true" />
+        </properties>
+    </rule>
+    <rule ref="Generic.Formatting.MultipleStatementAlignment" />
+    <rule ref="Generic.WhiteSpace.ScopeIndent"/>
     <rule ref="Generic.Formatting.SpaceAfterCast"/>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
     <rule ref="Generic.Arrays.ArrayIndent">
         <exclude name="Generic.Arrays.ArrayIndent.CloseBraceNotNewLine"/><!-- MultiLine items causes evaluation as multiLine array https://github.com/squizlabs/PHP_CodeSniffer/issues/1791 -->
+    </rule>
+    <rule ref="Generic.Strings.UnnecessaryStringConcat">
+        <properties>
+            <property name="allowMultiline" value="true" />
+        </properties>
     </rule>
     <rule ref="Generic.PHP.ForbiddenFunctions">
         <properties>

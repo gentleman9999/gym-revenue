@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\ClientSettingsAggregate;
@@ -38,6 +40,9 @@ class UpdateSocialMedias
         return $current_user->can('manage-client-settings');
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

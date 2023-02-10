@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Events;
 
 use App\StorableEvents\GymRevShouldBeStored;
@@ -14,6 +16,6 @@ class UserReceivedTextMsg extends GymRevShouldBeStored
     {
         $this->template = $template;
         $this->response = $response;
-        $this->client = $client;
+        $this->client   = $client;
     }
 }

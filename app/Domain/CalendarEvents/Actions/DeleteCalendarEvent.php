@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEvents\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -22,6 +24,9 @@ class DeleteCalendarEvent
         return $calendarEvent;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

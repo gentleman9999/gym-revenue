@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -21,7 +23,7 @@ class InviteTeamMembers
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'emails' => ['required', 'array', 'min:1'],
@@ -44,6 +46,9 @@ class InviteTeamMembers
         return $users_invited;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

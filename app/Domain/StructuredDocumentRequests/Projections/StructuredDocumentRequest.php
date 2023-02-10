@@ -17,8 +17,10 @@ class StructuredDocumentRequest extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
+    /** @var array<string> */
     protected $fillable = ['client_id', 'structured_document_id', 'entity_id', 'entity_type'];
 
+    /** @var array<string, string> */
     protected $casts = [
         'entity_type' => StructuredDocumentEntityTypeEnum::class,
     ];

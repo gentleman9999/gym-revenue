@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEvents\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -15,7 +17,7 @@ class CheckOverdueTasks
 {
     use AsAction;
 
-    public string $commandSignature = 'overduetasks:check';
+    public string $commandSignature   = 'overduetasks:check';
     public string $commandDescription = 'Fires off reminders that are ready.';
 
     public function handle(): void
@@ -32,7 +34,7 @@ class CheckOverdueTasks
 
 
             foreach ($tasks as $task) {
-                VarDumper::dump("Found task: ".$task->title);
+                VarDumper::dump("Found task: " . $task->title);
                 CalendarEventAggregate::retrieve($task->id)->notify($task->toArray())->persist();
             }
         }

@@ -33,7 +33,7 @@ class UpdateEntrySources
 
     public function handle(array $data): array
     {
-        $sources = $data['sources'];
+        $sources         = $data['sources'];
         $sourcesToUpdate = collect($sources)->filter(function ($s) {
             return $s['id'] !== null && ! empty($s['name']);
         });

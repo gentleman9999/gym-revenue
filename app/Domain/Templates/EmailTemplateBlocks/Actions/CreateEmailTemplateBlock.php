@@ -37,6 +37,9 @@ class CreateEmailTemplateBlock
         return EmailTemplateBlock::find($uuid);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Events;
 
 use App\Domain\Locations\Projections\Location;
@@ -13,7 +15,7 @@ class LocationsImported extends GymRevCrudEvent
     public function __construct(string $key, string $client)
     {
         parent::__construct();
-        $this->key = $key;
+        $this->key    = $key;
         $this->client = $client;
     }
 

@@ -36,9 +36,14 @@ class CreateMessage
         ];
     }
 
+    /**
+     * @param string $user_id
+     * @param array<string, mixed>  $payload
+     *
+     */
     public function handle(string $user_id, array $payload): void
     {
-        $id = Uuid::get();
+        $id                             = Uuid::get();
         $payload['chat_participant_id'] = ChatParticipant::getIdForChatUser($payload['chat_id'], $user_id);
         ChatMessageAggregate::retrieve($id)->create($payload)->persist();
 
@@ -54,6 +59,9 @@ class CreateMessage
         $chat->participants->each(static fn (ChatParticipant $p) => CreateNotification::run($data, $p->user));
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\GatewayProviders\Email;
 
 use App\Domain\Clients\Models\ClientGatewayIntegration;
@@ -22,9 +24,9 @@ class EmailGatewayProviderService extends GatewayProviderService
     public function __construct(EmailTemplate $email_template)
     {
         $this->email_template = $email_template;
-        $model = GatewayProviderType::where('name', '=', $this->provider_type_slug)->first();
+        $model                = GatewayProviderType::where('name', '=', $this->provider_type_slug)->first();
         parent::__construct($model);
-        if (! is_null($this->email_template->client_id)) {
+        if ($this->email_template->client_id !== null) {
             $this->setAssociatedClient($this->email_template->client_id);
         }
     }
@@ -36,13 +38,42 @@ class EmailGatewayProviderService extends GatewayProviderService
         }
     }
 
+    public function getRawMessage(): string
+    {
+        return $this->email_template->markup;
+    }
+
+    public function getSubject(): string
+    {
+        return $this->email_template->subject ?? '';
+    }
+
+    public function getTranslatedMessage()
+    {
+        $raw_message = $this->getRawMessage();
+
+        return $this->gateway->translateMessage($raw_message);
+    }
+
+    public function fire($email_address)
+    {
+        $msg     = $this->getRawMessage();
+        $subject = $this->getSubject();
+        return $this->gateway->fireMsg($email_address, $subject, $msg);
+    }
+
+    public function fireBulk()
+    {
+        return false;
+    }
+
     private function getEmailGateway($user_id)
     {
-        $results = false;
-        $model = $this->email_template->gateway()->first();
+        $results  = false;
+        $model    = $this->email_template->gateway()->first();
         $provider = 'default_cnb'; //can't use default because that requires client_id
 
-        if (! is_null($model)) {
+        if ($model !== null) {
             $provider = $model->value;
         }
         switch ($provider) {
@@ -51,12 +82,12 @@ class EmailGatewayProviderService extends GatewayProviderService
                 $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
                     ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('mailgun')->first();
 
-                if(!is_null($client_integration_record))
+                if($client_integration_record !== null)
                 {
                     $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
                         ->with('details')->first();
 
-                    if(!is_null($gateway_provider_record))
+                    if($gateway_provider_record !== null)
                     {
                         $deets = [];
                         foreach ($gateway_provider_record->details as $detail)
@@ -78,7 +109,7 @@ class EmailGatewayProviderService extends GatewayProviderService
                         }
                     }
                 }*/
-                $deets = [
+                $deets   = [
                     'mailgun_domain' => env('MAILGUN_DOMAIN'),
                     'mailgun_secret' => env('MAILGUN_SECRET'),
                     'mailgun_endpoint' => env('MAILGUN_ENDPOINT'),
@@ -94,11 +125,11 @@ class EmailGatewayProviderService extends GatewayProviderService
                 $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
                     ->whereNickname($model->value)->whereActive(1)->first(); //This needs to find the correct gateway_slug, right now it doesn't
 
-                if (! is_null($client_integration_record)) {
+                if ($client_integration_record !== null) {
                     $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
                         ->with('details')->first();
 
-                    if (! is_null($gateway_provider_record)) {
+                    if ($gateway_provider_record !== null) {
                         $deets = [];
                         foreach ($gateway_provider_record->details as $detail) {
                             if ($detail->detail == 'access_credential') {
@@ -124,39 +155,6 @@ class EmailGatewayProviderService extends GatewayProviderService
                 }
         }
 
-
-        return $results;
-    }
-
-    public function getRawMessage(): string
-    {
-        return $this->email_template->markup;
-    }
-
-    public function getSubject(): string
-    {
-        return $this->email_template->subject ?? '';
-    }
-
-    public function getTranslatedMessage()
-    {
-        $raw_message = $this->getRawMessage();
-
-        return $this->gateway->translateMessage($raw_message);
-    }
-
-    public function fire($email_address)
-    {
-        $msg = $this->getRawMessage();
-        $subject = $this->getSubject();
-        $response = $this->gateway->fireMsg($email_address, $subject, $msg);
-
-        return $response;
-    }
-
-    public function fireBulk()
-    {
-        $results = false;
 
         return $results;
     }

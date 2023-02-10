@@ -27,13 +27,17 @@ class CreateMemberGroup
     {
         return [
             'client_id' => ['required', 'string'],
-            'type' => ['required',  new Enum(MemberGroupTypeEnum::class)],
+            'type' => ['required', new Enum(MemberGroupTypeEnum::class)],
             'poc_name' => ['sometimes', 'string'],
             'poc_phone' => ['sometimes', 'string'],
             'poc_email' => ['sometimes', 'string'],
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): MemberGroup
     {
         $id = Uuid::get();
@@ -42,6 +46,9 @@ class CreateMemberGroup
         return MemberGroup::findOrFail($id);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -12,6 +12,25 @@ abstract class GymRevAction
     use AsAction;
 
     /**
+     * When an action is called as a graphql resolver, arguments may need to be manually
+     * mapped to match the handle function's signature
+     * @param array<string, mixed> $args
+     * @return array<string, mixed>
+     */
+    public function mapArgsToHandle(array $args): array
+    {
+        return $args;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
+    /**
      * @param  null  $_
      * @param  array{}  $args
      */
@@ -21,21 +40,5 @@ abstract class GymRevAction
 
         return $this->handle(...$this->mapArgsToHandle($args));
 //        return $this->handle($args);
-    }
-
-    /**
-     * When an action is called as a graphql resolver, arguments may need to be manually
-     * mapped to match the handle function's signature
-     * @param array $args
-     * @return array
-     */
-    public function mapArgsToHandle(array $args): array
-    {
-        return $args;
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -37,6 +39,9 @@ class SetClientServices
         return $current_user->can('manage-client-settings');
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

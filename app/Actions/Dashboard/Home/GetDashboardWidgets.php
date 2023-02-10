@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Dashboard\Home;
 
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Teams\Models\Team;
 use App\Support\CurrentInfoRetriever;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -19,11 +20,11 @@ class GetDashboardWidgets
         $results = [];
 
         $team = CurrentInfoRetriever::getCurrentTeam();
-        if (! is_null($team->client)) {
-            $num_locs = 0;
+        if ($team->client !== null) {
+            $num_locs                = 0;
             $num_scheduled_campaigns = ScheduledCampaign::whereIn('status', ['PENDING', 'ACTIVE'])->count();
-            $num_drip_campaigns = DripCampaign::whereIn('status', ['PENDING', 'ACTIVE'])->count();
-            $last_widget_count = 0;
+            $num_drip_campaigns      = DripCampaign::whereIn('status', ['PENDING', 'ACTIVE'])->count();
+            $last_widget_count       = 0;
             if ($team->home_team) {
                 $num_locs = Location::whereActive(1)->count();
             } else {

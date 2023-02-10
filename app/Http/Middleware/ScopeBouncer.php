@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
-
 use Silber\Bouncer\Bouncer;
 
 class ScopeBouncer
@@ -11,14 +12,12 @@ class ScopeBouncer
     /**
      * The Bouncer instance.
      *
-     * @var \Silber\Bouncer\Bouncer
      */
-    protected $bouncer;
+    protected \Silber\Bouncer\Bouncer $bouncer;
 
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Bouncer  $bouncer
      */
     public function __construct(Bouncer $bouncer)
     {
@@ -28,11 +27,8 @@ class ScopeBouncer
     /**
      * Set the proper Bouncer scope for the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(\Illuminate\Http\Request $request, Closure $next): mixed
     {
         $user = $request->user();
         if ($user) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Comm;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -15,81 +17,6 @@ use Inertia\Inertia;
 
 class MassCommunicationsController extends Controller
 {
-    private function getStats(string $client_id = null)
-    {
-        $results = [
-            'email_templates' => [
-                'active' => 0,
-                'created' => 0,
-            ],
-            'sms_templates' => [
-                'active' => 0,
-                'created' => 0,
-            ],
-            'drip_campaigns' => [
-                'active' => 0,
-                'created' => 0,
-            ],
-            'scheduled_campaigns' => [
-                'active' => 0,
-                'created' => 0,
-            ],
-            'total_audience' => 0,
-            'audience_breakdown' => [
-                'all' => 0,
-            ],
-        ];
-
-        if (! is_null($client_id)) {
-            $results['total_audience'] = Lead::count();
-            $results['audience_breakdown'] = [
-                'all' => Lead::count(),
-                'prospects' => Lead::count(),
-                'conversions' => 0,
-            ];
-            $results['sms_templates'] = [
-                'created' => SmsTemplate::count(),
-                'active' => SmsTemplate::whereActive(1)->count(),
-            ];
-            $results['scheduled_campaigns'] = [
-                'created' => ScheduledCampaign::count(),
-                'active' => ScheduledCampaign::where('status', '!=', 'draft')->count(),
-            ];
-            $results['email_templates'] = [
-                'created' => EmailTemplate::count(),
-                'active' => EmailTemplate::whereActive(1)->count(),
-            ];
-            $results['drip_campaigns'] = [
-                'created' => DripCampaign::count(),
-                'active' => DripCampaign::where('status', '!=', 'draft')->count(),
-            ];
-        } else {
-            $results['total_audience'] = 25;
-            $results['audience_breakdown'] = [
-                'all' => 25,
-                'admins' => 10,
-                'employees' => 15,
-            ];
-        }
-
-        return $results;
-    }
-
-    private function filterHistoryLog(array $history_log, string $audience, string $client_id = null)
-    {
-        $results = [];
-        //dd($audience, $history_log);
-        // look for logs about the audience
-        foreach ($history_log as $idx => $log) {
-            if (array_key_exists('slug', $log) && ($log['slug'] == $audience)) {
-                $results[] = $log;
-            }
-        }
-        //dd($results);
-
-        return $results;
-    }
-
     public function index(Request $request)
     {
         $client_id = request()->user()->client_id;
@@ -107,10 +34,10 @@ class MassCommunicationsController extends Controller
 
         $history_log = [];
         $aud_options = [
-                'all' => 'All',
-                'prospects' => 'Prospects',
-                'conversions' => 'Conversions',
-            ];
+            'all' => 'All',
+            'prospects' => 'Prospects',
+            'conversions' => 'Conversions',
+        ];
 
         $stats = $this->getStats($client_id);
 
@@ -130,7 +57,7 @@ class MassCommunicationsController extends Controller
                 case 'employees':
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
-                    $history_log = $this->filterHistoryLog($history_log, $aud, $client_id);
+                    $history_log     = $this->filterHistoryLog($history_log, $aud, $client_id);
 
                     break;
 
@@ -140,7 +67,7 @@ class MassCommunicationsController extends Controller
         }
 
         //search filter
-        $search = $request->query('search');
+        $search      = $request->query('search');
         $history_log = collect($history_log)->filter(function ($value, $key) use ($search) {
             if (str_contains(strtolower($value['type']), strtolower($search))) {
                 return true;
@@ -172,8 +99,8 @@ class MassCommunicationsController extends Controller
     {
         $client_id = request()->user()->client_id;
 
-        if (! is_null($client_id)) {
-            $aggy = ClientAggregate::retrieve($client_id);
+        if ($client_id !== null) {
+            $aggy        = ClientAggregate::retrieve($client_id);
             $history_log = $aggy->getCommunicationHistoryLog();
             $aud_options = [
                 'all' => 'All',
@@ -209,7 +136,7 @@ class MassCommunicationsController extends Controller
                 case 'employees':
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
-                    $history_log = $this->filterHistoryLog($history_log, $aud, $client_id);
+                    $history_log     = $this->filterHistoryLog($history_log, $aud, $client_id);
 
                     break;
 
@@ -219,7 +146,7 @@ class MassCommunicationsController extends Controller
         }
 
         //search filter
-        $search = $request->query('search');
+        $search      = $request->query('search');
         $history_log = collect($history_log)->filter(function ($value, $key) use ($search) {
             if (str_contains(strtolower($value['type']), strtolower($search))) {
                 return true;
@@ -235,5 +162,80 @@ class MassCommunicationsController extends Controller
         });
 
         return $history_log;
+    }
+
+    private function getStats(?string $client_id = null)
+    {
+        $results = [
+            'email_templates' => [
+                'active' => 0,
+                'created' => 0,
+            ],
+            'sms_templates' => [
+                'active' => 0,
+                'created' => 0,
+            ],
+            'drip_campaigns' => [
+                'active' => 0,
+                'created' => 0,
+            ],
+            'scheduled_campaigns' => [
+                'active' => 0,
+                'created' => 0,
+            ],
+            'total_audience' => 0,
+            'audience_breakdown' => [
+                'all' => 0,
+            ],
+        ];
+
+        if ($client_id !== null) {
+            $results['total_audience']      = Lead::count();
+            $results['audience_breakdown']  = [
+                'all' => Lead::count(),
+                'prospects' => Lead::count(),
+                'conversions' => 0,
+            ];
+            $results['sms_templates']       = [
+                'created' => SmsTemplate::count(),
+                'active' => SmsTemplate::whereActive(1)->count(),
+            ];
+            $results['scheduled_campaigns'] = [
+                'created' => ScheduledCampaign::count(),
+                'active' => ScheduledCampaign::where('status', '!=', 'draft')->count(),
+            ];
+            $results['email_templates']     = [
+                'created' => EmailTemplate::count(),
+                'active' => EmailTemplate::whereActive(1)->count(),
+            ];
+            $results['drip_campaigns']      = [
+                'created' => DripCampaign::count(),
+                'active' => DripCampaign::where('status', '!=', 'draft')->count(),
+            ];
+        } else {
+            $results['total_audience']     = 25;
+            $results['audience_breakdown'] = [
+                'all' => 25,
+                'admins' => 10,
+                'employees' => 15,
+            ];
+        }
+
+        return $results;
+    }
+
+    private function filterHistoryLog(array $history_log, string $audience, ?string $client_id = null)
+    {
+        $results = [];
+        //dd($audience, $history_log);
+        // look for logs about the audience
+        foreach ($history_log as $idx => $log) {
+            if (array_key_exists('slug', $log) && ($log['slug'] == $audience)) {
+                $results[] = $log;
+            }
+        }
+        //dd($results);
+
+        return $results;
     }
 }

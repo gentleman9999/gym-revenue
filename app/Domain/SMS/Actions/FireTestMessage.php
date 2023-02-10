@@ -22,8 +22,8 @@ class FireTestMessage
 
     public function handle(User $user): bool
     {
-        $test = FireTwilioMsg::run($user, 'Test Message');
-        $id = Uuid::get();
+        $test    = FireTwilioMsg::run($user, 'Test Message');
+        $id      = Uuid::get();
         $gateway = GatewayProvider::whereName('Twilio SMS')->first();
         $payload = [
             'id' => $id,

@@ -14,6 +14,7 @@ use Twilio\Rest\Api\V2010\Account\MessageInstance;
 class FireTwilioMsg extends Action
 {
     use AsAction;
+
     public string $commandSignature = 'sms-test {phone}';
 
     public function handle(User $user, string $message): MessageInstance

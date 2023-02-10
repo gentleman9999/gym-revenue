@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -7,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+
 use function redirect;
 
 /**

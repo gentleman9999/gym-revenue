@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\AgreementTemplates;
 
 use App\Domain\AgreementTemplates\Events\AgreementTemplateCreated;

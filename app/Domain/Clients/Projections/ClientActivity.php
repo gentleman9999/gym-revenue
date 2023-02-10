@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Projections;
 
 use App\Domain\Users\Models\User;
@@ -30,11 +32,6 @@ class ClientActivity extends GymRevProjection
         return 'stored_event_id';
     }
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
-
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
@@ -52,5 +49,10 @@ class ClientActivity extends GymRevProjection
         }
 
         return null;
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

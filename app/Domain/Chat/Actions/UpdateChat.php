@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Chat\Actions;
 
 use App\Domain\Chat\Aggregates\ChatAggregate;
@@ -40,6 +42,9 @@ class UpdateChat
         return $chat->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -64,18 +69,18 @@ class UpdateChat
 
     public function asCommand(Command $command): void
     {
-        $payload = [];
-        $chat = Chat::find($command->choice(
+        $payload       = [];
+        $chat          = Chat::find($command->choice(
             'Select Chat Session you want to Update:',
             Chat::all()->pluck('id')->toArray(),
         ));
         $payload['id'] = $chat->id;
-        $updateField = $command->choice(
+        $updateField   = $command->choice(
             'What field do you want to change?',
             Schema::getColumnListing($chat->getTable())
         );
-        $client_id = Chat::whereId($chat->id)->pluck('client_id')->toArray()[0];
-        $users = User::whereClientId($client_id)->pluck('id')->toArray();
+        $client_id     = Chat::whereId($chat->id)->pluck('client_id')->toArray()[0];
+        $users         = User::whereClientId($client_id)->pluck('id')->toArray();
         switch ($updateField) {
             case 'participant_ids':
                 $payload[$updateField] = json_encode($command->choice(
@@ -87,7 +92,6 @@ class UpdateChat
 
                 break;
             case 'created_by_user_id':
-
                 $payload[$updateField] = $command->choice(
                     'Select who created this chat[' . $chat->created_by_user_id . ']',
                     $users,

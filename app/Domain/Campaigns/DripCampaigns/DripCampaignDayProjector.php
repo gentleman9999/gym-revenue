@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns;
 
 //use App\Domain\Campaigns\DripCampaigns\Events\DripCampaignDayCompleted;
@@ -20,7 +22,7 @@ class DripCampaignDayProjector extends Projector
     {
         $dripCampaignDay = (new DripCampaignDay())->writeable();
         $dripCampaignDay->fill($event->payload);
-        $dripCampaignDay->id = $event->aggregateRootUuid();
+        $dripCampaignDay->id               = $event->aggregateRootUuid();
         $dripCampaignDay->drip_campaign_id = $event->payload['drip_campaign_id'];
         $dripCampaignDay->save();
     }

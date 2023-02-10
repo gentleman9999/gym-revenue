@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Projectors\Clients;
 
 use App\Domain\Campaigns\DripCampaigns\Events\DripCampaignCreated;
@@ -13,7 +15,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 class LiveReportingProjector extends Projector
 {
     /** @TODO: When Implementing, check if the created user is of lead type */
-    public function onLeadCreated(UserCreated $event)
+    public function onLeadCreated(UserCreated $event): void
     {
 //        $record = LiveReportsByDay::whereClientId($event->payload['client_id'])
 //            ->whereGrLocationId($event->payload['gr_location_id'])
@@ -38,7 +40,7 @@ class LiveReportingProjector extends Projector
     }
 
     /** @TODO: When Implementing, check if the created user is of member type */
-    public function onMemberCreated(UserCreated $event)
+    public function onMemberCreated(UserCreated $event): void
     {
 //        $record = LiveReportsByDay::whereClientId($event->payload['client_id'])
 //            ->whereGrLocationId($event->payload['gr_location_id'])
@@ -61,7 +63,7 @@ class LiveReportingProjector extends Projector
 //        $record->updateOrFail(['value' => (float)$record->value + 1]);
     }
 
-    public function onLeadConverted(EndUserConverted $event)
+    public function onLeadConverted(EndUserConverted $event): void
     {
 //        $record = LiveReportsByDay::firstOrCreate(
 //            [

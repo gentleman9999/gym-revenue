@@ -21,7 +21,7 @@ class EditCustomer
 
     public function handle(EndUser $end_user, User $user, Team $current_team): array
     {
-        $aggy = UserAggregate::retrieve($end_user->id);
+        $aggy              = UserAggregate::retrieve($end_user->id);
         $locations_records = Helper::setUpLocationsObject($current_team->id, $user->isClientUser(), $user->client_id)->get();
 
         $locations = [];
@@ -35,7 +35,7 @@ class EditCustomer
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $customer_data = $end_user->toArray();
+        $customer_data              = $end_user->toArray();
         $customer_data['all_notes'] = $aggy->getNoteList('customer');
 
 

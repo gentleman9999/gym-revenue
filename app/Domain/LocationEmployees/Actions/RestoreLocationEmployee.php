@@ -24,6 +24,9 @@ class RestoreLocationEmployee
         return $location_employee->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

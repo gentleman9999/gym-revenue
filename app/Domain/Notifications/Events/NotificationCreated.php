@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notifications\Events;
 
 use App\Domain\Notifications\Notification;

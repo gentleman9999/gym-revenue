@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Imports;
 
 use App\Domain\Clients\Projections\Client;
@@ -17,10 +19,10 @@ class UsersImport implements ToCollection
         $this->client_id = $client;
     }
 
-    public function collection(Collection|\Illuminate\Support\Collection $rows)
+    public function collection(Collection|\Illuminate\Support\Collection $rows): void
     {
-        $client = Client::with('teams')->find($this->client_id);
-        $roles = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
+        $client   = Client::with('teams')->find($this->client_id);
+        $roles    = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
         $team_ids = $client->teams()->pluck('id');
 
         foreach ($rows as $row) {

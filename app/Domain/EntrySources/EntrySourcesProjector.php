@@ -12,8 +12,8 @@ class EntrySourcesProjector extends Projector
 {
     public function onEntrySourceCreated(EntrySourceCreated $event): void
     {
-        $entry_source = (new EntrySource())->writeable();
-        $entry_source->id = $event->aggregateRootUuid();
+        $entry_source            = (new EntrySource())->writeable();
+        $entry_source->id        = $event->aggregateRootUuid();
         $entry_source->client_id = $event->payload['client_id'];
         $entry_source->fill($event->payload);
         $entry_source->save();
@@ -23,7 +23,7 @@ class EntrySourcesProjector extends Projector
     {
         $client_entry_sources = EntrySource::whereClientId($event->clientId())->get();
         foreach ($client_entry_sources as $client_entry_source) {
-            $client_entry_source = (new EntrySource())->whereId($client_entry_source->id)->first()->writeable();
+            $client_entry_source                          = (new EntrySource())->whereId($client_entry_source->id)->first()->writeable();
             $client_entry_source->is_default_entry_source = false;
             $client_entry_source->save();
         }

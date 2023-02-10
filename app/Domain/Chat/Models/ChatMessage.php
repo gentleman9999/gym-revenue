@@ -22,10 +22,13 @@ class ChatMessage extends GymRevUuidProjection
     use SoftDeletes;
     use Sortable;
 
+    /** @var array<string> */
     protected $hidden = ['client_id'];
 
+    /** @var array<string> */
     protected $fillable = ['id', 'chat_id', 'chat_participant_id', 'message', 'read_by'];
 
+    /** @var array<string, string> */
     protected $casts = [
         'read_by' => 'array',
     ];

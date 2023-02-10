@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\Projections\Client;
@@ -10,7 +12,7 @@ class DeactivateClient
 {
     use AsAction;
 
-    public string $commandSignature = 'client:deactivate {id}';
+    public string $commandSignature   = 'client:deactivate {id}';
     public string $commandDescription = 'Deactivates the client';
 
     public function handle(string $id): Client

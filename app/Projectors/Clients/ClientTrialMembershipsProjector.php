@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Projectors\Clients;
 
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
@@ -9,17 +11,17 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientTrialMembershipsProjector extends Projector
 {
-    public function onTrialMembershipTypeUpdated(TrialMembershipTypeUpdated $event)
+    public function onTrialMembershipTypeUpdated(TrialMembershipTypeUpdated $event): void
     {
-        $trialMembershipType = TrialMembershipType::findOrFail($event->data['id']);
-        $trialMembershipType->type_name = $event->data['type_name'];
-        $trialMembershipType->slug = $event->data['slug'];
+        $trialMembershipType               = TrialMembershipType::findOrFail($event->data['id']);
+        $trialMembershipType->type_name    = $event->data['type_name'];
+        $trialMembershipType->slug         = $event->data['slug'];
         $trialMembershipType->trial_length = $event->data['trial_length'];
-        $trialMembershipType->locations = $event->data['locations'];
+        $trialMembershipType->locations    = $event->data['locations'];
         $trialMembershipType->save();
     }
 
-    public function onTrialMembershipTypeCreated(TrialMembershipTypeCreated $event)
+    public function onTrialMembershipTypeCreated(TrialMembershipTypeCreated $event): void
     {
         TrialMembershipType::create([
             'type_name' => $event->data['type_name'],

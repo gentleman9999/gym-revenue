@@ -19,12 +19,31 @@ use Lorisleiva\Actions\ActionRequest;
  *
  *      public function rules() {}
  *
+ *      // CREATE
  *      public function handleDraft(ActionRequest $request): RedirectResponse
  *      {
- *          $this->saveDraft(new CalendarEvent($request->validated()));
+ *          $this->saveDraft(new DripCampaign($request->validated()), $request->user());
  *
  *          return Redirect::back();
  *      }
+ *
+ *      // UPDATE
+ *      public function handleDraft(ActionRequest $request, string $draftable_id): RedirectResponse
+ *      {
+ *          $this->updateDraft($draftable_id, $request->validated());
+ *          $this->deleteDraft($draftable_id);
+ *
+ *          return Redirect::back();
+ *      }
+ *
+ *      // UPDATE (draft can also be deleted if 'draft.id' exist in a request without `?is_draft=1`
+ *      public function handleDraft(ActionRequest $request, string $draftable_id): RedirectResponse
+ *      {
+ *          $this->deleteDraft($draftable_id);
+ *
+ *          return Redirect::back();
+ *      }
+ *
  *
  *      public function handle($data, ?User $user = null) {}
  *      public function getControllerMiddleware() {}
@@ -34,6 +53,31 @@ use Lorisleiva\Actions\ActionRequest;
  */
 trait DraftableAction
 {
+    public function beforeAsController(ActionRequest $request): void
+    {
+        if ($request->has('draft.id')) {
+            $this->deleteDraft($request->get('draft.id'));
+        }
+    }
+
+    public function getValidator(Factory $factory, ActionRequest $request): Validator
+    {
+        $rules = $this->resolveAndCall('rules');
+        if ($this->isDraftCall($request)) {
+            array_walk($rules, static function (array &$rule): void {
+                array_unshift($rule, 'nullable');
+                $rule = array_unique(array_diff($rule, ['required']));
+            });
+        }
+
+        return $factory->make(
+            method_exists($this, 'getValidationData') ? $this->resolveAndCall('getValidationData') : $request->all(),
+            (method_exists($this, 'rules') ? $rules : []) + ['draft.id' => ['sometimes', 'nullable']],
+            method_exists($this, 'messages') ? $this->resolveAndCall('messages') : [],
+            method_exists($this, 'attributes') ? $this->resolveAndCall('attributes') : [],
+        );
+    }
+
     protected function isDraftCall(ActionRequest $request): bool
     {
         return in_array($request->query('is_draft'), ['true', '1', 'TRUE']);
@@ -47,34 +91,22 @@ trait DraftableAction
         ])->persist();
     }
 
-    public function beforeAsController(ActionRequest $request, string $method, array $args): mixed
+    protected function updateDraft(string $id, array $data): void
     {
-        if ($this->isDraftCall($request)) {
-            return $this->resolveAndCall('handleDraft');
-        }
-
-        return $this->{$method}(...$args);
+        DraftableAggregate::retrieve($id)->update($data)->persist();
     }
 
-    public function getValidator(Factory $factory, ActionRequest $request): Validator
+    protected function deleteDraft(string $id): void
     {
-        $rules = $this->resolveAndCall('rules');
-        if ($this->isDraftCall($request)) {
-            array_walk($rules, static function (array &$rule) {
-                array_unshift($rule, 'nullable');
-                $rule = array_unique(array_diff($rule, ['required']));
-            });
-        }
-
-        return $factory->make(
-            method_exists($this, 'getValidationData') ? $this->resolveAndCall('getValidationData') : $request->all(),
-            method_exists($this, 'rules') ? $rules : [],
-            method_exists($this, 'messages') ? $this->resolveAndCall('messages') : [],
-            method_exists($this, 'attributes') ? $this->resolveAndCall('attributes') : [],
-        );
+        DraftableAggregate::retrieve($id)->delete()->persist();
     }
 
-    protected function resolveAndCall(string $method): mixed
+    /**
+     * @param string $method
+     *
+     * @return array<mixed>
+     */
+    protected function resolveAndCall(string $method): array
     {
         return app()->call([$this, $method]);
     }

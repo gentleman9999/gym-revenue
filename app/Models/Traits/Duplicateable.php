@@ -13,7 +13,7 @@ trait Duplicateable
     {
         $model = $model->first()->writeable();
         $class = (new ($model::class))->getAggregate();
-        $id = Uuid::get();
+        $id    = Uuid::get();
 
         $class::retrieve($id)
             ->create($model->replicate()->toArray())

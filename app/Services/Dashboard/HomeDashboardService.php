@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Dashboard;
 
 use App\Actions\Dashboard\Home\GetDashboardWidgets;
@@ -29,9 +31,9 @@ class HomeDashboardService
         // Calculates the difference between DateTime objects
         $interval = date_diff($datetime1, $datetime2);
         if (intVal($interval->format('%R%a')) <= 32) {
-            $misc = $log->misc;
+            $misc         = $log->misc;
             $misc['type'] = 'deployment-announcement';
-            $results = [$misc];
+            $results      = [$misc];
         }
 
         return $results;

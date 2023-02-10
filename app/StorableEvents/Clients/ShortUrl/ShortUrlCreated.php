@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents\Clients\ShortUrl;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
@@ -13,7 +15,7 @@ class ShortUrlCreated extends ShouldBeStored
     public function __construct(string $client, string $user, array $data)
     {
         $this->client = $client;
-        $this->user = $user;
-        $this->data = $data;
+        $this->user   = $user;
+        $this->data   = $data;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
@@ -11,7 +13,7 @@ class PublishDripCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'drip-campaign:publish {id}';
+    public string $commandSignature   = 'drip-campaign:publish {id}';
     public string $commandDescription = 'publishes the drip campaign';
 
     public function handle(DripCampaign $dripCampaign): void

@@ -28,7 +28,7 @@ it('should do make engagement events from creating end users', function () {
     $user->client_id = $client->id;
     $location = createLocation(['address1' => fake()->unique()->streetName,'client_id' => $client->id]);
     $randomNumberOfEndUsers = rand(1, 15);
-    $endUsers = [];
+    $end_users = [];
     $numberOfEndUsersInStoredEvents = 0;
     $numberOfEndUsersInEngagementEvents = 0;
     $this->assertLessThanOrEqual(1, EngagementEvents::all()->count());
@@ -40,7 +40,7 @@ it('should do make engagement events from creating end users', function () {
             'user_type' => UserTypesEnum::LEAD,
             'opportunity' => rand(0, 3),
         ]);
-        $endUsers[] = $endU->email;
+        $end_users[] = $endU->email;
     }
 
     $ee = EngagementEvents::all()->toArray();
@@ -50,7 +50,7 @@ it('should do make engagement events from creating end users', function () {
         if (isset($ep['payload'])) {
             if (isset($ep['payload']['email'])) {
                 $email = $ep['payload']['email'];
-                if (in_array($email, $endUsers)) {
+                if (in_array($email, $end_users)) {
                     $numberOfEndUsersInStoredEvents++;
                     for ($c = 0;$c < count($ee);$c++) {
                         if (in_array($event->aggregate_uuid, $ee[$c])) {
@@ -64,8 +64,8 @@ it('should do make engagement events from creating end users', function () {
         }
     }
 
-    $this->assertEquals($numberOfEndUsersInStoredEvents, count($endUsers));
-    $this->assertEquals(count($endUsers), $numberOfEndUsersInEngagementEvents);
+    $this->assertEquals($numberOfEndUsersInStoredEvents, count($end_users));
+    $this->assertEquals(count($end_users), $numberOfEndUsersInEngagementEvents);
 });
 
 it('should do make engagement events from signAgreement', function () {
@@ -79,7 +79,7 @@ it('should do make engagement events from signAgreement', function () {
     $user->client_id = $client->id;
     $location = createLocation(['address1' => fake()->unique()->streetName,'client_id' => $client->id]);
     $randomNumberOfEndUsers = rand(1, 2);
-    $endUsers = [];
+    $end_users = [];
     $billingScheduleCreated = 0;
     $signedAgreement = 0;
     $signedAgreement2 = 0;
@@ -94,24 +94,24 @@ it('should do make engagement events from signAgreement', function () {
             'user_type' => UserTypesEnum::LEAD,
             'opportunity' => rand(0, 3),
         ]);
-        $endUsers[] = $endU->id;
+        $end_users[] = $endU->id;
     }
 
     $agreementTemplate = agreementTemplate($client, $location);
     $agreementCategory = AgreementCategory::where('client_id', $client->id)->first()->toArray();
 
-    for ($c = 0;$c < sizeof($endUsers);$c++) {
+    for ($c = 0;$c < sizeof($end_users);$c++) {
         $agreement = makeAgreement([
             'client_id' => $client->id,
             'agreement_category_id' => $agreementCategory['id'],
             'gr_location_id' => $location->gymrevenue_id,
             'created_by' => $user->id,
-            'end_user_id' => $endUsers[$c],
+            'end_user_id' => $end_users[$c],
             'agreement_template_id' => $agreementTemplate->id,
         ]);
         signedAgreement([
             'id' => $agreement->id,
-            'end_user_id' => $endUsers[$c],
+            'end_user_id' => $end_users[$c],
         ]);
         $signedAgreement++;
     }

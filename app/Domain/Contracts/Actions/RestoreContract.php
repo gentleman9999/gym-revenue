@@ -24,6 +24,9 @@ class RestoreContract
         return $contract->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

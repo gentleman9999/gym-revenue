@@ -29,6 +29,7 @@ class Chat extends GymRevProjection
 
     protected $hidden = ['client_id'];
 
+    /** @var array<string>  */
     protected $fillable = ['client_id', 'created_by'];
 
     public function client(): BelongsTo
@@ -49,9 +50,8 @@ class Chat extends GymRevProjection
     /**
      * Check if chat already exist for specified use ids.
      *
-     * @param array $user_ids
+     * @param array<int> $user_ids
      *
-     * @return string|null
      */
     public static function findChatForUsers(array $user_ids): ?string
     {

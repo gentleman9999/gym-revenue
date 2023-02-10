@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarAttendees\Actions;
 
 use App\Domain\CalendarAttendees\CalendarAttendee;
@@ -24,12 +26,15 @@ class DeclineInvite
         return $calendarAttendee->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
     }
 
-    public function authorize(ActionRequest $request): bool
+    public function authorize(ActionRequest $_): bool
     {
         return true;
     }

@@ -26,7 +26,7 @@ class ReinstateUser
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        $user = $request->user;
+        $user         = $request->user;
 
         return $user->user_type == UserTypesEnum::EMPLOYEE ?
             $current_user->can('users.restore', User::class) && $user->terminated() :
@@ -40,9 +40,9 @@ class ReinstateUser
         );
     }
 
-    public function htmlResponse(User $endUser): RedirectResponse
+    public function htmlResponse(User $end_user): RedirectResponse
     {
-        Alert::success("User '{$endUser->name}' was reinstated")->flash();
+        Alert::success("User '{$end_user->name}' was reinstated")->flash();
 
         return Redirect::route('users');
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Comm;
 
 use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
@@ -12,7 +14,7 @@ class CallScriptTemplatesController extends Controller
     public function index(): Response
     {
         $page_count = 10;
-        $templates = [
+        $templates  = [
             'data' => [],
         ];
 

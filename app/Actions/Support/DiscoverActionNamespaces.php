@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Support;
 
 use Illuminate\Support\Str;
@@ -28,7 +30,7 @@ class DiscoverActionNamespaces
     private function checkIsAction(string $class)
     {
         $parentClasses = class_parents($class);
-        $traits = class_uses($class);
+        $traits        = class_uses($class);
 
         foreach ($parentClasses as $parentClass) {
             $traits = array_merge($traits, class_uses($parentClass));

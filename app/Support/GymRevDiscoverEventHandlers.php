@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Support;
 
 use Illuminate\Support\Collection;
@@ -15,10 +17,10 @@ use Symfony\Component\Finder\Finder;
  */
 class GymRevDiscoverEventHandlers extends DiscoverEventHandlers
 {
-    public function addToProjectionist(Projectionist $projectionist)
+    public function addToProjectionist(Projectionist $projectionist): ?Collection
     {
         if (empty($this->directories)) {
-            return;
+            return null;
         }
 
         $files = (new Finder())->files()->in($this->directories);
@@ -30,7 +32,7 @@ class GymRevDiscoverEventHandlers extends DiscoverEventHandlers
             //----- Start Custom Code for Auto Discovery
             ->filter(fn (string $eventHandlerClass) => (new \ReflectionClass($eventHandlerClass))->isInstantiable())
             //----- End Custom Code for Auto Discovery
-            ->pipe(function (Collection $eventHandlers) use ($projectionist) {
+            ->pipe(function (Collection $eventHandlers) use ($projectionist): void {
                 $projectionist->addEventHandlers($eventHandlers->toArray());
             });
     }
@@ -45,6 +47,6 @@ class GymRevDiscoverEventHandlers extends DiscoverEventHandlers
             ucfirst(Str::replaceLast('.php', '', $class))
         );
 
-        return $this->rootNamespace.$class;
+        return $this->rootNamespace . $class;
     }
 }

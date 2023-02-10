@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -10,19 +12,17 @@ class MailgunAuth
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
     {
         $isValid = false;
         foreach ($request->all() as $i => $k) {
             if ($i == "signature") {
-                $token = $k['token'];
+                $token     = $k['token'];
                 $timestamp = $k['timestamp'];
                 $signature = $k['signature'];
-                $isValid = $this->verify(env('MAILGUN_SECRET'), $token, $timestamp, $signature);
+                $isValid   = $this->verify(env('MAILGUN_SECRET'), $token, $timestamp, $signature);
             }
         }
 

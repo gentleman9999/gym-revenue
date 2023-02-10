@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Roles\Actions;
 
 use App\Domain\Roles\Role;
@@ -16,16 +18,9 @@ class DeleteRole
 
     public function handle(Role $role): Role
     {
-        RoleAggregate::retrieve($role->id)->delete()->persist();
+        RoleAggregate::retrieve((string) $role->id)->delete()->persist();
 
         return $role;
-    }
-
-    public function __invoke($_, array $args): Role
-    {
-        $role = Role::find($args['id']);
-
-        return $this->handle($role);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -47,5 +42,17 @@ class DeleteRole
         Alert::success("Role '{$role->name}' was deleted")->flash();
 
         return Redirect::route('roles');
+    }
+
+    /**
+     * @param       $_
+     * @param array<string, mixed> $args
+     *
+     */
+    public function __invoke($_, array $args): Role
+    {
+        $role = Role::find($args['id']);
+
+        return $this->handle($role);
     }
 }

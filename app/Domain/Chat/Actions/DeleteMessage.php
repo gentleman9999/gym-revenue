@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Chat\Actions;
 
 use App\Domain\Chat\Aggregates\ChatMessageAggregate;
@@ -22,7 +24,7 @@ class DeleteMessage
     public function handle(ChatMessage $chat_message): bool
     {
         $participants = $chat_message->chat->participants;
-        $data = [
+        $data         = [
             'chat_id' => $chat_message->chat_id,
             'message' => $chat_message,
             'type' => Notification::TYPE_DELETED_CHAT_MESSAGE,
@@ -35,6 +37,9 @@ class DeleteMessage
         return true;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

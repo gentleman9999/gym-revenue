@@ -14,7 +14,7 @@ class CreateClientGatewayIntegration
 {
     use AsAction;
 
-    public string $commandSignature = 'client:create-gateway';
+    public string $commandSignature   = 'client:create-gateway';
     public string $commandDescription = 'Creates a gateway integration for client.';
 
     public function handle(Client $client, GatewayProvider $gateway_provider, string $nickname): void
@@ -41,13 +41,13 @@ class CreateClientGatewayIntegration
         );
 
 
-        $clients = Client::whereIn('name', $client_names)->get();
+        $clients  = Client::whereIn('name', $client_names)->get();
         $gateways = GatewayProvider::whereIn('name', $gateway_provider_name)->get();
-        $message = '';
+        $message  = '';
 
         foreach ($clients as $client) {
             foreach ($gateways as $gateway) {
-                $name = "{$client->name}({$gateway->name})";
+                $name             = "{$client->name}({$gateway->name})";
                 $integration_name = $command->ask("Enter gateway integration nickname for {$name}");
                 $this->handle($client, $gateway, $integration_name ?? $gateway->name);
 

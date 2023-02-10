@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations;
 
 use App\Domain\Locations\Actions\UpdateLocation;
@@ -19,7 +21,7 @@ class LocationReactor extends Reactor
     {
         $headings = (new HeadingRowImport())->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         if (in_array($headings[0][0][0], (new Location())->getFillable())) {
-            Excel::import(new LocationsImportWithHeader($event->client), $event->key,  's3', \Maatwebsite\Excel\Excel::CSV);
+            Excel::import(new LocationsImportWithHeader($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         } else {
             Excel::import(new LocationsImport($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         }
@@ -28,14 +30,14 @@ class LocationReactor extends Reactor
     public function onLocationCreated(LocationCreated $event): void
     {
         if ($event->payload['shouldCreateTeam'] ?? false) {
-            $team = CreateTeam::run([
+            $team                      = CreateTeam::run([
                 'name' => $event->payload['name'],
                 'locations' => [
                     $event->payload['gymrevenue_id'],
                 ],
                 'client_id' => $event->clientId(),
             ]);
-            $location = Location::findOrFail($event->aggregateRootUuid());
+            $location                  = Location::findOrFail($event->aggregateRootUuid());
             $location->default_team_id = $team->id;
             UpdateLocation::run($location, $location->toArray());
         }

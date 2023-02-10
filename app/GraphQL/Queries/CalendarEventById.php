@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\GraphQL\Queries;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -15,15 +17,15 @@ final class CalendarEventById
 {
     /**
      * @param  null  $_
-     * @param  array{}  $args
+     * @param  array<string, mixed>  $args
      */
-    public function __invoke($_, array $args)
+    public function __invoke($_, array $args): CalendarEvent
     {
         // TODO implement the resolver
-        $event = CalendarEvent::with('type', 'attendees', 'files')
+        $event            = CalendarEvent::with('type', 'attendees', 'files')
             ->find($args["id"]);
-        $user_attendees = [];
-        $lead_attendees = [];
+        $user_attendees   = [];
+        $lead_attendees   = [];
         $member_attendees = [];
         if ($event->attendees) {
             foreach ($event->attendees as $attendee) {
@@ -45,6 +47,7 @@ final class CalendarEventById
                     ];
                 }
 
+                $call_outcome = null;
                 if ($attendee->entity_type == Lead::class) {
                     $lead_attendees[]['id'] = $attendee->entity_id;
                     //TODO: Create Projection Table for User Communication History
@@ -61,14 +64,14 @@ final class CalendarEventById
                 }
                 if ($event->call_task == 1) {
                     if (isset($call_outcome)) {
-                        $event->callOutcome = $call_outcome['value'];
+                        $event->callOutcome   = $call_outcome['value'];
                         $event->callOutcomeId = $call_outcome['id'];
                     }
                 }
             }
         }
-        $event->user_attendees = $user_attendees;
-        $event->lead_attendees = $lead_attendees;
+        $event->user_attendees   = $user_attendees;
+        $event->lead_attendees   = $lead_attendees;
         $event->member_attendees = $member_attendees;
 
         return $event;

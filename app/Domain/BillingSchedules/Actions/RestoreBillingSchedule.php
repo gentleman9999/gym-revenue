@@ -14,7 +14,7 @@ class RestoreBillingSchedule
 {
     use AsAction;
 
-    public string $command_signature = 'audience:restore {id}';
+    public string $command_signature   = 'audience:restore {id}';
     public string $command_description = 'Restores the audience';
 
     public function handle(BillingSchedule $billing_schedule): BillingSchedule

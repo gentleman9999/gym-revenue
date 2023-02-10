@@ -11,13 +11,10 @@ class ObfuscatedUser extends GymRevProjection
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model
-     *
-     * @var string
-     */
+    /** @var string */
     protected $table = 'obfuscated_users';
 
+    /** @var array<string> */
     protected $fillable = [
         'client_id',
         'user_id',
@@ -25,6 +22,7 @@ class ObfuscatedUser extends GymRevProjection
         'data',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'data' => 'array',
     ];

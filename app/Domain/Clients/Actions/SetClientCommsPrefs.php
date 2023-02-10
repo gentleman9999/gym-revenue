@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -30,9 +32,7 @@ class SetClientCommsPrefs
     /**
      * Prepare the data for validation.
      *
-     * @param ActionRequest $request
      *
-     * @return void
      */
     public function prepareForValidation(ActionRequest $request): void
     {
@@ -63,7 +63,10 @@ class SetClientCommsPrefs
         return $current_user->can('manage-client-settings');
     }
 
-    //services array is available in request
+
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

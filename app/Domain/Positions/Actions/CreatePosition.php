@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Positions\Actions;
 
 use App\Actions\GymRevAction;
 use App\Domain\Positions\PositionAggregate;
-use App\Http\Middleware\InjectClientId;
 use App\Models\Position;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +18,7 @@ class CreatePosition extends GymRevAction
     /**
      * Get the validation rules that apply to the action.
      *
-     * @return array
+     * @return array<string, array<string>>
      */
     public function rules(): array
     {
@@ -28,9 +29,13 @@ class CreatePosition extends GymRevAction
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): Position
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         $aggy = PositionAggregate::retrieve($id);
 
@@ -44,7 +49,12 @@ class CreatePosition extends GymRevAction
     //     return $this->handle($args);
     // }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['input']];
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\GatewayProviders;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -13,16 +15,25 @@ class GatewayProviderType extends Model
     use SoftDeletes;
     use Uuid;
 
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
+    /** @var bool */
     public $incrementing = false;
 
+    /** @var string */
+    protected $primaryKey = 'id';
+
+    /** @var string */
+    protected $keyType = 'string';
+
+    /** @var array<string> */
     protected $fillable = [
-        'name', 'slug', 'desc', 'active', 'misc',
+        'name',
+        'slug',
+        'desc',
+        'active',
+        'misc',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'misc' => 'array',
     ];

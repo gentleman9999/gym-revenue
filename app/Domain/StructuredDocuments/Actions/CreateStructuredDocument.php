@@ -36,6 +36,10 @@ class CreateStructuredDocument
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): StructuredDocument
     {
         $id = Uuid::get();

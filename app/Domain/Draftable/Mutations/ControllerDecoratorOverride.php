@@ -17,22 +17,19 @@ class ControllerDecoratorOverride
     use RouteDependencyResolverTrait;
     use DecorateActions;
 
-    /** @var Container */
     protected Container $container;
 
-    /** @var Route */
     protected Route $route;
 
     /** @var array */
     protected array $middleware = [];
 
-    /** @var bool */
     protected bool $executedAtLeastOne = false;
 
     public function __construct($action, Route $route)
     {
         $this->container = Container::getInstance();
-        $this->route = $route;
+        $this->route     = $route;
         $this->setAction($action);
         $this->replaceRouteMethod();
 
@@ -46,34 +43,17 @@ class ControllerDecoratorOverride
         return $this->route;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getMiddleware(): array
     {
         return array_map(fn ($middleware): array => ['middleware' => $middleware, 'options' => []], $this->middleware);
     }
 
-    public function callAction($method, $parameters)
+    public function callAction(string $method): mixed
     {
-        return $this->__invoke($method);
-    }
-
-    public function __invoke(string $method)
-    {
-        $this->refreshAction();
-        $request = $this->refreshRequest();
-
-        if ($this->shouldValidateRequest($method)) {
-            $request->validate();
-        }
-
-        $response = $this->run($method);
-
-        if ($this->hasMethod('jsonResponse') && $request->expectsJson()) {
-            $response = $this->callMethod('jsonResponse', [$response, $request]);
-        } elseif ($this->hasMethod('htmlResponse') && ! $request->expectsJson()) {
-            $response = $this->callMethod('htmlResponse', [$response, $request]);
-        }
-
-        return $response;
+        return $this($method);
     }
 
     protected function refreshAction(): void
@@ -104,7 +84,7 @@ class ControllerDecoratorOverride
         }
 
         $currentMethod = Str::afterLast($this->route->action['uses'], '@');
-        $newMethod = $this->getDefaultRouteMethod();
+        $newMethod     = $this->getDefaultRouteMethod();
 
         if ($currentMethod !== '__invoke' || $currentMethod === $newMethod) {
             return;
@@ -117,8 +97,9 @@ class ControllerDecoratorOverride
 
     protected function getDefaultRouteMethod(): string
     {
-        if ($this->hasMethod('asController')) {
-            return 'asController';
+        $control_method = in_array(request()->query('is_draft'), ['1', 'true', 'TRUE']) ? 'handleDraft' : 'asController';
+        if ($this->hasMethod($control_method)) {
+            return $control_method;
         }
 
         return $this->hasMethod('handle') ? 'handle' : '__invoke';
@@ -126,7 +107,7 @@ class ControllerDecoratorOverride
 
     protected function isExplicitMethod(string $method): bool
     {
-        return ! in_array($method, ['asController', 'handle', '__invoke']);
+        return ! in_array($method, ['asController', 'handleDraft', 'handle', '__invoke']);
     }
 
     protected function run(string $method): mixed
@@ -156,28 +137,37 @@ class ControllerDecoratorOverride
 
     protected function resolveFromRouteAndCall(string $method): mixed
     {
-        $beforeMethod = 'before'. ucfirst($method);
         $this->container = Container::getInstance();
-
-        $arguments = $this->resolveClassMethodDependencies(
+        $arguments       = $this->resolveClassMethodDependencies(
             $this->route->parametersWithoutNulls(),
             $this->action,
             $method,
         );
 
-        if (method_exists($this->action, $beforeMethod)) {
-            $before_arguments = $this->resolveClassMethodDependencies(
-                $this->route->parametersWithoutNulls(),
-                $this->action,
-                $beforeMethod,
-            );
-
-            $before_arguments[] = $method;
-            $before_arguments[] = $arguments;
-
-            return $this->action->{$beforeMethod}(...array_values($before_arguments));
+        if ($method === 'asController' && $this->hasMethod('beforeAsController')) {
+            $this->action->beforeAsController($this->container->get(ActionRequest::class));
         }
 
         return $this->action->{$method}(...array_values($arguments));
+    }
+
+    public function __invoke(string $method): mixed
+    {
+        $this->refreshAction();
+        $request = $this->refreshRequest();
+
+        if ($this->shouldValidateRequest($method)) {
+            $request->validate();
+        }
+
+        $response = $this->run($method);
+
+        if ($this->hasMethod('jsonResponse') && $request->expectsJson()) {
+            $response = $this->callMethod('jsonResponse', [$response, $request]);
+        } elseif ($this->hasMethod('htmlResponse') && ! $request->expectsJson()) {
+            $response = $this->callMethod('htmlResponse', [$response, $request]);
+        }
+
+        return $response;
     }
 }

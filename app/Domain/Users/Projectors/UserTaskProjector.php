@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Projectors;
 
 use App\Domain\Users\Models\User;

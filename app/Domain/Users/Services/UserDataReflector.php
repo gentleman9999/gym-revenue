@@ -20,11 +20,11 @@ class UserDataReflector
         foreach (UserTypesEnum::cases() as $user_type) {
             $reflection_model = self::fetchReflectionModel($user_type, $user->id);
 
-            if (is_null($reflection_model) && $user->user_type === $user_type) {
+            if ($reflection_model === null && $user->user_type === $user_type) {
                 $reflection_model = self::createReflectionModel($user_type);
             }
 
-            if (! is_null($reflection_model)) {
+            if ($reflection_model !== null) {
                 foreach ($cols as $col) {
                     if ($col !== 'is_cape_and_bay_user') {
                         if ($col !== 'id') {

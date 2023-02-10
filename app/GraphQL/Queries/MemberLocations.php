@@ -1,31 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\GraphQL\Queries;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
+use Illuminate\Support\Collection;
 
 final class MemberLocations
 {
-    /**
-     * @param  null  $_
-     * @param  array{}  $args
-     */
-    public function __invoke($_, array $args)
+    private function setUpLocationsObject(bool $is_client_user, ?string $client_id = null): Location
     {
-        // TODO implement the resolver
-        $client_id = request()->user()->client_id;
-        $is_client_user = request()->user()->isClientUser();
-        $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-
-        return $locations_records;
-    }
-
-    private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
-    {
-        $results = [];
-        if ((! is_null($client_id))) {
+        $results = new Location();
+        if ($client_id !== null) {
             $session_team = session()->get('current_team');
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
@@ -53,5 +42,20 @@ final class MemberLocations
         }
 
         return $results;
+    }
+
+    /**
+     * @param  null  $_
+     * @param  array<string, mixed>  $_args
+     *
+     * @return Collection<Location>
+     */
+    public function __invoke($_, array $_args): Collection
+    {
+        // TODO implement the resolver
+        $client_id      = request()->user()->client_id;
+        $is_client_user = request()->user()->isClientUser();
+
+        return $this->setUpLocationsObject($is_client_user, $client_id)?->get();
     }
 }

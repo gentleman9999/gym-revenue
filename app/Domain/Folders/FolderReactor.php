@@ -11,10 +11,10 @@ use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class FolderReactor extends Reactor
 {
-    public function onFolderSharingUpdated(FolderSharingUpdated $event)
+    public function onFolderSharingUpdated(FolderSharingUpdated $event): void
     {
         if (isset($event->payload['user_ids'])) {
-            $message = '<head>A folder has been shared with you, %recipient.user.name%</head><br />';
+            $message  = '<head>A folder has been shared with you, %recipient.user.name%</head><br />';
             $message .= ENV('APP_URL') . "/folders/viewFiles/{$event->payload['id']}";
 
             MailgunSend::run(

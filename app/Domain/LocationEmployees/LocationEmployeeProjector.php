@@ -15,14 +15,14 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class LocationEmployeeProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         LocationEmployee::delete();
     }
 
     public function onLocationEmployeeCreated(LocationEmployeeCreated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $location_employees = (new LocationEmployee())->writeable();
             $location_employees->fill($event->payload);
             $location_employees->id = $event->aggregateRootUuid();

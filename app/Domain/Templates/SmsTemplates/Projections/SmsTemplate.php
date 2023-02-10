@@ -12,6 +12,7 @@ use App\Models\GymRevProjection;
 use App\Models\Traits\Duplicateable;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -22,29 +23,33 @@ class SmsTemplate extends GymRevProjection implements TemplateParserInterface
     use TemplateParserTrait;
     use Duplicateable;
 
+    /** @var array<string> */
     protected $fillable = [
-        'name', 'markup', 'active', 'details',
-        'team_id', 'created_by_user_id',
+        'name',
+        'markup',
+        'active',
+        'details',
+        'team_id',
+        'created_by_user_id',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'details' => 'array',
     ];
 
-    protected static function booted(): void
+    /**
+     * @param array<string, mixed> $filters
+     *
+     */
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        static::addGlobalScope(new ClientScope());
-    }
-
-    public function scopeFilter($query, array $filters): void
-    {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('created_by_user_id', 'like', '%' . $search . '%')
-                ;
+                    ->orWhere('created_by_user_id', 'like', '%' . $search . '%');
             });
-        })->when($filters['trashed'] ?? null, function ($query, $trashed) {
+        })->when($filters['trashed'] ?? null, function ($query, $trashed): void {
             if ($trashed === 'with') {
                 $query->withTrashed();
             } elseif ($trashed === 'only') {
@@ -72,5 +77,10 @@ class SmsTemplate extends GymRevProjection implements TemplateParserInterface
     public static function getAggregate(): SmsTemplateAggregate
     {
         return new SmsTemplateAggregate();
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

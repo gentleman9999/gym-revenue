@@ -20,9 +20,7 @@ class GetConversation
     }
 
     /**
-     * @param ActionRequest $request
      *
-     * @return Collection
      */
     public function asController(ActionRequest $request): Collection
     {

@@ -18,7 +18,7 @@ class CheckTaskReminder
 {
     use AsAction;
 
-    public string $commandSignature = 'taskreminder:check';
+    public string $commandSignature   = 'taskreminder:check';
     public string $commandDescription = 'Fires off task reminders that are ready.';
 
     public function handle(): void

@@ -14,15 +14,15 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class LocationVendorProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         LocationVendor::truncate();
     }
 
     public function onLocationVendorCreated(LocationVendorCreated $event): void
     {
-        $location_vendor = new LocationVendor();
-        $location_vendor->id = $event->aggregateRootUuid();
+        $location_vendor            = new LocationVendor();
+        $location_vendor->id        = $event->aggregateRootUuid();
         $location_vendor->client_id = $event->clientId();
         $location_vendor->fill($event->payload);
         $location_vendor->writeable()->save();

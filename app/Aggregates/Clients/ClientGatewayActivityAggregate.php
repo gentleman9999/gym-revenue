@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Aggregates\Clients;
 
 use App\StorableEvents\Clients\Activity\GatewayProviders\Email\UserSentATestEmail;
@@ -10,7 +12,7 @@ class ClientGatewayActivityAggregate extends AggregateRoot
 {
     protected array $history = [];
 
-    public function applyUserSentATestSMS(UserSentATestSMS $event)
+    public function applyUserSentATestSMS(UserSentATestSMS $event): void
     {
         $this->history[] = [
             'user_id' => $event->user,
@@ -19,7 +21,7 @@ class ClientGatewayActivityAggregate extends AggregateRoot
         ];
     }
 
-    public function applyUserSentATestEmail(UserSentATestEmail $event)
+    public function applyUserSentATestEmail(UserSentATestEmail $event): void
     {
         $this->history[] = [
             'user_id' => $event->user,

@@ -15,7 +15,7 @@ use Illuminate\Database\Seeder;
 
 class AgreementsSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $amount_of_agreements = 10;
         if (env('QUICK_SEED')) {
@@ -32,10 +32,10 @@ class AgreementsSeeder extends Seeder
         $process = Process::allocate(5);
 
         foreach ($clients as $client) {
-            $employee_ids = $client->employees->pluck('id')->toArray();
-            $categories = $client->agreementCategories->toArray();
-            $file = File::whereClientId($client->id)->whereFileableType(Contract::class)->first();
-            $amount_of_user = count($employee_ids);
+            $employee_ids     = $client->employees->pluck('id')->toArray();
+            $categories       = $client->agreementCategories->toArray();
+            $file             = File::whereClientId($client->id)->whereFileableType(Contract::class)->first();
+            $amount_of_user   = count($employee_ids);
             $agreement_tpl_id = AgreementTemplate::whereClientId($client->id)->first()->id;
 
             //Make half of the users members or customers.
@@ -54,14 +54,14 @@ class AgreementsSeeder extends Seeder
             // For each client, get all the locations
             foreach ($client->locations as $location) {
                 for ($x = 0; $x <= $amount_of_agreements; $x++) {
-                    $enduser_id = $lead_ids[array_rand($lead_ids)];
-                    $agreement_data['client_id'] = $client->id;
+                    $end_user_id                             = $lead_ids[array_rand($lead_ids)];
+                    $agreement_data['client_id']             = $client->id;
                     $agreement_data['agreement_category_id'] = $categories[array_rand($categories)]['id'];
-                    $agreement_data['gr_location_id'] = $location->gymrevenue_id;
-                    $agreement_data['created_by'] = $employee_ids[array_rand($employee_ids)];
-                    $agreement_data['user_id'] = $enduser_id;
+                    $agreement_data['gr_location_id']        = $location->gymrevenue_id;
+                    $agreement_data['created_by']            = $employee_ids[array_rand($employee_ids)];
+                    $agreement_data['user_id']               = $end_user_id;
                     $agreement_data['agreement_template_id'] = $agreement_tpl_id;
-                    $agreement_data['active'] = true;
+                    $agreement_data['active']                = true;
                     if ($file !== null) {
                         $agreement_data['contract_file_id'] = $file->id;
                     }
@@ -69,13 +69,13 @@ class AgreementsSeeder extends Seeder
                     $process->queue(
                         [self::class, 'createAndSignAgreement'],
                         $agreement_data,
-                        $enduser_id,
+                        $end_user_id,
                         "Generated/Signined Agreements for {$client->name}!\n",
                     );
                 }
             }
 
-            $process->onResolve(static function ($_, string $message) {
+            $process->onResolve(static function ($_, string $message): void {
                 echo $message;
             });
         }
@@ -83,10 +83,10 @@ class AgreementsSeeder extends Seeder
         $process->run();
     }
 
-    public static function createAndSignAgreement(array $agreement_data, string $enduser_id, string $message)
+    public static function createAndSignAgreement(array $agreement_data, string $end_user_id, string $message)
     {
-        $sign_agreement_data['user_id'] = $enduser_id;
-        $sign_agreement_data['active'] = true;
+        $sign_agreement_data['user_id'] = $end_user_id;
+        $sign_agreement_data['active']  = true;
         SignAgreement::run($sign_agreement_data, CreateAgreement::run($agreement_data)->id);
 
         return $message;

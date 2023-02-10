@@ -17,11 +17,13 @@ use App\Models\GymRevProjection;
  */
 class EmailTemplateBlock extends GymRevProjection
 {
+    /** @var array<string> */
     protected $fillable = [
         'name',
         'definition',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'definition' => 'json',
     ];

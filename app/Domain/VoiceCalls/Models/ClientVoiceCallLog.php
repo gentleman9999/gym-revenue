@@ -15,20 +15,12 @@ class ClientVoiceCallLog extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
+    /** @var array<string, string> */
     protected $casts = [
         'payload' => 'json',
     ];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
+    /** @var array<string> */
     protected $fillable = [
         'gateway_id',
         'user_id',

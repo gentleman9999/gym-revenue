@@ -16,12 +16,12 @@ class LocationsController extends Controller
 {
     public function index(Request $request)
     {
-        $user = request()->user();
-        $client_id = $user->client_id;
+        $user           = request()->user();
+        $client_id      = $user->client_id;
         $is_client_user = $user->isClientUser();
-        $page_count = 10;
+        $page_count     = 10;
 
-        if (is_null($client_id)) {
+        if ($client_id === null) {
             return Redirect::route('dashboard');
         }
 
@@ -39,9 +39,9 @@ class LocationsController extends Controller
                 ->appends(request()->except('page'));
         }
 
-        if ((! is_null($client_id))) {
+        if ($client_id !== null) {
             $client = Client::find($client_id);
-            $title = "{$client->name} Locations";
+            $title  = "{$client->name} Locations";
         } else {
             $title = 'All Client Locations';
         }
@@ -83,10 +83,8 @@ class LocationsController extends Controller
     /**
      * Update the authenticated user's current location.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function switch(Request $request)
+    public function switch(Request $request): \Illuminate\Http\RedirectResponse
     {
         $location = Location::findOrFail($request->location_id);
 
@@ -109,7 +107,63 @@ class LocationsController extends Controller
         return Redirect::route('calendar');
     }
 
-    private function setUpLocationsObject(bool $is_client_user, string $client_id = null): Location
+    public function view(Location $location)
+    {
+        $user = request()->user();
+        if ($user->cannot('locations.read', Location::class)) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+
+            return Redirect::back();
+        }
+
+        $location_details = $location->details;
+        $poc_first        = $poc_last = $poc_phone = '';
+
+        foreach ($location_details as $location_detail) {
+            if ($location_detail['field'] == 'poc_first') {
+                $poc_first = $location_detail['value'];
+            }
+            if ($location_detail['field'] == 'poc_last') {
+                $poc_last = $location_detail['value'];
+            }
+            if ($location_detail['field'] == 'poc_phone') {
+                $poc_phone = $location_detail['value'];
+            }
+        }
+
+        $data              = $location->toArray();
+        $data['poc_first'] = $poc_first;
+        $data['poc_last']  = $poc_last;
+        $data['poc_phone'] = $poc_phone;
+
+        return $data;
+    }
+
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $user           = request()->user();
+        $client_id      = $user->client_id;
+        $is_client_user = $user->isClientUser();
+
+        if ($client_id === null) {
+            return Redirect::route('dashboard');
+        }
+
+        if ($user->cannot('locations.read', Location::class)) {
+            abort(403);
+        }
+
+        if (! empty($locations = $this->setUpLocationsObject($is_client_user, $client_id))) {
+            $locations = $locations
+                ->filter($request->only('search', 'closed'))
+                ->get();
+        }
+
+        return $locations;
+    }
+
+    private function setUpLocationsObject(bool $is_client_user, ?string $client_id = null): Location
     {
         $results = [];
         /**
@@ -128,9 +182,9 @@ class LocationsController extends Controller
          */
 
 
-        if ((! is_null($client_id))) {
+        if ($client_id !== null) {
             $current_team = CurrentInfoRetriever::getCurrentTeam();
-            $client = Client::find($client_id);
+            $client       = Client::find($client_id);
 
 
             // The active_team is the current client's default_team (gets all the client's locations)
@@ -152,61 +206,5 @@ class LocationsController extends Controller
         }
 
         return $results;
-    }
-
-    public function view(Location $location)
-    {
-        $user = request()->user();
-        if ($user->cannot('locations.read', Location::class)) {
-            Alert::error("Oops! You dont have permissions to do that.")->flash();
-
-            return Redirect::back();
-        }
-
-        $location_details = $location->details;
-        $poc_first = $poc_last = $poc_phone = '';
-
-        foreach ($location_details as $location_detail) {
-            if ($location_detail['field'] == 'poc_first') {
-                $poc_first = $location_detail['value'];
-            }
-            if ($location_detail['field'] == 'poc_last') {
-                $poc_last = $location_detail['value'];
-            }
-            if ($location_detail['field'] == 'poc_phone') {
-                $poc_phone = $location_detail['value'];
-            }
-        }
-
-        $data = $location->toArray();
-        $data['poc_first'] = $poc_first;
-        $data['poc_last'] = $poc_last;
-        $data['poc_phone'] = $poc_phone;
-
-        return $data;
-    }
-
-    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
-    public function export(Request $request)
-    {
-        $user = request()->user();
-        $client_id = $user->client_id;
-        $is_client_user = $user->isClientUser();
-
-        if (is_null($client_id)) {
-            return Redirect::route('dashboard');
-        }
-
-        if ($user->cannot('locations.read', Location::class)) {
-            abort(403);
-        }
-
-        if (! empty($locations = $this->setUpLocationsObject($is_client_user, $client_id))) {
-            $locations = $locations
-                ->filter($request->only('search', 'closed'))
-                ->get();
-        }
-
-        return $locations;
     }
 }

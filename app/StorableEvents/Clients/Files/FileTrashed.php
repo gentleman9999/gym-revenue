@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents\Clients\Files;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
@@ -12,6 +14,6 @@ class FileTrashed extends ShouldBeStored
     public function __construct(string $user, $id)
     {
         $this->user = $user;
-        $this->id = $id;
+        $this->id   = $id;
     }
 }

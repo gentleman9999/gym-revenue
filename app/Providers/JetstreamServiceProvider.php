@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Domain\Teams\Actions\AddTeamMember;
@@ -24,9 +26,8 @@ class JetstreamServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
@@ -34,9 +35,8 @@ class JetstreamServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->configurePermissions();
 
@@ -54,7 +54,7 @@ class JetstreamServiceProvider extends ServiceProvider
         Fortify::authenticateUsing(function (Request $request) {
             /** Call withoutGlobalScopes so we don't try to apply client_id on login */
             $users = User::withoutGlobalScopes()->where('email', $request->email)->get();
-            $user = null;
+            $user  = null;
             foreach ($users as $maybe_user) {
                 if (Hash::check($request->password, $maybe_user->password)) {
                     $user = $maybe_user;
@@ -63,8 +63,10 @@ class JetstreamServiceProvider extends ServiceProvider
                 }
             }
 
-            if ($user &&
-                Hash::check($request->password, $user->password)) {
+            if (
+                $user &&
+                Hash::check($request->password, $user->password)
+            ) {
                 /**
                  * Successfull CRM Auth -
                  * Let's set some info in our cookie session so we
@@ -94,7 +96,7 @@ class JetstreamServiceProvider extends ServiceProvider
                 }
 
                 session()->put('client_id', $user->client_id);
-                session()->put('user_id',  $user->id);
+                session()->put('user_id', $user->id);
 
                 return $user;
             }
@@ -104,9 +106,8 @@ class JetstreamServiceProvider extends ServiceProvider
     /**
      * Configure the roles and permissions that are available within the application.
      *
-     * @return void
      */
-    protected function configurePermissions()
+    protected function configurePermissions(): void
     {
         Jetstream::defaultApiTokenPermissions(['read']);
 

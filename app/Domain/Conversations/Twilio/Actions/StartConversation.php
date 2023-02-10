@@ -14,7 +14,7 @@ class StartConversation
 {
     use AsAction;
 
-    public function handle(User $user, EndUser $end_user)
+    public function handle(User $user, EndUser $end_user): void
     {
         ClientConversationAggregates::retrieve((string) Uuid::uuid4())->clientConversationCreated([
             'user_id' => $user->id,

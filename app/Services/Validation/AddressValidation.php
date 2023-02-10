@@ -14,8 +14,8 @@ class AddressValidation
     {
         /** Subtracting the length of the UUID */
         $entity_id = substr($request_uri, strlen($request_uri) - 36);
-        $original = self::getOriginalEntityIfExists($request_uri, $entity_id);
-        $payload = self::overwriteNullPayloadValues($payload, $original);
+        $original  = self::getOriginalEntityIfExists($request_uri, $entity_id);
+        $payload   = self::overwriteNullPayloadValues($payload, $original);
         $validator = self::validateAddressData($payload);
 
         return self::generateResult($validator, $payload);
@@ -23,7 +23,7 @@ class AddressValidation
 
     protected static function getOriginalEntityIfExists(string $request_uri, string $entity_id): array
     {
-        $entity = null;
+        $entity   = null;
         $original = ['address1' => '', 'city' => '', 'state' => '', 'zip' => ''];
 
         if (preg_match('/^(\/data|\/(customer|lead|member|user)s)/', $request_uri) > 0) {
@@ -34,15 +34,15 @@ class AddressValidation
             throw new \Exception("Unknown Request Type.");
         }
 
-        return is_null($entity) ? $original : $entity->toArray();
+        return $entity === null ? $original : $entity->toArray();
     }
 
     protected static function overwriteNullPayloadValues(array $payload, array $original): array
     {
         $payload['address1'] = $payload['address1'] ?? $original['address1'];
-        $payload['city'] = $payload['city'] ?? $original['city'];
-        $payload['state'] = $payload['state'] ?? $original['state'];
-        $payload['zip'] = (string) $payload['zip'] ?? $original['zip'];
+        $payload['city']     = $payload['city'] ?? $original['city'];
+        $payload['state']    = $payload['state'] ?? $original['state'];
+        $payload['zip']      = (string) $payload['zip'] ?? $original['zip'];
 
         return $payload;
     }
@@ -59,7 +59,7 @@ class AddressValidation
 
     protected static function generateResult(array $validator, array $payload): array
     {
-        $result = ['errors' => [], 'validated_data' => []];
+        $result      = ['errors' => [], 'validated_data' => []];
         $key_col_map = [
             'Address2' => ['col_name' => 'address1', 'error_field_name' => 'address'],
             'City' => ['col_name' => 'city', 'error_field_name' => 'city name'],

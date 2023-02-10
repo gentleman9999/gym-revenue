@@ -15,11 +15,11 @@ use App\Domain\Users\Events\OldEndUserProfilePictureDeleted;
 
 trait EndUserAggregate
 {
-    protected array $end_user = [];
-    protected array $old_data = [];
-    protected int $interaction_count = 0;
-    protected int $interaction_called_count = 0;
-    protected int $interaction_emailed_count = 0;
+    protected array $end_user                      = [];
+    protected array $old_data                      = [];
+    protected int $interaction_count               = 0;
+    protected int $interaction_called_count        = 0;
+    protected int $interaction_emailed_count       = 0;
     protected int $interaction_text_messaged_count = 0;
 
     public function getInteractionCount(): array
@@ -95,7 +95,7 @@ trait EndUserAggregate
         return $this;
     }
 
-    public function moveProfilePicture(array $file, array $old_file = null): static
+    public function moveProfilePicture(array $file, ?array $old_file = null): static
     {
         $this->recordThat(new EndUserProfilePictureMoved($file, $old_file));
 

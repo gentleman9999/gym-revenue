@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Tasks;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -21,7 +23,7 @@ class CreateTask
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => ['required', 'string', 'max:50'],
@@ -34,7 +36,7 @@ class CreateTask
 
     public function handle($data, User $user)
     {
-        $id = Uuid::new();
+        $id         = Uuid::new();
         $data['id'] = $id;
 
         UserAggregate::retrieve($user->id)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Audiences\Actions;
 
 use App\Domain\Audiences\Audience;
@@ -12,7 +14,7 @@ class RestoreAudience
 {
     use AsAction;
 
-    public string $commandSignature = 'audience:restore {id}';
+    public string $commandSignature   = 'audience:restore {id}';
     public string $commandDescription = 'Restores the audience';
 
     public function handle(Audience $audience): Audience

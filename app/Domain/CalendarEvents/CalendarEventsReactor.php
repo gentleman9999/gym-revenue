@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEvents;
 
 use App\Domain\CalendarEvents\Events\CalendarEventCreated;
@@ -27,7 +29,7 @@ class CalendarEventsReactor extends Reactor
 
     public function onCalendarEventFileUploaded(CalendarEventFileUploaded $event): void
     {
-        $data = $event->payload;
+        $data  = $event->payload;
         $model = CalendarEvent::find($data['entity_id']);
 
         \App\Actions\Clients\Files\CreateFile::run($data, $model, User::find($event->userId()));

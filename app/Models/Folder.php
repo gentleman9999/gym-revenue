@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Models\Traits\Sortable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,17 +17,25 @@ class Folder extends Model
     use Sortable;
     use SoftDeletes;
 
-    protected $keyType = 'string';
-
+    /** @var bool */
     public $incrementing = false;
 
-    protected $fillable = ['id', 'name', 'team_ids', 'location_ids', 'user_ids', 'position_ids', 'department_ids', 'role_ids']; //'deleted_at'
+    /** @var string */
+    protected $keyType = 'string';
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
+    /** @var array<string> */
+    protected $fillable = [
+        'id',
+        'name',
+        'team_ids',
+        'location_ids',
+        'user_ids',
+        'position_ids',
+        'department_ids',
+        'role_ids',
+    ]; //'deleted_at'
+
+    /** @var array<string, string> */
     protected $casts = [
         'team_ids' => 'array',
         'location_ids' => 'array',
@@ -39,38 +50,42 @@ class Folder extends Model
         return $this->hasMany(File::class, 'folder', 'id');
     }
 
-    public function hasUserIds()
+    public function hasUserIds(): bool
     {
         return $this->whereNotNull('user_ids')->exists();
     }
 
-    public function hasLocationIds()
+    public function hasLocationIds(): bool
     {
         return $this->whereNotNull('location_ids')->exists();
     }
 
-    public function hasTeamIds()
+    public function hasTeamIds(): bool
     {
         return $this->whereNotNull('team_ids')->exists();
     }
 
-    public function hasPositionIds()
+    public function hasPositionIds(): bool
     {
         return $this->whereNotNull('position_ids')->exists();
     }
 
-    public function hasDepartmentIds()
+    public function hasDepartmentIds(): bool
     {
         return $this->whereNotNull('department_ids')->exists();
     }
 
-    public function scopeFilter($query, array $filters)
+    /**
+     * @param array<string, mixed> $filters
+     *
+     */
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('name', 'like', '%' . $search . '%');
             });
-        })->when($filters['trashed'] ?? null, function ($query, $trashed) {
+        })->when($filters['trashed'] ?? null, function ($query, $trashed): void {
             if ($trashed === 'with') {
                 $query->withTrashed();
             } elseif ($trashed === 'only') {

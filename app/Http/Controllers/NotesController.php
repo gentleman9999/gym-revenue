@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Prologue\Alerts\Facades\Alert;
 
 class NotesController extends Controller
 {
+    /** @var array<string, array<string>>  */
     protected $rules = [
         'title' => ['string', 'required'],
         'id' => ['integer', 'sometimes', 'nullable'],
@@ -23,26 +29,24 @@ class NotesController extends Controller
         'deleted_at' => ['timestamp', 'sometimes', 'nullable'],
     ];
 
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse|RedirectResponse
     {
         $client_id = $request->user()->client_id;
-        if (! $client_id) {
+        if ($client_id === null) {
             return Redirect::route('dashboard');
         }
-
-        $page_count = 10;
 
         return Inertia::render('Notes/Show');
     }
 
-    public function create()
+    public function create(): InertiaResponse|RedirectResponse
     {
-        $client_id = request()->user()->client_id;
-        if (! $client_id) {
+        $client_id = ($user = request()->user())->client_id;
+        if ($client_id === null) {
             return Redirect::route('dashboard');
         }
 
-        if (request()->user()->cannot('notes.create', Note::class)) {
+        if ($user->cannot('notes.create', Note::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -50,41 +54,41 @@ class NotesController extends Controller
 
         return Inertia::render('Notes/Create', [
             'created_by_user_id' => $client_id,
-            //'title' => $title,
-            //'note' => $note,
         ]);
     }
 
-    public function edit($id)
+    public function edit(?string $id = null): InertiaResponse|RedirectResponse
     {
-        $client_id = request()->user()->client_id;
-        if (! $client_id) {
+        $client_id = ($user = request()->user())->client_id;
+        if ($client_id === null) {
             return Redirect::route('dashboard');
         }
-        if (! $id) {
+
+        if ($id === null) {
             Alert::error("No Note ID provided")->flash();
 
             return Redirect::back();
         }
-        if (request()->user()->cannot('notes.update', Note::class)) {
+
+        if ($user->cannot('notes.update', Note::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
         }
 
-        $note = Note::findOrFail($id)->toArray();
-
-        return Inertia::render('Notes/Edit', [
-            'note' => $note,
-        ]);
+        return Inertia::render('Notes/Edit', ['note' => Note::findOrFail($id)]);
     }
 
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
-    public function export(Request $request)
+
+    /**
+     * @return Collection<Note>
+     */
+    public function export(): Collection
     {
         $user = request()->user();
 
-        if (is_null($user->client_id) || $user->cannot('notes.read', Note::class)) {
+        if ($user->client_id === null || $user->cannot('notes.read', Note::class)) {
             abort(403);
         }
 

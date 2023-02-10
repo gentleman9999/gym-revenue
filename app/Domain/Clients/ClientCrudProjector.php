@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients;
 
 use App\Domain\Clients\Events\ClientCreated;
@@ -21,7 +23,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientCrudProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         Client::truncate();
         ClientActivity::truncate();
@@ -42,9 +44,9 @@ class ClientCrudProjector extends Projector
 
         $default_team_name = $client->name . ' Home Office';
         preg_match_all('/(?<=\s|^)[a-z]/i', $default_team_name, $matches);
-        $prefix = strtoupper(implode('', $matches[0]));
-        $prefix = (strlen($prefix) > 3) ? substr($prefix, 0, 3) : $prefix;
-        $client->prefix = $prefix;
+        $prefix           = strtoupper(implode('', $matches[0]));
+        $prefix           = strlen($prefix) > 3 ? substr($prefix, 0, 3) : $prefix;
+        $client->prefix   = $prefix;
         $client->services = $event->payload['services'];
 
         $client->save();

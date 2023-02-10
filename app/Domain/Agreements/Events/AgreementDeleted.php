@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Agreements\Events;
 
 use App\Domain\Agreements\Projections\Agreement;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\DynamicReports;
 
 use App\Domain\DynamicReports\Events\DynamicReportCreated;

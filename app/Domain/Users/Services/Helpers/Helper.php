@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 //TODO: this should just be handled via Team (or soon to be Location) Scopes.
 class Helper
 {
-    public static function setUpCustomersObject(string $current_team_id, string $client_id = null): ?Builder
+    public static function setUpCustomersObject(string $current_team_id, ?string $client_id = null): ?Builder
     {
         $customer_query = null;
 
@@ -33,7 +33,7 @@ class Helper
         return $customer_query;
     }
 
-    public static function getLocations(string $current_team_id, bool $is_client_user, string $client_id = null): array
+    public static function getLocations(string $current_team_id, bool $is_client_user, ?string $client_id = null): array
     {
         /**
          * BUSINESS RULES

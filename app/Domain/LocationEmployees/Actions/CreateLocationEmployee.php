@@ -35,9 +35,13 @@ class CreateLocationEmployee
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): LocationEmployee
     {
-        $id = (string)Uuid::new();//we should use uuid here
+        $id = (string) Uuid::new();//we should use uuid here
         LocationEmployeeAggregate::retrieve($id)->create($data)->persist();
 
         return LocationEmployee::findOrFail($id);
@@ -50,6 +54,9 @@ class CreateLocationEmployee
         );
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

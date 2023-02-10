@@ -13,14 +13,14 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class UserMemberGroupProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         UserMemberGroup::delete();
     }
 
     public function onUserMemberGroupCreated(UserMemberGroupCreated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $user_member_group = (new UserMemberGroup())->writeable();
             $user_member_group->fill($event->payload);
             $user_member_group->id = $event->aggregateRootUuid();

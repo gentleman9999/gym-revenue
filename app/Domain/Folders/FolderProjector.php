@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Folders;
 
 use App\Domain\Folders\Events\FolderCreated;
@@ -20,17 +22,17 @@ class FolderProjector extends Projector
             return in_array($key, (new Folder())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
         $folder->fill($team_fillable_data);
-        $folder->id = $event->aggregateRootUuid();
+        $folder->id        = $event->aggregateRootUuid();
         $folder->client_id = $event->payload['client_id'] ?? null;
         $folder->save();
     }
 
-    public function onFolderUpdated(FolderUpdated $event)
+    public function onFolderUpdated(FolderUpdated $event): void
     {
         Folder::findOrFail($event->payload['id'])->updateOrFail($event->payload);
     }
 
-    public function onFolderSharingUpdated(FolderSharingUpdated $event)
+    public function onFolderSharingUpdated(FolderSharingUpdated $event): void
     {
         Folder::findOrFail($event->payload['id'])->updateOrFail($event->payload);
     }

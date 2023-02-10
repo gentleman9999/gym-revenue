@@ -8,7 +8,6 @@ use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -24,6 +23,7 @@ class LocationVendorCategory extends GymRevProjection
     use SoftDeletes;
     use Sortable;
 
+    /** @var array<string>  */
     protected $fillable = [
         'name',
     ];

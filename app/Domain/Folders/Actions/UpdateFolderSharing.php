@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Folders\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Folder;
@@ -14,6 +15,10 @@ use Prologue\Alerts\Facades\Alert;
 
 class UpdateFolderSharing extends GymRevAction
 {
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): Folder
     {
         $id = $payload['id'];
@@ -40,11 +45,19 @@ class UpdateFolderSharing extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array<string, mixed>>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -59,7 +72,7 @@ class UpdateFolderSharing extends GymRevAction
 
     public function asController($id, ActionRequest $request): Folder
     {
-        $payload = $request->validated();
+        $payload       = $request->validated();
         $payload['id'] = $id;
 
         return $this->handle($payload);

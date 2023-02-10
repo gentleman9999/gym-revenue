@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\Roles\Role;
@@ -70,7 +72,7 @@ class RolesController extends Controller
             return Redirect::back();
         }
 
-        $role = $role->toArray();
+        $role              = $role->toArray();
         $role['abilities'] = Bouncer::role()->find($role['id'])->getAbilities()->toArray();
 
         return Inertia::render('Roles/Edit', [
@@ -96,8 +98,6 @@ class RolesController extends Controller
             return Redirect::back();
         }
 
-        $roles = Role::whereScope($client_id)->get();
-
-        return $roles;
+        return Role::whereScope($client_id)->get();
     }
 }

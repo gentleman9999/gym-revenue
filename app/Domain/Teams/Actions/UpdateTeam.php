@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -23,13 +25,6 @@ class UpdateTeam
         return $team->refresh();
     }
 
-    public function __invoke($_, array $args): Team
-    {
-        $team = Team::find($args['id']);
-
-        return $this->handle($team, $args);
-    }
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -44,6 +39,9 @@ class UpdateTeam
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -72,5 +70,17 @@ class UpdateTeam
 
 //        return Redirect::back();
         return Redirect::route('teams.edit', $team->id);
+    }
+
+    /**
+     * @param       $_
+     * @param array<string, mixed> $args
+     *
+     */
+    public function __invoke($_, array $args): Team
+    {
+        $team = Team::find($args['id']);
+
+        return $this->handle($team, $args);
     }
 }

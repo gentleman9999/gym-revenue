@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Endusers;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,5 +12,7 @@ class Service extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    protected $fillable = ['id','name'];
+
+    /** @var array<string> */
+    protected $fillable = ['id', 'name'];
 }

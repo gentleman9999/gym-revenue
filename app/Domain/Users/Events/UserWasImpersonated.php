@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Events;
 
 use App\StorableEvents\GymRevShouldBeStored;
@@ -11,7 +13,7 @@ class UserWasImpersonated extends GymRevShouldBeStored
 
     public function __construct(string $victim, string $invader)
     {
-        $this->victim = $victim;
+        $this->victim  = $victim;
         $this->invader = $invader;
     }
 }

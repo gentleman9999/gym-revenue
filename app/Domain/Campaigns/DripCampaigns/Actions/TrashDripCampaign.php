@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
@@ -15,7 +17,7 @@ class TrashDripCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'drip-campaign:trash {id}';
+    public string $commandSignature   = 'drip-campaign:trash {id}';
     public string $commandDescription = 'Soft deletes the audience';
 
     public function handle(DripCampaign $dripCampaign): DripCampaign

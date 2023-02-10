@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reactors\Clients\GatewayProviders;
 
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
@@ -11,7 +13,7 @@ use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientEmailGatewayActivityReactor extends Reactor implements ShouldQueue
 {
-    public function onUserSentATestEmail(UserSentATestEmail $event)
+    public function onUserSentATestEmail(UserSentATestEmail $event): void
     {
         $user_aggy = UserAggregate::retrieve($event->user);
 

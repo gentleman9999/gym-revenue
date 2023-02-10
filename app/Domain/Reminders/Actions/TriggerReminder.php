@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
@@ -11,10 +13,10 @@ class TriggerReminder
 {
     use AsAction;
 
-    public string $commandSignature = 'reminder:trigger {id}';
+    public string $commandSignature   = 'reminder:trigger {id}';
     public string $commandDescription = 'trigger a specific reminder';
 
-    public function handle(Reminder $reminder)
+    public function handle(Reminder $reminder): void
     {
         UserAggregate::retrieve($reminder->user_id)->triggerReminder($reminder->id)->persist();
     }

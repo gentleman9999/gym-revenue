@@ -20,15 +20,23 @@ class StructuredDocument extends GymRevProjection
 {
     use HasFactory;
     use SoftDeletes;
+
     /** @see https://github.com/overtrue/laravel-versionable */
     use Versionable;
     use Uuid;
 
+    /** @var array<string> */
     protected $fillable = ['client_id', 'template_file_id', 'entity_type', 'entity_id', 'ttl', 'deleted_at'];
 
+    /** @var array<string, string> */
     protected $casts = [
         'entity_type' => StructuredDocumentEntityTypeEnum::class,
     ];
+
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class, 'id', 'client_id');
+    }
 
     protected static function booted(): void
     {
@@ -38,10 +46,5 @@ class StructuredDocument extends GymRevProjection
     protected static function newFactory(): Factory
     {
         return StructuredDocumentFactory::new();
-    }
-
-    public function client(): HasOne
-    {
-        return $this->hasOne(Client::class, 'id', 'client_id');
     }
 }

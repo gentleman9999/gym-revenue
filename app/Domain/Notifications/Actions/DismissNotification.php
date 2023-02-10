@@ -13,6 +13,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 class DismissNotification
 {
     use AsAction;
+
     public string $commandSignature = 'notifications:dismiss {user_id} {id}';
 
     public function handle(string $user_id, string $notification_id): void

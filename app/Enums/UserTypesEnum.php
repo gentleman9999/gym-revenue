@@ -7,16 +7,16 @@ namespace App\Enums;
 enum UserTypesEnum: string
 {
     case EMPLOYEE = 'employee';
-    case MEMBER = 'member';
+    case MEMBER   = 'member';
     case CUSTOMER = 'customer';
-    case LEAD = 'lead';
+    case LEAD     = 'lead';
 
     public static function getByValue($value): ?self
     {
         switch ($value) {
             case self::EMPLOYEE->value:
                 return self::EMPLOYEE;
-            
+
             // no break
             case self::MEMBER->value:
                 return self::MEMBER;

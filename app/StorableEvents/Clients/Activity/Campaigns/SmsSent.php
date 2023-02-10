@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents\Clients\Activity\Campaigns;
 
 use DateTime;
@@ -15,10 +17,10 @@ class SmsSent extends ShouldBeStored
 
     public function __construct(string $client, string $campaign, array $sentTo, DateTime $sentAt, bool $isCampaign)
     {
-        $this->client = $client;
-        $this->campaign = $campaign;
-        $this->sentTo = $sentTo;
-        $this->sentAt = $sentAt;
+        $this->client     = $client;
+        $this->campaign   = $campaign;
+        $this->sentTo     = $sentTo;
+        $this->sentAt     = $sentAt;
         $this->isCampaign = $isCampaign;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Notes;
 
 use App\Aggregates\Clients\NoteAggregate;
@@ -16,7 +18,7 @@ class MarkNoteAsRead
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'client_id' => ['string', 'sometimes'],
@@ -28,9 +30,9 @@ class MarkNoteAsRead
     {
         NoteAggregate::retrieve($current_user->client_id)
                 ->createReadReciept($current_user->id, [
-                'note_id' => $data['note']['id'],
-                'read_by_user_id' => $current_user->id,
-            ])
+                    'note_id' => $data['note']['id'],
+                    'read_by_user_id' => $current_user->id,
+                ])
                 ->persist();
 
         return true;
@@ -46,7 +48,7 @@ class MarkNoteAsRead
         return true; //no auth required
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): void
     {
         $note = $this->handle(
             $request->validated(),

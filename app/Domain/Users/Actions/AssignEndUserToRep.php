@@ -32,7 +32,7 @@ class AssignEndUserToRep extends BaseEndUserAction
         return $this->handle(
             ['end_user_id' => $end_user,
                 'user_id' => $request->user()->id,
-                ],
+            ],
         );
     }
 

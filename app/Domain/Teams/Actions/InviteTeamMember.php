@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
-use function __;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
 use App\Http\Middleware\InjectClientId;
@@ -11,6 +12,8 @@ use Illuminate\Validation\Rule;
 use Laravel\Jetstream\Contracts\InvitesTeamMembers;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
+use function __;
 
 class InviteTeamMember implements InvitesTeamMembers
 {
@@ -29,6 +32,9 @@ class InviteTeamMember implements InvitesTeamMembers
         return $email;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -44,26 +50,35 @@ class InviteTeamMember implements InvitesTeamMembers
     /**
      * Invite a new team member to the given team.
      *
-     * @param  mixed  $user
-     * @param  mixed  $team
-     * @param  string  $email
-     * @param  string|null  $role
-     * @return void
      */
-    public function invite($user, $team, string $email, string $role = null)
+    public function invite(mixed $user, mixed $team, string $email, ?string $role = null): void
     {
         $this->handle($team, $email);
     }
 
     /**
+     * Get the validation rules for inviting a team member.
+     *
+     * @return array
+     */
+    public function rules(mixed $team): array
+    {
+        return array_filter([
+            'email' => ['required', 'email', Rule::unique('team_invitations')->where(function ($query) use ($team): void {
+                $query->where('team_id', $team->id);
+            })],
+//            'role' => Jetstream::hasRoles()
+//                            ? ['required', 'string', new Role()]
+//                            : null,
+        ]);
+    }
+
+    /**
      * Validate the invite member operation.
      *
-     * @param  mixed  $team
-     * @param  string  $email
      * @param  string|null  $role
-     * @return void
      */
-    protected function validate($team, string $email)
+    protected function validate(mixed $team, string $email): void
     {
         Validator::make([
             'email' => $email,
@@ -76,33 +91,12 @@ class InviteTeamMember implements InvitesTeamMembers
     }
 
     /**
-     * Get the validation rules for inviting a team member.
-     *
-     * @param  mixed  $team
-     * @return array
-     */
-    public function rules($team)
-    {
-        return array_filter([
-            'email' => ['required', 'email', Rule::unique('team_invitations')->where(function ($query) use ($team) {
-                $query->where('team_id', $team->id);
-            })],
-//            'role' => Jetstream::hasRoles()
-//                            ? ['required', 'string', new Role()]
-//                            : null,
-        ]);
-    }
-
-    /**
      * Ensure that the user is not already on the team.
      *
-     * @param  mixed  $team
-     * @param  string  $email
-     * @return \Closure
      */
-    protected function ensureUserIsNotAlreadyOnTeam($team, string $email)
+    protected function ensureUserIsNotAlreadyOnTeam(mixed $team, string $email): \Closure
     {
-        return function ($validator) use ($team, $email) {
+        return function ($validator) use ($team, $email): void {
             $validator->errors()->addIf(
                 $team->hasUserWithEmail($email),
                 'email',

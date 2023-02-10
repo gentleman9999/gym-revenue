@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEventTypes;
 
 use App\Domain\CalendarEventTypes\Events\CalendarEventTypeCreated;
@@ -11,7 +13,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class CalendarEventTypeProjector extends Projector
 {
-    public function onCalendarEventTypeCreated(CalendarEventTypeCreated $event)
+    public function onCalendarEventTypeCreated(CalendarEventTypeCreated $event): void
     {
         $calendarEventType = (new CalendarEventType())->writeable();
         $calendarEventType->forceFill(['client_id' => $event->clientId(), 'id' => $event->aggregateRootUuid()]);
@@ -19,22 +21,22 @@ class CalendarEventTypeProjector extends Projector
         $calendarEventType->save();
     }
 
-    public function onCalendarEventTypeUpdated(CalendarEventTypeUpdated $event)
+    public function onCalendarEventTypeUpdated(CalendarEventTypeUpdated $event): void
     {
         CalendarEventType::findOrFail($event->aggregateRootUuid())->writeable()->updateOrFail($event->payload);
     }
 
-    public function onCalendarEventTypeTrashed(CalendarEventTypeTrashed $event)
+    public function onCalendarEventTypeTrashed(CalendarEventTypeTrashed $event): void
     {
         CalendarEventType::findOrFail($event->aggregateRootUuid())->writeable()->deleteOrFail();
     }
 
-    public function onCalendarEventTypeRestored(CalendarEventTypeRestored $event)
+    public function onCalendarEventTypeRestored(CalendarEventTypeRestored $event): void
     {
         CalendarEventType::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->restore();
     }
 
-    public function onCalendarEventTypeDeleted(CalendarEventTypeDeleted $event)
+    public function onCalendarEventTypeDeleted(CalendarEventTypeDeleted $event): void
     {
         CalendarEventType::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->forceDelete();
     }

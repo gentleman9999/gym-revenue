@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Roles;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -32,6 +34,7 @@ use App\Models\Position;
 use App\Models\Traits\Sortable;
 use Bouncer;
 use Database\Factories\RoleFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Silber\Bouncer\Database\Concerns\HasAbilities;
@@ -46,16 +49,48 @@ class Role extends \Silber\Bouncer\Database\Role
     use HasAbilities;
     use Sortable;
 
+    /** @var array<string> */
     protected $fillable = ['name', 'title', 'group'];
 
     /**
-     * Create a new factory instance for the model.
+     * @param array<string, mixed> $filters
      *
-     * @return Factory
      */
-    protected static function newFactory(): Factory
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        return RoleFactory::new();
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
+                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('title', 'like', '%' . $search . '%');
+            });
+        })->when($filters['trashed'] ?? null, function ($query, $trashed): void {
+            if ($trashed === 'with') {
+                $query->withTrashed();
+            } elseif ($trashed === 'only') {
+                $query->onlyTrashed();
+            }
+        });
+    }
+
+    public function abilities()
+    {
+        if (Bouncer::role()->find($this->id)) {
+            return Bouncer::role()->find($this->id)->getAbilities()->toArray();
+        } else {
+            return null;
+        }
+    }
+
+    public function availableAbilities()
+    {
+        return Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']);
+    }
+
+    public function securityGroups()
+    {
+        return collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')->values()->map(function ($s) {
+            return ['value' => $s->value, 'name' => $s->name];
+        });
     }
 
     public static function getEntityFromGroup(string $group): ?string
@@ -94,40 +129,12 @@ class Role extends \Silber\Bouncer\Database\Role
         };
     }
 
-    public function scopeFilter($query, array $filters): void
+    /**
+     * Create a new factory instance for the model.
+     *
+     */
+    protected static function newFactory(): Factory
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
-                $query->where('title', 'like', '%' . $search . '%');
-            });
-        })->when($filters['trashed'] ?? null, function ($query, $trashed) {
-            if ($trashed === 'with') {
-                $query->withTrashed();
-            } elseif ($trashed === 'only') {
-                $query->onlyTrashed();
-            }
-        });
-    }
-
-    public function abilities()
-    {
-        if (Bouncer::role()->find($this->id)) {
-            return Bouncer::role()->find($this->id)->getAbilities()->toArray();
-        } else {
-            return null;
-        }
-    }
-
-    public function availableAbilities()
-    {
-        return Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']);
-    }
-
-    public function securityGroups()
-    {
-        return collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')->values()->map(function ($s) {
-            return ['value' => $s->value, 'name' => $s->name];
-        });
+        return RoleFactory::new();
     }
 }

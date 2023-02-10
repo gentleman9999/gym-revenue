@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Events;
 
 use App\StorableEvents\GymRevShouldBeStored;
 
 class UserSetCustomCrudColumns extends GymRevShouldBeStored
 {
-    public $table;
-    public $fields;
-
-    public function __construct(string $table, array $fields)
+    /**
+     * @param string $table
+     * @param array<string>  $fields
+     */
+    public function __construct(public string $table, public array $fields)
     {
-        $this->table = $table;
-        $this->fields = $fields;
     }
 }

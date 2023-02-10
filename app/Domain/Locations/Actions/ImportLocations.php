@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -23,13 +25,16 @@ class ImportLocations
                 ClientAggregate::retrieve($item['client_id'])->importLocations($item['key'], $item['client_id'])->persist();
                 $result = true;
             } else {
-                Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();
+                Alert::error("File name: " . $item['filename'] . " doesn't meet extension requirements of '.csv'.")->flash();
             }
         }
 
         return $result;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

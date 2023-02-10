@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -23,13 +25,16 @@ class ImportUsers
                 ClientAggregate::retrieve($client_id)->importUsers($item['key'], $client_id)->persist();
                 $result = true;
             } else {
-                Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();
+                Alert::error("File name: " . $item['filename'] . " doesn't meet extension requirements of '.csv'.")->flash();
             }
         }
 
         return $result;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

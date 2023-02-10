@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents\Clients\Activity\Users;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
@@ -13,9 +15,9 @@ class ClientUserWasImpersonated extends ShouldBeStored
 
     public function __construct(string $client, string $employee, string $invader, string $date)
     {
-        $this->client = $client;
+        $this->client   = $client;
         $this->employee = $employee;
-        $this->invader = $invader;
-        $this->date = $date;
+        $this->invader  = $invader;
+        $this->date     = $date;
     }
 }

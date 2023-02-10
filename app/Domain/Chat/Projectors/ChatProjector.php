@@ -18,12 +18,12 @@ class ChatProjector extends Projector
 {
     public function onChatCreated(ChatCreated $event): void
     {
-        DB::transaction(static function () use ($event) {
-            $chat = new Chat();
-            $chat->id = $event->aggregateRootUuid();
-            $chat->client_id = $event->payload['client_id'];
+        DB::transaction(static function () use ($event): void {
+            $chat             = new Chat();
+            $chat->id         = $event->aggregateRootUuid();
+            $chat->client_id  = $event->payload['client_id'];
             $chat->created_by = $event->payload['user_id'];
-            $chat->admin_id = $event->payload['user_id'];
+            $chat->admin_id   = $event->payload['user_id'];
             $chat->writeable()->save();
 
             $chat = $chat->refresh();

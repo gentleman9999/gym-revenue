@@ -15,14 +15,14 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class GymAmenityProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         GymAmenity::delete();
     }
 
     public function onGymAmenityCreated(GymAmenityCreated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $gym_amenity = (new GymAmenity())->writeable();
             $gym_amenity->fill($event->payload);
             $gym_amenity->id = $event->aggregateRootUuid();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -36,6 +38,9 @@ class UpdateTeamName implements UpdatesTeamNames
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -68,12 +73,10 @@ class UpdateTeamName implements UpdatesTeamNames
     /**
      * Validate and update the given team's name.
      *
-     * @param mixed $user
-     * @param mixed $team
-     * @param array $input
+     * @param array<string, mixed> $input
      * @return void
      */
-    public function update($user, $team, array $input)
+    public function update(mixed $user, mixed $team, array $input)
     {
 //        Gate::forUser($user)->authorize('update', $team);
 

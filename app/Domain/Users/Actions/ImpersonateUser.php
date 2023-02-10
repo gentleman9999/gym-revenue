@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -7,13 +9,11 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
-
-use function auth;
-
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
+use function auth;
 use function redirect;
 use function request;
 use function response;
@@ -22,11 +22,6 @@ class ImpersonateUser
 {
     use AsAction {
         __invoke as protected invokeFromLaravelActions;
-    }
-
-    public function __invoke()
-    {
-        // ...
     }
 
     public function rules(): array
@@ -39,16 +34,16 @@ class ImpersonateUser
     public function handle(): bool
     {
         $results = false;
-        $data = request()->all();
+        $data    = request()->all();
 
         $invader = auth()->user();
         if ($invader->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
             $victim = User::withoutGlobalScopes()->findOrFail($data['victimId']);
-            $team = Team::withoutGlobalScopes()->findOrFail($victim->default_team_id);
+            $team   = Team::withoutGlobalScopes()->findOrFail($victim->default_team_id);
         } else {
 //            $victim = User::findOrFail($data['victimId']);
             $victim = User::with('defaultTeam')->findOrFail($data['victimId']);
-            $team = $victim->defaultTeam;
+            $team   = $victim->defaultTeam;
 //            $team = Team::findOrFail($victim->default_team_id);
         }
 
@@ -66,7 +61,7 @@ class ImpersonateUser
                 ]
             );
             session()->put('client_id', $team->client_id);
-            session()->put('user_id',  $victim->id);
+            session()->put('user_id', $victim->id);
             $results = true;
         }
 
@@ -76,7 +71,7 @@ class ImpersonateUser
         UserAggregate::retrieve($victim->id)->activatePossessionMode($invader->id)->persist();
 
         // rat on this user to the paying customer - the client (aggy)
-        if (! is_null($victim->client)) {
+        if ($victim->client !== null) {
             ClientAggregate::retrieve($victim->client->id)
                 ->logImpersonationModeActivity($victim->id, $invader->id)->persist();
         }
@@ -87,11 +82,11 @@ class ImpersonateUser
     public function jsonResponse($result)
     {
         $results = false;
-        $code = 500;
+        $code    = 500;
 
         if ($result) {
             $results = true;
-            $code = 200;
+            $code    = 200;
         }
 
         return response($results, $code);

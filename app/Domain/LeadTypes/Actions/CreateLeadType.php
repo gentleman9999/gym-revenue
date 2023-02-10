@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\LeadTypes\Actions;
 
 use App\Domain\LeadTypes\LeadType;
@@ -11,9 +13,13 @@ class CreateLeadType
 {
     use AsAction;
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): LeadType
     {
-        $id = Uuid::new();//we should use uuid here
+        $id = Uuid::get();//we should use uuid here
         LeadTypeAggregate::retrieve($id)->create($data)->persist();
 
         return LeadType::findOrFail($id);

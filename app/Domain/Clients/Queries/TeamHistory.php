@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Queries;
 
 use App\Domain\Teams\Events\TeamCreated;
@@ -13,9 +15,12 @@ use Spatie\EventSourcing\EventHandlers\Projectors\EventQuery;
 //Example of using event queries to generate client specific aggregates
 class TeamHistory extends EventQuery
 {
+    protected $teams   = [];
+    protected $history = [];
+
     public function __construct(
         private string $client_id,
-//        private Period $period,
+        //        private Period $period,
     ) {
         GymRevStoredEvent::query()
             ->where('meta_data->client_id', $client_id)
@@ -33,8 +38,15 @@ class TeamHistory extends EventQuery
             );
     }
 
-    protected $teams = [];
-    protected $history = [];
+    public function getTeams(): array
+    {
+        return $this->teams;
+    }
+
+    public function getHistory(): array
+    {
+        return $this->history;
+    }
 
     protected function applyTeamCreated(TeamCreated $event): void
     {
@@ -59,15 +71,5 @@ class TeamHistory extends EventQuery
             $updated_by = "was updated by {$event->user()->name}";
         }
         $this->history[] = "Team {$this->teams[$event->aggregateRootUuid()]} $updated_by ";
-    }
-
-    public function getTeams(): array
-    {
-        return $this->teams;
-    }
-
-    public function getHistory(): array
-    {
-        return $this->history;
     }
 }

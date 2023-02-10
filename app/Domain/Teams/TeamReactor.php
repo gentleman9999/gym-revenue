@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams;
 
 use App\Domain\Teams\Events\TeamMemberInvited;
@@ -13,7 +15,7 @@ class TeamReactor extends Reactor
     //this is untested, just converted over in case we end up using.
     public function onTeamMemberInvited(TeamMemberInvited $event): void
     {
-        $team = Team::findOrFail($event->aggregateRootUuid());
+        $team       = Team::findOrFail($event->aggregateRootUuid());
         $invitation = $team->teamInvitations()->whereEmail($event->email)->firstOrFail();
         Mail::to($event->email)->send(new TeamInvitation($invitation));
     }

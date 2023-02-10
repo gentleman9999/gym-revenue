@@ -14,7 +14,6 @@ class GraphQLServiceProvider extends ServiceProvider
     /**
      * Register any custom types for the GraphQL schema.
      *
-     * @return void
      */
     public function boot(TypeRegistry $typeRegistry): void
     {

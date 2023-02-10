@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Domain\Clients\Projections\Client;
@@ -17,9 +19,7 @@ class EnsureTokenIsValid
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return Response|RedirectResponse|JsonResponse
      */
     public function handle(Request $request, Closure $next): Response|RedirectResponse|JsonResponse
     {
@@ -65,7 +65,7 @@ class EnsureTokenIsValid
         //is an array of objects
         foreach ($body as $idx => $object) {
             $object['client_id'] = $client_id;
-            $body[$idx] = $object;
+            $body[$idx]          = $object;
         }
 
         $request->merge($body);

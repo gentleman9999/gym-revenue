@@ -8,12 +8,9 @@ use App\Domain\Users\Models\Lead;
 
 class LeadReflection extends Lead
 {
-    /**
-     * Define the table name
-     *
-     * @var string
-     */
+   /** @var string  */
     protected $table = 'leads';
 
+    /** @var array<string>  */
     protected $guarded = [];
 }

@@ -22,6 +22,7 @@ class ChatParticipant extends GymRevUuidProjection
     use SoftDeletes;
     use Sortable;
 
+    /** @var array<string>  */
     protected $fillable = ['chat_id', 'user_id'];
 
     public function chat(): BelongsTo

@@ -15,14 +15,14 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ContractProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         Contract::delete();
     }
 
     public function onContractCreated(ContractCreated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $contracts = (new Contract())->writeable();
             $contracts->fill($event->payload);
             $contracts->id = $event->aggregateRootUuid();

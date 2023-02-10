@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Tasks;
 
 use App\Domain\Users\Aggregates\UserAggregate;
@@ -20,7 +22,7 @@ class UpdateTask
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => ['required', 'string', 'max:50'],
@@ -49,9 +51,9 @@ class UpdateTask
 
     public function asController(ActionRequest $request, $id)
     {
-        $data = $request->validated();
+        $data       = $request->validated();
         $data['id'] = $id;
-        $task = $this->handle(
+        $task       = $this->handle(
             $data
         );
 

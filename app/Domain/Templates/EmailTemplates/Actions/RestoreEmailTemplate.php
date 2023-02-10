@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\EmailTemplates\Actions;
 
 use App\Domain\Campaigns\DripCampaigns\EmailTemplate;

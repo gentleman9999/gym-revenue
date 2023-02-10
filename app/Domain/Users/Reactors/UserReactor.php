@@ -42,7 +42,7 @@ class UserReactor extends Reactor implements ShouldQueue
 
     public function onFileUploaded(FileUploaded $event): void
     {
-        $data = $event->payload;
+        $data  = $event->payload;
         $model = User::find($data['user_id']);
 
         CreateFile::run($data, $model, User::find($event->userId()));
@@ -50,13 +50,13 @@ class UserReactor extends Reactor implements ShouldQueue
 
     public function onUserWrite(UserCreated|UserUpdated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $user = User::findOrFail($event->aggregateRootUuid());
             $data = $event->payload ?? [];
             $this->syncLocationEmployeeData($user, $data);
 
             $user_type = UserTypeDeterminer::getUserType($user);
-            if ($user_type !== $user->user_type && ! is_null($user->client_id)) {
+            if ($user_type !== $user->user_type && $user->client_id !== null) {
                 $data['user_type'] = $user_type;
                 UpdateUser::run($user, $data);
             }
@@ -66,16 +66,16 @@ class UserReactor extends Reactor implements ShouldQueue
     protected function syncLocationEmployeeData(User $user, array $data): void
     {
         if (array_key_exists('departments', $data)) {
-            $location_employee_data['location_id'] = '';
-            $location_employee_data['client_id'] = $user->client_id;
-            $location_employee_data['user_id'] = $user->id;
+            $location_employee_data['location_id']                = '';
+            $location_employee_data['client_id']                  = $user->client_id;
+            $location_employee_data['user_id']                    = $user->id;
             $location_employee_data['primary_supervisor_user_id'] = '';
 
             if (count($data) != count($data, COUNT_RECURSIVE)) {
                 if (array_key_exists('departments', $data)) {
                     foreach ($data['departments'] as $dept) {
                         $location_employee_data['department_id'] = $dept['department'];
-                        $location_employee_data['position_id'] = $dept['position'];
+                        $location_employee_data['position_id']   = $dept['position'];
                         CreateLocationEmployee::run($location_employee_data);
                     }
                 }

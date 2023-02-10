@@ -13,13 +13,16 @@ use Lorisleiva\Actions\ActionRequest;
 
 class UploadFile extends CreateFile
 {
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): File
     {
         $model = EmailTemplate::find($request->email_template_id);
 
         return $this->handle($request->validated(), $model, $request->user());
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\GatewayProviders\MessageInterpreters;
 
 use App\Aggregates\Users\UserAggregate;

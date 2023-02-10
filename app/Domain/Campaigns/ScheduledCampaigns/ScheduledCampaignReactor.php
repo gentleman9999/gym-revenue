@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -29,14 +31,27 @@ class ScheduledCampaignReactor extends Reactor
         $this->maybePublishOrUnpublish($scheduledCampaign, $event);
     }
 
+    public function onScheduledCampaignLaunched(ScheduledCampaignLaunched $event): void
+    {
+        $scheduledCampaign = ScheduledCampaign::with('audience')->findOrFail($event->aggregateRootUuid());
+        if ($scheduledCampaign->status === CampaignStatusEnum::ACTIVE) {
+            if ($scheduledCampaign->template_type === EmailTemplate::class) {
+                //TODO: fire off emails with the given template to the given audience members
+                //this needs to be done in a way that we are able to track delivery status back to the campaign
+            } elseif ($scheduledCampaign->template_type === SmsTemplate::class) {
+                //TODO: fire off sms with the given template to the given audience members
+                //this needs to be done in a way that we are able to track delivery status back to the campaign
+            } else {
+                //TODO:throw exception so we catch this bug
+            }
+        }
+    }
+
     /**
      * Fires off a PublishScheduledCampaign or UnpublishScheduledCampaign action
      * if necessary.
-     * @param ScheduledCampaign $scheduledCampaign
-     * @param ScheduledCampaignCreated|ScheduledCampaignUpdated $event
-     * @return void
      */
-    protected function maybePublishOrUnpublish(ScheduledCampaign $scheduledCampaign, ScheduledCampaignCreated|ScheduledCampaignUpdated $event)
+    protected function maybePublishOrUnpublish(ScheduledCampaign $scheduledCampaign, ScheduledCampaignCreated|ScheduledCampaignUpdated $event): void
     {
         if (! array_key_exists('is_published', $event->payload)) {
             //is_published not even provided in the input, don't do anything
@@ -54,22 +69,6 @@ class ScheduledCampaignReactor extends Reactor
             return;
         }
         UnpublishScheduledCampaign::run($scheduledCampaign);
-    }
-
-    public function onScheduledCampaignLaunched(ScheduledCampaignLaunched $event): void
-    {
-        $scheduledCampaign = ScheduledCampaign::with('audience')->findOrFail($event->aggregateRootUuid());
-        if ($scheduledCampaign->status === CampaignStatusEnum::ACTIVE) {
-            if ($scheduledCampaign->template_type === EmailTemplate::class) {
-                //TODO: fire off emails with the given template to the given audience members
-                //this needs to be done in a way that we are able to track delivery status back to the campaign
-            } elseif ($scheduledCampaign->template_type === SmsTemplate::class) {
-                //TODO: fire off sms with the given template to the given audience members
-                //this needs to be done in a way that we are able to track delivery status back to the campaign
-            } else {
-                //TODO:throw exception so we catch this bug
-            }
-        }
     }
 
     protected function handleDispatchingEmails(ScheduledCampaign $scheduledCampaign): void
@@ -93,7 +92,7 @@ class ScheduledCampaignReactor extends Reactor
         $client_aggy = ClientAggregate::retrieve($scheduledCampaign->client_id);
 
         $sent_to_chunks = array_chunk($sent_to, 100);//TODO: see what is max and/or optimal value, make it configurable
-        $idx = 0;
+        $idx            = 0;
         foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
             ///TODO: call email batch send job, which checks gateway, and dispatches on right one.
             $idx++;

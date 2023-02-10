@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Endusers;
 
 use App\Scopes\ClientScope;
@@ -11,7 +13,9 @@ class MembershipType extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    protected $fillable = ['id','client_id','name'];
+
+    /** @var array<string> */
+    protected $fillable = ['id', 'client_id', 'name'];
 
     protected static function booted(): void
     {

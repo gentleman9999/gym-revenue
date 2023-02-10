@@ -16,14 +16,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ClientConversation extends Model
 {
     use HasFactory;
-    protected $keyType = 'string';
+
+    /** @var bool */
     public $incrementing = false;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
+    /** @var string */
+    protected $keyType = 'string';
+
+    /** @var array<string>  */
     protected $fillable = [
         'id',
         'client_id',

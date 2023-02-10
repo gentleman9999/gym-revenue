@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
@@ -22,6 +24,9 @@ class DeleteSmsTemplate
         return $smsTemplate;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

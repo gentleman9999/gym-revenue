@@ -11,7 +11,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientGatewayProjector extends Projector
 {
-    public function onGatewayIntegrationCreated(ClientGatewayIntegrationCreated $event)
+    public function onGatewayIntegrationCreated(ClientGatewayIntegrationCreated $event): void
     {
         ClientGatewayIntegration::firstOrCreate($event->payload + [
             'id' => (string) Uuid::uuid4(),

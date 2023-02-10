@@ -15,14 +15,14 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class StructuredDocumentFileProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         StructuredDocumentFile::delete();
     }
 
     public function onStructuredDocumentFileCreated(StructuredDocumentFileCreated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $structured_document_file = (new StructuredDocumentFile())->writeable();
             $structured_document_file->fill($event->payload);
             $structured_document_file->id = $event->aggregateRootUuid();

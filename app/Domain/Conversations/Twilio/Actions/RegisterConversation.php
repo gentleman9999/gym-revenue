@@ -15,14 +15,12 @@ use Twilio\Exceptions\TwilioException;
 class RegisterConversation
 {
     use AsAction;
-    public string $commandSignature = 'conversation:register';
+
+    public string $commandSignature   = 'conversation:register';
     public string $commandDescription = 'Sets up conversation for specified clients.';
 
     /**
-     * @param Client      $client
-     * @param string|null $messenger_id
      *
-     * @return void
      * @throws ConfigurationException
      * @throws ConversationException
      * @throws TwilioException
@@ -33,9 +31,7 @@ class RegisterConversation
     }
 
     /**
-     * @param Command $command
      *
-     * @return void
      * @throws ConfigurationException
      * @throws ConversationException
      * @throws TwilioException
@@ -45,7 +41,7 @@ class RegisterConversation
         $name = $command->choice('Select Client', Client::all()->pluck('name')->toArray());
 
         /** @var Client $client */
-        $client = Client::where(['name' => $name])->first();
+        $client       = Client::where(['name' => $name])->first();
         $messenger_id = $client->getNamedGatewaySettings()[ClientGatewaySetting::NAME_TWILIO_MESSENGER_ID] ?? null;
         // Ask for new messenger ID if not was found on client setting.
         if ($messenger_id === null) {

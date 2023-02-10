@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Agreements\Actions;
 
 use App\Domain\Agreements\AgreementAggregate;
@@ -37,6 +39,9 @@ class UpdateAgreement
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

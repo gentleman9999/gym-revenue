@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Positions\Validators;
 
 use Nuwave\Lighthouse\Validation\Validator;
@@ -14,19 +16,19 @@ final class CreatePositionInputValidator extends Validator
     public function rules(): array
     {
         return [
-          'name' => [
-            'required',
-            'string',
-          ],
-          'departments' => [
-            'sometimes',
-            'array',
-          ],
-          'departments.*' => [
-            'sometimes',
-            'nullable',
-            'string',
-          ],
+            'name' => [
+                'required',
+                'string',
+            ],
+            'departments' => [
+                'sometimes',
+                'array',
+            ],
+            'departments.*' => [
+                'sometimes',
+                'nullable',
+                'string',
+            ],
         ];
     }
 

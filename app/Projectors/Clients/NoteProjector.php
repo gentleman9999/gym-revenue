@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Projectors\Clients;
 
 use App\Models\Note;
@@ -14,12 +16,12 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class NoteProjector extends Projector
 {
-    public function onReadReceiptCreated(ReadReceiptCreated $event)
+    public function onReadReceiptCreated(ReadReceiptCreated $event): void
     {
         ReadReceipt::create($event->data);
     }
 
-    public function onNoteCreated(NoteCreated $event)
+    public function onNoteCreated(NoteCreated $event): void
     {
         $note = Note::create(
             [
@@ -35,23 +37,23 @@ class NoteProjector extends Projector
 //        }
     }
 
-    public function onNoteUpdated(NoteUpdated $event)
+    public function onNoteUpdated(NoteUpdated $event): void
     {
 //        $note = Note::note()->findOrFail($event->payload['id']);
         Note::findOrFail($event->payload['id'])->updateOrFail(array_merge($event->payload, ['title' => $event->payload['title']]));
     }
 
-    public function onNoteTrashed(NoteTrashed $event)
+    public function onNoteTrashed(NoteTrashed $event): void
     {
         Note::findOrFail($event->id)->delete();
     }
 
-    public function onNoteRestored(NoteRestored $event)
+    public function onNoteRestored(NoteRestored $event): void
     {
         Note::withTrashed()->findOrFail($event->id)->restore();
     }
 
-    public function onNoteDeleted(NoteDeleted $event)
+    public function onNoteDeleted(NoteDeleted $event): void
     {
         Note::findOrFail($event->id)->delete();
     }

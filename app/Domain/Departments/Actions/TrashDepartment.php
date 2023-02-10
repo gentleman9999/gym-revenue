@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Departments\Actions;
 
 use App\Domain\Departments\Department;
@@ -29,6 +31,9 @@ class TrashDepartment
         return $current_user->can('departments.trash', Department::class);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

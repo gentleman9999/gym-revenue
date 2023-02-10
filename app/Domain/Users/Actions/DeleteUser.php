@@ -29,7 +29,7 @@ class DeleteUser implements DeletesUsers
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        $user = $request->user;
+        $user         = $request->user;
 
         return $user->user_type == UserTypesEnum::EMPLOYEE ?
             $current_user->can('users.delete', User::class) && ! $current_user->isClientUser() && $user->terminated() :

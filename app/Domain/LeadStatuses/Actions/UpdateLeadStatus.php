@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\LeadStatuses\Actions;
 
 use App\Domain\LeadStatuses\LeadStatus;
@@ -10,6 +12,11 @@ class UpdateLeadStatus
 {
     use AsAction;
 
+    /**
+     * @param string $id
+     * @param array<string, mixed>  $data
+     *
+     */
     public function handle(string $id, array $data): LeadStatus
     {
         LeadStatusAggregate::retrieve($id)->update($data)->persist();

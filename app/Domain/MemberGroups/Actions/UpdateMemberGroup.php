@@ -27,7 +27,7 @@ class UpdateMemberGroup
     {
         return [
             'client_id' => ['required', 'string'],
-            'type' => ['required',  new Enum(MemberGroupTypeEnum::class)],
+            'type' => ['required', new Enum(MemberGroupTypeEnum::class)],
             'poc_name' => ['sometimes', 'string'],
             'poc_phone' => ['sometimes', 'string'],
             'poc_email' => ['sometimes', 'string'],
@@ -43,6 +43,9 @@ class UpdateMemberGroup
         return $member_group->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -10,17 +10,17 @@ use Illuminate\Contracts\Validation\InvokableRule;
 class AddressZip implements InvokableRule
 {
     /**
-     * Run the validation rule.
+     * @param mixed $attribute
+     * @param mixed $value
+     * @param mixed|\Closure $fail
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
-     * @return void
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke($attribute, $value, $fail)
+    public function __invoke($attribute, $value, $fail): void
     {
         $address_validation = session()->get('address_validation');
-        if (is_null($address_validation)) {
+        if ($address_validation === null) {
             $address_validation = AddressValidation::validate(
                 request()->getRequestUri(),
                 request()->all()

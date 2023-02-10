@@ -53,14 +53,14 @@ class UserCrudProjector extends Projector
             'membership_type_id' => '',
         ],
     ];
-    private $non_fillable_fields = [
+    private $non_fillable_fields   = [
         'email', 'barcode', 'home_location_id', 'external_id', 'misc', 'client_id',
         'profile_photo_path', 'alternate_emails', 'password', 'two_factor_secret',
         'two_factor_recovery_codes', 'ip_address', 'entry_source', 'opportunity',
         'started_at', 'ended_at', 'terminated_at', 'agreement_id', 'is_previous',
     ];
 
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         User::truncate();
     }
@@ -73,8 +73,8 @@ class UserCrudProjector extends Projector
         }
 
         //setup a transaction so we if we have errors, we don't get a half-baked user
-        DB::transaction(function () use ($data, $event) {
-            $user = new User();
+        DB::transaction(function () use ($data, $event): void {
+            $user     = new User();
             $user->id = $event->aggregateRootUuid();
             foreach ($this->non_fillable_fields as $field) {
                 if (array_key_exists($field, $data)) {
@@ -109,7 +109,7 @@ class UserCrudProjector extends Projector
                 $team = Team::find($data['team_id']);
                 if ($team && $team->client_id == null) {
                     //set role to admin for capeandbay
-                    $role = Role::whereGroup(SecurityGroupEnum::ADMIN)->firstOrFail();
+                    $role                       = Role::whereGroup(SecurityGroupEnum::ADMIN)->firstOrFail();
                     $user->is_cape_and_bay_user = true;
                 }
             }
@@ -131,7 +131,7 @@ class UserCrudProjector extends Projector
         }
 
         //setup a transaction so we if we have errors, we don't get a half-updated user
-        DB::transaction(function () use ($data, $event) {
+        DB::transaction(function () use ($data, $event): void {
             $user_query = User::query();
             /** updating our own userprofile, remove client scope */
             if ($event->userId() == $event->aggregateRootUuid()) {
@@ -184,7 +184,7 @@ class UserCrudProjector extends Projector
 
     public function onUserReinstated(UserReinstated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $user = User::withTrashed()->findOrFail($event->aggregateRootUuid());
             $user->reinstate();
             UserDataReflector::reflectData($user);
@@ -193,7 +193,7 @@ class UserCrudProjector extends Projector
 
     public function onUserTerminated(UserTerminated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             // Get the uer we're gonna delete
             $user = User::findOrFail($event->aggregateRootUuid());
             // @todo - add offboading logic here
@@ -212,10 +212,7 @@ class UserCrudProjector extends Projector
     /**
      * Create UserDetails based on values passed in $data
      *
-     * @param User $user
-     * @param array $data
-     * @param UserTypesEnum $user_type
-     * @param bool $is_updating
+     * @param array<string, mixed> $data
      */
     protected function setUserDetails(
         User &$user,

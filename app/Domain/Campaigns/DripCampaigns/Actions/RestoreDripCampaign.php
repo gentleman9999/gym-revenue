@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
@@ -15,7 +17,7 @@ class RestoreDripCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'drip-campaign:restore {id}';
+    public string $commandSignature   = 'drip-campaign:restore {id}';
     public string $commandDescription = 'Restores the audience';
 
     public function handle(DripCampaign $dripCampaign): DripCampaign

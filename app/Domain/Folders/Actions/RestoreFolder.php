@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Folders\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Aggregates\Clients\FolderAggregate;
 use App\Models\Folder;
 use Illuminate\Support\Facades\Redirect;
@@ -12,7 +13,11 @@ use Prologue\Alerts\Facades\Alert;
 
 class RestoreFolder extends GymRevAction
 {
-    public function handle($data)
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
+    public function handle(array $data): Folder
     {
         $id = $data['id'];
         Folder::withTrashed()->findOrFail($id)->restore();
@@ -22,7 +27,12 @@ class RestoreFolder extends GymRevAction
         return $folder;
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array<string, mixed>>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args];
     }
@@ -36,13 +46,13 @@ class RestoreFolder extends GymRevAction
 
     public function asController(ActionRequest $request, $id)
     {
-        $user = $request->user();
+        $user    = $request->user();
         $user_id = $user->id ?? null;
-        $data = [
+        $data    = [
             'id' => $id,
             'user_id' => $user_id,
         ];
-        $folder = $this->handle(
+        $folder  = $this->handle(
             $data
         );
         Alert::success("File '{$folder->filename}' was restore back")->flash();

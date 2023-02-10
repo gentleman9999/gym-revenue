@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns;
 
 use App\Domain\Campaigns\Events\CallOutcomeCreated;
@@ -22,8 +24,6 @@ class CallOutcomeReactor extends Reactor
      * Fires off a PublishCallOutcome or UnpublishCallOutcome action
      * if necessary.
      * @param CallOutcome $CallOutcome
-     * @param CallOutcomeCreated|CallOutcomeUpdated $event
-     * @return void
      */
     protected function maybePublishOrUnpublish(CallOutcome $callOutcome, CallOutcomeCreated|CallOutcomeUpdated $event): void
     {

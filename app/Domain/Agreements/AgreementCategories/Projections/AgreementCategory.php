@@ -16,18 +16,19 @@ class AgreementCategory extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    public const NAME_MEMBERSHIP = 'Membership';
+    public const NAME_MEMBERSHIP        = 'Membership';
     public const NAME_PERSONAL_TRAINING = 'Personal Training';
 
+    /** @var array<string>  */
     protected $fillable = ['client_id', 'name'];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
 
     public function client(): HasOne
     {
         return $this->hasOne(Client::class, 'id', 'client_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

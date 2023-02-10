@@ -24,7 +24,7 @@ use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class EngagementEventsReactor extends Reactor
 {
-    public function saveMetaData(array $metaData)
+    public function saveMetaData(array $metaData): void
     {
         $payload = [
             'id' => Uuid::new(),

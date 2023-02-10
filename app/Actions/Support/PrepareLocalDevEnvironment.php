@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Support;
 
 use Illuminate\Console\Command;
@@ -9,10 +11,10 @@ class PrepareLocalDevEnvironment
 {
     use asAction;
 
-    public string $commandSignature = 'prepare:local-dev-env';
+    public string $commandSignature   = 'prepare:local-dev-env';
     public string $commandDescription = 'Run scripts to prepare local dev environment';
 
-    public function asCommand(Command $command)
+    public function asCommand(Command $command): void
     {
         $env = getenv('APP_ENV');
         //exit early if not local

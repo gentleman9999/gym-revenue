@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\CallScriptTemplates\Actions;
 
 use App\Domain\Templates\CallScriptTemplates\CallScriptTemplateAggregate;
@@ -22,6 +24,9 @@ class DeleteCallScriptTemplate
         return $callscriptTemplate;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

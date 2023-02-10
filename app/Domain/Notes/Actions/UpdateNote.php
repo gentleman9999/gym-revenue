@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notes\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -18,7 +20,7 @@ class UpdateNote
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => ['string', 'required'],
@@ -38,11 +40,6 @@ class UpdateNote
         return Note::find($data['id']);
     }
 
-    public function __invoke($_, array $args): Note
-    {
-        return $this->handle($args);
-    }
-
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
@@ -52,14 +49,24 @@ class UpdateNote
 
     public function asController(ActionRequest $request, $id)
     {
-        $data = $request->validated();
+        $data       = $request->validated();
         $data['id'] = $id;
-        $note = $this->handle(
+        $note       = $this->handle(
             $data,
         );
 
         Alert::success("Note '{$note->title}' was updated")->flash();
 
         return Redirect::route('notes.edit', $id);
+    }
+
+    /**
+     * @param       $_
+     * @param array<string, mixed> $args
+     *
+     */
+    public function __invoke($_, array $args): Note
+    {
+        return $this->handle($args);
     }
 }

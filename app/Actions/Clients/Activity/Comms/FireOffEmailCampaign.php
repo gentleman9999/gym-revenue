@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -19,14 +21,14 @@ class FireOffEmailCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'email-campaigns:fire {email_campaign_id}';
+    public string $commandSignature   = 'email-campaigns:fire {email_campaign_id}';
     public string $commandDescription = 'Fires off the emails for a given email_campaign_id.';
 
     private int $batchSize = 100;//MAX IS 1000
 
-    public function handle(string $email_campaign_id)
+    public function handle(string $email_campaign_id): void
     {
-        $gateway = null;
+        $gateway  = null;
         $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])
             ->findOrFail($email_campaign_id);
         foreach ($campaign->assigned_template as $assigned_template) {
@@ -47,8 +49,8 @@ class FireOffEmailCampaign
         }
 
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);
-        $recipients = [];
-        $sent_to = [];
+        $recipients  = [];
+        $sent_to     = [];
         foreach ($audience_members as $audience_member_breakdown) {
             foreach ($audience_member_breakdown as $audience_member) {
                 $entity = null;
@@ -63,7 +65,7 @@ class FireOffEmailCampaign
                 }
                 if ($entity) {
                     $recipients[$entity->email] = ['email' => $entity->email, 'name' => $entity->name];
-                    $sent_to[] = [
+                    $sent_to[]                  = [
                         'entity_type' => $audience_member->entity_type,
                         'entity_id' => $audience_member->entity_id,
                         'email' => $entity->email,
@@ -73,7 +75,7 @@ class FireOffEmailCampaign
             }
         }
         $sent_to_chunks = array_chunk($sent_to, $this->batchSize);
-        $idx = 0;
+        $idx            = 0;
         foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
             if (! AppState::isSimuationMode()) {
                 $client_aggy->emailSent($email_campaign_id, $sent_to_chunks[$idx], Carbon::now(), true)->persist();

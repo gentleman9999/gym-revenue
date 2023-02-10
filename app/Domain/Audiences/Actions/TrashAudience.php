@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Audiences\Actions;
 
 use App\Domain\Audiences\Audience;
@@ -12,7 +14,7 @@ class TrashAudience
 {
     use AsAction;
 
-    public string $commandSignature = 'audience:trash {id}';
+    public string $commandSignature   = 'audience:trash {id}';
     public string $commandDescription = 'Soft deletes the audience';
 
     public function handle(Audience $audience): Audience

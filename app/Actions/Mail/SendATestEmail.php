@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Mail;
 
 use App\Aggregates\Users\UserAggregate;
@@ -14,11 +16,6 @@ class SendATestEmail
         __invoke as protected invokeFromLaravelActions;
     }
 
-    public function __invoke()
-    {
-        // ...
-    }
-
     public function rules(): array
     {
         return [
@@ -30,20 +27,20 @@ class SendATestEmail
     {
         $results = false;
 
-        $data = request()->all();
-        $user = request()->user();
+        $data         = request()->all();
+        $user         = request()->user();
         $email_detail = $user->email;
 
         // Get the user and check if there is an email or fail with string
-        if (! is_null($email_detail)) {
+        if ($email_detail !== null) {
             // Get the sms template from sms templates or fail with string
             $email_template_record = EmailTemplate::find($data['templateId']);
 
-            if (! is_null($email_template_record)) {
+            if ($email_template_record !== null) {
                 $current_team_id = CurrentInfoRetriever::getCurrentTeamID();
 
                 $client_id = null;
-                if (! is_null($current_team_id)) {
+                if ($current_team_id !== null) {
                     $client = Client::whereJsonContains('details->teams', $current_team_id)->first();
 
                     $client_id = $client->id ?? null;
@@ -70,16 +67,16 @@ class SendATestEmail
     public function jsonResponse($result)
     {
         $results = ['success' => false, 'message' => 'Server Error. Message not sent'];
-        $code = 500;
+        $code    = 500;
 
         if ($result) {
             if (is_string($result)) {
                 $results['message'] = $result;
-                $code = 401;
+                $code               = 401;
             } else {
                 $results['success'] = true;
                 $results['message'] = 'Success';
-                $code = 200;
+                $code               = 200;
             }
         }
 

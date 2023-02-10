@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients;
 
 use App\Domain\Clients\Events\ClientLogoUploaded;
@@ -11,7 +13,7 @@ class ClientConfigurationReactor extends Reactor
 {
     public function onLogoUploaded(ClientLogoUploaded $event): void
     {
-        $data = $event->payload;
+        $data  = $event->payload;
         $model = Client::find($data['client_id']);
 
         \App\Actions\Clients\Files\CreateFile::run($data, $model, User::find($event->userId()));

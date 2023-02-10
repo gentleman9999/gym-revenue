@@ -11,5 +11,6 @@ class Nickname extends Model
 {
     use HasFactory;
 
+    /** @var array<string> */
     protected $fillable = ['id', 'name', 'nickname'];
 }

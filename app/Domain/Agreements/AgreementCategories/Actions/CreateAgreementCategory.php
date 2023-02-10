@@ -24,7 +24,7 @@ class CreateAgreementCategory
     public function handle(array $data): AgreementCategory
     {
         $id = Uuid::new();
-        AgreementCategoryAggregate::retrieve((string)$id)->create($data)->persist();
+        AgreementCategoryAggregate::retrieve((string) $id)->create($data)->persist();
 
 
         return AgreementCategory::findOrFail($id);

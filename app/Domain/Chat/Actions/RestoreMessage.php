@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Chat\Actions;
 
 use App\Domain\Chat\Aggregates\ChatMessageAggregate;
@@ -23,6 +25,9 @@ class RestoreMessage
         return $chat->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

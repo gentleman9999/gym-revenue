@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Actions\GymRevAction;
@@ -24,12 +26,9 @@ use Prologue\Alerts\Facades\Alert;
 
 class CreateUser extends GymRevAction implements CreatesNewUsers
 {
-    protected $command;
-
     /**
      * The name and signature of the console command.
      *
-     * @var string
      */
     public string $commandSignature = 'user:create
                             {--firstname= : the first name of the user}
@@ -44,17 +43,22 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
     /**
      * The console command description.
      *
-     * @var string
      */
     public string $commandDescription = 'Create a new user via the CLI.';
 
+    protected Command $command;
+
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): User
     {
-        $payload['user_type'] ??= UserTypesEnum::LEAD;
+        $payload['user_type']          ??= UserTypesEnum::LEAD;
         $payload['unsubscribed_email'] ??= false;
-        $payload['unsubscribed_sms'] ??= false;
-        $payload['is_previous'] ??= false;
-        $payload['client_id'] ??= CurrentInfoRetriever::getCurrentClientID();
+        $payload['unsubscribed_sms']   ??= false;
+        $payload['is_previous']        ??= false;
+        $payload['client_id']          ??= CurrentInfoRetriever::getCurrentClientID();
 
         if (isset($payload['password'])) {
             $payload['password'] = Hash::make($payload['password']);
@@ -63,7 +67,7 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
             unset($payload['password_hashed']);
         }
 
-        $id = Uuid::new();
+        $id = Uuid::get();
         UserAggregate::retrieve($id)->create($payload)->persist();
         $created_user = User::findOrFail($id);
 
@@ -86,7 +90,12 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
         return $created_user;
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['input']];
     }
@@ -183,9 +192,9 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
     public function asCommand(Command $command): void
     {
         $this->command = $command;
-        $payload = $this->constructPayloadForRunningCommand();
-        $role = $payload['rold_id'] ?? 'enduser';
-        $user_type = $this->getUserTypeFromPayload(null, $payload)->value;
+        $payload       = $this->constructPayloadForRunningCommand();
+        $role          = $payload['rold_id'] ?? 'enduser';
+        $user_type     = $this->getUserTypeFromPayload(null, $payload)->value;
 
         $this->command->warn("Creating new {$role} {$payload['first_name']}
             @{$payload['email']} for client_id {$payload['client_id']} as {$user_type}");
@@ -193,173 +202,12 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
     }
 
     /**
-     * Constructs an assoc array to be used as the payload
-     * when creating user using artisan command
-     *
-     * @return array $payload
-     */
-    private function constructPayloadForRunningCommand(): array
-    {
-        $payload = ['password' => 'Hello123!'];
-        $payload['first_name'] = $this->getFirstname();
-        $payload['client_id'] = $this->getClient($payload['first_name']);
-        $payload['email'] = $this->getEmail($payload['first_name']);
-        $payload['last_name'] = $this->getLastname();
-        $payload['home_club'] = $this->getHomeLocation($payload['first_name'], $payload['client_id']);
-        $payload['user_type'] = $this->getUserType();
-
-        if ($payload['user_type'] === UserTypesEnum::EMPLOYEE) {
-            $payload['role_id'] = $this->getRole($payload['first_name'], $payload['client_id']);
-            $payload['team_id'] = $this->getUserTeamID($payload['client_id']);
-        }
-
-        return $payload;
-    }
-
-    private function getFirstname(): string
-    {
-        $name = $this->command->option('firstname');
-        if (is_null($name)) {
-            $name = $this->command->ask('Enter the user\'s first name');
-        }
-
-        return $name;
-    }
-
-    private function getLastname(): string
-    {
-        $name = $this->command->option('lastname');
-        if (is_null($name)) {
-            $name = $this->command->ask('Enter the user\'s last name');
-        }
-
-        return $name;
-    }
-
-    private function getEmail(string $user_name): string
-    {
-        $email = $this->command->option('email');
-        if (is_null($email)) {
-            $email = $this->command->ask("Enter the {$user_name}'s Email Address");
-        }
-
-        return $email;
-    }
-
-    private function getClient(string $user_name): ?string
-    {
-        $client_id = $this->command->option('client');
-
-        if (! is_null($client_id)) {
-            if ($client_id === "0") {
-                return null;
-            } else {
-                $client_model = Client::find($client_id);
-                if (! is_null($client_model)) {
-                    return $client_model->id;
-                } else {
-                    $this->command->error('Invalid Client. Pick one.');
-                    sleep(2);
-                }
-            }
-        }
-
-        $clients = ['Cape & Bay'];
-        $client_ids = [];
-        $db_clients = Client::whereActive(1)->get();
-
-        foreach ($db_clients as $idx => $client) {
-            $clients[$idx + 1] = $client->name;
-            $client_ids[$idx + 1] = $client->id;
-        }
-
-        $this->command->info('Associate an Account with this user.');
-        foreach ($clients as $idx => $name) {
-            $this->command->warn("[{$idx}] {$name}");
-        }
-        $client_choice = $this->command->ask("Which client to associate {$user_name} with?");
-
-        if ($client_choice > 0) {
-            $client_id = $client_ids[$client_choice];
-            $this->command->info($clients[$client_choice]);
-        } else {
-            $this->command->info('Selected Cape & Bay');
-        }
-
-        return $client_id;
-    }
-
-    private function getRole(string $user_name, string $client_choice = null): Role
-    {
-        $selected_role = $this->command->option('role');
-
-        if (is_null($selected_role)) {
-            $roles = Role::whereScope($client_choice)->get()->pluck('name')->toArray();
-
-            foreach ($roles as $idx => $role) {
-                $this->command->warn("[{$idx}] {$role}");
-            }
-            $role_choice = $this->command->ask("Which Role should {$user_name} be assigned?");
-            $selected_role = Role::whereScope($client_choice)->whereName($roles[$role_choice])->first()->id;
-        }
-
-        return $selected_role;
-    }
-
-    private function getHomeLocation(string $user_name, string $client_choice = null)
-    {
-        $selected_home_location = $this->command->option('homeclub');
-
-        if (is_null($selected_home_location) && $client_choice) {
-            $all_locations = Location::get(['name', 'gymrevenue_id']);
-            $locations = $all_locations->pluck('name')->toArray();
-
-            $location_choice = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);
-            $selected_home_location = $all_locations->keyBy('name')[$location_choice]->gymrevenue_id;
-        }
-
-        return $selected_home_location;
-    }
-
-    private function getUserType(): string
-    {
-        $types = array_column(UserTypesEnum::cases(), 'value');
-        $user_type = $this->command->option('type');
-        if (! in_array($user_type, $types)) {
-            return UserTypesEnum::EMPLOYEE;
-        }
-
-        return $user_type;
-    }
-
-    /**
-     * Get the client's default-team name in client_details
-     * and use that to find the team record in teams to
-     * get its ID, otherwise return capeandbay team
-     *
-     * @param string $client
-     *
-     * @return string $team_id
-     */
-    private function getUserTeamID(string $client): string
-    {
-        if ($client) {
-            $client_model = Client::whereId($client)->first();
-
-            return Team::find($client_model->home_team_id)->id;
-        }
-
-        return 1;
-    }
-
-    /**
      * Create a newly registered user  (fortify contract).
      *
-     * @param array $input
+     * @param array<string, mixed> $input
      *
-     * @return User
      */
-    public function create(array $input)
+    public function create(array $input): User
     {
         return $this->handle($input);
     }
@@ -381,6 +229,165 @@ class CreateUser extends GymRevAction implements CreatesNewUsers
         }
 
         return in_array($user_type, UserTypesEnum::cases()) ? $user_type : UserTypesEnum::LEAD;
+    }
+
+    /**
+     * Constructs an assoc array to be used as the payload
+     * when creating user using artisan command
+     *
+     * @return array $payload
+     */
+    private function constructPayloadForRunningCommand(): array
+    {
+        $payload               = ['password' => 'Hello123!'];
+        $payload['first_name'] = $this->getFirstname();
+        $payload['client_id']  = $this->getClient($payload['first_name']);
+        $payload['email']      = $this->getEmail($payload['first_name']);
+        $payload['last_name']  = $this->getLastname();
+        $payload['home_club']  = $this->getHomeLocation($payload['first_name'], $payload['client_id']);
+        $payload['user_type']  = $this->getUserType();
+
+        if ($payload['user_type'] === UserTypesEnum::EMPLOYEE) {
+            $payload['role_id'] = $this->getRole($payload['first_name'], $payload['client_id']);
+            $payload['team_id'] = $this->getUserTeamID($payload['client_id']);
+        }
+
+        return $payload;
+    }
+
+    private function getFirstname(): string
+    {
+        $name = $this->command->option('firstname');
+        if ($name === null) {
+            $name = $this->command->ask('Enter the user\'s first name');
+        }
+
+        return $name;
+    }
+
+    private function getLastname(): string
+    {
+        $name = $this->command->option('lastname');
+        if ($name === null) {
+            $name = $this->command->ask('Enter the user\'s last name');
+        }
+
+        return $name;
+    }
+
+    private function getEmail(string $user_name): string
+    {
+        $email = $this->command->option('email');
+        if ($email === null) {
+            $email = $this->command->ask("Enter the {$user_name}'s Email Address");
+        }
+
+        return $email;
+    }
+
+    private function getClient(string $user_name): ?string
+    {
+        $client_id = $this->command->option('client');
+
+        if ($client_id !== null) {
+            if ($client_id === "0") {
+                return null;
+            } else {
+                $client_model = Client::find($client_id);
+                if ($client_model !== null) {
+                    return $client_model->id;
+                } else {
+                    $this->command->error('Invalid Client. Pick one.');
+                    sleep(2);
+                }
+            }
+        }
+
+        $clients    = ['Cape & Bay'];
+        $client_ids = [];
+        $db_clients = Client::whereActive(1)->get();
+
+        foreach ($db_clients as $idx => $client) {
+            $clients[$idx + 1]    = $client->name;
+            $client_ids[$idx + 1] = $client->id;
+        }
+
+        $this->command->info('Associate an Account with this user.');
+        foreach ($clients as $idx => $name) {
+            $this->command->warn("[{$idx}] {$name}");
+        }
+        $client_choice = $this->command->ask("Which client to associate {$user_name} with?");
+
+        if ($client_choice > 0) {
+            $client_id = $client_ids[$client_choice];
+            $this->command->info($clients[$client_choice]);
+        } else {
+            $this->command->info('Selected Cape & Bay');
+        }
+
+        return $client_id;
+    }
+
+    private function getRole(string $user_name, ?string $client_choice = null): Role
+    {
+        $selected_role = $this->command->option('role');
+
+        if ($selected_role === null) {
+            $roles = Role::whereScope($client_choice)->get()->pluck('name')->toArray();
+
+            foreach ($roles as $idx => $role) {
+                $this->command->warn("[{$idx}] {$role}");
+            }
+            $role_choice   = $this->command->ask("Which Role should {$user_name} be assigned?");
+            $selected_role = Role::whereScope($client_choice)->whereName($roles[$role_choice])->first()->id;
+        }
+
+        return $selected_role;
+    }
+
+    private function getHomeLocation(string $user_name, ?string $client_choice = null)
+    {
+        $selected_home_location = $this->command->option('homeclub');
+
+        if ($selected_home_location === null && $client_choice) {
+            $all_locations = Location::get(['name', 'gymrevenue_id']);
+            $locations     = $all_locations->pluck('name')->toArray();
+
+            $location_choice        = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);
+            $selected_home_location = $all_locations->keyBy('name')[$location_choice]->gymrevenue_id;
+        }
+
+        return $selected_home_location;
+    }
+
+    private function getUserType(): string
+    {
+        $types     = array_column(UserTypesEnum::cases(), 'value');
+        $user_type = $this->command->option('type');
+        if (! in_array($user_type, $types)) {
+            return UserTypesEnum::EMPLOYEE;
+        }
+
+        return $user_type;
+    }
+
+    /**
+     * Get the client's default-team name in client_details
+     * and use that to find the team record in teams to
+     * get its ID, otherwise return capeandbay team
+     *
+     *
+     * @return string $team_id
+     */
+    private function getUserTeamID(string $client): string
+    {
+        if ($client) {
+            $client_model = Client::whereId($client)->first();
+
+            return Team::find($client_model->home_team_id)->id;
+        }
+
+        return 1;
     }
 
     // public function getValidationAttributes(): array

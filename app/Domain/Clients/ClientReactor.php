@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients;
 
 use App\Domain\Agreements\AgreementCategories\Actions\CreateAgreementCategory;
@@ -19,7 +21,7 @@ class ClientReactor extends Reactor
 
         $default_team_name = $client->name . ' Home Office';
 
-        $default_team = CreateTeam::run([
+        $default_team         = CreateTeam::run([
             'client_id' => $client->id,
             'name' => $default_team_name,
             'home_team' => true,
@@ -42,7 +44,7 @@ class ClientReactor extends Reactor
         ]);
 
         CreateAgreementCategory::run([
-            'client_id' => (string)$client->id,
+            'client_id' => (string) $client->id,
             'name' => AgreementCategory::NAME_MEMBERSHIP,
         ]);
 

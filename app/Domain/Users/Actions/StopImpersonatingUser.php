@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -7,13 +9,11 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
-
-use function auth;
-use function config;
-
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
+use function auth;
+use function config;
 use function redirect;
 use function response;
 use function session;
@@ -24,17 +24,12 @@ class StopImpersonatingUser
         __invoke as protected invokeFromLaravelActions;
     }
 
-    public function __invoke()
-    {
-        // ...
-    }
-
     public function handle(): bool
     {
         $results = false;
 
         if (session()->has(config('laravel-impersonate.session_key'))) {
-            $coward = User::withoutGlobalScopes()->findOrFail(session()->get(config('laravel-impersonate.session_key')));
+            $coward    = User::withoutGlobalScopes()->findOrFail(session()->get(config('laravel-impersonate.session_key')));
             $coward_id = $coward->id;
             $liberated = auth()->user();
 
@@ -51,7 +46,7 @@ class StopImpersonatingUser
                 ]
             );
             session()->put('client_id', $team->client_id);
-            session()->put('user_id',  $coward->id);
+            session()->put('user_id', $coward->id);
             auth()->user()->leaveImpersonation();
             $results = true;
 
@@ -61,7 +56,7 @@ class StopImpersonatingUser
             UserAggregate::retrieve($liberated->id)->deactivatePossessionMode($coward_id)->persist();
 
             // rat on this user to the paying customer - the client (aggy)
-            if (! is_null($liberated->client->id ?? null)) {
+            if ($liberated->client->id ?? null !== null) {
                 ClientAggregate::retrieve($liberated->client_id)
                     ->logImpersonationModeDeactivation($liberated->id, $coward_id)->persist();
             }
@@ -73,11 +68,11 @@ class StopImpersonatingUser
     public function jsonResponse($result)
     {
         $results = false;
-        $code = 500;
+        $code    = 500;
 
         if ($result) {
             $results = true;
-            $code = 200;
+            $code    = 200;
         }
 
         return response($results, $code);

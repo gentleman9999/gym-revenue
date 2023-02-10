@@ -25,8 +25,8 @@ class FireTestEmailMessage implements CreatesTeams
     public function handle(string $template_id, User $user): bool
     {
         $message = EmailTemplate::find($template_id)->parseMarkup(['user' => $user]);
-        $mail = MailgunSend::run([$user], 'Test Message', $message);
-        $id = (string) Uuid::new();
+        $mail    = MailgunSend::run([$user], 'Test Message', $message);
+        $id      = (string) Uuid::new();
         $gateway = GatewayProvider::whereName('Mailgun')->first();
 
         $payload = [

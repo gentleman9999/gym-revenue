@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Positions\Actions;
 
 use App\Actions\GymRevAction;
@@ -25,7 +27,12 @@ class UpdatePosition extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<Position|null, string>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         $position = $args['input'];
 

@@ -11,10 +11,6 @@ class ObfuscatedUsers extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model
-     *
-     * @var string
-     */
+    /** @var string  */
     protected $table = 'obfuscated_users';
 }

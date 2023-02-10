@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Folders\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Folder;
@@ -35,11 +36,19 @@ class UpdateFolder extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array<string, mixed>>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

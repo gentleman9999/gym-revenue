@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\LocationEmployees\Projections;
 
 use App\Models\GymRevProjection;
@@ -20,8 +22,14 @@ class LocationEmployee extends GymRevProjection
     use SoftDeletes;
     use Sortable;
 
+    /** @var array<string> */
     protected $fillable = [
-        'client_id', 'location_id', 'department_id', 'position_id', 'user_id', 'primary_supervisor_user_id',
+        'client_id',
+        'location_id',
+        'department_id',
+        'position_id',
+        'user_id',
+        'primary_supervisor_user_id',
     ];
 
     protected static function booted(): void
@@ -32,7 +40,6 @@ class LocationEmployee extends GymRevProjection
     /**
      * Create a new factory instance for the model.
      *
-     * @return Factory
      */
     protected static function newFactory(): Factory
     {

@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Files\Actions;
 
 use App\Actions\GymRevAction;
 use App\Aggregates\Clients\FileAggregate;
 use App\Domain\Users\Models\User;
 use App\Models\File;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
@@ -15,9 +18,9 @@ class CreateFile extends GymRevAction
     /**
      * Get the validation rules that apply to the action.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'id' => 'uuid|required',
@@ -35,7 +38,6 @@ class CreateFile extends GymRevAction
         ];
     }
 
-//    TODO: remove $user from params, you can pull it from $event->userId() in projector/reactor
     public function handle($data, $model, ?User $user = null): File
     {
         FileAggregate::retrieve($data['id'])->create($model, (string) $user?->id, $data)->persist();
@@ -43,27 +45,33 @@ class CreateFile extends GymRevAction
         return File::findOrFail($data['id']);
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array<string, mixed>>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args];
     }
 
     public function authorize(ActionRequest $request): bool
     {
-        $current_user = $request->user();
-
-        return $current_user->can('files.create', File::class);
+        return $request->user()->can('files.create', File::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): File
     {
-        $file = $this->handle(
-            $request->validated(),
-        );
+        return $this->handle($request->validated(), $request->user());
+    }
 
+    /**
+     *
+     */
+    public function htmlResponse(File $file): RedirectResponse
+    {
         Alert::success("File '{$file->filename}' was created")->flash();
 
-//        return Redirect::route('files');
         return Redirect::back();
     }
 }

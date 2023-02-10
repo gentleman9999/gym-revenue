@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\LeadTypes;
 
 use App\Models\GymRevProjection;
@@ -12,10 +14,11 @@ class LeadType extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
+    /** @var array<string>  */
+    protected $fillable = ['name'];
+
     protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
     }
-
-    protected $fillable = ['name'];
 }

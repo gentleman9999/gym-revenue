@@ -15,8 +15,8 @@ class EntrySourceCategoriesProjector extends Projector
 {
     public function onEntrySourceCategoryCreated(EntrySourceCategoryCreated $event): void
     {
-        $entry_source = (new EntrySourceCategory())->writeable();
-        $entry_source->id = $event->aggregateRootUuid();
+        $entry_source            = (new EntrySourceCategory())->writeable();
+        $entry_source->id        = $event->aggregateRootUuid();
         $entry_source->client_id = $event->payload['client_id'];
         $entry_source->fill($event->payload);
         $entry_source->save();

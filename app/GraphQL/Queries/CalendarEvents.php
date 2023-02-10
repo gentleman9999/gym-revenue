@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\GraphQL\Queries;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -7,6 +9,7 @@ use App\Domain\Reminders\Reminder;
 use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 //TODO: remove this in favor of a standard db query
 //TODO: 1.) stop separating the attendees into different arrays, instead do that clientside by filtering on attendeee type
@@ -14,10 +17,10 @@ use App\Domain\Users\Models\User;
 final class CalendarEvents
 {
     /**
-     * @param  null  $_
-     * @param  array{}  $args
+     * @param null                 $_
+     * @param array<string, mixed> $args
      */
-    public function __invoke($_, array $args)
+    public function __invoke($_, array $args): Collection
     {
         // TODO implement the resolver
         $client_id = request()->user()->client_id;
@@ -30,7 +33,7 @@ final class CalendarEvents
 
         $events = CalendarEvent::whereClientId($client_id)
             ->with('type', 'attendees', 'files')
-            ->when($arg_param_exists,  function ($query) use ($args) {
+            ->when($arg_param_exists, function ($query) use ($args): void {
                 $query->filter($args['param']);
             })
             ->get();
@@ -51,14 +54,15 @@ final class CalendarEvents
                             $events[$key]['im_attending'] = true;
                         }
                         $user_attendees[] = [
-                            'id' => (int)$attendee->entity_id,
+                            'id' => $attendee->entity_id,
                             'reminder' => Reminder::whereEntityType(CalendarEvent::class)
-                                ->whereEntityId($event['id'])
-                                ->whereUserId($attendee->entity_id)
-                                ->first() ?? null,
+                                    ->whereEntityId($event['id'])
+                                    ->whereUserId($attendee->entity_id)
+                                    ->first() ?? null,
                         ];
                     }
 
+                    $call_outcome = null;
                     if ($attendee->entity_type == Lead::class) {
                         $lead_attendees[]['id'] = $attendee->entity_id;
                         //TODO: Create Projection Table for User Communication History

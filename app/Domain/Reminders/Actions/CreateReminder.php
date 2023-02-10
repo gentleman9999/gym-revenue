@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
@@ -33,12 +35,12 @@ class CreateReminder
 
     public function handle($data, $current_user = null): Reminder
     {
-        if (! is_null($current_user)) {
-            $client_id = $current_user->client_id;
+        if ($current_user !== null) {
+            $client_id         = $current_user->client_id;
             $data['client_id'] = $client_id;
         }
 
-        $id = Uuid::new();
+        $id         = Uuid::new();
         $data['id'] = $id;
 
         UserAggregate::retrieve($data['user_id'])->createReminder($data)->persist();
@@ -46,6 +48,9 @@ class CreateReminder
         return Reminder::findOrFail($id);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

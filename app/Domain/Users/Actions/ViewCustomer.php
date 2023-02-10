@@ -19,9 +19,9 @@ class ViewCustomer
     public function handle(EndUser $end_user, string $user_id): array
     {
         $gr_location_id = Customer::whereId($end_user->id)->pluck('home_location_id')[0];
-        $locid = Location::where('gymrevenue_id', $gr_location_id)->first();
-        $preview_note = Note::select('note')->whereEntityId($end_user->id)->get();
-        $aggy = UserAggregate::retrieve($end_user->id);
+        $locid          = Location::where('gymrevenue_id', $gr_location_id)->first();
+        $preview_note   = Note::select('note')->whereEntityId($end_user->id)->get();
+        $aggy           = UserAggregate::retrieve($end_user->id);
 
         return [
             'customer' => $end_user,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents;
 
 //WARNING: YOU CANNOT CHANGE THE SHAPE OF STORED EVENTS ONCE THE APP

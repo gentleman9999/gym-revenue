@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notification;
 class GymRevNotification extends Notification implements ShouldBroadcast
 {
     use Queueable;
+
     public readonly array $notification_data;
 
     /**
@@ -30,7 +31,6 @@ class GymRevNotification extends Notification implements ShouldBroadcast
     /**
      * Get the notification's delivery channels.
      *
-     * @param object $_
      *
      * @return array
      */
@@ -43,9 +43,7 @@ class GymRevNotification extends Notification implements ShouldBroadcast
     /**
      * Get the mail representation of the notification.
      *
-     * @param object $_
      *
-     * @return MailMessage
      */
     public function toMail(object $_): MailMessage
     {
@@ -56,9 +54,7 @@ class GymRevNotification extends Notification implements ShouldBroadcast
     }
 
     /**
-     * @param object $_
      *
-     * @return BroadcastMessage
      */
     public function toBroadcast(object $_): BroadcastMessage
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents\Clients\UTM;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
@@ -12,8 +14,8 @@ class UtmTemplateCreated extends ShouldBeStored
 
     public function __construct(string $client, array $payload, string $user)
     {
-        $this->client = $client;
+        $this->client  = $client;
         $this->payload = $payload;
-        $this->user = $user;
+        $this->user    = $user;
     }
 }

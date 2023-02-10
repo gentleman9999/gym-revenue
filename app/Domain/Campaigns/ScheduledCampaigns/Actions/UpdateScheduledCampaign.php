@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
 use App\Actions\GymRevAction;
@@ -40,7 +42,12 @@ class UpdateScheduledCampaign extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         $scheduledCampaign = $args['campaign'];
 

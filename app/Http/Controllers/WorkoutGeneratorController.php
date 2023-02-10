@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use Inertia\Response;
 
 class WorkoutGeneratorController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         $args = [
             'core' => $this->getCoreValues(),
@@ -17,6 +20,18 @@ class WorkoutGeneratorController extends Controller
         return Inertia::render('Extras/WorkoutGenerator', $args);
     }
 
+    /**
+     *
+     * @return array<string>
+     */
+    public function getCSV(string $csv): array
+    {
+        return str_getcsv($csv);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     private function getCoreValues(): array
     {
         $results = [
@@ -89,7 +104,7 @@ Cable Leaning Towers,Core,True,False,
 Prone Heel Touches,Core,True,False"));
 
         $count = 0;
-        foreach ($str as $idx => $val) {
+        foreach ($str as $val) {
             switch ($count) {
                 case 1:
                     $results['Muscle Group'][] = $val;
@@ -118,6 +133,9 @@ Prone Heel Touches,Core,True,False"));
         return $results;
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     private function getLowerValues(): array
     {
         $results = [
@@ -132,6 +150,7 @@ Prone Heel Touches,Core,True,False"));
             'TRX' => [],
         ];
 
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $str = $this->getCSV(str_replace("\n", "", "BB Deadlift,Hamstrings,Pull,True,False,True,False,False,False,
 DB Deadlift,Hamstrings,Pull,True,False,False,False,True,False,
 KB Deadlift,Hamstrings,Pull,True,False,False,True,False,False,
@@ -219,48 +238,32 @@ Single Legged Hip Thrusts,Hips,Push,False,False,False,False,False,False,
 Skiers,Hamstrings,Both,False,True,False,False,False,False"));
 
         $count = 0;
-        foreach ($str as $idx => $val) {
+        foreach ($str as $val) {
             switch ($count) {
                 case 1:
                     $results['Muscle Group'][] = $val;
-
                     break;
-
                 case 2:
                     $results['Direction'][] = $val;
-
                     break;
-
                 case 3:
                     $results['Major Lift'][] = $val;
-
                     break;
-
                 case 4:
                     $results['Body or Band'][] = $val;
-
                     break;
-
                 case 5:
                     $results['BB'][] = $val;
-
                     break;
-
                 case 6:
                     $results['KB'][] = $val;
-
                     break;
-
                 case 7:
                     $results['DB'][] = $val;
-
                     break;
-
                 case 8:
                     $results['TRX'][] = $val;
-
                     break;
-
                 default:
                     $results['Exercise'][] = $val;
             }
@@ -274,6 +277,9 @@ Skiers,Hamstrings,Both,False,True,False,False,False,False"));
         return $results;
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     private function getUpperValues(): array
     {
         $results = [
@@ -288,6 +294,7 @@ Skiers,Hamstrings,Both,False,True,False,False,False,False"));
             'TRX' => [],
         ];
 
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $str = $this->getCSV(str_replace("\n", "", "KB Standing Close Grip Chest Press,Chest,Push,True,False,False,True,False,False,
 DB Chest Press,Chest,Push,True,False,False,False,True,False,
 DB Incline Chest press,Chest,Push,True,False,False,False,True,False,
@@ -411,51 +418,36 @@ Landmine Pull and Press,Back,Pull,True,False,False,False,False,False,
 Landmine Single Arm Row,Back,Pull,True,False,False,False,False,False"));
 
         $count = 0;
-        foreach ($str as $idx => $val) {
+        foreach ($str as $val) {
             switch ($count) {
                 case 1:
                     $results['Muscle Group'][] = $val;
-
                     break;
-
                 case 2:
                     $results['Direction'][] = $val;
-
                     break;
-
                 case 3:
                     $results['Major Lift'][] = $val;
-
                     break;
-
                 case 4:
                     $results['Body or Band'][] = $val;
-
                     break;
-
                 case 5:
                     $results['BB'][] = $val;
-
                     break;
-
                 case 6:
                     $results['KB'][] = $val;
-
                     break;
-
                 case 7:
                     $results['DB'][] = $val;
-
                     break;
-
                 case 8:
                     $results['TRX'][] = $val;
-
                     break;
-
                 default:
                     $results['Exercise'][] = $val;
             }
+
             if ($count == 8) {
                 $count = 0;
             } else {
@@ -464,10 +456,5 @@ Landmine Single Arm Row,Back,Pull,True,False,False,False,False,False"));
         }
 
         return $results;
-    }
-
-    public function getCSV(string $csv)
-    {
-        return str_getcsv($csv);
     }
 }

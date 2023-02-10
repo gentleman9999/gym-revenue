@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\AWS\S3;
 
 use Illuminate\Support\Facades\Cache;
@@ -15,9 +17,8 @@ class GetFilesFromFolder
     /**
      * Determine if the user is authorized to make this action.
      *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -27,7 +28,7 @@ class GetFilesFromFolder
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [];
     }
@@ -37,16 +38,16 @@ class GetFilesFromFolder
         $file_stack = [];
 
         $this->folder = "{$folder}";
-        $folder = $this->folder;
+        $folder       = $this->folder;
 
         //Cache::forget('file-list-'.$this->folder);
 
-        $result_list_objects = Cache::remember('file-list-' . $folder, (60 * 1) * 10, function () use ($folder, $disk) {
+        $result_list_objects = Cache::remember('file-list-' . $folder, 60 * 1 * 10, function () use ($folder, $disk) {
             $storage = Storage::disk($disk);
 //            dd($storage->files($folder));
             $client = $storage->getAdapter()->getClient();
 
-            $command = $client->getCommand('ListObjects');
+            $command           = $client->getCommand('ListObjects');
             $command['Bucket'] = $storage->getAdapter()->getBucket();
             $command['Prefix'] = $folder;
 
@@ -57,7 +58,7 @@ class GetFilesFromFolder
             foreach (($result_list_objects['Contents'] ?? []) as $object_file) {
                 $object_path = $object_file['Key'];
                 if ($object_path != "$folder/") {
-                    $temp = explode('.', $object_path);
+                    $temp      = explode('.', $object_path);
                     $extension = end($temp);
 
                     $object_date = $object_file['LastModified'];

@@ -36,6 +36,10 @@ class CreateEndUserApi extends BaseEndUserAction
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): EndUser
     {
         $id = Uuid::new();

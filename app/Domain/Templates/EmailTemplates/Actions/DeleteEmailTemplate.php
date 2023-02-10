@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\EmailTemplates\Actions;
 
 use App\Domain\Templates\EmailTemplates\EmailTemplateAggregate;
@@ -22,6 +24,9 @@ class DeleteEmailTemplate
         return $emailTemplate;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

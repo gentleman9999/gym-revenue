@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients;
 
 use App\Domain\Clients\Enums\SocialMediaEnum;
@@ -22,7 +24,7 @@ class ClientConfigurationProjector extends Projector
 {
     public function onClientServicesSet(ClientServicesSet $event): void
     {
-        $client = Client::findOrFail($event->aggregateRootUuid())->writeable();
+        $client           = Client::findOrFail($event->aggregateRootUuid())->writeable();
         $client->services = $event->services;
         $client->save();
     }
@@ -34,7 +36,7 @@ class ClientConfigurationProjector extends Projector
         if ($client) {
             $client->client_id = $event->clientId();
         } else {
-            $client = (new ClientCommunicationPreference())->writeable();
+            $client            = (new ClientCommunicationPreference())->writeable();
             $client->client_id = $event->aggregateRootUuid();
         }
 
@@ -53,7 +55,7 @@ class ClientConfigurationProjector extends Projector
             ->whereType('logo')
             ->first();
 
-        if (! is_null($logoToDelete)) {
+        if ($logoToDelete !== null) {
             Storage::disk('s3')->delete($logoToDelete->key);
             $logoToDelete->forceDelete();
         }
@@ -72,8 +74,8 @@ class ClientConfigurationProjector extends Projector
         foreach (SocialMediaEnum::cases() as $socialMediaEnum) {
             if (array_key_exists($socialMediaEnum->name, $payload)) {
                 $social = ClientSocialMedia::whereName($socialMediaEnum->name)->first();
-                if (is_null($social)) {
-                    $social = (new ClientSocialMedia())->writeable();
+                if ($social === null) {
+                    $social            = (new ClientSocialMedia())->writeable();
                     $social->client_id = $event->aggregateRootUuid();
                     $social->fill([
                         'name' => $socialMediaEnum->name,
@@ -92,10 +94,10 @@ class ClientConfigurationProjector extends Projector
     public function onClientGatewaySet(ClientGatewaySet $event): void
     {
         /** @var Client $client */
-        $client = Client::find($event->aggregateRootUuid());
-        $payload = $event->payload;
+        $client         = Client::find($event->aggregateRootUuid());
+        $payload        = $event->payload;
         $known_gateways = [];
-        $settings = [
+        $settings       = [
             ClientGatewaySetting::NAME_MAILGUN_DOMAIN => GatewayProvider::PROVIDER_SLUG_MAILGUN,
             ClientGatewaySetting::NAME_MAILGUN_SECRET => GatewayProvider::PROVIDER_SLUG_MAILGUN,
             ClientGatewaySetting::NAME_MAILGUN_FROM_ADDRESS => GatewayProvider::PROVIDER_SLUG_MAILGUN,

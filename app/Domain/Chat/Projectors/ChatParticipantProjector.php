@@ -13,8 +13,8 @@ class ChatParticipantProjector extends Projector
 {
     public function onChatParticipantCreated(ChatParticipantCreated $event): void
     {
-        $chat_participant = new ChatParticipant();
-        $chat_participant->id = $event->aggregateRootUuid();
+        $chat_participant          = new ChatParticipant();
+        $chat_participant->id      = $event->aggregateRootUuid();
         $chat_participant->chat_id = $event->payload['chat_id'];
         $chat_participant->user_id = $event->payload['user_id'];
         $chat_participant->writeable()->save();

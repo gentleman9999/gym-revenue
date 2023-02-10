@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
@@ -19,7 +21,7 @@ class UpdateReminder
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'entity_type' => ['string', 'required'],
@@ -38,6 +40,9 @@ class UpdateReminder
         return $reminder->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

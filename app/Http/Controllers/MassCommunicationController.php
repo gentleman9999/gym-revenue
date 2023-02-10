@@ -13,8 +13,10 @@ use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Models\Endusers\MembershipType;
 use App\Support\CurrentInfoRetriever;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use ReflectionClass;
 
 //use App\Domain\Campaigns\ScheduledCampaigns\Actions\CreateScheduledCampaign;
@@ -22,15 +24,14 @@ use ReflectionClass;
 
 class MassCommunicationController extends Controller
 {
-    public function index(string $type = 'scheduled')
+    public function index(string $type = 'scheduled'): InertiaResponse|RedirectResponse
     {
-        $client_id = request()->user()->client_id;
+        $client_id = ($user = request()->user())->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
 
-        $user = auth()->user();
-        $team = CurrentInfoRetriever::getCurrentTeam();
+        $team         = CurrentInfoRetriever::getCurrentTeam();
         $campaignType = null;
         if ($type === 'scheduled') {
             $campaignType = new ScheduledCampaign();
@@ -39,10 +40,10 @@ class MassCommunicationController extends Controller
         } else {
             abort(404, "Unknown campaign type: $campaignType");
         }
-        $data = $this->getDashData($campaignType);
+        $data             = $this->getDashData($campaignType);
         $data['teamName'] = $team->name;
 
-        if (! is_null($team->client)) {
+        if ($team->client !== null) {
             return Inertia::render(
                 'MassCommunication/Show',
                 $data
@@ -52,22 +53,22 @@ class MassCommunicationController extends Controller
         }
     }
 
-    public function campaignDash(string $type = "scheduled")
+    public function campaignDash(string $type = 'scheduled'): InertiaResponse|RedirectResponse
     {
         $client_id = request()->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
 
-        $campaignType = null;
+        $campaign_type = null;
         if ($type === 'scheduled') {
-            $campaignType = new ScheduledCampaign();
+            $campaign_type = new ScheduledCampaign();
         } elseif ($type === 'drip') {
-            $campaignType = new DripCampaign();
+            $campaign_type = new DripCampaign();
         } else {
-            abort(404, "Unknown campaign type: $campaignType");
+            abort(404, "Unknown campaign type: $campaign_type");
         }
-        $data = $this->getDashData($campaignType);
+        $data = $this->getDashData($campaign_type);
 
         return Inertia::render(
             "MassCommunication/CampaignDash",
@@ -75,33 +76,34 @@ class MassCommunicationController extends Controller
         );
     }
 
-    public function getDripCampaign(DripCampaign $dripCampaign)
+    public function getDripCampaign(DripCampaign $drip_campaign): DripCampaign
     {
-        return $dripCampaign->load('days');
+        return $drip_campaign->load('days');
     }
 
-    public function getScheduledCampaign(ScheduledCampaign $scheduledCampaign)
+    public function getScheduledCampaign(ScheduledCampaign $scheduled_campaign): ScheduledCampaign
     {
-        return $scheduledCampaign;
+        return $scheduled_campaign;
     }
 
-    protected function getDashData(DripCampaign | ScheduledCampaign $model): array
+    /**
+     * @param DripCampaign|ScheduledCampaign $model
+     *
+     * @return array<string, mixed>
+     */
+    protected function getDashData(DripCampaign|ScheduledCampaign $model): array
     {
-        $audience = Audience::all();
+        $audience     = Audience::all();
         $member_types = MembershipType::all()->unique('name');
-        $lead_types = LeadType::all()->unique('name');
+        $lead_types   = LeadType::all()->unique('name');
+        $filter       = request()->only('search', 'trashed');
 
-        $email_templates = EmailTemplate::with('creator')
-            ->filter(request()->only('search', 'trashed'))
-            ->sort()->get();
-
-        $sms_templates = SmsTemplate::with('creator')
-            ->filter(request()->only('search', 'trashed'))
-            ->sort()->get();
+        $email_templates = EmailTemplate::with('creator')->filter($filter)->sort()->get();
+        $sms_templates   = SmsTemplate::with('creator')->filter($filter)->sort()->get();
 
         $call_script_templates = CallScriptTemplate::with('creator')
             ->whereUseOnce(false)
-            ->filter(request()->only('search', 'trashed'))
+            ->filter($filter)
             ->sort()->get();
 
         if ($model->getEntity() == DripCampaign::class) {
@@ -111,19 +113,18 @@ class MassCommunicationController extends Controller
         }
 
 
-        return
-            [
-                'topolApiKey' => env('TOPOL_API_KEY'),
-                'plansUrl' => env('APP_URL') . "/api/plans",
-                'filters' => request()->all('search', 'trashed'),
-                'email_templates' => $email_templates->toArray(),
-                'sms_templates' => $sms_templates->toArray(),
-                'call_templates' => $call_script_templates->toArray(),
-                'audiences' => $audience,
-                'member_types' => $member_types,
-                'lead_types' => $lead_types,
-                'campaigns' => $campaigns,
-                'type' => (new ReflectionClass($model))->getShortName(),
-            ];
+        return [
+            'topolApiKey'     => env('TOPOL_API_KEY'),
+            'plansUrl'        => env('APP_URL') . "/api/plans",
+            'filters'         => request()->all('search', 'trashed'),
+            'email_templates' => $email_templates->toArray(),
+            'sms_templates'   => $sms_templates->toArray(),
+            'call_templates'  => $call_script_templates->toArray(),
+            'audiences'       => $audience,
+            'member_types'    => $member_types,
+            'lead_types'      => $lead_types,
+            'campaigns'       => $campaigns,
+            'type'            => (new ReflectionClass($model))->getShortName(),
+        ];
     }
 }

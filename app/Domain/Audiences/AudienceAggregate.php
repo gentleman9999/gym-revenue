@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Audiences;
 
 use App\Domain\Audiences\Events\AudienceCreated;

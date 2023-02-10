@@ -12,20 +12,20 @@ class EndUserProfilePictureMoved extends GymRevCrudEvent
     public array $file;
     public ?array $old_file;
 
-    public function __construct(array $file, array $old_file = null)
+    public function __construct(array $file, ?array $old_file = null)
     {
         parent::__construct();
-        $this->file = $file;
+        $this->file     = $file;
         $this->old_file = $old_file;
-    }
-
-    protected function getOperation(): string
-    {
-        return self::OPERATION;
     }
 
     public function getEntity(): string
     {
         return EndUser::class;
+    }
+
+    protected function getOperation(): string
+    {
+        return self::OPERATION;
     }
 }

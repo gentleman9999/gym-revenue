@@ -1,4 +1,6 @@
 <?php
+// phpcs:ignoreFile
+declare(strict_types=1);
 
 namespace App\Http;
 
@@ -46,7 +48,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],

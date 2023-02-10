@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
@@ -22,6 +24,9 @@ class DeleteReminder
         return $reminder;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

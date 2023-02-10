@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -11,11 +13,9 @@ class TwilioAuth
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
     {
         $requestValidator = new RequestValidator(env('TWILIO_TOKEN'));
 
@@ -32,7 +32,7 @@ class TwilioAuth
             $requestData
         );
 
-        info('test auth'. $isValid);
+        info('test auth' . $isValid);
         if ($isValid) {
             return $next($request);
         } else {

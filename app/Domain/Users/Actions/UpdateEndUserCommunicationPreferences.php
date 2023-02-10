@@ -22,7 +22,12 @@ class UpdateEndUserCommunicationPreferences extends BaseEndUserAction
         ];
     }
 
-    public function handle($id, $data): EndUser
+    /**
+     * @param string $id
+     * @param array<string, mixed>  $data
+     *
+     */
+    public function handle(string $id, array $data): EndUser
     {
         $end_user = EndUser::findOrFail($id);
 

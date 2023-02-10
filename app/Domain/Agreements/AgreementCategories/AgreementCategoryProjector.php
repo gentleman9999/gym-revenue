@@ -15,17 +15,17 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class AgreementCategoryProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         AgreementCategory::all()->delete();
     }
 
     public function onAgreementCategoryCreated(AgreementCategoryCreated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $agreement = (new AgreementCategory())->writeable();
             $agreement->fill($event->payload);
-            $agreement->id = $event->aggregateRootUuid();
+            $agreement->id        = $event->aggregateRootUuid();
             $agreement->client_id = $event->payload['client_id'];
             $agreement->save();
         });

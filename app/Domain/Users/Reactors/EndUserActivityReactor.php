@@ -11,18 +11,16 @@ use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Mail\EndUser\EmailFromRep;
 use App\Models\Utility\AppState;
-
-
 use Illuminate\Support\Facades\Mail;
 
 class EndUserActivityReactor extends BaseEndUserReactor
 {
     public function onEndUserWasEmailedByRep(EndUserWasEmailedByRep $event): void
     {
-        if (($this->getModel())::class !== $event->getEntity()) {
+        if ($this->getModel()::class !== $event->getEntity()) {
             return;
         }
-        $end_user = ($this->getModel())::find($event->aggregateRootUuid());
+        $end_user = $this->getModel()::find($event->aggregateRootUuid());
         if (! AppState::isSimuationMode() && ! $end_user->unsubscribe_comms) {
             Mail::to($end_user->email)->send(new EmailFromRep($event->payload, $event->aggregateRootUuid(), $event->payload['user']));
         }
@@ -30,9 +28,9 @@ class EndUserActivityReactor extends BaseEndUserReactor
 
     public function onEndUserFileUploaded(EndUserFileUploaded $event): void
     {
-        $data = $event->payload;
+        $data  = $event->payload;
         $model = EndUser::find($data['entity_id']);
-        $user = User::find($event->userId());
+        $user  = User::find($event->userId());
 
         \App\Actions\Clients\Files\CreateFile::run($data, $model, $user);
     }

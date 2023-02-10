@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
 use App\Actions\GymRevAction;
@@ -32,7 +34,12 @@ class UpdateSmsTemplate extends GymRevAction
         return $template->refresh();
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         $smsTemplate = $args['input'];
 

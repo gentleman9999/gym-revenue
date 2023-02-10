@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\DynamicReports\Export;
 
 use App\Domain\Users\Models\Lead;
@@ -16,10 +18,8 @@ class ExportLeadReport
 
     public function handle($data): QueryBuilder
     {
-        $report = QueryBuilder::for(Lead::class)
+        return QueryBuilder::for(Lead::class)
             ->allowedFilters(['first_name', 'last_name', 'email']);
-
-        return $report;
     }
 
     public function asController(ActionRequest $request)

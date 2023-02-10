@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns;
 
 use App\Domain\Campaigns\Enums\CampaignStatusEnum;
@@ -82,8 +84,8 @@ class ScheduledCampaignAggregate extends AggregateRoot
     {
         if (! $this->isDraft()) {
             $expected = CampaignStatusEnum::DRAFT->name;
-            $actual = $this->status->name;
-            $msg = "[ScheduledCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
+            $actual   = $this->status->name;
+            $msg      = "[ScheduledCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
 
             throw new CampaignCouldNotBePublished($msg);
         }
@@ -102,8 +104,8 @@ class ScheduledCampaignAggregate extends AggregateRoot
     {
         if (! $this->isPending()) {
             $expected = CampaignStatusEnum::PENDING->name;
-            $actual = $this->status->name;
-            $msg = "[ScheduledCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
+            $actual   = $this->status->name;
+            $msg      = "[ScheduledCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
 
             throw new CampaignCouldNotBeUnpublished($msg);
         }
@@ -122,13 +124,13 @@ class ScheduledCampaignAggregate extends AggregateRoot
     {
         if (! $this->isPending()) {
             $expected = CampaignStatusEnum::PENDING->name;
-            $actual = $this->status->name;
-            $msg = "[ScheduledCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
+            $actual   = $this->status->name;
+            $msg      = "[ScheduledCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
 
             throw new CampaignCouldNotBeLaunched($msg);
         }
 
-        $now = CarbonImmutable::now();
+        $now     = CarbonImmutable::now();
         $send_at = CarbonImmutable::create($this->data['send_at']);
         if ($now < $send_at) {
             $msg = "[ScheduledCampaign id '{$this->uuid()}'] tried to launch at $now, but can't launch before '$send_at'.";
@@ -150,8 +152,8 @@ class ScheduledCampaignAggregate extends AggregateRoot
     {
         if (! $this->isActive()) {
             $expected = CampaignStatusEnum::ACTIVE->name;
-            $actual = $this->status->name;
-            $msg = "[ScheduledCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
+            $actual   = $this->status->name;
+            $msg      = "[ScheduledCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
 
             throw new CampaignCouldNotBeCompleted($msg);
         }

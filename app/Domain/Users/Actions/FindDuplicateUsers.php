@@ -28,7 +28,7 @@ class FindDuplicateUsers
     /**
      * Function to handle find duplicate users action
      *
-     * @param array $data Data of user input
+     * @param array<string, mixed> $data Data of user input
      *
      * @return Collection return Collection of Users
      * @access public
@@ -45,7 +45,7 @@ class FindDuplicateUsers
             $email = $this->formatEmail($data['email']);
 
             $query = $query->orWhere(
-                function ($q) use ($email) {
+                function ($q) use ($email): void {
                     $q->whereRaw(
                         "regexp_replace(email, '\\\\+[^@].*@+', '@') = '$email'"
                     )->orWhereRaw(
@@ -58,7 +58,7 @@ class FindDuplicateUsers
         if (isset($data['first_name'])) {
             $nicknames = FindNickname::run($data['first_name'])->toArray();
 
-            $query = $query->orWhere(function ($query) use ($nicknames) {
+            $query = $query->orWhere(function ($query) use ($nicknames): void {
                 $query->whereIn('first_name', $nicknames);
             });
         }
@@ -86,9 +86,8 @@ class FindDuplicateUsers
      * Function to find if the input data has
      * any of the required keys
      *
-     * @param array $data Data of user input
+     * @param array<string, mixed> $data Data of user input
      *
-     * @return bool
      * @access private
      */
     private function arrayHasRequiredKeys(array $data): bool
@@ -106,7 +105,6 @@ class FindDuplicateUsers
      *
      * @param string $email Inpit Email
      *
-     * @return string
      */
     private function formatEmail(string $email): string
     {
@@ -123,20 +121,19 @@ class FindDuplicateUsers
     /**
      * Function to score and order all users
      *
-     * @param array      $data  Data of user input
+     * @param array<string, mixed>      $data  Data of user input
      * @param Collection $users Collection of users
      *
-     * @return Collection
      * @access private
      */
     private function getUsersByScore(array $data, Collection $users): Collection
     {
-        $user_collection = $users->map(
+        return $users->map(
             function (User $user) use ($data) {
                 $score = 0;
 
                 $input_email = $this->formatEmail($data['email']);
-                $email = $this->formatEmail($user->email);
+                $email       = $this->formatEmail($user->email);
                 $user_emails = [$email];
 
                 if ($user->alternate_emails) {
@@ -149,7 +146,8 @@ class FindDuplicateUsers
                     $score += FindDuplicateUsers::SCORES['email'];
                 }
 
-                if ($data['last_name'] === $user->last_name
+                if (
+                    $data['last_name'] === $user->last_name
                     && $this->isMatchNickname($data['first_name'], $user->first_name)
                 ) {
                     $score += FindDuplicateUsers::SCORES['name'];
@@ -170,7 +168,5 @@ class FindDuplicateUsers
         )
         ->sortBy('score')
         ->take(3);
-
-        return $user_collection;
     }
 }

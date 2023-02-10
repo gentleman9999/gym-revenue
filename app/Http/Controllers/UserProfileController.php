@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -14,10 +16,8 @@ class UserProfileController extends Controller
     /**
      * Show the general profile settings screen.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Inertia\Response
      */
-    public function show(Request $request)
+    public function show(Request $request): \Inertia\Response
     {
         $addl_data = [
             'phone' => '',
@@ -30,10 +30,10 @@ class UserProfileController extends Controller
             'start_date' => '',
             'contact_preference' => '',
         ];
-        $user = auth()->user();
+        $user      = auth()->user();
 
         $api_token = $user->access_token;
-        if (! is_null($api_token)) {
+        if ($api_token !== null) {
             $addl_data['token'] = base64_decode($api_token);
         }
 
@@ -46,10 +46,8 @@ class UserProfileController extends Controller
     /**
      * Get the current sessions.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Support\Collection
      */
-    public function sessions(Request $request)
+    public function sessions(Request $request): \Illuminate\Support\Collection
     {
         if (config('session.driver') !== 'database') {
             return collect();
@@ -79,12 +77,10 @@ class UserProfileController extends Controller
     /**
      * Create a new agent instance from the given session.
      *
-     * @param  mixed  $session
-     * @return \Jenssegers\Agent\Agent
      */
-    protected function createAgent($session)
+    protected function createAgent(mixed $session): \Jenssegers\Agent\Agent
     {
-        return tap(new Agent(), function ($agent) use ($session) {
+        return tap(new Agent(), function ($agent) use ($session): void {
             $agent->setUserAgent($session->user_agent);
         });
     }

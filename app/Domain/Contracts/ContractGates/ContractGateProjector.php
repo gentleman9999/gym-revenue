@@ -13,7 +13,7 @@ class ContractGateProjector extends Projector
 {
     public function onContractGateCreated(ContractGateCreated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $contractGate = (new ContractGate())->writeable();
             $contractGate->fill($event->payload);
             $contractGate->id = $event->aggregateRootUuid();

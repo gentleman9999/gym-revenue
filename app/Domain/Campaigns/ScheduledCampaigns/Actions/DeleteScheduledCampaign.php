@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
@@ -11,7 +13,7 @@ class DeleteScheduledCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'scheduled-campaign:delete {id}';
+    public string $commandSignature   = 'scheduled-campaign:delete {id}';
     public string $commandDescription = 'Permanently deletes the ScheduledCampaign';
 
     public function handle(ScheduledCampaign $scheduledCampaign): ScheduledCampaign

@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Files\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
@@ -17,7 +18,7 @@ class UpdateFileFolder extends GymRevAction
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             //TODO: why doesn't the line below this work? says permissions must be an array (which it is)
@@ -26,7 +27,11 @@ class UpdateFileFolder extends GymRevAction
         ];
     }
 
-    public function handle($data)
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
+    public function handle(array $data): File
     {
         $id = $data['id'];
         FileAggregate::retrieve($id)->updateFolder($data['user_id'] ?? "Auto Generated", $data)->persist();
@@ -48,10 +53,10 @@ class UpdateFileFolder extends GymRevAction
 
     public function asController(ActionRequest $request, $id)
     {
-        $user = $request->user();
-        $user_id = $user->id ?? null;
-        $data = $request->validated();
-        $data['id'] = $id;
+        $user            = $request->user();
+        $user_id         = $user->id ?? null;
+        $data            = $request->validated();
+        $data['id']      = $id;
         $data['user_id'] = $user_id;
 
         $file = $this->handle(

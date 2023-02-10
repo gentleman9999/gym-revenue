@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users;
 
 use App\Enums\StatesEnum;
@@ -69,16 +71,16 @@ class ValidationRules
      */
     private static function getEmployeeUserRules(string $validation_req): array
     {
-        $rules = self::getbaseValidationRules($validation_req);
-        $rules['gender'] = [$validation_req, new Enum(UserGenderEnum::class)];
-        $rules['address1'] = [$validation_req, 'min:5', new AddressLine()];
-        $rules['zip'] = [$validation_req, 'size:5', new AddressZip()];
-        $rules['city'] = [$validation_req, 'min:3', 'max:30', new AddressCity()];
-        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
-        $rules['team_id'] = [];
-        $rules['team_ids'] = [];
+        $rules                = self::getbaseValidationRules($validation_req);
+        $rules['gender']      = [$validation_req, new Enum(UserGenderEnum::class)];
+        $rules['address1']    = [$validation_req, 'min:5', new AddressLine()];
+        $rules['zip']         = [$validation_req, 'size:5', new AddressZip()];
+        $rules['city']        = [$validation_req, 'min:3', 'max:30', new AddressCity()];
+        $rules['state']       = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
+        $rules['team_id']     = [];
+        $rules['team_ids']    = [];
         $rules['departments'] = [];
-        $rules['positions'] = [];
+        $rules['positions']   = [];
 
         return $rules;
     }
@@ -92,12 +94,12 @@ class ValidationRules
      */
     private static function getMemberUserRules(string $validation_req): array
     {
-        $rules = self::getbaseValidationRules($validation_req);
+        $rules                  = self::getbaseValidationRules($validation_req);
         $rules['date_of_birth'] = [$validation_req, 'date_format:Y-m-d H:i:s'];
-        $rules['address1'] = [$validation_req, 'min:5', new AddressLine()];
-        $rules['zip'] = [$validation_req, 'size:5', new AddressZip()];
-        $rules['city'] = [$validation_req, 'min:3', 'max:30', new AddressCity()];
-        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
+        $rules['address1']      = [$validation_req, 'min:5', new AddressLine()];
+        $rules['zip']           = [$validation_req, 'size:5', new AddressZip()];
+        $rules['city']          = [$validation_req, 'min:3', 'max:30', new AddressCity()];
+        $rules['state']         = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
 
         return $rules;
     }
@@ -111,12 +113,12 @@ class ValidationRules
      */
     private static function getCustomerUserRules(string $validation_req): array
     {
-        $rules = self::getbaseValidationRules($validation_req);
+        $rules                  = self::getbaseValidationRules($validation_req);
         $rules['date_of_birth'] = [$validation_req, 'date_format:Y-m-d H:i:s'];
-        $rules['address1'] = [$validation_req, 'min:5', new AddressLine()];
-        $rules['zip'] = [$validation_req, 'size:5', new AddressZip()];
-        $rules['city'] = [$validation_req, 'min:3', 'max:30', new AddressCity()];
-        $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
+        $rules['address1']      = [$validation_req, 'min:5', new AddressLine()];
+        $rules['zip']           = [$validation_req, 'size:5', new AddressZip()];
+        $rules['city']          = [$validation_req, 'min:3', 'max:30', new AddressCity()];
+        $rules['state']         = [$validation_req, 'size:2', new Enum(StatesEnum::class), new AddressState()];
 
         return $rules;
     }
@@ -130,12 +132,12 @@ class ValidationRules
      */
     private static function getLeadUserRules(string $validation_req): array
     {
-        $rules = self::getbaseValidationRules($validation_req);
-        $rules['entry_source'] = [$validation_req, 'json'];
-        $rules['opportunity'] = [$validation_req, 'integer', 'in:0,1,2,3'];
+        $rules                    = self::getbaseValidationRules($validation_req);
+        $rules['entry_source']    = [$validation_req, 'json'];
+        $rules['opportunity']     = [$validation_req, 'integer', 'in:0,1,2,3'];
         $rules['alternate_phone'] = ['sometimes', 'nullable', 'string', 'min:10'];
-        $rules['date_of_birth'] = ['sometimes', 'nullable', 'date_format:Y-m-d H:i:s'];
-        $rules['owner_user_id'] = ['sometimes', 'nullable', 'exists:users,id'];
+        $rules['date_of_birth']   = ['sometimes', 'nullable', 'date_format:Y-m-d H:i:s'];
+        $rules['owner_user_id']   = ['sometimes', 'nullable', 'exists:users,id'];
 
         return $rules;
     }

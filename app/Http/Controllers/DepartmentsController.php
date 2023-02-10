@@ -1,16 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\Departments\Department;
 use App\Models\Position;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Prologue\Alerts\Facades\Alert;
 
 class DepartmentsController extends Controller
 {
+    /** @var array<string, array<string>> */
     protected $rules = [
         'name' => ['string', 'required'],
         'id' => ['integer', 'sometimes', 'nullable'],
@@ -18,13 +24,14 @@ class DepartmentsController extends Controller
         'ability_ids.*' => ['array', 'sometimes'],
     ];
 
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse|RedirectResponse
     {
-        $client_id = $request->user()->client_id;
-        if (! $client_id) {
+        $user = $request->user();
+        if ($user->client_id === null) {
             return Redirect::route('dashboard');
         }
-        if (request()->user()->cannot('departments.read', Department::class)) {
+
+        if ($request->user()->cannot('departments.read', Department::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -36,13 +43,14 @@ class DepartmentsController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request): InertiaResponse|RedirectResponse
     {
-        $client_id = request()->user()->client_id;
-        if (! $client_id) {
+        $user = $request->user();
+        if ($user->client_id === null) {
             return Redirect::route('dashboard');
         }
-        if (request()->user()->cannot('departments.create', Department::class)) {
+
+        if ($user->cannot('departments.create', Department::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -53,7 +61,7 @@ class DepartmentsController extends Controller
         ]);
     }
 
-    public function edit(Department $department)
+    public function edit(Department $department): InertiaResponse|RedirectResponse
     {
         if (request()->user()->cannot('departments.update', Department::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -70,18 +78,22 @@ class DepartmentsController extends Controller
     }
 
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
-    public function export(Request $request)
+
+    /**
+     *
+     * @return Collection<Department>
+     */
+    public function export(Request $request): Collection
     {
-        $client_id = $request->user()->client_id;
-        if (! $client_id) {
-            abort(403);
-        }
-        if (request()->user()->cannot('departments.read', Department::class)) {
+        $user = $request->user();
+        if (($client_id = $user->client_id) === null) {
             abort(403);
         }
 
-        $departments = Department::whereClientId($client_id)->get();
+        if ($user->cannot('departments.read', Department::class)) {
+            abort(403);
+        }
 
-        return $departments;
+        return Department::whereClientId($client_id)->get();
     }
 }

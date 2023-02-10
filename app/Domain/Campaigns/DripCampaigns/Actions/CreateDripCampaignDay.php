@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
 use App\Domain\Campaigns\DripCampaigns\DripCampaignDay;
@@ -16,15 +18,22 @@ class CreateDripCampaignDay
 {
     use AsAction;
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): DripCampaignDay
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         DripCampaignDayAggregate::retrieve($id)->create($payload)->persist();
 
         return DripCampaignDay::findOrFail($id);
     }
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function rules(): array
     {
         return [
@@ -36,6 +45,9 @@ class CreateDripCampaignDay
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -50,9 +62,7 @@ class CreateDripCampaignDay
 
     public function asController(ActionRequest $request): DripCampaignDay
     {
-        return $this->handle(
-            $request->validated()
-        );
+        return $this->handle($request->validated());
     }
 
     public function htmlResponse(DripCampaignDay $dripCampaignDays): RedirectResponse

@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Files\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
@@ -12,9 +13,13 @@ use Prologue\Alerts\Facades\Alert;
 
 class TrashFile extends GymRevAction
 {
-    public function handle($data)
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
+    public function handle(array $data): File
     {
-        $id = $data['id'];
+        $id      = $data['id'];
         $user_id = null;
         if (key_exists('user_id', $data)) {
             $user_id = $data['user_id'];
@@ -38,13 +43,13 @@ class TrashFile extends GymRevAction
 
     public function asController(ActionRequest $request, $id)
     {
-        $user = $request->user();
+        $user    = $request->user();
         $user_id = $user->id ?? null;
-        $data = [
+        $data    = [
             'id' => $id,
             'user_id' => $user_id,
         ];
-        $file = $this->handle(
+        $file    = $this->handle(
             $data
         );
 

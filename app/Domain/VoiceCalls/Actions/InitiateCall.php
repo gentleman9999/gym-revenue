@@ -6,7 +6,9 @@ namespace App\Domain\VoiceCalls\Actions;
 
 use App\Domain\Users\Models\User;
 use App\Services\GatewayProviders\Voice\VoiceGatewayProviderService;
+
 use function auth;
+
 use Illuminate\Console\Command;
 use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\ActionRequest;
@@ -16,18 +18,15 @@ use Twilio\Rest\Api\V2010\Account\CallInstance;
 class InitiateCall
 {
     use AsAction;
-    public const TYPE_LEAD = 'lead';
-    public const TYPE_MEMBER = 'member';
 
-    public string $commandSignature = 'call:init {caller_id} {recipient} {type}';
+    public const TYPE_LEAD            = 'lead';
+    public const TYPE_MEMBER          = 'member';
+    public string $commandSignature   = 'call:init {caller_id} {recipient} {type}';
     public string $commandDescription = 'Initiates a call from the provided user id to the provided recipient number';
 
     /**
-     * @param User   $caller
-     * @param string $number_to_dial
      * @param string $type Type of call. e.g. lead|member
      *
-     * @return CallInstance
      */
     public function handle(User $caller, string $number_to_dial, string $type): CallInstance
     {

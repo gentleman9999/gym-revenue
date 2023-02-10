@@ -10,9 +10,8 @@ interface NotifiableInterface
      * Notification payload is passed to this method for validation when "entity_type" is specified in notification
      * payload. Throw NotificationValidationException if validation fails.
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      *
-     * @return void
      * @throws NotificationValidationException
      */
     public function entityDataValidation(array $data): void;

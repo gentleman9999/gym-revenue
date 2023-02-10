@@ -25,14 +25,13 @@ class MailgunService extends AbstractInstanceCache
         // Required Fields
         $this->domain = $settings['mailgunDomain'] ?? throw new InvalidArgumentException('"mailgunDomain" is required');
         $this->secret = $settings['mailgunSecret'] ?? throw new InvalidArgumentException('"mailgunSecret" is required');
-        $this->from = $settings['mailgunFromAddress'] ?? throw new InvalidArgumentException('"mailgunFromAddress" is required');
-        $this->name = $settings['mailgunFromName'] ?? throw new InvalidArgumentException('"mailgunFromName" is required');
+        $this->from   = $settings['mailgunFromAddress'] ?? throw new InvalidArgumentException('"mailgunFromAddress" is required');
+        $this->name   = $settings['mailgunFromName'] ?? throw new InvalidArgumentException('"mailgunFromName" is required');
     }
 
     /**
-     * @param array $parameters
+     * @param array<string, mixed> $parameters
      *
-     * @return SendResponse|ResponseInterface
      */
     public function send(array $parameters): SendResponse|ResponseInterface
     {

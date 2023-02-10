@@ -19,16 +19,22 @@ class BillingSchedule extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['client_id', 'type', 'is_open_ended', 'is_renewable', 'should_renew_automatically', 'term_length', 'min_terms','amount'];
+    /** @var array<string> */
+    protected $fillable = [
+        'client_id',
+        'type',
+        'is_open_ended',
+        'is_renewable',
+        'should_renew_automatically',
+        'term_length',
+        'min_terms',
+        'amount',
+    ];
 
+    /** @var array<string, string>  */
     protected $casts = [
         'type' => BillingScheduleTypesEnum::class,
     ];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
 
     public function client(): HasOne
     {
@@ -38,5 +44,10 @@ class BillingSchedule extends GymRevProjection
     public function agreementTemplate(): BelongsToMany
     {
         return $this->belongsToMany(AgreementTemplate::class, 'agreement_template_billing_schedule', 'agreement_template_id', 'billing_schedule_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

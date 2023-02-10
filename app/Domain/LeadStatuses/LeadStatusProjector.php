@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\LeadStatuses;
 
 use App\Domain\LeadStatuses\Events\LeadStatusCreated;
@@ -10,10 +12,10 @@ class LeadStatusProjector extends Projector
 {
     public function onLeadStatusCreated(LeadStatusCreated $event): void
     {
-        $lead_status = (new LeadStatus())->writeable();
-        $lead_status->id = $event->aggregateRootUuid();
+        $lead_status            = (new LeadStatus())->writeable();
+        $lead_status->id        = $event->aggregateRootUuid();
         $lead_status->client_id = $event->payload['client_id'];
-        $lead_status->order = 1;
+        $lead_status->order     = 1;
         $lead_status->fill($event->payload);
         $lead_status->save();
     }

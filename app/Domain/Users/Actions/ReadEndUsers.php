@@ -15,17 +15,12 @@ class ReadEndUsers extends BaseEndUserAction
         'notes',
     ];
 
-    protected function getRelationshipsToLoad(): array
-    {
-        return self::LOADABLE_RELATIONSHIPS;
-    }
-
     /**
      * Get the validation rules that apply to the action.
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'per_page' => 'sometimes|nullable',
@@ -40,7 +35,7 @@ class ReadEndUsers extends BaseEndUserAction
             $page_count = 10;
         }
 
-        return ($this->getModel())::with($this->getRelationshipsToLoad())
+        return $this->getModel()::with($this->getRelationshipsToLoad())
             ->orderBy('created_at', 'desc')
             ->paginate($page_count)
             ->appends($appendable);
@@ -52,5 +47,10 @@ class ReadEndUsers extends BaseEndUserAction
             $request->validated(),
             $request->except('page')
         );
+    }
+
+    protected function getRelationshipsToLoad(): array
+    {
+        return self::LOADABLE_RELATIONSHIPS;
     }
 }

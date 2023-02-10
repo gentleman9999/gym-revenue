@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns;
 
 use App\Domain\Campaigns\Events\CallOutcomeCreated;
@@ -27,16 +29,16 @@ class CallOutcomeAggregate extends AggregateRoot
 
     public function applyOnCallOutcomeCreated(CallOutcomeCreated $event): void
     {
-        $data = array_filter_only_fillable($event->payload, CallOutcome::class);
+        $data            = array_filter_only_fillable($event->payload, CallOutcome::class);
         $this->client_id = $event->payload['client_id'] ?? null;
-        $this->data = $data;
+        $this->data      = $data;
     }
 
     public function applyOnCallOutcomeUpdated(CallOutcomeUpdated $event): void
     {
-        $data = array_filter_only_fillable($event->payload, CallOutcome::class);
+        $data            = array_filter_only_fillable($event->payload, CallOutcome::class);
         $this->client_id = $event->payload['client_id'] ?? null;
-        $this->data = $data;
+        $this->data      = $data;
     }
 
     public function getData(): array

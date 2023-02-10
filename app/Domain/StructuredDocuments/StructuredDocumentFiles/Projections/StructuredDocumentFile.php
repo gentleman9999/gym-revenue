@@ -24,11 +24,18 @@ class StructuredDocumentFile extends GymRevProjection
     use Versionable;
     use Uuid;
 
+    /** @var array<string> */
     protected $fillable = ['client_id', 'file_id', 'entity_type', 'entity_id', 'structured_document_id', 'expires_at'];
 
+    /** @var array<string, string> */
     protected $casts = [
         'entity_type' => StructuredDocumentEntityTypeEnum::class,
     ];
+
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class, 'id', 'client_id');
+    }
 
     protected static function booted(): void
     {
@@ -38,10 +45,5 @@ class StructuredDocumentFile extends GymRevProjection
     protected static function newFactory(): Factory
     {
         return StructuredDocumentFileFactory::new();
-    }
-
-    public function client(): HasOne
-    {
-        return $this->hasOne(Client::class, 'id', 'client_id');
     }
 }

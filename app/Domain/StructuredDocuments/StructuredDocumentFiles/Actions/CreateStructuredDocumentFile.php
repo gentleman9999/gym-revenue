@@ -37,10 +37,14 @@ class CreateStructuredDocumentFile
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): StructuredDocumentFile
     {
         $structured_document = StructuredDocument::select('ttl')->whereId($data['structured_document_id'])->first();
-        $data['expires_at'] = $structured_document->ttl;
+        $data['expires_at']  = $structured_document->ttl;
 
         $id = Uuid::get();
         StructuredDocumentFileAggregate::retrieve($id)->create($data)->persist();

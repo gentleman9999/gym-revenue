@@ -14,9 +14,8 @@ class EntrySourceCategorySeeder extends Seeder
     /**
      * Run the database seeds.
      *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $escs = [
             'vip' => 'VIP Leads',

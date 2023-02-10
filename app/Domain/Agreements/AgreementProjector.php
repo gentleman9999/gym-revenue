@@ -15,17 +15,17 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class AgreementProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         Agreement::truncate();
     }
 
     public function onAgreementCreated(AgreementCreated $event): void
     {
-        DB::transaction(function () use ($event) {
+        DB::transaction(function () use ($event): void {
             $agreement = (new Agreement())->writeable();
             $agreement->fill($event->payload);
-            $agreement->id = $event->aggregateRootUuid();
+            $agreement->id        = $event->aggregateRootUuid();
             $agreement->client_id = $event->payload['client_id'];
             $agreement->writeable()->save();
         });

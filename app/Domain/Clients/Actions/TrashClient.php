@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -12,7 +14,7 @@ class TrashClient
 {
     use AsAction;
 
-    public string $commandSignature = 'client:trash {id}';
+    public string $commandSignature   = 'client:trash {id}';
     public string $commandDescription = 'Soft deletes the client';
 
     public function handle(string $id): Client

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\CallScriptTemplates\Actions;
 
 use App\Actions\GymRevAction;
@@ -21,24 +23,33 @@ class CreateCallScriptTemplate extends GymRevAction
     public function rules(): array
     {
         return [
-           'client_id' => ['required', 'exists:clients,id'],
-           'name' => ['string', 'required'],
-           'script' => ['string', 'required'],
-           'active' => ['sometimes', 'boolean'],
-           'use_once' => ['sometimes', 'boolean'],
-           'json' => ['sometimes', 'array'],
-           'team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
+            'client_id' => ['required', 'exists:clients,id'],
+            'name' => ['string', 'required'],
+            'script' => ['string', 'required'],
+            'active' => ['sometimes', 'boolean'],
+            'use_once' => ['sometimes', 'boolean'],
+            'json' => ['sometimes', 'array'],
+            'team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<string>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['input']];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): CallScriptTemplate
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         CallScriptTemplateAggregate::retrieve($id)
             ->create($data)

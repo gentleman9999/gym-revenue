@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\DynamicReports\Actions;
 
 use App\Domain\DynamicReports\DynamicReportAggregate;
@@ -20,7 +22,7 @@ class UpdateReport
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => ['string', 'required'],
@@ -30,11 +32,11 @@ class UpdateReport
         ];
     }
 
-    public function handle(DynamicReport $dynamicReport, array $payload): DynamicReport
+    public function handle(DynamicReport $dynamic_report, array $payload): DynamicReport
     {
-        DynamicReportAggregate::retrieve($dynamicReport->id)->update($payload)->persist();
+        DynamicReportAggregate::retrieve($dynamic_report->id)->update($payload)->persist();
 
-        return $dynamicReport->refresh();
+        return $dynamic_report->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -44,23 +46,23 @@ class UpdateReport
         return $current_user->can('dynamic-reports.create', DynamicReport::class);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
     }
 
-    public function asController(ActionRequest $request, DynamicReport $dynamicReport)
+    public function asController(ActionRequest $request, DynamicReport $dynamic_report)
     {
-        return $this->handle(
-            $dynamicReport,
-            $request->validated(),
-        );
+        return $this->handle($dynamic_report, $request->validated());
     }
 
-    public function htmlResponse(DynamicReport $dynamicReport): RedirectResponse
+    public function htmlResponse(DynamicReport $dynamic_report): RedirectResponse
     {
-        Alert::success("Report '{$dynamicReport->name}' was updated")->flash();
+        Alert::success("Report '{$dynamic_report->name}' was updated")->flash();
 
-        return Redirect::route('dynamic-reports.edit', $dynamicReport->id);
+        return Redirect::route('dynamic-reports.edit', $dynamic_report->id);
     }
 }

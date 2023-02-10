@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\ShortUrl;
 
 use App\Aggregates\Clients\ShortUrlAggregate;
@@ -17,7 +19,7 @@ class CreateShortUrl
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'route' => 'string|required',
@@ -27,7 +29,7 @@ class CreateShortUrl
     public function handle($data, $client_id)
     {
         $data['external_url'] = Str::random(10);
-        $short_url = ShortUrlAggregate::retrieve($client_id)
+        $short_url            = ShortUrlAggregate::retrieve($client_id)
             ->createShortUrl("Auto Generated", $data)
             ->persist();
 
@@ -39,7 +41,7 @@ class CreateShortUrl
         return true;
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): void
     {
         $this->handle(
             $request->validated(),

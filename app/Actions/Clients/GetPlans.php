@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients;
 
 use Illuminate\Support\Facades\Log;
@@ -15,7 +17,7 @@ class GetPlans
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             "id" => ["string"], //"productID",

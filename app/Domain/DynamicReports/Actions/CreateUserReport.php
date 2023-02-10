@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\DynamicReports\Actions;
 
 use App\Domain\Users\Models\User;
@@ -16,12 +18,9 @@ class CreateUserReport
 
     public function handle($data): Collection
     {
-        $report = QueryBuilder::for(User::class)
+        return QueryBuilder::for(User::class)
             ->allowedFilters(['first_name', 'last_name', 'email', 'alternate_email'])
                    ->get();
-        //dd($report->toSql());
-
-        return $report;
     }
 
     public function asController(ActionRequest $request)

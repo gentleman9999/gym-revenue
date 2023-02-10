@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -12,17 +14,18 @@ class FireOffSms
 {
     use AsAction;
 
-//    public string $commandSignature = 'sms:fire {templateId}';
+
+    protected $tokens = ['name'];//    public string $commandSignature = 'sms:fire {templateId}';
+
 //    public string $commandDescription = 'Fires off the SMS for a given template id.';
 
-    protected $tokens = ['name'];
 
-    public function handle(string $client_id, $templateId, $entity_type, $entity_id)
+    public function handle(string $client_id, $templateId, $entity_type, $entity_id): void
     {
-        $template = \App\Domain\Templates\SmsTemplates\Projections\SmsTemplate::with('gateway')->findOrFail($templateId);
+        $template    = \App\Domain\Templates\SmsTemplates\Projections\SmsTemplate::with('gateway')->findOrFail($templateId);
         $client_aggy = ClientAggregate::retrieve($client_id);
-        $sent_to = [];
-        $entity = null;
+        $sent_to     = [];
+        $entity      = null;
         switch ($entity_type) {
             case 'user':
                 $entity = User::find($entity_id);

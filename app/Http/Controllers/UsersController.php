@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Projections\Client;
@@ -9,24 +11,27 @@ use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Enums\UserTypesEnum;
 use App\Support\CurrentInfoRetriever;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Prologue\Alerts\Facades\Alert;
 use Silber\Bouncer\Database\Role;
 
 class UsersController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse|RedirectResponse
     {
         // Check the client ID to determine if we are in Client or Cape & Bay space
         $client_id = $request->user()->client_id;
 
         //Default Render VARs
-        $locations = [];
-        $teams = [];
-        $clientName = 'Cape & Bay/GymRevenue';
-        $filterKeys = ['search', 'club', 'team', 'roles',];
+        $locations   = [];
+        $teams       = [];
+        $client_name = 'Cape & Bay/GymRevenue';
+        $filter_keys = ['search', 'club', 'team', 'roles',];
 
         //Populating Role Filter
         $roles = Role::whereScope($client_id)->get();
@@ -34,33 +39,32 @@ class UsersController extends Controller
         if ($client_id) {
             $client = Client::find($client_id);
 
-            $locations = Location::all();
-            $teams = Team::findMany(Client::with('teams')->find($client_id)->teams()->get()->pluck('id'));
-            $clientName = $client->name;
+            $locations   = Location::all();
+            $teams       = Team::findMany(Client::with('teams')->find($client_id)->teams()->get()->pluck('id'));
+            $client_name = $client->name;
         }
         //TODO: we should not need to pass anything back but filters maybe?
         return Inertia::render('Users/Show', [
-            'filters' => $request->all($filterKeys),
+            'filters' => $request->all($filter_keys),
             'clubs' => $locations,
             'teams' => $teams,
-            'clientName' => $clientName,
+            'clientName' => $client_name,
             'potentialRoles' => $roles,
         ]);
     }
 
-    public function create(Request $request)
+    public function create(): InertiaResponse|RedirectResponse
     {
-        // dd(session()->all(), session()->get('errors'), $request);
         // Get the user's currently accessed team for scoping
         $current_team = CurrentInfoRetriever::getCurrentTeam();
         // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
         // CnB Client-based data is not present in the DB and thus the details could be empty.
         $client = $current_team->client()->first();
         // IF we got details, we got the client name, otherwise its Cape & Bay
-        $client_name = (! is_null($client)) ? $client->name : 'Cape & Bay';
+        $client_name = $client !== null ? $client->name : 'Cape & Bay';
 
         // The logged in user needs the ability to create users scoped to the current team to continue
-        if (request()->user()->cannot('users.create', User::class)) {
+        if (($user = request()->user())->cannot('users.create', User::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -71,7 +75,7 @@ class UsersController extends Controller
             $locations = Location::get(['name', 'gymrevenue_id']);
         }
 
-        $roles = Role::whereScope(request()->user()->client_id)->get();
+        $roles = Role::whereScope($user->client_id)->get();
 
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
@@ -81,11 +85,10 @@ class UsersController extends Controller
         ]);
     }
 
-    public function edit(User $user)
+    public function edit(User $user): InertiaResponse|RedirectResponse
     {
-        $me = request()->user();
-
-        $client_id = request()->user()->client_id;
+        $me        = request()->user();
+        $client_id = $me->client_id;
 
         if ($me->cannot('users.update', User::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -95,7 +98,7 @@ class UsersController extends Controller
 
         $user->load('notes', 'files', 'contact_preference', 'emergencyContact');//TODO:get rid of loading all details here.
 
-        if ($me->id == $user->id) {
+        if ($me->id === $user->id) {
             return Redirect::route('profile.show');
         }
 
@@ -104,7 +107,7 @@ class UsersController extends Controller
         $locations = null;
         if ($user->isClientUser()) {
             $locations = Location::get(['name', 'gymrevenue_id']);
-        };
+        }
 
         return Inertia::render('Users/Edit', [
             'id' => $user->id,
@@ -114,7 +117,11 @@ class UsersController extends Controller
         ]);
     }
 
-    public function view(User $user)
+    /**
+     *
+     * @return array<string, mixed>|RedirectResponse
+     */
+    public function view(User $user): array|RedirectResponse
     {
         $requesting_user = request()->user(); //Who's driving
         if ($requesting_user->cannot('users.read', User::class)) {
@@ -123,77 +130,86 @@ class UsersController extends Controller
             return Redirect::back();
         }
         $user->load('teams', 'files');//TODO: get rid of loading all details here.
-        $user_teams = $user->teams ?? [];
-        $data = $user->toArray();
+        $user_teams   = $user->teams ?? [];
+        $data         = $user->toArray();
         $data['role'] = $user->getRole();
 
         $requesting_user_teams = $requesting_user->teams ?? [];
-        $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {
+        $data['teams']         = $user_teams->filter(function (Team $user_team) use ($requesting_user_teams
+        ): bool {
             //only return teams that the current user also has access to
-            return $requesting_user_teams->contains(function ($requesting_user_team) use ($user_team) {
-                return $requesting_user_team->id === $user_team->id;
-            });
+            return $requesting_user_teams->contains(
+                fn(Team $requesting_user_team): bool => $requesting_user_team->id === $user_team->id
+            );
         });
 
         return $data;
     }
 
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
-    public function export(Request $request)
+
+    /**
+     *
+     * @return Collection<User>
+     */
+    public function export(Request $request): Collection
     {
         // Check the client ID to determine if we are in Client or Cape & Bay space
         $client_id = $request->user()->client_id;
 
         //Default Render VARs
-        $filterKeys = ['search', 'club', 'team', 'roles'];
+        $filter_keys = ['search', 'club', 'team', 'roles'];
 
 
-        if ($client_id) {
+        if ($client_id !== null) {
             $current_team = CurrentInfoRetriever::getCurrentTeam();
-            $client = Client::find($client_id);
+            $client       = Client::find($client_id);
 
             $is_default_team = $client->home_team_id === $current_team->id;
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams'])
-                    ->filter($request->only($filterKeys))
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)
+                    ->with(['teams'])
+                    ->filter($request->only($filter_keys))
                     ->get();
             } else {
                 // else - get the members of that team
                 $team_users = TeamUser::whereTeamId($current_team->id)->get();
-                $user_ids = [];
+                $user_ids   = [];
                 foreach ($team_users as $team_user) {
                     $user_ids[] = $team_user->user_id;
                 }
-                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)
+                    ->whereIn('users.id', $user_ids)
                     ->with(['teams'])
-                    ->filter($request->only($filterKeys))
+                    ->filter($request->only($filter_keys))
                     ->get();
             }
 
-            foreach ($users as $idx => $user) {
+            foreach ($users as $user) {
                 if ($user->getRole()) {
-                    $users[$idx]->role = $user->getRole();
+                    $user->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->defaultTeam->name;
+                $user->home_team = $user->defaultTeam->name;
 
                 //This is phil's fault
-                if (! is_null($users[$idx]->home_location_id)) {
-                    $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_location_id)->first()->name : null;
+                if ($user->home_location_id !== null) {
+                    $user->home_club_name = $user->home_club
+                        ? Location::whereGymrevenueId($user->home_location_id)->first()->name
+                        : null;
                 }
             }
         } else {
             //cb team selected
-            $team = CurrentInfoRetriever::getCurrentTeam();
-            $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereHas('teams', function ($query) use ($request) {
-                return $query->where('teams.id', '=', $team->id);
-            })->filter($request->only($filterKeys))
-                ->get();
+            $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereHas(
+                'teams',
+                fn ($query) => $query->where('teams.id', '=', CurrentInfoRetriever::getCurrentTeam()->id)
+            )->filter($request->only($filter_keys))->get();
 
-            foreach ($users as $idx => $user) {
-                $users[$idx]->role = $user->getRole();
-                $users[$idx]->home_team = $user->defaultTeam->name;
+            foreach ($users as $user) {
+                $user->role      = $user->getRole();
+                $user->home_team = $user->defaultTeam->name;
             }
         }
 

@@ -24,6 +24,9 @@ class RestoreMemberGroup
         return $member_group->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

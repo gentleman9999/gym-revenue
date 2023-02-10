@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns;
 
 use App\Domain\Campaigns\Enums\CampaignStatusEnum;
@@ -21,23 +23,23 @@ class ScheduledCampaignProjector extends Projector
         unset($event->payload['gymrevenue_id']);
         $scheduledCampaign = (new ScheduledCampaign())->writeable();
         $scheduledCampaign->fill($event->payload);
-        $scheduledCampaign->id = $event->aggregateRootUuid();
+        $scheduledCampaign->id        = $event->aggregateRootUuid();
         $scheduledCampaign->client_id = $event->payload['client_id'];
         //$scheduledCampaign->status = CampaignStatusEnum::DRAFT;
         $scheduledCampaign->save();
     }
 
-    public function onScheduledCampaignUpdated(ScheduledCampaignUpdated $event)
+    public function onScheduledCampaignUpdated(ScheduledCampaignUpdated $event): void
     {
         ScheduledCampaign::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->updateOrFail($event->payload);
     }
 
-    public function onScheduledCampaignTrashed(ScheduledCampaignTrashed $event)
+    public function onScheduledCampaignTrashed(ScheduledCampaignTrashed $event): void
     {
         ScheduledCampaign::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->delete();
     }
 
-    public function onScheduledCampaignRestored(ScheduledCampaignRestored $event)
+    public function onScheduledCampaignRestored(ScheduledCampaignRestored $event): void
     {
         ScheduledCampaign::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->restore();
     }

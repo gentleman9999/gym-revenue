@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -14,10 +16,10 @@ class GetTeams
 
     public function rules(): array
     {
-        return  ['client_id' => 'nullable'];
+        return ['client_id' => 'nullable'];
     }
 
-    public function handle(string $client_id = null, $current_user = null): Collection
+    public function handle(?string $client_id = null, $current_user = null): Collection
     {
         if ($current_user && $current_user->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
             $Team = Team::withoutGlobalScopes()->whereClientId($client_id);

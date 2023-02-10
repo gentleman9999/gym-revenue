@@ -206,7 +206,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('searches')->group(function () {
     Route::get('/', \App\Http\Controllers\SearchController::class . '@index')->name('searches');
-    Route::post('/searchahead', \App\Http\Controllers\SearchController::class . '@search_api')->name('searches.read');
+    Route::post('/searchahead', \App\Http\Controllers\SearchController::class . '@searchApi')->name('searches.read');
 //    Route::post('/', \App\Actions\Clients\Searches\CreateSearch::class)->name('searches.store');
 //    Route::get('/edit/{id}', \App\Http\Controllers\SearchController::class . '@edit')->name('searches.edit');
 //    Route::put('/{id}', \App\Actions\Clients\Searches\UpdateSearch::class)->name('searches.update');

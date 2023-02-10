@@ -16,7 +16,7 @@ class DeleteAgreementCategory
 
     public function handle(string $id): AgreementCategory
     {
-        $agreement_category = AgreementCategory::withTrashed()->findOrFail($id);
+        $agreement_category  = AgreementCategory::withTrashed()->findOrFail($id);
         $existing_agreements = Agreement::withoutTrashed()->whereAgreementCategoryId($id)->get();
         if ($existing_agreements) {
             return $agreement_category;

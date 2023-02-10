@@ -17,15 +17,16 @@ class GetEmailTemplateBlock
     use AsAction;
 
     /**
-     * @param string $user_id
      *
-     * @return Collection
      */
     public function handle(string $user_id): Collection
     {
         return EmailTemplateBlock::where(['user_id' => $user_id])->get();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

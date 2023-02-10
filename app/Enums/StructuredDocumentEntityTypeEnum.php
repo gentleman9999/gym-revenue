@@ -10,7 +10,7 @@ use App\Domain\Users\Models\User;
 
 enum StructuredDocumentEntityTypeEnum: string
 {
-    case User = User::class;
+    case User     = User::class;
     case Location = Location::class;
     case Calendar = CalendarEvent::class;
 

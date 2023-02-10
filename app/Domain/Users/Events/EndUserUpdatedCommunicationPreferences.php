@@ -16,16 +16,16 @@ class EndUserUpdatedCommunicationPreferences extends GymRevCrudEvent
     {
         parent::__construct();
         $this->email = $email;
-        $this->sms = $sms;
-    }
-
-    protected function getOperation(): string
-    {
-        return self::OPERATION;
+        $this->sms   = $sms;
     }
 
     public function getEntity(): string
     {
         return EndUser::class;
+    }
+
+    protected function getOperation(): string
+    {
+        return self::OPERATION;
     }
 }

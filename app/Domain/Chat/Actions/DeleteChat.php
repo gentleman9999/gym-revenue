@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Chat\Actions;
 
 use App\Domain\Chat\Aggregates\ChatAggregate;
@@ -24,6 +26,9 @@ class DeleteChat
         return $chat;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -38,7 +43,7 @@ class DeleteChat
 
     public function asController(ActionRequest $request): Chat
     {
-        $data = $request->validated();
+        $data              = $request->validated();
         $data['client_id'] = $request->user()->client_id;
 
         return $this->handle(

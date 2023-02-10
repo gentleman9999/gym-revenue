@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notes\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -19,7 +21,7 @@ class CreateNote
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => ['string', 'required'],
@@ -38,17 +40,12 @@ class CreateNote
 
     public function handle($data): Note
     {
-        $id = Uuid::new();
+        $id         = Uuid::new();
         $data['id'] = $id;
 
         ClientAggregate::retrieve($data['created_by_user_id'])->createNote($current_user->id ?? "Auto Generated", $data)->persist();
 
         return Note::findOrFail($id);
-    }
-
-    public function __invoke($_, array $args): Note
-    {
-        return $this->handle($args);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -67,5 +64,10 @@ class CreateNote
         Alert::success("Note '.$note->title.' was created")->flash();
 
         return Redirect::route('notes.edit', $note->id);
+    }
+
+    public function __invoke($_, array $args): Note
+    {
+        return $this->handle($args);
     }
 }

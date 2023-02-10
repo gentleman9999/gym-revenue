@@ -50,7 +50,7 @@ class CreateLocation extends GymRevAction
             'opened_at' => [],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
-            'location_type' => ['required',  new Enum(LocationType::class)],
+            'location_type' => ['required', new Enum(LocationType::class)],
             'presale_opened_at' => ['sometimes'],
             'presale_started_at' => [],
             'capacity' => ['required','integer'],
@@ -61,7 +61,6 @@ class CreateLocation extends GymRevAction
      * Validate the address provided using USPS API after main rules
      * Which also sends back correct address1, city and state
      *
-     * @return void
      */
     public function afterValidator(Validator $validator, ActionRequest $request): void
     {
@@ -72,15 +71,24 @@ class CreateLocation extends GymRevAction
         session()->forget('address_validation');
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array<string, mixed>>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['location']];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): Location
     {
-        $id = Uuid::get();//we should use uuid here
-        $gymrevenue_id = GenerateGymRevenueId::run($data['client_id']);
+        $id                    = Uuid::get();//we should use uuid here
+        $gymrevenue_id         = GenerateGymRevenueId::run($data['client_id']);
         $data['gymrevenue_id'] = $gymrevenue_id;
         LocationAggregate::retrieve($id)->create($data)->persist();
 

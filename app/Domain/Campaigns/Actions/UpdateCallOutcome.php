@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -33,13 +35,16 @@ class UpdateCallOutcome
 
     public function handle(array $data, CalendarEvent $calendarEvent)
     {
-        $aggy = CallOutcomeAggregate::retrieve($data['outcomeId']);
+        $aggy              = CallOutcomeAggregate::retrieve($data['outcomeId']);
         $data['client_id'] = request()->user()->client_id;
         $aggy->update($data)->persist();
 
         return $calendarEvent->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

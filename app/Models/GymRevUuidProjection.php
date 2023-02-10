@@ -9,7 +9,10 @@ use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 abstract class GymRevUuidProjection extends GymRevProjection
 {
     use Uuid;
-    protected $keyType = 'string';
 
+    /** @var bool */
     public $incrementing = false;
+
+    /** @var string */
+    protected $keyType = 'string';
 }

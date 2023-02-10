@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
@@ -15,7 +17,7 @@ class TrashScheduledCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'scheduled-campaign:trash {id}';
+    public string $commandSignature   = 'scheduled-campaign:trash {id}';
     public string $commandDescription = 'Soft deletes the audience';
 
     public function handle(ScheduledCampaign $scheduledCampaign): ScheduledCampaign

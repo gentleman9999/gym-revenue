@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\Events;
 
 use App\Domain\Campaigns\CallOutcome;

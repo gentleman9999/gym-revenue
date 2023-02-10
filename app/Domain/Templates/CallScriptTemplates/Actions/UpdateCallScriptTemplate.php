@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\CallScriptTemplates\Actions;
 
 use App\Actions\GymRevAction;
@@ -28,11 +30,16 @@ class UpdateCallScriptTemplate extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
-        $callscriptTemplate = $args['input'];
+        $call_script_template = $args['input'];
 
-        return [CallScriptTemplate::find($callscriptTemplate['id']), $callscriptTemplate];
+        return [CallScriptTemplate::find($call_script_template['id']), $call_script_template];
     }
 
     public function handle(CallScriptTemplate $template, array $data): CallScriptTemplate

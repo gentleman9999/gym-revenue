@@ -20,9 +20,9 @@ class DeleteChatParticipant
     public function handle(ChatParticipant $chat_participant): bool
     {
         /** @var Chat $chat */
-        $chat = $chat_participant->chat()->with(['participants.user'])->first();
+        $chat                = $chat_participant->chat()->with(['participants.user'])->first();
         $participant_user_id = $chat_participant->user_id;
-        $data = [
+        $data                = [
             'chat_id' => $chat->id,
             'participant' => $chat_participant,
             'type' => Notification::TYPE_DELETED_CHAT_PARTICIPANT,
@@ -44,7 +44,7 @@ class DeleteChatParticipant
         }
 
 
-        $chat->participants->each(static function (ChatParticipant $participant) use ($data, $participant_user_id) {
+        $chat->participants->each(static function (ChatParticipant $participant) use ($data, $participant_user_id): void {
             // Notify deleted participant to remove chat
             if ($participant->user_id === $participant_user_id) {
                 CreateNotification::run(['type' => Notification::TYPE_DELETED_CHAT] + $data, $participant->user);
@@ -57,6 +57,9 @@ class DeleteChatParticipant
         return true;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Imports;
 
 use App\Domain\Locations\Actions\CreateLocation;
@@ -17,7 +19,7 @@ class LocationsImportWithHeader implements ToCollection, WithHeadingRow
         $this->client_id = $client;
     }
 
-    public function collection(Collection|\Illuminate\Support\Collection $rows)
+    public function collection(Collection|\Illuminate\Support\Collection $rows): void
     {
         foreach ($rows as $row) {
             CreateLocation::run([

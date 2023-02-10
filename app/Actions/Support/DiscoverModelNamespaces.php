@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Support;
 
 use Illuminate\Database\Eloquent\Model;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Departments;
 
 use App\Domain\Departments\Events\DepartmentCreated;

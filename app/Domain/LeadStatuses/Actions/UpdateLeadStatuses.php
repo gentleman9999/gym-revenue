@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\LeadStatuses\Actions;
 
 use App\Domain\LeadStatuses\LeadStatus;
@@ -31,7 +33,7 @@ class UpdateLeadStatuses
 
     public function handle(array $data): array
     {
-        $statuses = $data['statuses'];
+        $statuses         = $data['statuses'];
         $statusesToUpdate = collect($statuses)->filter(function ($s) {
             return $s['id'] !== null && ! empty($s['status']);
         });
@@ -55,6 +57,9 @@ class UpdateLeadStatuses
         return $changed_statuses;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

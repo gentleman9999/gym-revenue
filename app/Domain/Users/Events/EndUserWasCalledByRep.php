@@ -17,13 +17,13 @@ class EndUserWasCalledByRep extends GymRevCrudEvent
         $this->payload = $payload;
     }
 
-    protected function getOperation(): string
-    {
-        return self::OPERATION;
-    }
-
     public function getEntity(): string
     {
         return EndUser::class;
+    }
+
+    protected function getOperation(): string
+    {
+        return self::OPERATION;
     }
 }

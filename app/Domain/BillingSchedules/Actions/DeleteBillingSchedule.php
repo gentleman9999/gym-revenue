@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\BillingSchedules\Actions;
 
 use App\Domain\BillingSchedules\BillingScheduleAggregate;

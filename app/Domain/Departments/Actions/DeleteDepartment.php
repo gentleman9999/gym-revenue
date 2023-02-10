@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Departments\Actions;
 
 use App\Domain\Departments\Department;
@@ -23,6 +25,9 @@ class DeleteDepartment
         return $department;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

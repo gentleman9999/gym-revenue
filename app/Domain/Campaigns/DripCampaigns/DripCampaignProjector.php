@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns;
 
 use App\Domain\Campaigns\DripCampaigns\Events\DripCampaignCompleted;
@@ -22,7 +24,7 @@ class DripCampaignProjector extends Projector
         unset($event->payload['gymrevenue_id']);
         unset($event->payload['days']);
         $dripCampaign->fill($event->payload);
-        $dripCampaign->id = $event->aggregateRootUuid();
+        $dripCampaign->id        = $event->aggregateRootUuid();
         $dripCampaign->client_id = $event->payload['client_id'];
         //$dripCampaign->status = CampaignStatusEnum::DRAFT;
         $dripCampaign->save();

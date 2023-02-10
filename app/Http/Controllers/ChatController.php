@@ -15,7 +15,7 @@ use InvalidArgumentException;
 
 class ChatController extends Controller
 {
-    public function index(Request $request, string $end_user_type = null, string $id = null): Response
+    public function index(Request $request, ?string $end_user_type = null, ?string $id = null): Response
     {
         $error = null;
         if ($end_user_type !== null && $id !== null) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notes\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -18,14 +20,14 @@ class TrashNote
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             //no rules since we only accept an id route param, which is validated in the route definition
         ];
     }
 
-    public function handle($current_user, $id)
+    public function handle($current_user, $id): void
     {
         $client_id = $current_user->client_id;
         ClientAggregate::retrieve($client_id)->trashNote($current_user->id, $id)->persist();

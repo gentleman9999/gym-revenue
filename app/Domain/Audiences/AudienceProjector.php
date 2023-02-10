@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Audiences;
 
 use App\Domain\Audiences\Events\AudienceCreated;
@@ -11,7 +13,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class AudienceProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         Audience::truncate();
     }
@@ -20,7 +22,7 @@ class AudienceProjector extends Projector
     {
         $audience = (new Audience())->writeable();
         $audience->fill($event->payload);
-        $audience->id = $event->aggregateRootUuid();
+        $audience->id        = $event->aggregateRootUuid();
         $audience->client_id = $event->payload['client_id'];
         $audience->save();
     }

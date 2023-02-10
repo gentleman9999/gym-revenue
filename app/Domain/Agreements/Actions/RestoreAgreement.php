@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Agreements\Actions;
 
 use App\Domain\Agreements\AgreementAggregate;
@@ -12,7 +14,7 @@ class RestoreAgreement
 {
     use AsAction;
 
-    public string $commandSignature = 'audience:restore {id}';
+    public string $commandSignature   = 'audience:restore {id}';
     public string $commandDescription = 'Restores the audience';
 
     public function handle(Agreement $agreement): Agreement

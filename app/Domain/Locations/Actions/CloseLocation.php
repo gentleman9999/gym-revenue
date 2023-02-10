@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Actions;
 
 use App\Domain\Locations\LocationAggregate;
@@ -22,6 +24,9 @@ class CloseLocation
         return $location->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

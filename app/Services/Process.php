@@ -102,7 +102,7 @@ class Process implements Task
                 if ($fail_on_error) {
                     [$exceptions, $values] = wait($promise ?: any($this->promises));
                 } else {
-                    $pools = $this->promises;
+                    $pools                 = $this->promises;
                     [$exceptions, $values] = wait(call(static fn () => any($pools)));
                 }
 

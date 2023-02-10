@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Folders\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Domain\Folders\FolderAggregate;
 use App\Models\Folder;
 use Illuminate\Http\RedirectResponse;
@@ -13,9 +14,13 @@ use Prologue\Alerts\Facades\Alert;
 
 class TrashFolder extends GymRevAction
 {
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): Folder
     {
-        $id = $payload['id'];
+        $id     = $payload['id'];
         $folder = Folder::findOrFail($id);
 
         FolderAggregate::retrieve($id)->trash()->persist();
@@ -23,7 +28,12 @@ class TrashFolder extends GymRevAction
         return $folder;
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array<string, mixed>>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args];
     }

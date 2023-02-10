@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Departments\Actions;
 
 use App\Domain\Departments\Department;
@@ -30,9 +32,13 @@ class CreateDepartment
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): Department
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         $aggy = DepartmentAggregate::retrieve($id);
 
@@ -41,11 +47,9 @@ class CreateDepartment
         return Department::findOrFail($id);
     }
 
-    public function __invoke($_, array $args): Department
-    {
-        return $this->handle($args);
-    }
-
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -70,5 +74,15 @@ class CreateDepartment
         Alert::success("Department '{$department->name}' was created")->flash();
 
         return Redirect::route('departments.edit', $department->id);
+    }
+
+    /**
+     * @param       $_
+     * @param array<string, mixed> $args
+     *
+     */
+    public function __invoke($_, array $args): Department
+    {
+        return $this->handle($args);
     }
 }

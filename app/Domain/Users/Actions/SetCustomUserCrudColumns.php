@@ -37,12 +37,15 @@ class SetCustomUserCrudColumns
         return $user->refresh();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
     }
 
-    public function authorize(ActionRequest $request): bool
+    public function authorize(ActionRequest $_): bool
     {
 //        $current_user = $request->user();
         return true;
@@ -58,7 +61,7 @@ class SetCustomUserCrudColumns
         );
     }
 
-    public function htmlResponse(User $user): RedirectResponse
+    public function htmlResponse(User $_): RedirectResponse
     {
         Alert::success("CRUD columns updated")->flash();
 

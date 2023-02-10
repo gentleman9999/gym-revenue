@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Projections\Client;
@@ -34,8 +36,8 @@ class DashboardController extends Controller
                 'view_data' => [
                     'accountName' => $user->name,
                     'announcements' => [],
-                    ],
-                ];
+                ],
+            ];
         }
 
         return Inertia::render(
@@ -46,12 +48,12 @@ class DashboardController extends Controller
 
     protected function clientUserDashboard(User $user): array
     {
-        $team = CurrentInfoRetriever::getCurrentTeam();
-        $client = $team->client;
+        $team          = CurrentInfoRetriever::getCurrentTeam();
+        $client        = $team->client;
         $announcements = [];
-        $team_name = $team->name;
-        $vue = 'Dashboard';
-        $widgets = $this->service->getDashboardWidgets();
+        $team_name     = $team->name;
+        $vue           = 'Dashboard';
+        $widgets       = $this->service->getDashboardWidgets();
         if ($client !== null) {
             $clients = collect([$client]);
             $account = $client->name;
@@ -74,13 +76,13 @@ class DashboardController extends Controller
                 ],
             ];
         } else {
-            $account = 'GymRevenue';
-            $clients = $this->clients->all();
+            $account       = 'GymRevenue';
+            $clients       = $this->clients->all();
             $announcements = $this->service->getAppStateAnnouncements();
 
             // Check if this is the CnB Default team.
             // If so the vue will be AdminDashboard. else DeveloperDashboard
-            $vue = ($team->home_team) ? 'Dashboards/AdminDashboard' : 'Dashboards/DeveloperDashboard';
+            $vue   = $team->home_team ? 'Dashboards/AdminDashboard' : 'Dashboards/DeveloperDashboard';
             $teams = $user->allTeams()->load('client');
 
             if (count($clients) > 0) {

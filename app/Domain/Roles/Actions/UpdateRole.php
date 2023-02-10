@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Roles\Actions;
 
 use App\Actions\GymRevAction;
@@ -28,12 +30,17 @@ class UpdateRole extends GymRevAction
 
     public function handle(Role $role, array $data): Role
     {
-        RoleAggregate::retrieve($role->id)->update($data)->persist();
+        RoleAggregate::retrieve((string) $role->id)->update($data)->persist();
 
         return $role->refresh();
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         $role = $args['input'];
 

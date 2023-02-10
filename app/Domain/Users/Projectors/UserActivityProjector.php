@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Projectors;
 
 use App\Domain\Users\Events\AccessTokenGranted;
@@ -63,7 +65,7 @@ class UserActivityProjector extends Projector
         $user = User::findOrFail($event->aggregateRootUuid());
 
         if ($user->user_type == UserTypesEnum::EMPLOYEE) {
-            $details = $user->details;
+            $details                                            = $user->details;
             $details[UserHistoryTypeEnum::COLUMN_CONFIG->value] = [$event->table => $event->fields] ;
             $user->details;
             $user->save();
@@ -77,7 +79,7 @@ class UserActivityProjector extends Projector
         if ($user->user_type == UserTypesEnum::EMPLOYEE) {
             $user->tokens()->delete();
             $token = $user->createToken($user->email)->plainTextToken;
-            $user = User::findOrFail($user->id);
+            $user  = User::findOrFail($user->id);
             $user->forceFill(['access_token' => base64_encode($token)]);
             $user->save();
         }
@@ -104,7 +106,7 @@ class UserActivityProjector extends Projector
         }
         $user = User::find($event->userId());
 
-        $misc = $event->payload;
+        $misc               = $event->payload;
         $misc['user_email'] = $user->email;
 
         //TODO: Create Projection Table for User Communication History
@@ -142,7 +144,7 @@ class UserActivityProjector extends Projector
         }
         $user = User::find($event->modifiedBy());
 
-        $misc = $event->payload;
+        $misc               = $event->payload;
         $misc['user_email'] = $user->email;
 
         //TODO: Create Projection Table for User Communication History
@@ -158,7 +160,7 @@ class UserActivityProjector extends Projector
             /** @TODO: use action */
             Note::create([
                 'entity_id' => $end_user->id,
-                'entity_type' => ($end_user::getDetailsModel())::class,
+                'entity_type' => $end_user::getDetailsModel()::class,
                 'note' => $misc['notes'],
                 'title' => 'Call Notes',
                 'created_by_user_id' => $event->modifiedBy(),

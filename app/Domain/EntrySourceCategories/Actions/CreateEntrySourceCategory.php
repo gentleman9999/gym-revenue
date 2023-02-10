@@ -6,7 +6,6 @@ namespace App\Domain\EntrySourceCategories\Actions;
 
 use App\Domain\EntrySourceCategories\EntrySourceCategory;
 use App\Domain\EntrySourceCategories\EntrySourceCategoryAggregate;
-use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
@@ -18,6 +17,9 @@ class CreateEntrySourceCategory
 {
     use AsAction;
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function rules(): array
     {
         return [
@@ -26,11 +28,18 @@ class CreateEntrySourceCategory
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): EntrySourceCategory
     {
         $esc_id = Uuid::get();

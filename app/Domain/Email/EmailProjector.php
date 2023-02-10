@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Email;
 
 use App\Domain\Email\Events\EmailLog;
@@ -40,7 +42,7 @@ class EmailProjector extends Projector
                 break;
             default:
                 $x = 1;
-        };
+        }
 
         $ClientEmailLog = ClientEmailLog::whereMessageId($event->payload['message']['headers']['message-id'])->first();
 

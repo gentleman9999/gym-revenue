@@ -16,7 +16,7 @@ class BatchUpsertEndUserApi extends BaseEndUserAction
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             '*.first_name' => ['required', 'max:50'],
@@ -52,6 +52,9 @@ class BatchUpsertEndUserApi extends BaseEndUserAction
         return $response;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\SmsTemplates;
 
 use App\Domain\Templates\SmsTemplates\Events\SmsTemplateCreated;
@@ -7,7 +9,6 @@ use App\Domain\Templates\SmsTemplates\Events\SmsTemplateDeleted;
 use App\Domain\Templates\SmsTemplates\Events\SmsTemplateRestored;
 use App\Domain\Templates\SmsTemplates\Events\SmsTemplateTrashed;
 use App\Domain\Templates\SmsTemplates\Events\SmsTemplateUpdated;
-
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class SmsTemplateAggregate extends AggregateRoot

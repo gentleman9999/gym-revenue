@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Clients\Features;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -13,11 +15,15 @@ class ClientService extends Model
     use SoftDeletes;
     use Uuid;
 
+    /** @var bool  */
+    public $incrementing = false;
+
+    /** @var array<string>  */
     protected $fillable = ['feature_name', 'slug', 'active'];
 
+    /** @var string  */
     protected $primaryKey = 'id';
 
+    /** @var string  */
     protected $keyType = 'string';
-
-    public $incrementing = false;
 }

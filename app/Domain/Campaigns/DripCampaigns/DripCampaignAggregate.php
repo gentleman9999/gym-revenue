@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns;
 
 use App\Domain\Campaigns\DripCampaigns\Events\DripCampaignCompleted;
@@ -85,8 +87,8 @@ class DripCampaignAggregate extends AggregateRoot
     {
         if (! $this->isDraft()) {
             $expected = CampaignStatusEnum::DRAFT->name;
-            $actual = $this->status->name;
-            $msg = "[DripCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
+            $actual   = $this->status->name;
+            $msg      = "[DripCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
 
             throw new CampaignCouldNotBePublished($msg);
         }
@@ -105,8 +107,8 @@ class DripCampaignAggregate extends AggregateRoot
     {
         if (! $this->isPending()) {
             $expected = CampaignStatusEnum::PENDING->name;
-            $actual = $this->status->name;
-            $msg = "[DripCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
+            $actual   = $this->status->name;
+            $msg      = "[DripCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
 
             throw new CampaignCouldNotBeUnpublished($msg);
         }
@@ -125,8 +127,8 @@ class DripCampaignAggregate extends AggregateRoot
     {
         if (! $this->isPending()) {
             $expected = CampaignStatusEnum::PENDING->name;
-            $actual = $this->status->name;
-            $msg = "[DripCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
+            $actual   = $this->status->name;
+            $msg      = "[DripCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
 
             throw new CampaignCouldNotBeLaunched($msg);
         }
@@ -145,8 +147,8 @@ class DripCampaignAggregate extends AggregateRoot
     {
         if (! $this->isActive()) {
             $expected = CampaignStatusEnum::ACTIVE->name;
-            $actual = $this->status->name;
-            $msg = "[DripCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
+            $actual   = $this->status->name;
+            $msg      = "[DripCampaign id '{$this->uuid()}'] expected status to be '$expected', but was provided '$actual'";
 
             throw new CampaignCouldNotBeCompleted($msg);
         }

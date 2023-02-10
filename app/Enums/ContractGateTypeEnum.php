@@ -10,7 +10,7 @@ use App\Domain\Locations\Projections\Location;
 
 enum ContractGateTypeEnum: string
 {
-    case Location = Location::class;
+    case Location          = Location::class;
     case AgreementCategory = AgreementCategory::class;
-    case BillingSchedule = BillingSchedule::class;
+    case BillingSchedule   = BillingSchedule::class;
 }

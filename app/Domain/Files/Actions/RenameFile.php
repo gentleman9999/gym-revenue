@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Files\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
@@ -15,9 +16,9 @@ class RenameFile extends GymRevAction
     /**
      * Get the validation rules that apply to the action.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'filename' => 'max:255|required',
@@ -26,7 +27,11 @@ class RenameFile extends GymRevAction
         ];
     }
 
-    public function handle($data)
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
+    public function handle(array $data): File
     {
         $id = $data['id'];
         FileAggregate::retrieve($id)->rename($data['user_id'] ?? "Auto Generated", $data)->persist();

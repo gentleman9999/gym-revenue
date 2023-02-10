@@ -26,6 +26,9 @@ class GetChat
             ->paginate();
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -43,7 +46,7 @@ class GetChat
         return $this->handle($request->user()->id);
     }
 
-    public function asCommand(Command $command)
+    public function asCommand(Command $command): void
     {
         $this->handle((int) $command->argument('user_id'));
     }

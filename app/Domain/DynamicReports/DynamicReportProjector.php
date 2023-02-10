@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\DynamicReports;
 
 use App\Domain\DynamicReports\Events\DynamicReportCreated;
@@ -16,7 +18,7 @@ class DynamicReportProjector extends Projector
     {
         $dr = (new DynamicReport());
         $dr->fill($event->payload);
-        $dr->id = $event->aggregateRootUuid();
+        $dr->id        = $event->aggregateRootUuid();
         $dr->client_id = $event->clientId();
         $dr->writeable()->save();
     }

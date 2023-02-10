@@ -36,14 +36,21 @@ class CreateLocationVendor
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): LocationVendor
     {
-        $id = (string)Uuid::new();//we should use uuid here
+        $id = (string) Uuid::new();//we should use uuid here
         LocationVendorAggregate::retrieve($id)->create($data)->persist();
 
         return LocationVendor::findOrFail($id);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

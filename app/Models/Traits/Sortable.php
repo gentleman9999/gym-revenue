@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Traits;
+
+use Illuminate\Database\Eloquent\Builder;
 
 trait Sortable
 {
-    public function scopeSort($query)
+    public function scopeSort(Builder $query): void
     {
-        $sortable_fields = $query->getModel()->getFillable();
-        $sort = request()->sort;
-        $dir = request()->dir;
+        $request = request();
         //TODO: we need to either convert lots of detail fields to real fields
         //TODO: or figure out a way to handle sorting by those fields
-        if (! $sort || ! in_array($sort, $sortable_fields)) {
+        if (! $request->sort || ! in_array($request->sort, $query->getModel()->getFillable())) {
             return;
         }
-        $query->orderBy($sort, $dir);
+        $query->orderBy($request->sort, $request->dir);
     }
 }

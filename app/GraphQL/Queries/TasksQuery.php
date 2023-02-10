@@ -1,18 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\GraphQL\Queries;
 
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use DateTime;
+use Illuminate\Contracts\Pagination\Paginator;
 
 final class TasksQuery
 {
     /**
-     * @param  null  $_
-     * @param  array{}  $args
+     *
+     * @return array<string, int>
      */
-    public function __invoke($_, array $args)
+    private function getPagination(Paginator $search): array
+    {
+        return [
+            'currentPage' => $search->currentPage(),
+            'lastPage' => $search->lastPage(),
+            'firstItem' => $search->firstItem(),
+            'lastItem' => $search->lastItem(),
+            'perPage' => $search->perPage(),
+            'total' => $search->total(),
+        ];
+    }
+
+    /**
+     * @param  null  $_
+     * @param  array<string, mixed>  $args
+     *
+     * @return array<string, mixed>
+     */
+    public function __invoke($_, array $args): array
     {
         $client_id = request()->user()->client_id;
         if (! key_exists('start', $args['param'])) {
@@ -20,29 +41,29 @@ final class TasksQuery
                 'Y-m-d H:i:s',
                 (new DateTime())->format('Y-m-d 00:00:00')
             )->getTimestamp());
-            $args['param']['end'] = date('Y-m-d H:i:s', DateTime::createFromFormat(
+            $args['param']['end']   = date('Y-m-d H:i:s', DateTime::createFromFormat(
                 'Y-m-d H:i:s',
                 (new DateTime())->format('Y-m-d 23:59:59')
             )->getTimestamp());
         } else {
-            $date = date('Y-m-d', strtotime($args['param']['start']));
+            $date                   = date('Y-m-d', strtotime($args['param']['start']));
             $args['param']['start'] = date('Y-m-d H:i:s', DateTime::createFromFormat(
                 'Y-m-d H:i:s',
                 (new DateTime())->format($date . ' 00:00:00')
             )->getTimestamp());
-            $args['param']['end'] = date('Y-m-d H:i:s', DateTime::createFromFormat(
+            $args['param']['end']   = date('Y-m-d H:i:s', DateTime::createFromFormat(
                 'Y-m-d H:i:s',
                 (new DateTime())->format($date . ' 23:59:59')
             )->getTimestamp());
         }
-        $typeTaskForClient = CalendarEventType::whereClientId($client_id)
+        $type_task_for_client = CalendarEventType::whereClientId($client_id)
             ->whereType('Task')
             ->first();
-        if (! is_null($typeTaskForClient)) {
+        if ($type_task_for_client !== null) {
             switch ($args['param']['type']) {
                 case 'incomplete_tasks':
                     $tasks = CalendarEvent::with('owner')
-                        ->whereEventTypeId($typeTaskForClient->id)
+                        ->whereEventTypeId($type_task_for_client->id)
                         ->whereOwnerId(request()->user()->id)
                         ->whereNull('event_completion')
                         ->with('type')
@@ -52,7 +73,7 @@ final class TasksQuery
                     break;
                 case 'completed_tasks':
                     $tasks = CalendarEvent::with('owner')
-                        ->whereEventTypeId($typeTaskForClient->id)
+                        ->whereEventTypeId($type_task_for_client->id)
                         ->whereOwnerId(request()->user()->id)
                         ->whereNotNull('event_completion')
                         ->with('type')
@@ -62,7 +83,7 @@ final class TasksQuery
                     break;
                 case 'overdue_tasks':
                     $tasks = CalendarEvent::with('owner')
-                        ->whereEventTypeId($typeTaskForClient->id)
+                        ->whereEventTypeId($type_task_for_client->id)
                         ->whereOwnerId(request()->user()->id)
                         ->whereNull('event_completion')
                         ->whereDate('start', '<', date('Y-m-d H:i:s'))
@@ -90,17 +111,5 @@ final class TasksQuery
                 ],
             ];
         }
-    }
-
-    private function getPagination($search)
-    {
-        return [
-            'currentPage' => $search->currentPage(),
-            'lastPage' => $search->lastPage(),
-            'firstItem' => $search->firstItem(),
-            'lastItem' => $search->lastItem(),
-            'perPage' => $search->perPage(),
-            'total' => $search->total(),
-        ];
     }
 }

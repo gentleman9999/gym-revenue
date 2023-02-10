@@ -17,8 +17,8 @@ use Twilio\Rest\Api\V2010\Account\CallInstance;
 
 class VoiceGatewayProviderService extends GatewayProviderService
 {
-    protected string               $provider_type_slug = 'voice';
-    protected User                 $caller;
+    protected string $provider_type_slug = 'voice';
+    protected User $caller;
     protected VoiceGatewayProvider $gateway;
 
     public function __construct()
@@ -32,7 +32,6 @@ class VoiceGatewayProviderService extends GatewayProviderService
     }
 
     /**
-     * @param User $caller
      *
      * @return $this
      * @throws ConfigurationException
@@ -49,6 +48,16 @@ class VoiceGatewayProviderService extends GatewayProviderService
         return $this;
     }
 
+    public function call(string $to, bool $record = false): CallInstance
+    {
+        return $this->gateway->initializeCall($this->caller, $to, $record);
+    }
+
+    public function getCallStatus(string $sid): CallInstance
+    {
+        return $this->gateway->getCallStatus($sid);
+    }
+
     /**
      * @throws ConfigurationException
      */
@@ -59,7 +68,7 @@ class VoiceGatewayProviderService extends GatewayProviderService
             ->first();
 
         //can't use default because that requires client_id
-        $provider = is_null($model) ? 'default_cnb' : $model->value;
+        $provider = $model === null ? 'default_cnb' : $model->value;
 
         if ($provider === 'default_cnb') {
             return new TwilioVoice([
@@ -70,15 +79,5 @@ class VoiceGatewayProviderService extends GatewayProviderService
         }
 
         return null;
-    }
-
-    public function call(string $to, bool $record = false): CallInstance
-    {
-        return $this->gateway->initializeCall($this->caller, $to, $record);
-    }
-
-    public function getCallStatus(string $sid): CallInstance
-    {
-        return $this->gateway->getCallStatus($sid);
     }
 }

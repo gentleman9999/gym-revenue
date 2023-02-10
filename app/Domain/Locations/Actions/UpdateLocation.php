@@ -47,7 +47,7 @@ class UpdateLocation extends GymRevAction
             'location_no' => ['sometimes', 'max:50', 'exists:locations,location_no'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
-            'location_type' => ['sometimes',  new Enum(LocationType::class)],
+            'location_type' => ['sometimes', new Enum(LocationType::class)],
             'presale_started_at' => ['sometimes'],
             'capacity' => ['sometimes','integer'],
         ];
@@ -57,7 +57,6 @@ class UpdateLocation extends GymRevAction
      * Validate the address provided using USPS API after main rules
      * Which also sends back correct address1, city and state
      *
-     * @return void
      */
     public function afterValidator(Validator $validator, ActionRequest $request): void
     {
@@ -75,7 +74,12 @@ class UpdateLocation extends GymRevAction
         return $location->refresh();
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<Location|null, string>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         $location = $args['location'];
 

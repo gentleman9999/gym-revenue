@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Projectors\Clients;
 
 use App\Models\Clients\ClientBillableActivity;
@@ -10,10 +12,10 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 class ClientAccountProjector extends Projector
 {
     //TODO: remove this once Philip+Blair finish Email/Sms Tracking refactor
-    public function onSmsSent(SmsSent $event)
+    public function onSmsSent(SmsSent $event): void
     {
         if ($event->isCampaign == true) {
-            $launch = SmsCampaigns::with('launched')->find($event->campaign)->launched;
+            $launch     = SmsCampaigns::with('launched')->find($event->campaign)->launched;
             $launchedBy = null;
             if ($launch) {
                 $launchedBy = $launch->value;
@@ -40,9 +42,9 @@ class ClientAccountProjector extends Projector
         }
     }
 
-    public function onEmailSent(EmailSent $event)
+    public function onEmailSent(EmailSent $event): void
     {
-        $launch = EmailCampaigns::with('launched')->find($event->campaign)->launched;
+        $launch     = EmailCampaigns::with('launched')->find($event->campaign)->launched;
         $launchedBy = null;
         if ($launch) {
             $launchedBy = $launch->value;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEventTypes;
 
 use App\Domain\Clients\Projections\Client;
@@ -24,38 +26,41 @@ class CalendarEventType extends GymRevProjection
     use HasFactory;
     use Sortable;
 
+    /** @var array<string>  */
     protected $fillable = ['name', 'description', 'color', 'type'];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-    /** Event Scoping with filters */
-    public function scopeFilter($query, array $filters): void
+    /**
+     * @param array<string, mixed> $filters
+     *
+     */
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('name', 'like', '%' . $search . '%');
             });
         })
-        ->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        ->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('description', 'like', '%' . $search . '%');
             });
         })
-        ->when($filters['trashed'] ?? null, function ($query, $trashed) {
+        ->when($filters['trashed'] ?? null, function ($query, $trashed): void {
             if ($trashed === 'with') {
                 $query->withTrashed();
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
         });
-        ;
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

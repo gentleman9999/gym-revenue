@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Tasks;
 
 use App\Aggregates\Users\UserAggregate;
@@ -18,7 +20,7 @@ class MarkTaskComplete
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'id' => ['string', 'sometimes'],
@@ -39,9 +41,9 @@ class MarkTaskComplete
 
     public function asController(ActionRequest $request, $id)
     {
-        $data = $request->validated();
+        $data       = $request->validated();
         $data['id'] = $id;
-        $task = $this->handle(
+        $task       = $this->handle(
             $data,
             $request->user(),
         );

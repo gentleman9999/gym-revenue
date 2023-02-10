@@ -16,7 +16,13 @@ class UserMemberGroup extends GymRevProjection
 {
     use HasFactory;
 
+    /** @var array<string> */
     protected $fillable = ['client_id', 'member_group_id', 'user_id', 'is_primary'];
+
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class, 'id', 'client_id');
+    }
 
     protected static function booted(): void
     {
@@ -26,15 +32,9 @@ class UserMemberGroup extends GymRevProjection
     /**
      * Create a new factory instance for the model.
      *
-     * @return Factory
      */
     protected static function newFactory(): Factory
     {
         return UserMemberGroupFactory::new();
-    }
-
-    public function client(): HasOne
-    {
-        return $this->hasOne(Client::class, 'id', 'client_id');
     }
 }

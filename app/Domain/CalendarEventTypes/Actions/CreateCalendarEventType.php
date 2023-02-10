@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEventTypes\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -38,9 +40,13 @@ class CreateCalendarEventType
         return [InjectClientId::class];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): CalendarEventType
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         CalendarEventTypeAggregate::retrieve($id)
             ->create($data)

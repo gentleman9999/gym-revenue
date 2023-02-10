@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns;
 
 use App\Domain\Audiences\Audience;
@@ -8,6 +10,7 @@ use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\Member;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -16,9 +19,11 @@ class CallOutcome extends GymRevProjection
     use SoftDeletes;
     use Sortable;
 
+    /** @var array<string> */
     protected $hidden = ['client_id'];
 
-    protected $fillable = ['client_id','field', 'value', 'misc', 'active', 'lead_id', 'member_id'];
+    /** @var array<string> */
+    protected $fillable = ['client_id', 'field', 'value', 'misc', 'active', 'lead_id', 'member_id'];
 
     public function client(): BelongsTo
     {
@@ -50,13 +55,17 @@ class CallOutcome extends GymRevProjection
         return $this->member();
     }
 
-    public function scopeFilter($query, array $filters): void
+    /**
+     * @param array<string, mixed> $filters
+     *
+     */
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('field', 'like', '%' . $search . '%');
             });
-        })->when($filters['trashed'] ?? null, function ($query, $trashed) {
+        })->when($filters['trashed'] ?? null, function ($query, $trashed): void {
             if ($trashed === 'with') {
                 $query->withTrashed();
             } elseif ($trashed === 'only') {

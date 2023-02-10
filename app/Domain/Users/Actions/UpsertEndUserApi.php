@@ -19,7 +19,7 @@ abstract class UpsertEndUserApi extends BaseEndUserAction
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'user_type' => ['required', 'in:lead,customer,member'],
@@ -53,12 +53,12 @@ abstract class UpsertEndUserApi extends BaseEndUserAction
             $lead = EndUser::whereEmail($data['email'])
                 ->first();
         }
-        if (is_null($lead)) {
-            $aggy = UserAggregate::retrieve((string)$id);
+        if ($lead === null) {
+            $aggy = UserAggregate::retrieve((string) $id);
             $aggy->create($data);
         } else {
             $old_data = $lead->toArray();
-            $aggy = UserAggregate::retrieve($old_data['id']);
+            $aggy     = UserAggregate::retrieve($old_data['id']);
             $aggy->update($data);
         }
 

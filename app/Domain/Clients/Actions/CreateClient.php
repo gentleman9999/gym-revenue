@@ -1,25 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Clients\Projections\Client;
 use App\Enums\ClientServiceEnum;
 use App\Support\Uuid;
-use function collect;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
+
+use function collect;
 
 class CreateClient
 {
     use AsAction;
 
-    public string $commandSignature = 'client:create';
+    public string $commandSignature   = 'client:create';
     public string $commandDescription = 'Creates a client with the given name.';
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): Client
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         $aggy = ClientAggregate::retrieve($id);
 
@@ -30,11 +37,11 @@ class CreateClient
 
     public function asCommand(Command $command): void
     {
-        $client_name = $command->ask("Enter Client Name");
-        $activated = $command->confirm("Activate?");
-        $client_feature_enums = collect(ClientServiceEnum::cases())->pluck('name');
+        $client_name               = $command->ask("Enter Client Name");
+        $activated                 = $command->confirm("Activate?");
+        $client_feature_enums      = collect(ClientServiceEnum::cases())->pluck('name');
         $available_client_services = $client_feature_enums->prepend("ALL")->toArray();
-        $client_services = $command->choice("Which client services to enable?", $available_client_services, 0, null, true);
+        $client_services           = $command->choice("Which client services to enable?", $available_client_services, 0, null, true);
         if ($client_services[0] === "ALL") {
             $client_services = $available_client_services;
         }

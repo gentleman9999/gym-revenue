@@ -16,7 +16,7 @@ class CreateContractGate
     /**
      * Get the validation rules that apply to the action.
      *
-     * @return array
+     * @return array<string, array<string>>
      */
     public function rules(): array
     {
@@ -28,6 +28,10 @@ class CreateContractGate
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): ContractGate
     {
         $id = Uuid::get();

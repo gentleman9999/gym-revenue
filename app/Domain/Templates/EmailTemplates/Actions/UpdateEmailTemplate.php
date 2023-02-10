@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\EmailTemplates\Actions;
 
 use App\Actions\GymRevAction;
 use App\Domain\Templates\EmailTemplates\EmailTemplateAggregate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
-
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-
 use Prologue\Alerts\Facades\Alert;
 
 class UpdateEmailTemplate extends GymRevAction
@@ -30,7 +30,12 @@ class UpdateEmailTemplate extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         $emailTemplate = $args['input'];
 

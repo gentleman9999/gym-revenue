@@ -22,17 +22,23 @@ class Agreement extends GymRevProjection
 {
     use HasFactory;
     use SoftDeletes;
+
     /** @see https://github.com/GymRevenue/versionable */
     use Versionable;
     use Uuid;
 
 
-    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id', 'user_id', 'agreement_template_id', 'active', 'contract_file_id'];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
+    /** @var array<string> */
+    protected $fillable = [
+        'client_id',
+        'gr_location_id',
+        'created_by',
+        'agreement_category_id',
+        'user_id',
+        'agreement_template_id',
+        'active',
+        'contract_file_id',
+    ];
 
     public function client(): HasOne
     {
@@ -62,5 +68,10 @@ class Agreement extends GymRevProjection
     public function template(): HasOne
     {
         return $this->hasOne(AgreementTemplate::class, 'id', 'agreement_template_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

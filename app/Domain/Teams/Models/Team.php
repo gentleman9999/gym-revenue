@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Models;
 
 use App\Domain\Clients\Projections\Client;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Database\Factories\TeamFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,82 +31,42 @@ class Team extends JetstreamTeam
     use Sortable;
     use HasFactory;
 
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
+    /** @var bool */
     public $incrementing = false;
 
+    /** @var string */
+    protected $primaryKey = 'id';
+
+    /** @var string */
+    protected $keyType = 'string';
+
+    /** @var array<string> */
     protected $hidden = [
         'client_id',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
+    /** @var array<string, string> */
     protected $casts = [
         'home_team' => 'boolean',
         'details' => 'array',
     ];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
+    /** @var array<string> */
     protected $fillable = [
         'name',
         'home_team',
     ];
 
-    /**
-     * The event map for the model.
-     *
-     * @var array
-     */
+    /** @var array<string, string> */
     protected $dispatchesEvents = [
         'created' => TeamCreated::class,
         'updated' => TeamUpdated::class,
         'deleted' => TeamDeleted::class,
     ];
 
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-        static::retrieved(function ($model) {
-            if ($model->client_id == null) {
-                $model->setAppends(['GymRevTeam']);
-            }
-        });
-    }
-
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return Factory
-     */
-    protected static function newFactory(): Factory
-    {
-        return TeamFactory::new();
-    }
-
     public function locations(): array
     {
         return $this->details['team-locations'];
-    }
-
-    public static function fetchTeamIDFromName(string $name)
-    {
-        $model = new self();
-
-        return $model->getTeamIDFromName($name);
     }
 
     public function getTeamIDFromName(string $name): ?string
@@ -115,21 +78,24 @@ class Team extends JetstreamTeam
 
     public function team_users(): HasMany
     {
-        return $this->hasMany(TeamUser::class, 'team_id', 'id')
-            ->with('user');
+        return $this->hasMany(TeamUser::class, 'team_id', 'id')->with('user');
     }
 
     public function isClientsDefaultTeam(): bool
     {
         $proof = Client::where('details->default-team', $this->id)->first();
 
-        return (! is_null($proof));
+        return ($proof !== null);
     }
 
-    public function scopeFilter($query, array $filters): void
+    /**
+     * @param array<string, mixed> $filters
+     *
+     */
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('name', 'like', '%' . $search . '%');
             });
         })->when($filters['club'] ?? null, function ($query, $location_id) {
@@ -137,10 +103,58 @@ class Team extends JetstreamTeam
                 return $query->whereField('team-location')->whereValue($location_id);
             });
         })->when($filters['users'] ?? null, function ($query, $user) {
-            return $query->whereHas('team_users', function ($query) use ($user) {
+            return $query->whereHas('team_users', function ($query) use ($user): void {
                 $query->whereIn('user_id', $user);
             });
         });
+    }
+
+    /**
+     * Get all of the users that belong to the team.
+     *
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(Jetstream::userModel(), Jetstream::membershipModel())
+            ->with('roles')
+            ->withTimestamps()
+            ->as('membership');
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    /**
+     * Get the owner of the team. (Client)
+     *
+     */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    /**
+     * Get all of the team's users including its owner.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function allUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function getGymRevTeamAttribute(): bool
+    {
+        return $this->client_id === null;
+    }
+
+    public static function fetchTeamIDFromName(string $name)
+    {
+        $model = new self();
+
+        return $model->getTeamIDFromName($name);
     }
 
     public static function getTeamName($team_id): ?string
@@ -157,55 +171,31 @@ class Team extends JetstreamTeam
         return $model->client_id ?? null;
     }
 
-    /**
-     * Get all of the users that belong to the team.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(Jetstream::userModel(), Jetstream::membershipModel())
-            ->with('roles')
-            ->withTimestamps()
-            ->as('membership');
-    }
-
-    public function client(): BelongsTo
-    {
-        return $this->belongsTo(Client::class);
-    }
-
     public static function getGymRevAdminTeams(): Collection
     {
         return self::withoutGlobalScopes()->whereClientId(null)->get();
     }
 
     /**
-     * Get the owner of the team. (Client)
+     * The "booted" method of the model.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function owner(): BelongsTo
+    protected static function booted(): void
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        static::addGlobalScope(new ClientScope());
+        static::retrieved(function ($model): void {
+            if ($model->client_id == null) {
+                $model->setAppends(['GymRevTeam']);
+            }
+        });
     }
 
     /**
-
-     * Get all of the team's users including its owner.
-
+     * Create a new factory instance for the model.
      *
-
-     * @return \Illuminate\Support\Collection
-
      */
-    public function allUsers(): Collection
+    protected static function newFactory(): Factory
     {
-        return $this->users;
-    }
-
-    public function getGymRevTeamAttribute(): bool
-    {
-        return $this->client_id === null;
+        return TeamFactory::new();
     }
 }

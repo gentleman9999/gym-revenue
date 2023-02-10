@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Aggregates;
 
 use App\Domain\Clients\Projections\Client;
@@ -37,24 +39,25 @@ class UserAggregate extends AggregateRoot
 {
     use EndUserAggregate;
 
-    protected $client_id = '';
-    protected $teams = [];
+    protected string $client_id = '';
+    /** @var array<string, mixed> */
+    protected array $teams = [];
+    /** @var array<string, mixed> */
     protected array $activity_history = [];
-    protected $phone_number = '';
-    protected string $name = '';
-    protected string $first_name = '';
-    protected string $last_name = '';
-    protected string $email = '';
-    protected string $alt_email = '';
-    protected string $address1 = '';
-    protected string $address2 = '';
-    protected string $city = '';
-    protected string $state = '';
-    protected string $zip = '';
-    protected string $notes = '';
-    protected string $start_date = '';
-    protected string $end_date = '';
-    protected string $termination_date = '';
+    protected string $phone_number    = '';
+    protected string $name            = '';
+    protected string $first_name      = '';
+    protected string $last_name       = '';
+    protected string $email           = '';
+    protected string $address1        = '';
+    protected string $address2        = '';
+    protected string $city            = '';
+    protected string $state           = '';
+    protected string $zip             = '';
+    protected string $notes           = '';
+    protected string $start_date      = '';
+    protected string $end_date        = '';
+    /** @var array<int, mixed>  */
     protected array $note_list = [];
 
     public function grantAccessToken(): static
@@ -101,6 +104,7 @@ class UserAggregate extends AggregateRoot
         if (array_key_exists('email', $event->payload)) {
             $this->email = $event->payload['email'];
         }
+
         // @todo - put something useful here
     }
 
@@ -119,7 +123,7 @@ class UserAggregate extends AggregateRoot
         }
 
         $length_array = count($this->note_list);
-        $prev_type = '';
+        $prev_type    = '';
         if ($length_array > 0) {
             $prev_type = $this->note_list[$length_array - 1]['current_type'];
         }
@@ -127,11 +131,11 @@ class UserAggregate extends AggregateRoot
         array_push(
             $this->note_list,
             ['note_id' => $event->note_id,
-            'title' => $event->payload['notes']['title'],
-            'note' => $event->payload['notes']['note'],
-            'current_type' => $event->payload['user_type']['value'],
-            'prev_type' => $prev_type,
-        ]
+                'title' => $event->payload['notes']['title'],
+                'note' => $event->payload['notes']['note'],
+                'current_type' => $event->payload['user_type']['value'],
+                'prev_type' => $prev_type,
+            ]
         );
     }
 
@@ -209,10 +213,15 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return $this
+     */
     public function create(array $payload): static
     {
         if (isset($payload['notes'])) {
-            $id = Uuid::new();
+            $id = Uuid::get();
             $this->recordThat(new NoteUpdated($id, $payload));
             $payload['note_id'] = $id;
         }
@@ -221,10 +230,15 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return $this
+     */
     public function update(array $payload): static
     {
         if (isset($payload['notes'])) {
-            $id = Uuid::new();
+            $id = Uuid::get();
             $this->recordThat(new NoteUpdated($id, $payload));
             $payload['note_id'] = $id;
         }
@@ -264,13 +278,19 @@ class UserAggregate extends AggregateRoot
     }
 
     //TODO we need to obfuscate data in the aggregate a well (even before the point in time it was obfuscated)
-    public function ObfuscateUser(): static
+    public function obfuscateUser(): static
     {
         $this->recordThat(new UserObfuscated());
 
         return $this;
     }
 
+    /**
+     * @param string $table
+     * @param array<string>  $field_ids
+     *
+     * @return $this
+     */
     public function setCustomCrudColumns(string $table, array $field_ids): static
     {
         $this->recordThat(new UserSetCustomCrudColumns($table, $field_ids));
@@ -278,17 +298,20 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function getTeams(): array
     {
         $results = $this->teams;
 
         $client = new Client();
         foreach ($results as $idx => $team) {
-            if (! is_null($team['client_id']) && (($client->id ?? null) != $team['client_id'])) {
+            if ($team['client_id'] !== null && (($client->id ?? null) != $team['client_id'])) {
                 $client = $client->find($team['client_id']);
             }
 
-            $client_name = $client->name ?? 'GymRevenue';
+            $client_name                  = $client->name ?? 'GymRevenue';
             $results[$idx]['client_name'] = $client_name;
         }
 
@@ -351,6 +374,11 @@ class UserAggregate extends AggregateRoot
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return $this
+     */
     public function createNotification(array $data): static
     {
         $this->recordThat(new NotificationCreated($data));
@@ -365,6 +393,11 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return $this
+     */
     public function createReminder(array $payload): static
     {
         $this->recordThat(new ReminderCreated($payload));
@@ -372,6 +405,11 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return $this
+     */
     public function updateReminder(array $payload): static
     {
         $this->recordThat(new ReminderUpdated($payload));
@@ -393,6 +431,11 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return $this
+     */
     public function uploadFile(array $payload): static
     {
         $this->recordThat(new FileUploaded($payload));
@@ -400,11 +443,16 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    /**
+     * @param string $type
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function getNoteList(string $type): array
     {
-        $list = [];
+        $list      = [];
         $lifecycle = 0;
-        foreach ($this->note_list as $key => $value) {
+        foreach ($this->note_list as $value) {
             # code...
             if ($value['current_type'] === $type) {
                 if ($value['prev_type'] != $value['current_type'] && $value['prev_type'] != "") {

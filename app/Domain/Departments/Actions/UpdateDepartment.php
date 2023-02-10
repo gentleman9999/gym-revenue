@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Departments\Actions;
 
 use App\Domain\Departments\Department;
@@ -20,7 +22,7 @@ class UpdateDepartment
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => ['string', 'required'],
@@ -35,13 +37,6 @@ class UpdateDepartment
         return $department->refresh();
     }
 
-    public function __invoke($_, array $args): Department
-    {
-        $department = Department::find($args['id']);
-
-        return $this->handle($department, $args);
-    }
-
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
@@ -49,6 +44,9 @@ class UpdateDepartment
         return $current_user->can('departments.create', Department::class);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -67,5 +65,17 @@ class UpdateDepartment
         Alert::success("Department '{$department->name}' was updated")->flash();
 
         return Redirect::route('departments.edit', $department->id);
+    }
+
+    /**
+     * @param       $_
+     * @param array<string, mixed> $args
+     *
+     */
+    public function __invoke($_, array $args): Department
+    {
+        $department = Department::find($args['id']);
+
+        return $this->handle($department, $args);
     }
 }

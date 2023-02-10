@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail\Users;
 
 use App\Domain\Users\Models\User;
@@ -38,7 +40,7 @@ class NewUserWelcomeEmail extends Mailable
             env('MAIL_FROM_ADDRESS', 'developers@capeandbay.com'),
             env('MAIL_FROM_NAME', 'Cape & Bay Dev Team')
         )
-            ->subject('You have been invited to join '.env('APP_NAME')." as {$role}!")
+            ->subject('You have been invited to join ' . env('APP_NAME') . " as {$role}!")
             ->view('emails.users.new-welcome-email', ['new_user' => $this->user]);
     }
 }

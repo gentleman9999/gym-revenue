@@ -18,7 +18,13 @@ class MemberGroup extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
+    /** @var array<string> */
     protected $fillable = ['client_id', 'type', 'poc_name', 'poc_phone', 'poc_email'];
+
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class, 'id', 'client_id');
+    }
 
     protected static function booted(): void
     {
@@ -28,15 +34,9 @@ class MemberGroup extends GymRevProjection
     /**
      * Create a new factory instance for the model.
      *
-     * @return Factory
      */
     protected static function newFactory(): Factory
     {
         return MemberGroupFactory::new();
-    }
-
-    public function client(): HasOne
-    {
-        return $this->hasOne(Client::class, 'id', 'client_id');
     }
 }

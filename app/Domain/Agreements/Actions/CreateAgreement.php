@@ -15,6 +15,9 @@ class CreateAgreement
 {
     use AsAction;
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function rules(): array
     {
         return [
@@ -29,6 +32,11 @@ class CreateAgreement
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @throws \Exception
+     */
     public function handle(array $data): Agreement
     {
         //Getting contract id and billing schedule id from agreement template

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
@@ -11,7 +13,7 @@ class UnpublishScheduledCampaign
 {
     use AsAction;
 
-    public string $commandSignature = 'scheduled-campaign:unpublish {id}';
+    public string $commandSignature   = 'scheduled-campaign:unpublish {id}';
     public string $commandDescription = 'unpublishes the scheduled campaign';
 
     public function handle(ScheduledCampaign $scheduledCampaign): void

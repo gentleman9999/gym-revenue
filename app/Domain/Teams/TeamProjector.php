@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams;
 
 use App\Domain\Teams\Events\TeamCreated;
@@ -16,7 +18,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class TeamProjector extends Projector
 {
-    public function onStartingEventReplay()
+    public function onStartingEventReplay(): void
     {
         Team::truncate();
         TeamInvitation::truncate();
@@ -31,7 +33,7 @@ class TeamProjector extends Projector
             return in_array($key, (new Team())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
         $team->fill($team_fillable_data);
-        $team->id = $event->aggregateRootUuid();
+        $team->id        = $event->aggregateRootUuid();
         $team->client_id = $event->payload['client_id'] ?? null;
         //TODO:just use a team_location pivot table
         $team->details = ['team-locations' => $event->payload['locations'] ?? []];
@@ -48,13 +50,13 @@ class TeamProjector extends Projector
         $team_fillable_data = array_filter($event->payload, function ($key) {
             return in_array($key, (new Team())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
-        $team = Team::findOrFail($event->aggregateRootUuid());
+        $team               = Team::findOrFail($event->aggregateRootUuid());
         $team->fill($team_fillable_data);
 
         if (array_key_exists('locations', $event->payload)) {
-            $details = $team->details;
+            $details                   = $team->details;
             $details['team-locations'] = $event->payload['locations'];
-            $team->details = $details;
+            $team->details             = $details;
         }
 
         $team->save();

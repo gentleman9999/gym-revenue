@@ -42,15 +42,15 @@ class SignAgreement
 
     public function asController(ActionRequest $request, string $agreement_id): string
     {
-        $params = $request->validated();
-        $agreement = Agreement::find($agreement_id);
+        $params            = $request->validated();
+        $agreement         = Agreement::find($agreement_id);
         $params['user_id'] = $agreement->user->id;
-        $params['active'] = $agreement->active;
+        $params['active']  = $agreement->active;
 
         return $this->handle($params, $agreement_id);
     }
 
-    public function jsonResponse(String $url): jsonResponse
+    public function jsonResponse(string $url): jsonResponse
     {
         return new JsonResponse(['url' => $url]);
     }

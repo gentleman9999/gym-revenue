@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\DynamicReports\Actions;
 
 use App\Domain\DynamicReports\DynamicReportAggregate;
@@ -31,9 +33,13 @@ class CreateReport
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): DynamicReport
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         $aggy = DynamicReportAggregate::retrieve($id);
         $aggy->create($data)->persist();
@@ -41,6 +47,9 @@ class CreateReport
         return DynamicReport::findOrFail($id);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

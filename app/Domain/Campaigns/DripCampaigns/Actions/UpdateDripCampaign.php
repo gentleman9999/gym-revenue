@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\DripCampaigns\Actions;
 
 use App\Actions\GymRevAction;
@@ -17,7 +19,7 @@ class UpdateDripCampaign extends GymRevAction
         if (! $dripCampaign->can_publish) {
             //campaign is either active or completed. don't allow updating anything but name
             $allowedKeys = ['name'];
-            $payload = array_filter_only_keys($payload, $allowedKeys);
+            $payload     = array_filter_only_keys($payload, $allowedKeys);
         }
 
         if (count($payload)) {
@@ -28,10 +30,10 @@ class UpdateDripCampaign extends GymRevAction
             $days_to_remove->each(fn ($id) => TrashDripCampaignDay::run($dripCampaign->days->find($id)));
 
             foreach ($payload['days'] as $day) {
-                $dayData['day_of_campaign'] = $day['day_in_campaign'];
+                $dayData['day_of_campaign']   = $day['day_in_campaign'];
                 $dayData['email_template_id'] = $day['email'];
-                $dayData['sms_template_id'] = $day['sms'];
-                $dayData['call_template_id'] = $day['call'];
+                $dayData['sms_template_id']   = $day['sms'];
+                $dayData['call_template_id']  = $day['call'];
                 if (! array_key_exists('id', $day)) {
                     //new day
                     $dayData['drip_campaign_id'] = $dripCampaign->id;
@@ -40,7 +42,7 @@ class UpdateDripCampaign extends GymRevAction
                     break;
                 }
                 //not a new day, see if we need to update
-                $existingDay = $dripCampaign->days->find($day['id']);
+                $existingDay    = $dripCampaign->days->find($day['id']);
                 $existingDayArr = $existingDay->toArray();
                 foreach ($dayData as $key => $val) {
                     if ($existingDayArr[$key] !== $val) {
@@ -70,7 +72,12 @@ class UpdateDripCampaign extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         $dripCampaign = $args['campaign'];
 

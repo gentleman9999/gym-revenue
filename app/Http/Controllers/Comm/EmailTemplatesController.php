@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Comm;
 
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
@@ -14,7 +16,7 @@ class EmailTemplatesController extends Controller
     public function index(): Response
     {
         $page_count = 10;
-        $templates = [
+        $templates  = [
             'data' => [],
         ];
 
@@ -67,9 +69,7 @@ class EmailTemplatesController extends Controller
 
     public function getFiles(): Collection
     {
-        $files = File::whereFileableType(EmailTemplate::class)
+        return File::whereFileableType(EmailTemplate::class)
             ->get();
-
-        return $files;
     }
 }

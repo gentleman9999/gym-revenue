@@ -18,6 +18,8 @@ class TwilioVoice extends VoiceGatewayProvider
     protected TwilioClient $twilio_client;
 
     /**
+     * @param array<string, mixed> $credentials
+     *
      * @throws ConfigurationException
      */
     public function __construct(protected array $credentials)
@@ -27,11 +29,7 @@ class TwilioVoice extends VoiceGatewayProvider
     }
 
     /**
-     * @param User   $caller
-     * @param string $to
-     * @param bool   $record
      *
-     * @return CallInstance
      * @throws TwilioException
      * @throws VoiceCallException
      */
@@ -43,10 +41,10 @@ class TwilioVoice extends VoiceGatewayProvider
 
         if (AppState::isSimuationMode()) {
             $from = Env::get('TWILIO_TEST_EMPLOYEE_NO');
-            $to = Env::get('TWILIO_TEST_LEAD_NO');
+            $to   = Env::get('TWILIO_TEST_LEAD_NO');
         }
 
-        $to = $this->twilio_client->lookups->v1->phoneNumbers($to)->fetch(['countryCode' => 'US'])->phoneNumber;
+        $to   = $this->twilio_client->lookups->v1->phoneNumbers($to)->fetch(['countryCode' => 'US'])->phoneNumber;
         $from = $this->twilio_client->lookups->v1->phoneNumbers($from)->fetch(['countryCode' => 'US'])->phoneNumber;
         $host = Env::get('EXPOSED_APP_URL', Env::get('APP_URL'));
 

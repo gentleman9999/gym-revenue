@@ -14,10 +14,10 @@ class EmailTemplateBlockProjector extends Projector
 {
     public function onEmailTemplateBlockCreated(EmailTemplateBlockCreated $event): void
     {
-        $block = new EmailTemplateBlock();
-        $block->id = $event->aggregateRootUuid();
+        $block            = new EmailTemplateBlock();
+        $block->id        = $event->aggregateRootUuid();
         $block->client_id = $event->clientId();
-        $block->user_id = $event->userId();
+        $block->user_id   = $event->userId();
 
         $block->fill($event->payload);
         $block->writeable()->save();

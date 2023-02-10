@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\GatewayProviders\MessageInterpreters\Email;
 
 use App\Services\GatewayProviders\MessageInterpreters\MessageInterpreterService;
@@ -28,22 +30,22 @@ class StandardEmailInterpreter extends MessageInterpreterService
 
     public function translate(string $msg)
     {
-        $results = $msg;
+        $results      = $msg;
         $wordsplosion = explode(' ', $msg);
-        $new_msg = '';
+        $new_msg      = '';
         foreach ($wordsplosion as $idx => $word) {
             if (str_contains($word, '%')) {
-                $token = Str::between($word, '%', '%');
+                $token           = Str::between($word, '%', '%');
                 $corrected_token = "%{$token}%";
                 if (array_key_exists($corrected_token, $this->token_library)) {
                     $new_word = $this->getTranslatedValue($this->token_library[$corrected_token]);
                     $new_word = str_replace($corrected_token, $new_word, $word);
-                    $new_msg .= ($idx > 0) ? " {$new_word}" : "{$new_word}";
+                    $new_msg .= $idx > 0 ? " {$new_word}" : "{$new_word}";
                 } else {
-                    $new_msg .= ($idx > 0) ? " {$word}" : "{$word}";
+                    $new_msg .= $idx > 0 ? " {$word}" : "{$word}";
                 }
             } else {
-                $new_msg .= ($idx > 0) ? " {$word}" : "{$word}";
+                $new_msg .= $idx > 0 ? " {$word}" : "{$word}";
             }
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Models;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -19,12 +21,16 @@ class ClientGatewayIntegration extends Model
     use SoftDeletes;
     use Uuid;
 
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
+    /** @var bool  */
     public $incrementing = false;
 
+    /** @var string  */
+    protected $primaryKey = 'id';
+
+    /** @var string  */
+    protected $keyType = 'string';
+
+    /** @var array<string>  */
     protected $fillable = [
         'gateway_id',
         'client_id',

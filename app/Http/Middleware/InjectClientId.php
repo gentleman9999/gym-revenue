@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -10,11 +12,9 @@ class InjectClientId
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
     {
         $user = $request->user();
         if ($user->isClientUser()) {
@@ -35,7 +35,7 @@ class InjectClientId
         //is an array of objects
         foreach ($body as $idx => $object) {
             $object['client_id'] = $client_id;
-            $body[$idx] = $object;
+            $body[$idx]          = $object;
         }
 
         $request->merge($body);

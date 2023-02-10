@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail\EndUser;
 
 use App\Domain\Users\Models\Lead;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\Reminders\Reminder;
@@ -14,7 +16,7 @@ class RemindersController extends Controller
     {
         $client_id = request()->user()->client_id;
 
-        if (is_null($client_id)) {
+        if ($client_id === null) {
             return Redirect::route('dashboard');
         }
 

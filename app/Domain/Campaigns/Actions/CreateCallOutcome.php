@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -16,9 +18,14 @@ class CreateCallOutcome
 {
     use AsAction;
 
+    /**
+     * @param array<string, mixed>         $payload
+     * @param CalendarEvent $calendarEvent
+     *
+     */
     public function handle(array $payload, CalendarEvent $calendarEvent): CalendarEvent
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         $aggy = CallOutcomeAggregate::retrieve($id);
 
@@ -27,6 +34,9 @@ class CreateCallOutcome
         return $calendarEvent->refresh();
     }
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function rules(): array
     {
         return [
@@ -37,6 +47,9 @@ class CreateCallOutcome
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -51,7 +64,7 @@ class CreateCallOutcome
 
     public function asController(ActionRequest $request, CalendarEvent $calendarEvent): CalendarEvent
     {
-        $data = $request->validated();
+        $data              = $request->validated();
         $data['client_id'] = request()->user()->client_id;
 
         return $this->handle(

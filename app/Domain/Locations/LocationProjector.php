@@ -15,11 +15,11 @@ use Spatie\EventSourcing\Facades\Projectionist;
 
 class LocationProjector extends Projector
 {
-    public function onStartingEventReplay()
+    private $details = ['poc_first', 'poc_last', 'poc_phone'];
+    public function onStartingEventReplay(): void
     {
         Location::truncate();
     }
-    private $details = ['poc_first', 'poc_last', 'poc_phone'];
 
     public function onLocationCreated(LocationCreated $event): void
     {
@@ -28,10 +28,10 @@ class LocationProjector extends Projector
             return in_array($key, (new Location())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
 
-        $location = (new Location())->writeable();
-        $location->id = $event->aggregateRootUuid();
+        $location            = (new Location())->writeable();
+        $location->id        = $event->aggregateRootUuid();
         $location->client_id = $event->clientId();
-        $details = [];
+        $details             = [];
 
         if (Projectionist::isReplaying()) {
             if (count($location_table_data) != count($location_table_data, COUNT_RECURSIVE)) {
@@ -56,11 +56,11 @@ class LocationProjector extends Projector
         }, ARRAY_FILTER_USE_KEY);
 
         $location = Location::findOrFail($event->aggregateRootUuid())->writeable();
-        $details = $location->details ?? [];
+        $details  = $location->details ?? [];
 
         foreach ($this->details as $field) {
             $value = $event->payload[$field] ?? null;
-            if (array_key_exists($field, $details) && is_null($value)) {
+            if (array_key_exists($field, $details) && $value === null) {
                 $value = $details[$field];
             }
 

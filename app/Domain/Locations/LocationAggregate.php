@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations;
 
 use App\Domain\Locations\Events\LocationClosed;

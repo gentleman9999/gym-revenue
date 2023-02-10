@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Files\Actions;
 
 use App\Actions\GymRevAction;
-
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
@@ -14,7 +15,7 @@ class DeleteFile extends GymRevAction
 {
     public function handle($data)
     {
-        $id = $data['id'];
+        $id      = $data['id'];
         $deleted = File::withTrashed()->findOrFail($id);
         FileAggregate::retrieve($id)->delete($data['user_id'] ?? "Auto Generated", $deleted)->persist();
 
@@ -35,9 +36,9 @@ class DeleteFile extends GymRevAction
 
     public function asController(ActionRequest $request, $id)
     {
-        $user = $request->user();
+        $user    = $request->user();
         $user_id = $user->id ?? null;
-        $data = [
+        $data    = [
             'id' => $id,
             'user_id' => $user_id,
         ];

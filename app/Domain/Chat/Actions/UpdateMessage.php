@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Chat\Actions;
 
 use App\Domain\Chat\Aggregates\ChatMessageAggregate;
@@ -54,6 +56,9 @@ class UpdateMessage
         return $chat_message;
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -73,24 +78,24 @@ class UpdateMessage
 
     public function asCommand(Command $command): void
     {
-        $payload = [];
-        $chat = Chat::find($command->choice(
+        $payload                     = [];
+        $chat                        = Chat::find($command->choice(
             'Select Chat Session you want to Update:',
             Chat::all()->pluck('id')->toArray(),
         ));
         $payload['internal_chat_id'] = $chat->id;
-        $chatDetail = ChatMessage::find($command->choice(
+        $chatDetail                  = ChatMessage::find($command->choice(
             'What message do you want to change?',
             ChatMessage::all()->pluck('id')->toArray(),
         ));
         VarDumper::dump($chatDetail);
         $payload['id'] = $chatDetail->id;
-        $updateField = $command->choice(
+        $updateField   = $command->choice(
             'What field do you want to change?',
             Schema::getColumnListing($chatDetail->getTable())
         );
-        $client_id = Chat::whereId($chat->id)->pluck('client_id')->toArray()[0];
-        $users = User::whereClientId($client_id)->pluck('id')->toArray();
+        $client_id     = Chat::whereId($chat->id)->pluck('client_id')->toArray()[0];
+        $users         = User::whereClientId($client_id)->pluck('id')->toArray();
         switch ($updateField) {
             case 'field':
                 $payload[$updateField] = $command->ask('What would you like to say? [' . $chatDetail->field . ']');

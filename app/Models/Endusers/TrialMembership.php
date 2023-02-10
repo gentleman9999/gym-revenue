@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Endusers;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -13,13 +15,23 @@ class TrialMembership extends Model
     use SoftDeletes;
     use Uuid;
 
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
+    /** @var bool */
     public $incrementing = false;
 
+    /** @var string */
+    protected $primaryKey = 'id';
+
+    /** @var string */
+    protected $keyType = 'string';
+
+    /** @var array<string> */
     protected $fillable = [
-        'client_id', 'type_id', 'lead_id', 'start_date', 'expiry_date', 'location_id', 'active',
+        'client_id',
+        'type_id',
+        'lead_id',
+        'start_date',
+        'expiry_date',
+        'location_id',
+        'active',
     ];
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams;
 
 use App\Domain\Teams\Events\TeamCreated;

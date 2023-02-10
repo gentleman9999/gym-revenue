@@ -20,10 +20,10 @@ class GetCustomers
 {
     use AsAction;
 
-    public function handle(Team $current_team, User $user, array $filter_params, string $sort = null, string $dir = null): array
+    public function handle(Team $current_team, User $user, array $filter_params, ?string $sort = null, ?string $dir = null): array
     {
         $page_count = 10;
-        $customers = [];
+        $customers  = [];
 
         /**
          * BUSINESS RULES

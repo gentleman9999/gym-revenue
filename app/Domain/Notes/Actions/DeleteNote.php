@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notes\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -19,7 +21,7 @@ class DeleteNote
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             //no rules since we only accept an id route param, which is validated in the route definition
@@ -28,7 +30,7 @@ class DeleteNote
 
     public function handle($current_user, $id)
     {
-        $note = Note::findOrFail($id);
+        $note      = Note::findOrFail($id);
         $client_id = $current_user->client_id;
         ClientAggregate::retrieve($client_id)->deleteNote($current_user->id, $id)->persist();
 

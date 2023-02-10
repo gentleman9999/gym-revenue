@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -11,7 +13,6 @@ use App\Support\CurrentInfoRetriever;
 use function auth;
 
 use Lorisleiva\Actions\ActionRequest;
-
 use Lorisleiva\Actions\Concerns\AsAction;
 
 use function request;
@@ -35,7 +36,7 @@ class GetUsersToImpersonate
         try {
             $data = $request->validated();
 
-            $user = auth()->user();
+            $user      = auth()->user();
             $user_role = User::find($user->id)->role();
 
             // Get the User's currently active team
@@ -87,7 +88,7 @@ class GetUsersToImpersonate
 
             if (count($users) > 0) {
                 $potential_imp_users = $users;
-                $users = [];
+                $users               = [];
 
                 if (count($allowed_roles) > 0) {
                     foreach ($potential_imp_users as $potential_imp_user) {
@@ -113,7 +114,7 @@ class GetUsersToImpersonate
 
             $users = collect($users)->sortBy('group')->toArray();
 
-            $counter = 0;
+            $counter     = 0;
             $sortedArray = [];
             foreach ($users as $result) {
                 unset($result['group']);
@@ -135,10 +136,10 @@ class GetUsersToImpersonate
     public function jsonResponse($result)
     {
         $results = false;
-        $code = 500;
+        $code    = 500;
 
         if (count($result) > 0) {
-            $code = 200;
+            $code    = 200;
             $results = $result;
         }
 

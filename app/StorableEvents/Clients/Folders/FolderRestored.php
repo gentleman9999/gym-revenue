@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\StorableEvents\Clients\Folders;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
@@ -12,6 +14,6 @@ class FolderRestored extends ShouldBeStored
     public function __construct(string $user, $id)
     {
         $this->user = $user;
-        $this->id = $id;
+        $this->id   = $id;
     }
 }

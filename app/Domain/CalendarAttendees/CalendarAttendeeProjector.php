@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarAttendees;
 
 use App\Domain\CalendarAttendees\Events\CalendarAttendeeAccepted;
@@ -13,8 +15,8 @@ class CalendarAttendeeProjector extends Projector
 {
     public function onCalendarAttendeeAdded(CalendarAttendeeAdded $event): void
     {
-        $calendarAttendee = (new CalendarAttendee())->writeable();
-        $calendarAttendee->id = $event->aggregateRootUuid();
+        $calendarAttendee            = (new CalendarAttendee())->writeable();
+        $calendarAttendee->id        = $event->aggregateRootUuid();
         $calendarAttendee->client_id = $event->clientId();
         $calendarAttendee->fill($event->payload);
         if (Projectionist::isReplaying()) {

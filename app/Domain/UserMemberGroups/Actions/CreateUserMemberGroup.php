@@ -31,6 +31,10 @@ class CreateUserMemberGroup
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): UserMemberGroup
     {
         $id = Uuid::get();
@@ -39,6 +43,9 @@ class CreateUserMemberGroup
         return UserMemberGroup::findOrFail($id);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

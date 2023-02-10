@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Reminders\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
@@ -12,7 +14,7 @@ class CheckReminders
 {
     use AsAction;
 
-    public string $commandSignature = 'reminders:check';
+    public string $commandSignature   = 'reminders:check';
     public string $commandDescription = 'Fires off reminders that are ready.';
 
     public function handle(): void
@@ -20,9 +22,9 @@ class CheckReminders
         Log::debug("checking for reminders");
         $reminders = Reminder::whereNull('triggered_at')->with('event')->get();
 
-        $reminders->each(function ($reminder) {
+        $reminders->each(function ($reminder): void {
             if ($reminder->entity_type == CalendarEvent::class) {
-                $time = date('Y-m-d H:i:s', strtotime($reminder->event->start. '-'.$reminder->remind_time.' minutes'));
+                $time = date('Y-m-d H:i:s', strtotime($reminder->event->start . '-' . $reminder->remind_time . ' minutes'));
                 if ($time < date('Y-m-d H:i:s')) {
                     TriggerReminder::run($reminder);
                 }

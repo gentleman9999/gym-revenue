@@ -7,8 +7,8 @@ namespace App\Enums;
 enum AgreementAvailabilityEnum: string
 {
     case InStore = 'In Store';
-    case Online = 'Online';
-    case InApp = 'In App';
+    case Online  = 'Online';
+    case InApp   = 'In App';
 
     public static function asArray(): array
     {

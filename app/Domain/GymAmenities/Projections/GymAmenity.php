@@ -14,7 +14,8 @@ class GymAmenity extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['client_id','location_id', 'name', 'capacity', 'working_hour', 'started_at', 'closed_at'];
+    /** @var array<string> */
+    protected $fillable = ['client_id', 'location_id', 'name', 'capacity', 'working_hour', 'started_at', 'closed_at'];
 
     protected static function booted(): void
     {

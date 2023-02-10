@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\GraphQL\Queries;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Models\Team;
 use App\Services\Dashboard\HomeDashboardService;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 final class DashboardQuery
 {
@@ -18,23 +22,27 @@ final class DashboardQuery
     }
 
     /**
-     * @param  null  $_
-     * @param  array{}  $args
+     * @param null    $_
+     * @param array<string, mixed> $_args
+     *
+     * @return array<string, mixed>
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function __invoke($_, array $args)
+    public function __invoke($_, array $_args): array
     {
         // TODO implement the resolver
-        $user = auth()->user();
+        $user         = auth()->user();
         $session_team = session()->get('current_team');
         if ($session_team && array_key_exists('id', $session_team)) {
             $team = Team::find($session_team['id']);
         } else {
             $team = Team::find($user->default_team_id);
         }
-        $client = $team->client;
+        $client        = $team->client;
         $announcements = [];
-        $team_name = $team->name;
-        $widgets = $this->service->getDashboardWidgets();
+        $team_name     = $team->name;
+        $widgets       = $this->service->getDashboardWidgets();
         if ($client !== null) {
             $account = $client->name;
 
@@ -45,7 +53,7 @@ final class DashboardQuery
                 'widgets' => $widgets,
             ];
         } else {
-            $account = 'GymRevenue';
+            $account       = 'GymRevenue';
             $announcements = $this->service->getAppStateAnnouncements();
 
             $teams = $user->allTeams()->load('client');

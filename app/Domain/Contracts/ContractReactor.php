@@ -36,7 +36,7 @@ class ContractReactor extends Reactor
             'agreement_template_type',
         ];
 
-        $client = Client::find($event->clientId());
+        $client      = Client::find($event->clientId());
         $client_info = new ClientData('Contract', $client->name, $client->id, $template);
         $client_info->setEntityId($event->aggregateRootUuid());
         $client_info->setJsonData($json_key);

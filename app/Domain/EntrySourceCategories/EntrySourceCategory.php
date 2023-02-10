@@ -16,22 +16,26 @@ class EntrySourceCategory extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
+    /** @var array<string> */
     protected $hidden = ['client_id'];
+    /** @var string */
     protected $primaryKey = 'id';
+    /** @var string */
     protected $keyType = 'string';
 
+    /** @var array<string> */
     protected $fillable = [
         'name',
         'value',
     ];
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
-
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

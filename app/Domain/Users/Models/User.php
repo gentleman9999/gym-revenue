@@ -40,13 +40,13 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Silber\Bouncer\Database\Role;
 
 /**
- * @property string $phone
- * @property string $client_id
- * @property string $id
- * @property string $last_name
- * @property string $first_name
- * @property string $name       Full name
- * @property Client $client
+ * @property string                         $phone
+ * @property string                         $client_id
+ * @property string                         $id
+ * @property string                         $last_name
+ * @property string                         $first_name
+ * @property string                         $name       Full name
+ * @property Client                         $client
  * @property Collection<ClientConversation> $twilioClientConversation
  *
  * @method static UserFactory factory()
@@ -65,37 +65,42 @@ class User extends Authenticatable implements PhoneInterface
     use SoftDeletes;
     use Uuid;
 
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
+    /** @var bool */
     public $incrementing = false;
 
-    /**
-     * Define the table name so that all
-     * children model uses this table
-     *
-     * @var string
-     */
+    /** @var string */
+    protected $primaryKey = 'id';
+
+    /** @var string */
+    protected $keyType = 'string';
+
+    /** @var string */
     protected $table = 'users';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
+    /** @var array<string> */
     protected $fillable = [
-        'first_name', 'middle_name', 'last_name', 'phone', 'alternate_phone',
-        'date_of_birth', 'gender', 'occupation', 'employer', 'address1', 'address2',
-        'zip', 'city', 'state', 'email', 'drivers_license_number', 'unsubscribed_email',
-        'unsubscribed_sms', 'obfuscated_at',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'phone',
+        'alternate_phone',
+        'date_of_birth',
+        'gender',
+        'occupation',
+        'employer',
+        'address1',
+        'address2',
+        'zip',
+        'city',
+        'state',
+        'email',
+        'drivers_license_number',
+        'unsubscribed_email',
+        'unsubscribed_sms',
+        'obfuscated_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
+    /** @var array<string>  */
     protected $hidden = [
         'password',
         'remember_token',
@@ -105,11 +110,7 @@ class User extends Authenticatable implements PhoneInterface
         'client_id',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
+    /** @var array<string, string>  */
     protected $casts = [
         'id' => 'string',
         'is_cape_and_bay_user' => 'boolean',
@@ -130,44 +131,20 @@ class User extends Authenticatable implements PhoneInterface
         'details' => 'array',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
+    /** @var array<string>  */
     protected $appends = [
-        'profile_photo_url', 'name', 'default_team_id',
+        'profile_photo_url',
+        'name',
+        'default_team_id',
     ];
-
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ObfuscatedScope());
-    }
-
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return Factory
-     */
-    protected static function newFactory(): Factory
-    {
-        return UserFactory::new();
-    }
 
     /**
      * Determine if the user belongs to the given team.
      *
-     * @param mixed $team
-     * @return bool
      */
-    public function belongsToTeam($team): bool
+    public function belongsToTeam(mixed $team): bool
     {
-        if (is_null($team)) {
+        if ($team === null) {
             return false;
         }
 
@@ -196,7 +173,6 @@ class User extends Authenticatable implements PhoneInterface
 
     /**
      * If user is an AccountOwner of the currentClient
-     * @return bool
      */
     public function isAccountOwner(): bool
     {
@@ -205,7 +181,6 @@ class User extends Authenticatable implements PhoneInterface
 
     /**
      * If user is an AccountOwner of the currentClient
-     * @return bool
      */
     public function isAdmin(): bool
     {
@@ -252,10 +227,14 @@ class User extends Authenticatable implements PhoneInterface
         return collect($this->details['column_config'] ?? []);
     }
 
-    public function scopeFilter($query, array $filters): void
+    /**
+     * @param array<string, mixed> $filters
+     *
+     */
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('first_name', 'like', '%' . $search . '%')
                     ->orWhere('last_name', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
@@ -266,19 +245,18 @@ class User extends Authenticatable implements PhoneInterface
                     ->orWhere('state', 'like', '%' . $search . '%')
                     ->orWhere('zip', 'like', '%' . $search . '%');
             });
-        })->when($filters['club'] ?? null, function ($query, $location_id) {
+        })->when($filters['club'] ?? null, function ($query, $location_id): void {
             //This returns home club location instead of the above clubs a user is a part of.
-            $query->where(function ($query) use ($location_id) {
+            $query->where(function ($query) use ($location_id): void {
                 $query->where('home_location_id', '=', $location_id);
             });
-        })->when($filters['team'] ?? null, function ($query, $team_id) {
+        })->when($filters['team'] ?? null, function ($query, $team_id): void {
             $query->whereHas('teams', function ($query) use ($team_id) {
                 return $query->whereTeamId($team_id);
             });
-        })->when($filters['roles'] ?? null, function ($query, $role) {
-            $query->join('assigned_roles', function ($join) use ($role) {
-                $join->on('users.id', '=', 'assigned_roles.entity_id')
-                    ->where('assigned_roles.role_id', '=', $role);
+        })->when($filters['roles'] ?? null, function ($query, $role): void {
+            $query->join('assigned_roles', function ($join) use ($role): void {
+                $join->on('users.id', '=', 'assigned_roles.entity_id')->where('assigned_roles.role_id', '=', $role);
             })->get();
         });
     }
@@ -352,7 +330,6 @@ class User extends Authenticatable implements PhoneInterface
     /**
      * Get all of the teams the user owns or belongs to.
      *
-     * @return Collection
      */
     public function allTeams(): Collection
     {
@@ -362,14 +339,10 @@ class User extends Authenticatable implements PhoneInterface
     /**
      * Checks if instance is of an enduser
      *
-     * @return bool
      */
     public function isEndUser(): bool
     {
-        return in_array(
-            $this->user_type,
-            [UserTypesEnum::LEAD, UserTypesEnum::CUSTOMER, UserTypesEnum::MEMBER]
-        );
+        return in_array($this->user_type, [UserTypesEnum::LEAD, UserTypesEnum::CUSTOMER, UserTypesEnum::MEMBER]);
     }
 
     public function getPhoneNumber(): ?string
@@ -380,21 +353,6 @@ class User extends Authenticatable implements PhoneInterface
     public function files(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable');
-    }
-
-    public static function withTerminated(): Builder
-    {
-        return self::withTrashed();
-    }
-
-    public static function onlyTerminated(): Builder
-    {
-        return self::onlyTrashed();
-    }
-
-    public static function withoutTerminated(): Builder
-    {
-        return self::withoutTrashed();
     }
 
     public function terminate(): void
@@ -419,11 +377,48 @@ class User extends Authenticatable implements PhoneInterface
 
     public function positions(): BelongsToMany
     {
-        return $this->belongsToMany(Position::class, 'location_employees', 'user_id', 'position_id')->withoutGlobalScopes()->where('positions.client_id', '=', 'location_employees.client_id');
+        return $this->belongsToMany(Position::class, 'location_employees', 'user_id', 'position_id')
+            ->withoutGlobalScopes()
+            ->where('positions.client_id', '=', 'location_employees.client_id');
     }
 
     public function departments(): BelongsToMany
     {
-        return $this->belongsToMany(Department::class, 'location_employees', 'user_id', 'department_id')->withoutGlobalScopes()->where('departments.client_id', '=', 'location_employees.client_id');
+        return $this->belongsToMany(Department::class, 'location_employees', 'user_id', 'department_id')
+            ->withoutGlobalScopes()
+            ->where('departments.client_id', '=', 'location_employees.client_id');
+    }
+
+    public static function withTerminated(): Builder
+    {
+        return self::withTrashed();
+    }
+
+    public static function onlyTerminated(): Builder
+    {
+        return self::onlyTrashed();
+    }
+
+    public static function withoutTerminated(): Builder
+    {
+        return self::withoutTrashed();
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ObfuscatedScope());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     */
+    protected static function newFactory(): Factory
+    {
+        return UserFactory::new();
     }
 }

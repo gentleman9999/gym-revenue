@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Aggregates\Clients;
 
 use App\Aggregates\Clients\Traits\ClientActions;

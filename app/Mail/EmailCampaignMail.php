@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -24,8 +26,8 @@ class EmailCampaignMail extends Mailable implements ShouldQueue
     public function __construct(string $subject, string $markup, array $data)
     {
         $this->subject = $subject;
-        $this->markup = $markup;
-        $this->data = $data;
+        $this->markup  = $markup;
+        $this->data    = $data;
     }
 
     /**

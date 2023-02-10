@@ -24,9 +24,7 @@ use Twilio\Exceptions\TwilioException;
 class ClientConversationReactor extends Reactor
 {
     /**
-     * @param ClientConversationJoined $event
      *
-     * @return void
      * @throws Exceptions\ConversationException
      * @throws ConfigurationException
      * @throws TwilioException
@@ -44,14 +42,14 @@ class ClientConversationReactor extends Reactor
         if ($conversation === null) {
             // Add an employee to conversation.
             // Find free employee with conversation agent permission
-            $user = $client->getNextFreeConversationAgent();
+            $user             = $client->getNextFreeConversationAgent();
             $found_free_agent = $user !== null;
 
             if ($found_free_agent) {
                 $payload['user_id'] = $user->id;
             }
 
-            $twilio_service = $client->getTwilioService();
+            $twilio_service   = $client->getTwilioService();
             $conversation_sid = $event->payload['conversation_id'];
 
             if ($found_free_agent) {
@@ -78,9 +76,7 @@ class ClientConversationReactor extends Reactor
     }
 
     /**
-     * @param ClientConversationCreated $event
      *
-     * @return void
      * @throws Exceptions\ConversationException
      * @throws ConfigurationException
      * @throws TwilioException
@@ -93,9 +89,9 @@ class ClientConversationReactor extends Reactor
         /** @var User $user */
         $user = User::find($event->payload['user_id']);
 
-        $client = $user->client;
-        $twilio_service = $client->getTwilioService();
-        $phone = $end_user->getPhoneNumber() ?: throw new ConversationException('End user has no phone number');
+        $client              = $user->client;
+        $twilio_service      = $client->getTwilioService();
+        $phone               = $end_user->getPhoneNumber() ?: throw new ConversationException('End user has no phone number');
         $gateway_provider_id = $client->getGatewayProviderBySlug(GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION)->id;
 
         if (AppState::isSimuationMode()) {
@@ -137,10 +133,8 @@ class ClientConversationReactor extends Reactor
     /**
      * Creates an identity for external user, leads or members.
      *
-     * @param string $number
      * @param string $source expected values, [MESSENGER, SMS]
      *
-     * @return string
      */
     private function getIdentity(string $number, string $source = 'SMS'): string
     {

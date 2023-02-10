@@ -14,7 +14,7 @@ class UserTypeDeterminer
 {
     public static function getUserType(User $user): UserTypesEnum
     {
-        if (! is_null(LocationEmployee::whereUserId($user->id)->first())) {
+        if (LocationEmployee::whereUserId($user->id)->first() !== null) {
             return UserTypesEnum::EMPLOYEE;
         }
 

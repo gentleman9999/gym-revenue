@@ -15,7 +15,7 @@ class FindNickname
     public function handle(string $name): Collection
     {
         $nicknames = new Collection();
-        $nickname = Nickname::where('name', $name)->first();
+        $nickname  = Nickname::where('name', $name)->first();
 
         if ($nickname) {
             $nicknames = new Collection(explode(',', $nickname->nicknames));

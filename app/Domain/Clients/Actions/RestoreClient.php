@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Clients\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -12,7 +14,7 @@ class RestoreClient
 {
     use AsAction;
 
-    public string $commandSignature = 'client:restore {id}';
+    public string $commandSignature   = 'client:restore {id}';
     public string $commandDescription = 'Restores the client';
 
     public function handle(string $id): Client

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Roles\Actions;
 
 use App\Actions\GymRevAction;
@@ -30,12 +32,17 @@ class CreateRole extends GymRevAction
     {
         $id = (Role::withoutGlobalScopes()->max('id') ?? 0) + 1;
 
-        RoleAggregate::retrieve($id)->create($data)->persist();
+        RoleAggregate::retrieve((string) $id)->create($data)->persist();
 
         return Role::findOrFail($id);
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<string>
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['input']];
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Chat\Aggregates;
 
 use App\Domain\Chat\Events\ChatCreated;
@@ -44,9 +46,9 @@ class ChatAggregate extends AggregateRoot
 
     public function applyOnChatCreated(ChatCreated $event): void
     {
-        $data = array_filter_only_fillable($event->payload, Chat::class);
+        $data            = array_filter_only_fillable($event->payload, Chat::class);
         $this->client_id = $event->payload['client_id'] ?? null;
-        $this->data = $data;
+        $this->data      = $data;
     }
 
     public function applyOnChatUpdated(ChatUpdated $event): void

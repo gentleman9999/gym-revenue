@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\Departments\Department;
@@ -7,7 +9,6 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Roles\Role;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\Employee;
-use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use App\Models\Folder;
@@ -24,14 +25,14 @@ class FilesController extends Controller
     {
         $client_id = request()->user()->client_id;
 
-        if (is_null($client_id)) {
+        if ($client_id === null) {
             return Redirect::route('dashboard');
         }
 
         $isSearching = $request->has('search');
 
-        $page_count = 10;
-        $roles = request()->user()->getRoles();
+        $page_count     = 10;
+        $roles          = request()->user()->getRoles();
         $security_group = request()->user()->securityGroup();
 
         if ($isSearching) {
@@ -63,7 +64,7 @@ class FilesController extends Controller
                     ->whereIsHidden(false)
                     ->whereFolder(null)
                     ->whereFileableId($client_id)
-                    ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
+                    ->where('permissions', 'like', '%' . strtolower(str_replace(' ', '_', $roles[0])) . '%')
                     ->filter($request->only('search', 'trashed'))
                     ->sort()
                     ->paginate($page_count)
@@ -85,7 +86,7 @@ class FilesController extends Controller
         */
         foreach ($folders as $key => $folder) {
             $shouldForgetFolder = true;
-            $hasPermissionsSet = false;
+            $hasPermissionsSet  = false;
             if ($folder->user_ids) {
                 if (in_array($user->id, $folder->user_ids)) {
                     $shouldForgetFolder = false;
@@ -176,10 +177,10 @@ class FilesController extends Controller
     {
         $client_id = request()->user()->client_id;
 
-        if (is_null($client_id)) {
+        if ($client_id === null) {
             abort(403);
         }
-        $roles = request()->user()->getRoles();
+        $roles          = request()->user()->getRoles();
         $security_group = request()->user()->securityGroup();
 
         if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
@@ -192,7 +193,7 @@ class FilesController extends Controller
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)
-                ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
+                ->where('permissions', 'like', '%' . strtolower(str_replace(' ', '_', $roles[0])) . '%')
                 ->filter($request->only('search', 'trashed'))
                 ->get();
         }

@@ -10,8 +10,8 @@ use App\Services\GatewayProviders\Exceptions\GatewayProviderException;
 
 abstract class GatewayProviderService
 {
-    protected GatewayProviderType  $provider_type;
-    protected ?Client              $client = null;
+    protected GatewayProviderType $provider_type;
+    protected ?Client $client = null;
 
     public function __construct(GatewayProviderType $provider_type)
     {
@@ -19,7 +19,6 @@ abstract class GatewayProviderService
     }
 
     /**
-     * @param string|null $client_id
      *
      * @return $this
      * @throws GatewayProviderException

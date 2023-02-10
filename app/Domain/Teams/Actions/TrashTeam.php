@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
@@ -19,7 +21,7 @@ class TrashTeam
     {
         TeamAggregate::retrieve($team->id)->trash()->persist();
 
-        return Team::withTrashed()->findOrFail($id);
+        return Team::withTrashed()->findOrFail($team->id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -29,6 +31,9 @@ class TrashTeam
         return $current_user->can('teams.trash', Team::class);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

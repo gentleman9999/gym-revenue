@@ -33,6 +33,11 @@ class CreateChat
         ];
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return Chat
+     */
     public function handle(array $payload): Chat
     {
         // Add current user as participant
@@ -48,6 +53,9 @@ class CreateChat
         return Chat::with(['participants.user', 'messages'])->findOrFail($id);
     }
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -55,9 +63,7 @@ class CreateChat
 
     public function authorize(ActionRequest $request): bool
     {
-        $current_user = $request->user();
-
-        return $current_user->can('chat.create', Chat::class);
+        return $request->user()->can('chat.create', Chat::class);
     }
 
     public function asController(ActionRequest $request): Chat
@@ -66,27 +72,27 @@ class CreateChat
         $user = $request->user();
 
         return $this->handle($request->validated() + [
-            'user_id' => $user->id,
+            'user_id'   => $user->id,
             'client_id' => $user->client_id,
         ]);
     }
 
     public function asCommand(Command $command): void
     {
-        $payload = [];
+        $payload     = [];
         $client_name = $command->choice('Select Client (comma separated multiple options)', Client::all()
             ->pluck('name')
-            ->toArray(), );
+            ->toArray());
 
-        $payload['client_id'] = Client::whereName($client_name)->pluck('id')->toArray()[0];
-        $users = User::whereClientId(Client::whereName($client_name)->pluck('id')->toArray())
-            ->pluck('id')
-            ->toArray();
-        $creating_user = $command->choice('Select who you are', $users, );
+        $payload['client_id']          = Client::whereName($client_name)->pluck('id')->toArray()[0];
+        $users                         = User::whereClientId(
+            Client::whereName($client_name)->pluck('id')->toArray()
+        )->pluck('id')->toArray();
+        $creating_user                 = $command->choice('Select who you are', $users,);
         $payload['created_by_user_id'] = $creating_user;
-        $participating_users = $command->choice('Select who you want to chat with', $users, multiple: true);
-        $participating_users[] = $creating_user;
-        $payload['participant_ids'] = json_encode($participating_users);
+        $participating_users           = $command->choice('Select who you want to chat with', $users, multiple: true);
+        $participating_users[]         = $creating_user;
+        $payload['participant_ids']    = json_encode($participating_users);
 
         $message = $this->handle($payload);
         $command->info($message);

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Tasks;
 
 use App\Aggregates\Users\UserAggregate;
+use App\Domain\Users\Models\User;
 use App\Models\Tasks;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -17,9 +20,9 @@ class MarkTaskIncomplete
     /**
      * Get the validation rules that apply to the action.
      *
-     * @return array
+     * @return array<string, array<string>>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => ['required', 'string','max:50'],
@@ -27,10 +30,10 @@ class MarkTaskIncomplete
             'user_id' => ['sometimes'],
             'due_at' => ['sometimes'],
             'completed_at' => ['sometimes'],
-            ];
+        ];
     }
 
-    public function handle($id, $user)
+    public function handle(string $id, User $user): Tasks
     {
         UserAggregate::retrieve($id)
             ->applyTaskMarkedIncomplete($user->id ?? "Auto Generated", $id)
@@ -46,7 +49,7 @@ class MarkTaskIncomplete
         return $current_user->can('task.update', Tasks::class);
     }
 
-    public function asController(ActionRequest $request, $id)
+    public function asController(ActionRequest $request, string $id)
     {
         $task = $this->handle(
             $id,

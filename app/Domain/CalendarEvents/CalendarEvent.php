@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarEvents;
 
 use App\Domain\CalendarAttendees\CalendarAttendee;
@@ -30,13 +32,23 @@ class CalendarEvent extends GymRevProjection implements NotifiableInterface
     use SoftDeletes;
     use HasFactory;
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
 
-
-    protected $fillable = ['title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'owner_id', 'event_completion', 'location_id', 'editable', 'call_task', 'overdue_reminder_sent'];
+    /** @var array<string> */
+    protected $fillable = [
+        'title',
+        'description',
+        'full_day_event',
+        'start',
+        'end',
+        'color',
+        'event_type_id',
+        'owner_id',
+        'event_completion',
+        'location_id',
+        'editable',
+        'call_task',
+        'overdue_reminder_sent',
+    ];
 
     public function client(): BelongsTo
     {
@@ -73,18 +85,21 @@ class CalendarEvent extends GymRevProjection implements NotifiableInterface
         return $fixedArray;
     }
 
-    /** Event Scoping with filters */
-    public function scopeFilter($query, array $filters): void
+    /**
+     * @param array<string, mixed> $filters
+     *
+     */
+    public function scopeFilter(Builder $query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
+        $query->when($filters['search'] ?? null, function ($query, $search): void {
+            $query->where(function ($query) use ($search): void {
                 $query->where('title', 'like', '%' . $search . '%');
             });
-        })->when($filters['start'] ?? null, function ($query) use ($filters) {
+        })->when($filters['start'] ?? null, function ($query) use ($filters): void {
             $end = $filters['end'] ?? Carbon::parse($filters['start'], 'yyyy-mm-dd')->addDays(1);//add one day
-            $query->whereBetween('start', $this->fixDate([$filters['start'],$end]));
-        })->when($filters['viewUser'] ?? null, function ($query) use ($filters) {
-            $query->whereHas('attendees', function ($query) use ($filters) {
+            $query->whereBetween('start', $this->fixDate([$filters['start'], $end]));
+        })->when($filters['viewUser'] ?? null, function ($query) use ($filters): void {
+            $query->whereHas('attendees', function ($query) use ($filters): void {
                 $query->where('entity_data', 'like', '%"id": ' . $filters['viewUser'] . ',%');
             });
         });
@@ -93,9 +108,12 @@ class CalendarEvent extends GymRevProjection implements NotifiableInterface
     public function entityDataValidation(array $data): void
     {
         if (! isset($data['entity']['start'], $data['entity']['title'])) {
-            throw new NotificationValidationException(
-                'entity should be of format: ["entity" => ["start" => "2022-01-01", "title" => "foo"]'
-            );
+            throw new NotificationValidationException('entity should be of format: ["entity" => ["start" => "2022-01-01", "title" => "foo"]');
         }
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
     }
 }

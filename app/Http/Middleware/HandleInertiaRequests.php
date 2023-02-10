@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Domain\Clients\Projections\Client;
@@ -23,18 +25,16 @@ class HandleInertiaRequests extends Middleware
      * The root template that's loaded on the first page visit.
      *
      * @see https://inertiajs.com/server-side-setup#root-template
-     * @var string
      */
+    /** @var string  */
     protected $rootView = 'app';
 
     /**
      * Determines the current asset version.
      *
      * @see https://inertiajs.com/asset-versioning
-     * @param \Illuminate\Http\Request $request
-     * @return string|null
      */
-    public function version(Request $request)
+    public function version(Request $request): ?string
     {
         return parent::version($request);
     }
@@ -43,17 +43,16 @@ class HandleInertiaRequests extends Middleware
      * Defines the props that are shared by default.
      *
      * @see https://inertiajs.com/shared-data
-     * @param \Illuminate\Http\Request $request
-     * @return array
+     * @return array<string, mixed>
      */
-    public function share(Request $request)
+    public function share(Request $request): array
     {
         $shared = [];
-        $user = $request->user();
+        $user   = $request->user();
         if ($request->user()) {
             $current_team_id = CurrentInfoRetriever::getCurrentTeamID();
-            $abilities = $user->getAbilities()->filter(function ($ability) use ($user, $current_team_id) {
-                if (! is_null($ability->entity_id)) {
+            $abilities       = $user->getAbilities()->filter(function ($ability) use ($current_team_id) {
+                if ($ability->entity_id !== null) {
                     $r = $ability->entity_id === $current_team_id;
                 } elseif ($ability->title == 'All abilities') {
                     $r = true;
@@ -77,7 +76,7 @@ class HandleInertiaRequests extends Middleware
                 'user.csrf_token' => csrf_token(),
                 //TODO:should be able to remove client_id from most of client stuff once middleware is in place
                 'user.abilities' => $abilities,
-                'user.has_api_token' => (! is_null($user->access_token)),
+                'user.has_api_token' => ($user->access_token !== null),
                 'app_state.is_simulation_mode' => AppState::isSimuationMode(),
                 'client_services' => $client->services ?? null,
 //                TODO: Query this from the CRUD when it is being initialized
@@ -115,18 +114,20 @@ class HandleInertiaRequests extends Middleware
                     'managesProfilePhotos' => Jetstream::managesProfilePhotos(),
                 ];
             },
-            'user' => function () use ($request) {
-                if (! $request->user()) {
-                    return;
+            'user' => function () use ($request): ?array {
+                $user = $request->user();
+                if ($user === null) {
+                    return null;
                 }
+
 
                 return array_merge($request->user()->toArray(), array_filter([
                     'all_teams' => Jetstream::hasTeamFeatures() ? (
-                        $request->user()->user_type === UserTypesEnum::EMPLOYEE ?
-                        $request->user()->allTeams()->values() : null
+                    $user->user_type === UserTypesEnum::EMPLOYEE ?
+                        $user->allTeams()->values() : null
                     ) : null,
                 ]), [
-                    'two_factor_enabled' => ! is_null($request->user()->two_factor_secret),
+                    'two_factor_enabled' => $user->two_factor_secret !== null,
                 ]);
             },
             'errorBags' => function () {
@@ -149,7 +150,7 @@ class HandleInertiaRequests extends Middleware
     }
 
     //This code makes redirects worth with inertia modals
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): \Symfony\Component\HttpFoundation\Response|\Illuminate\Http\RedirectResponse
     {
         $response = parent::handle($request, $next);
 

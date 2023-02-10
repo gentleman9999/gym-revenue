@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
 use App\Actions\GymRevAction;
@@ -20,15 +22,19 @@ use Prologue\Alerts\Facades\Alert;
 
 class CreateScheduledCampaign extends GymRevAction
 {
-    public string $commandSignature = 'scheduled-campaign:create';
+    public string $commandSignature   = 'scheduled-campaign:create';
     public string $commandDescription = 'Creates a ScheduledCampaign with the given name.';
 
+    /**
+     * @param array<string, mixed> $payload
+     *
+     */
     public function handle(array $payload): ScheduledCampaign
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         //NEEDED FOR LIVE REPORTING
-        $location = Location::whereClientId($payload['client_id'])->first();
+        $location                 = Location::whereClientId($payload['client_id'])->first();
         $payload['gymrevenue_id'] = $location->gymrevenue_id;
 
         ScheduledCampaignAggregate::retrieve($id)->create($payload)->persist();
@@ -50,7 +56,12 @@ class CreateScheduledCampaign extends GymRevAction
         ];
     }
 
-    public function mapArgsToHandle($args): array
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array
+     */
+    public function mapArgsToHandle(array $args): array
     {
         return [$args['campaign']];
     }
@@ -79,7 +90,7 @@ class CreateScheduledCampaign extends GymRevAction
     public function asCommand(Command $command): void
     {
         $client_id = $this->getClient($command);
-        $name = $command->ask("Enter ScheduledCampaign Name");
+        $name      = $command->ask("Enter ScheduledCampaign Name");
 
         $template_type_alias = $command->choice("Template Type?", ['Email', 'SMS']);
 
@@ -102,12 +113,12 @@ class CreateScheduledCampaign extends GymRevAction
 
     private function getClient(Command $command): ?string
     {
-        $clients = [];
+        $clients    = [];
         $client_ids = [];
         $db_clients = Client::whereActive(1)->get();
 
         foreach ($db_clients as $idx => $client) {
-            $clients[$idx + 1] = $client->name;
+            $clients[$idx + 1]    = $client->name;
             $client_ids[$idx + 1] = $client->id;
         }
 
@@ -127,12 +138,12 @@ class CreateScheduledCampaign extends GymRevAction
 
     private function getAudience(Command $command, string $client_id): ?string
     {
-        $audiences = [];
+        $audiences    = [];
         $audience_ids = [];
         $db_audiences = Audience::whereClientId($client_id)->get();
 
         foreach ($db_audiences as $idx => $audience) {
-            $audiences[$idx + 1] = $audience->name;
+            $audiences[$idx + 1]    = $audience->name;
             $audience_ids[$idx + 1] = $audience->id;
         }
 
@@ -152,12 +163,12 @@ class CreateScheduledCampaign extends GymRevAction
 
     private function getTemplate(Command $command, string $client_id, string $template_model): ?string
     {
-        $templates = [];
+        $templates    = [];
         $template_ids = [];
         $db_templates = $template_model::whereClientId($client_id)->get();
 
         foreach ($db_templates as $idx => $template) {
-            $templates[$idx + 1] = $template->name;
+            $templates[$idx + 1]    = $template->name;
             $template_ids[$idx + 1] = $template->id;
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reactors\Clients\GatewayProviders;
 
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
@@ -11,7 +13,7 @@ use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientSMSGatewayActivityReactor extends Reactor implements ShouldQueue
 {
-    public function onUserSentATestSMS(UserSentATestSMS $event)
+    public function onUserSentATestSMS(UserSentATestSMS $event): void
     {
         $user_aggy = UserAggregate::retrieve($event->user);
         // Initialize the SMS Gateway Service

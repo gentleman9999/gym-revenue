@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Domain\Teams\Models\Team;
@@ -14,10 +16,8 @@ class UserPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param \App\Domain\Users\Models\User $user
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): \Illuminate\Auth\Access\Response|bool
     {
         return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.view', User::class);
     }
@@ -25,11 +25,8 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param \App\Domain\Users\Models\User $user
-     * @param \App\Domain\Users\Models\User $model
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, User $model)
+    public function view(User $user, User $model): \Illuminate\Auth\Access\Response|bool
     {
         //
     }
@@ -37,14 +34,12 @@ class UserPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param \App\Domain\Users\Models\User $user
-     * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function create(User $user, User $model)
     //TODO: for some reason, adding in the $model to any of these policy functions causing the app to crash,
     //TODO:  and I don't know why.  If we had access to the model, we could actually check and make sure the team
     // is correct.
-    public function create(User $user)
+    public function create(User $user): \Illuminate\Auth\Access\Response|bool
     {
         return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.create', User::class);
     }
@@ -52,12 +47,10 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param \App\Domain\Users\Models\User $user
      * @param \App\Domain\Users\Models\User $model
-     * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function update(User $user, User $model)
-    public function update(User $user)
+    public function update(User $user): \Illuminate\Auth\Access\Response|bool
     {
         $team = CurrentInfoRetriever::getCurrentTeam();
 
@@ -67,12 +60,10 @@ class UserPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param \App\Domain\Users\Models\User $user
      * @param \App\Domain\Users\Models\User $model
-     * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function delete(User $user, User $model)
-    public function delete(User $user)
+    public function delete(User $user): \Illuminate\Auth\Access\Response|bool
     {
         return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.trash', User::class);
     }
@@ -80,12 +71,10 @@ class UserPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param \App\Domain\Users\Models\User $user
      * @param \App\Domain\Users\Models\User $model
-     * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function restore(User $user, User $model)
-    public function restore(User $user)
+    public function restore(User $user): \Illuminate\Auth\Access\Response|bool
     {
         return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.restore', User::class);
     }
@@ -93,11 +82,8 @@ class UserPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param \App\Domain\Users\Models\User $user
-     * @param \App\Domain\Users\Models\User $model
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user, User $model): \Illuminate\Auth\Access\Response|bool
     {
         return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.delete', User::class);
     }
@@ -105,10 +91,8 @@ class UserPolicy
     /**
      * Determine whether the user can upload files.
      *
-     * @param User $user
-     * @return mixed
      */
-    public function uploadFiles(User $user)
+    public function uploadFiles(User $user): mixed
     {
         return true;
     }

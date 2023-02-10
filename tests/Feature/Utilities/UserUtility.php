@@ -27,7 +27,7 @@ class UserUtility
     }
 
     /**
-     * @param array $attribute
+     * @param array<string, mixed> $attribute
      * @param int   $count
      *
      * @return User|array<User>
@@ -51,7 +51,7 @@ class UserUtility
     }
 
     /**
-     * @param array $attribute
+     * @param array<string, mixed> $attribute
      * @param int   $count
      *
      * @return User|array<User>
@@ -71,7 +71,7 @@ class UserUtility
     }
 
     /**
-     * @param array $attributes
+     * @param array<string, mixed> $attributes
      *
      * @return Role
      */

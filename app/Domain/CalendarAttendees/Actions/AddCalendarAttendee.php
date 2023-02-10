@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\CalendarAttendees\Actions;
 
 use App\Domain\CalendarAttendees\CalendarAttendee;
@@ -11,9 +13,13 @@ class AddCalendarAttendee
 {
     use AsAction;
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     */
     public function handle(array $data): CalendarAttendee
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
         CalendarAttendeeAggregate::retrieve($id)
             ->create($data)
             ->persist();

@@ -14,6 +14,9 @@ class ObfuscateUser
 {
     use AsAction;
 
+    /**
+     * @return string[]
+     */
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -21,22 +24,18 @@ class ObfuscateUser
 
     public function authorize(ActionRequest $request): bool
     {
-        $current_user = $request->user();
-
         //TODO temp change when we figure out the bouncer abilities
-        return $current_user->can('users.edit', User::class);
+        return $request->user()->can('users.edit', User::class);
     }
 
-    public function asController(ActionRequest $request, User $user): User
+    public function asController(User $user): User
     {
-        return $this->handle(
-            $user
-        );
+        return $this->handle($user);
     }
 
     public function handle(User $user): User
     {
-        UserAggregate::retrieve(strval($user->id))->ObfuscateUser()->persist();
+        UserAggregate::retrieve($user->id)->obfuscateUser()->persist();
 
         return $user->refresh();
     }

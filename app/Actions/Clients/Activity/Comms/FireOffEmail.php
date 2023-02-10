@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
@@ -12,18 +14,19 @@ class FireOffEmail
 {
     use AsAction;
 
-//    public string $commandSignature = 'email:fire {templateId}';
+
+    private int $batchSize = 100;//    public string $commandSignature = 'email:fire {templateId}';
+
 //    public string $commandDescription = 'Fires off the emails for a given template id.';
+//MAX IS 1000
 
-    private int $batchSize = 100;//MAX IS 1000
-
-    public function handle(string $client_id, $templateId, $entity_type, $entity_id)
+    public function handle(string $client_id, $templateId, $entity_type, $entity_id): void
     {
-        $template = \App\Domain\Templates\EmailTemplates\Projections\EmailTemplate::with('gateway')->findOrFail($templateId);
-        $recipients = [];
-        $sent_to = [];
+        $template    = \App\Domain\Templates\EmailTemplates\Projections\EmailTemplate::with('gateway')->findOrFail($templateId);
+        $recipients  = [];
+        $sent_to     = [];
         $client_aggy = ClientAggregate::retrieve($client_id);
-        $entity = null;
+        $entity      = null;
         switch ($entity_type) {
             case 'user':
                 $entity = User::find($entity_id);
@@ -35,7 +38,7 @@ class FireOffEmail
         }
         if ($entity) {
             $recipients[$entity->email] = ['email' => $entity->email, 'name' => $entity->name];
-            $sent_to[] = [
+            $sent_to[]                  = [
                 'entity_type' => $entity_type,
                 'entity_id' => $entity_id,
                 'email' => $entity->email,
@@ -43,7 +46,7 @@ class FireOffEmail
         }
 
         $sent_to_chunks = array_chunk($sent_to, $this->batchSize);
-        $idx = 0;
+        $idx            = 0;
         foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
             if (! AppState::isSimuationMode()) {
                 $client_aggy->emailSent($template, $sent_to_chunks[$idx], Carbon::now())->persist();

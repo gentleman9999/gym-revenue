@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Audiences;
 
 use App\Domain\Clients\Projections\Client;
@@ -22,28 +24,16 @@ class Audience extends GymRevProjection
     use SoftDeletes;
     use HasFactory;
 
+    /** @var array<string>  */
     protected $hidden = ['client_id'];
 
+    /** @var array<string>  */
     protected $fillable = ['name', 'entity', 'filters', 'editable'];
 
+    /** @var array<string, string>  */
     protected $casts = [
         'filters' => 'array',
     ];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ClientScope());
-    }
-
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return Factory
-     */
-    protected static function newFactory(): Factory
-    {
-        return AudienceFactory::new();
-    }
 
     public function client(): BelongsTo
     {
@@ -71,18 +61,16 @@ class Audience extends GymRevProjection
 
         $query = $entity::withoutGlobalScopes()
             ->whereClientId($this->client_id)
-            ->when($this->filters !== null, function ($query) {
+            ->when($this->filters !== null, function (Builder $query): void {
                 $this->generateQueryFromFilters($query);
             });
 
         return $query;
     }
 
-    protected function generateQueryFromFilters($query)
+    protected function generateQueryFromFilters(Builder $query): Builder
     {
         $entity = (new ($this->entity));
-        $fillable = collect($entity->getFillable());
-//        dd($fillable);
         foreach (array_keys($this->filters) as $filter) {
             if (collect($entity->getFillable())->contains($filter)) {
 //                dd($this->filters[$filter]);
@@ -92,5 +80,19 @@ class Audience extends GymRevProjection
 //        dd($this->filters);
         //TODO: this should convert the json filter structure into query builder.
         return $query;
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     */
+    protected static function newFactory(): Factory
+    {
+        return AudienceFactory::new();
     }
 }

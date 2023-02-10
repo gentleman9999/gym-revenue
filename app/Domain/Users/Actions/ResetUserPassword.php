@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Models\User;
@@ -29,11 +31,9 @@ class ResetUserPassword implements ResetsUserPasswords
     /**
      * Validate and reset the user's forgotten password.
      *
-     * @param  mixed  $user
-     * @param  array  $input
-     * @return void
+     * @param  array<string, mixed>  $input
      */
-    public function reset($user, array $input)
+    public function reset(mixed $user, array $input): void
     {
         $this->handle($user, $input);
 //        Validator::make($input, [

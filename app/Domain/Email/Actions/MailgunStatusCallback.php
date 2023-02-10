@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Email\Actions;
 
 use App\Domain\Email\EmailAggregate;
@@ -11,19 +13,24 @@ class MailgunStatusCallback
 {
     use AsAction;
 
-    public function handle($payload)
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return array<string, mixed>
+     */
+    public function handle(array $payload): array
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
 
         foreach ($payload as $i => $k) {
             //info('Key '. $i);
             //info('Data ', $k);
-            if ($i == "event-data") {
+            if ($i == 'event-data') {
                 $k['MailgunId'] = $k['id'];
                 $k['timestamp'] = date('Y-m-d H:i:s', $k['timestamp']);
                 $k['MessageId'] = $k['message']['headers']['message-id'];
                 if ($k['event'] == 'delivered') {
-                    $k['sender'] = $k['envelope']['sender'];
+                    $k['sender']          = $k['envelope']['sender'];
                     $k['SenderIpAddress'] = $k['envelope']['sending-ip'];
                 }
                 EmailAggregate::retrieve($id)->mailgunTrack($k)->persist();
