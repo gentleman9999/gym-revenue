@@ -48,8 +48,8 @@ class QueueTest
 
     public function htmlResponse(): RedirectResponse
     {
-        Alert::success('Test job successfully queued'); 
+        Alert::success('Test job successfully queued')->flash();
 
-        return Redirect::back();
+        return Redirect::route('dashboard');
     }
 }

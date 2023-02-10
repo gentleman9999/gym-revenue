@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa7e02bae4e25aab2912b8dab28f1255",
+    "content-hash": "c4c495e61918260c1f97fe339dd47579",
     "packages": [
         {
             "name": "amphp/amp",
@@ -4783,6 +4783,71 @@
             "time": "2023-01-16T17:26:42+00:00"
         },
         {
+            "name": "laravel/vapor-ui",
+            "version": "v1.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/vapor-ui.git",
+                "reference": "eaecfda4100cfae5d500b15cc3dd9f9b58e3a34e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/vapor-ui/zipball/eaecfda4100cfae5d500b15cc3dd9f9b58e3a34e",
+                "reference": "eaecfda4100cfae5d500b15cc3dd9f9b58e3a34e",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "^3.148.3",
+                "laravel/framework": "^8.0|^9.0|^10.0",
+                "php": "^7.3|^8.0",
+                "symfony/yaml": "^5.1.4|^6.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.17.1|^7.0|^8.0",
+                "pestphp/pest": "^1.22.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\VaporUi\\VaporUiServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\VaporUi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Nuno Maduro",
+                    "email": "nuno@laravel.com"
+                }
+            ],
+            "description": "The Laravel Vapor UI.",
+            "keywords": [
+                "laravel",
+                "vapor"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/vapor-ui/issues",
+                "source": "https://github.com/laravel/vapor-ui"
+            },
+            "time": "2023-02-01T14:56:16+00:00"
+        },
+        {
             "name": "lcobucci/clock",
             "version": "3.0.0",
             "source": {
@@ -8924,12 +8989,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "d33a8f1023af74aae4071dc98b5955d0b185ab6f"
+                "reference": "bf2bee216a4379eaf62162307d62bb7850405fec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/d33a8f1023af74aae4071dc98b5955d0b185ab6f",
-                "reference": "d33a8f1023af74aae4071dc98b5955d0b185ab6f",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/bf2bee216a4379eaf62162307d62bb7850405fec",
+                "reference": "bf2bee216a4379eaf62162307d62bb7850405fec",
                 "shasum": ""
             },
             "require": {
@@ -9009,7 +9074,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-06T21:10:27+00:00"
+            "time": "2023-02-07T16:14:23+00:00"
         },
         {
             "name": "riverline/multipart-parser",
