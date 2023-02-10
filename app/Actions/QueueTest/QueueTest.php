@@ -15,8 +15,21 @@ class QueueTest
 {
     use AsAction;
 
-    public function handle(?string $queue_name): void
+    public string $commandSignature   = 'queue:test';
+    public string $commandDescription = 'Runs the test queue';
+
+//    public string $jobConnection = 'sqs';
+    public string $jobQueue = 'grp-develop-jobs';
+    public int $jobTries = 10;
+    public int $jobMaxExceptions = 3;
+    public int $jobBackoff = 60 * 5;
+    public int $jobTimeout = 60 * 30;
+    public int $jobRetryUntil = 3600 * 2;
+
+    public function handle(?string $queue_name = null): void
     {
+        Log::info('Starting queue job...');
+
         $message = 'Queue Job Ran';
         if ($queue_name) {
             $message .= " on queue $queue_name";
@@ -24,7 +37,7 @@ class QueueTest
         } else {
             self::dispatch()->delay(now()->addSeconds(30));
         }
-        
+
         Log::info($message);
     }
 
@@ -48,7 +61,7 @@ class QueueTest
 
     public function htmlResponse(): RedirectResponse
     {
-        Alert::success('Test job successfully queued'); 
+        Alert::success('Test job successfully queued');
 
         return Redirect::back();
     }
