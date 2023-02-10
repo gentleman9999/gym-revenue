@@ -15,11 +15,17 @@ class QueueTest
 {
     use AsAction;
 
-    public function handle(): void
+    public function handle(?string $queue_name): void
     {
-        Log::info('Queue Job Ran');
-
-        self::dispatch()->delay(now()->addSeconds(30));
+        $message = 'Queue Job Ran';
+        if ($queue_name) {
+            $message .= " on queue $queue_name";
+            self::dispatch()->delay(now()->addSeconds(30))->onQueue($queue_name);
+        } else {
+            self::dispatch()->delay(now()->addSeconds(30));
+        }
+        
+        Log::info($message);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -37,7 +43,7 @@ class QueueTest
 
     public function asController(ActionRequest $request): void
     {
-        $this->handle();
+        $this->handle($request->queue_name);
     }
 
     public function htmlResponse(): RedirectResponse
