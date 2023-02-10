@@ -31,12 +31,11 @@ class CreateEntrySourceCategory
         return [InjectClientId::class];
     }
 
-    public function handle(array $data, User $user): EntrySourceCategory
+    public function handle(array $data): EntrySourceCategory
     {
         $esc_id = Uuid::get();
 
         EntrySourceCategoryAggregate::retrieve($esc_id)->create($data + [
-            'client_id' => $user->client->id,
             'value' => str()->slug($data['name']),
         ])->persist();
 
