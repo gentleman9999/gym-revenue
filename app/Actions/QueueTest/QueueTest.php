@@ -33,7 +33,7 @@ class QueueTest
         $message = 'Queue Job Ran';
         if ($queue_name) {
             $message .= " on queue $queue_name";
-            self::dispatch()->delay(now()->addSeconds(30))->onQueue($queue_name);
+            self::dispatch($queue_name)->delay(now()->addSeconds(30))->onQueue($queue_name);
         } else {
             self::dispatch()->delay(now()->addSeconds(30));
         }
@@ -61,8 +61,8 @@ class QueueTest
 
     public function htmlResponse(): RedirectResponse
     {
-        Alert::success('Test job successfully queued');
+        Alert::success('Test job successfully queued')->flash();
 
-        return Redirect::back();
+        return Redirect::route('dashboard');
     }
 }
