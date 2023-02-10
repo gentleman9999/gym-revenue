@@ -20,9 +20,9 @@ class QueueTest
         $message = 'Queue Job Ran';
         if ($queue_name) {
             $message .= " on queue $queue_name";
-            self::dispatch()->delay(now($queue_name)->addSeconds(30))->onQueue($queue_name);
+            self::dispatch($queue_name)->delay(now()->addSeconds(30))->onQueue($queue_name);
         } else {
-            self::dispatch()->delay(now($queue_name)->addSeconds(30));
+            self::dispatch($queue_name)->delay(now()->addSeconds(30));
         }
         
         Log::info($message);
