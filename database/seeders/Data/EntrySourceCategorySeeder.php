@@ -26,13 +26,12 @@ class EntrySourceCategorySeeder extends Seeder
 
         $clients = Client::all();
         foreach ($clients as $client) {
-            $user = \Tests\Feature\Utilities\UserUtility::createUser(['client_id' => $client->id]);
             foreach ($escs as $esc => $readable_source) {
                 CreateEntrySourceCategory::run([
                     'name' => $readable_source,
                     'value' => $esc,
                     'client_id' => $client->id,
-                ], $user);
+                ]);
 
 
                 VarDumper::dump("Adding Entry Source Category {$readable_source}");
