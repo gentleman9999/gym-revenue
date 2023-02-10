@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e803d4f450b2688d98e97fd592d6192",
+    "content-hash": "9cd8ff12575e0dd6408b18b2a3ced5f0",
     "packages": [
         {
             "name": "amphp/amp",
@@ -4781,6 +4781,71 @@
                 "source": "https://github.com/laravel/vapor-core/tree/v2.28.0"
             },
             "time": "2023-01-16T17:26:42+00:00"
+        },
+        {
+            "name": "laravel/vapor-ui",
+            "version": "v1.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/vapor-ui.git",
+                "reference": "eaecfda4100cfae5d500b15cc3dd9f9b58e3a34e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/vapor-ui/zipball/eaecfda4100cfae5d500b15cc3dd9f9b58e3a34e",
+                "reference": "eaecfda4100cfae5d500b15cc3dd9f9b58e3a34e",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "^3.148.3",
+                "laravel/framework": "^8.0|^9.0|^10.0",
+                "php": "^7.3|^8.0",
+                "symfony/yaml": "^5.1.4|^6.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.17.1|^7.0|^8.0",
+                "pestphp/pest": "^1.22.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\VaporUi\\VaporUiServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\VaporUi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Nuno Maduro",
+                    "email": "nuno@laravel.com"
+                }
+            ],
+            "description": "The Laravel Vapor UI.",
+            "keywords": [
+                "laravel",
+                "vapor"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/vapor-ui/issues",
+                "source": "https://github.com/laravel/vapor-ui"
+            },
+            "time": "2023-02-01T14:56:16+00:00"
         },
         {
             "name": "lcobucci/clock",
