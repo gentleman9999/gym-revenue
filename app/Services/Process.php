@@ -1,5 +1,5 @@
 <?php
-
+// phpcs:ignoreFile
 declare(strict_types=1);
 
 namespace App\Services;
@@ -13,7 +13,6 @@ use Amp\Promise;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\Log;
 use Throwable;
-
 use function Amp\call;
 use function Amp\Promise\any;
 use function Amp\Promise\wait;
@@ -62,6 +61,7 @@ class Process implements Task
 
             public function __construct(int $max_workers_count)
             {
+                $n = 22;
                 $this->pool = new DefaultPool($max_workers_count);
             }
 

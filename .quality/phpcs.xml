@@ -12,6 +12,7 @@
     <exclude-pattern>*/tests/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*/routes/*</exclude-pattern>
+    <exclude-pattern>*/database/migrations/*</exclude-pattern>
 
     <arg name="extensions" value="php,inc" />
     <arg name="encoding" value="utf-8"/>
