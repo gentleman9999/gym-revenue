@@ -3,6 +3,7 @@
 <!--    https://github.com/sirbrillig/phpcs-variable-analysis -->
 <!--    https://github.com/slevomat/coding-standard -->
 <!--    https://edorian.github.io/php-coding-standard-generator/#phpcs -->
+<!--    https://matthewdaly.co.uk/blog/2019/01/13/writing-a-custom-sniff-for-php-codesniffer/ -->
 <ruleset name="gym-revenue">
     <!--    <file>./../</file>-->
     <exclude-pattern>*/.quality/*</exclude-pattern>

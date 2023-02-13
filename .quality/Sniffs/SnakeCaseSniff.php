@@ -14,6 +14,7 @@ class SnakeCaseSniff implements Sniff
         'protected $keyType',
         'protected $routeMiddleware',
         'protected $middlewareGroups',
+        'protected $dispatchesEvents',
     ];
 
     /**

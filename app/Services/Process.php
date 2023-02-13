@@ -61,7 +61,6 @@ class Process implements Task
 
             public function __construct(int $max_workers_count)
             {
-                $n = 22;
                 $this->pool = new DefaultPool($max_workers_count);
             }
 
