@@ -576,5 +576,3 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('structured-document-req
     Route::delete('/{structured_document_request_id}/force', \App\Domain\StructuredDocumentRequests\Actions\DeleteStructuredDocumentRequest::class)->name('structured-document-request.delete');
     Route::post('/{structured_document_request}/restore', \App\Domain\StructuredDocumentRequests\Actions\RestoreStructuredDocumentRequest::class)->withTrashed()->name('structured-document-request.restore');
 });
-
-Route::get('/queue/test', \App\Actions\QueueTest\QueueTest::class)->middleware(['auth:sanctum', 'verified']);
