@@ -1,4 +1,6 @@
-E<?php
+<?php
+
+declare(strict_types=1);
 
 use Laravel\VaporUi\Http\Middleware\EnsureEnvironmentVariables;
 use Laravel\VaporUi\Http\Middleware\EnsureUpToDateAssets;
