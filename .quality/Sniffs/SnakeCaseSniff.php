@@ -15,6 +15,19 @@ class SnakeCaseSniff implements Sniff
         'protected $routeMiddleware',
         'protected $middlewareGroups',
         'protected $dispatchesEvents',
+        'public string $commandSignature',
+        'public string $commandDescription',
+        'public string $commandHelp',
+        'public bool $commandHidden',
+        'public string $jobConnection',
+        'public string $jobQueue',
+        'public int $jobTries',
+        'public int $jobMaxExceptions',
+        'public int $jobBackoff',
+        'public int $jobTimeout',
+        'public int $jobRetryUntil',
+        'public string $jobUniqueId',
+        'public int $jobUniqueFor',
     ];
 
     /**
