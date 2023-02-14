@@ -24,6 +24,7 @@ import * as Sentry from "@sentry/browser";
 import { BrowserTracing } from "@sentry/tracing";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useCsrfToken } from "@/utils/useCsrfToken.js";
+import { Kind } from "graphql/language/index.js";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
@@ -46,6 +47,39 @@ const httpLink = createHttpLink({
     // credentials: 'same-origin',//include cookie
     // credentials: 'include',//for diff origin backend
     uri: import.meta.env.VITE_GRAPHQL_URI || "/graphql",
+    print: function (data, defaultPrinter) {
+        // Add 'is_draft` to all mutations.
+        data.definitions.forEach((definition) => {
+            if (
+                definition.operation === "mutation" &&
+                definition.hasDraftFlag === undefined
+            ) {
+                const name = { kind: Kind.NAME, value: "is_draft" };
+
+                definition.variableDefinitions.push({
+                    kind: Kind.VARIABLE_DEFINITION,
+                    variable: { kind: Kind.VARIABLE, name },
+                    type: {
+                        kind: Kind.NAMED_TYPE,
+                        name: { kind: Kind.NAME, value: "Boolean" },
+                    },
+                    directives: [],
+                });
+
+                definition.selectionSet.selections.forEach((selection) => {
+                    selection.arguments.push({
+                        kind: Kind.ARGUMENT,
+                        name,
+                        value: { kind: Kind.VARIABLE, name },
+                    });
+                });
+
+                definition.hasDraftFlag = true;
+            }
+        });
+
+        return defaultPrinter(data);
+    },
 });
 
 // Cache implementation

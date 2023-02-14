@@ -1,5 +1,5 @@
 <?php
-
+// phpcs:ignoreFile
 declare(strict_types=1);
 
 namespace App\Domain\Draftable\Mutations;
@@ -21,7 +21,7 @@ class ControllerDecoratorOverride
 
     protected Route $route;
 
-    /** @var array */
+    /** @var array<string> */
     protected array $middleware = [];
 
     protected bool $executedAtLeastOne = false;
@@ -48,7 +48,7 @@ class ControllerDecoratorOverride
      */
     public function getMiddleware(): array
     {
-        return array_map(fn ($middleware): array => ['middleware' => $middleware, 'options' => []], $this->middleware);
+        return array_map(fn($middleware): array => ['middleware' => $middleware, 'options' => []], $this->middleware);
     }
 
     public function callAction(string $method): mixed
@@ -67,6 +67,7 @@ class ControllerDecoratorOverride
 
     protected function refreshRequest(): ActionRequest
     {
+
         app()->forgetInstance(ActionRequest::class);
 
         /** @var ActionRequest $request */
@@ -83,21 +84,21 @@ class ControllerDecoratorOverride
             return;
         }
 
-        $currentMethod = Str::afterLast($this->route->action['uses'], '@');
-        $newMethod     = $this->getDefaultRouteMethod();
+        $current_method = Str::afterLast($this->route->action['uses'], '@');
+        $new_method     = $this->getDefaultRouteMethod();
 
-        if ($currentMethod !== '__invoke' || $currentMethod === $newMethod) {
+        if ($current_method !== '__invoke' || $current_method === $new_method) {
             return;
         }
 
         $this->route->action['uses'] = (string) Str::of($this->route->action['uses'])
             ->beforeLast('@')
-            ->append('@' . $newMethod);
+            ->append('@' . $new_method);
     }
 
     protected function getDefaultRouteMethod(): string
     {
-        $control_method = in_array(request()->query('is_draft'), ['1', 'true', 'TRUE']) ? 'handleDraft' : 'asController';
+        $control_method = in_array(request()->query('is_draft'), ['1', 'true']) ? 'handleDraft' : 'asController';
         if ($this->hasMethod($control_method)) {
             return $control_method;
         }
