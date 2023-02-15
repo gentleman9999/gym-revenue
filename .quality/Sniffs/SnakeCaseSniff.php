@@ -9,6 +9,8 @@ use SlevomatCodingStandard\Helpers\TokenHelper;
 class SnakeCaseSniff implements Sniff
 {
     public const CODE_SNAKE_CASE = 'SnakeCase';
+    
+    /** @var string[]  */
     public array $ignore = [
         'protected $primaryKey',
         'protected $keyType',
@@ -40,14 +42,34 @@ class SnakeCaseSniff implements Sniff
 
     public function process(File $phpcsFile, $pointer)
     {
-        $tokens = $phpcsFile->getTokens();
-        $previous_ptr = TokenHelper::findPreviousEffective($phpcsFile, $pointer - 1);
-        $variable = $tokens[$pointer]['content'];
-        $previous_variable = $tokens[$previous_ptr]['content'];
-        if (in_array("{$previous_variable} {$variable}", $this->ignore)
-            || in_array($variable, $this->ignore)
-            || "{$previous_variable} {$variable}" === ":: $variable"
-        ) {
+        $tokens         = $phpcsFile->getTokens();
+        $previous_ptr_1 = TokenHelper::findPreviousEffective($phpcsFile, $pointer - 1);
+        $previous_ptr_2 = TokenHelper::findPreviousEffective($phpcsFile, $pointer - 3);
+        $variable       = $tokens[$pointer]['content'];
+        $data           = ['variable' => $variable, 'type' => '', 'visibility' => ''];
+        $visibilities   = ['public', 'protected', 'private'];
+        $types          = ['bool', 'int', 'float', 'string', 'array', 'object', 'callable', 'resource'];
+
+
+        $type_or_visibility = $accessor = $tokens[$previous_ptr_1]['content'];
+        if (in_array($type_or_visibility, $visibilities)) {
+            $data['visibility'] = $type_or_visibility;
+        } elseif (in_array($type_or_visibility, $types)) {
+            $data['type'] = $type_or_visibility;
+        }
+
+        $type_or_visibility = $tokens[$previous_ptr_2]['content'];
+        if (in_array($type_or_visibility, $visibilities)) {
+            $data['visibility'] = $type_or_visibility;
+        }
+
+        if ($data['type'] !== '') {
+            $variable = "{$data['visibility']} {$data['type']} {$data['variable']}";
+        } else {
+            $variable = trim("{$data['visibility']} {$data['variable']}");
+        }
+
+        if (in_array($variable, $this->ignore) || "{$accessor}{$variable}" === "::{$variable}") {
             return;
         }
 
